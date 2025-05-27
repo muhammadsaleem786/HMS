@@ -1,0 +1,104 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Patient
+                    </h3>
+                </div>
+                <div class="col">
+                    <input class="form-control form-control-sm" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+
+            <a class="btn btn-danger btn-md" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Patient</a>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="Cardview">
+
+
+            <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                <div class="uk-overflow-container col-sm-12">
+                    <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                        <thead class="grid-header">
+                            <tr>
+                                <th>Name </th>
+                                <th> DOB </th>
+                                <th> Email </th>
+                                <th> Mobile </th>
+                                <th>MRNO</th>
+                                <th>CNIC </th>
+                                <th class="text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of PatientList">
+                                <td (click)="AddRecord(item.ID)">
+                                    <span class="user_img" *ngIf="item.Gender==1 && item.Image==null">
+                                        <img src="../assets/app/media/img/patient-icon-4.jpg" class="img-fluid radius">
+                                    </span>
+                                    <span class="user_img" *ngIf="(item.Gender==2 ||item.Gender==3) && item.Image==null">
+                                        <img src="../assets/app/media/img/patientgirl.png" class="img-fluid radius">
+                                    </span>
+                                    <span class="user_img" *ngIf="item.Image!=null && item.Image!='' ">
+                                        <img [src]="item.Image" class="img-fluid radius">
+                                    </span>
+                                    <a>
+                                        {{item.PatientName}}
+                                    </a>
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{ item.DOB ? (item.DOB | date: 'MM/dd/yyyy') : (item.Age + ' years') }}
+                                    {{item.DOB |date: 'MM/dd/yyyy'}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Email}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Mobile}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    <span class="badge badge-danger-light"> {{item.MRNO}}</span>
+                                </td>
+                                <td (click)="AddRecord(item.ID)">{{item.CNIC}}</td>
+                                <td class="text-right">
+                                    <a class="btn" (click)="ViewSummery(item.ID)" data-toggle="tooltip" title="View Summary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" style="font-size: 23px; color: #787878;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><circle cx="22" cy="24" r="2" fill="currentColor" /><path d="M29.777 23.479A8.64 8.64 0 0 0 22 18a8.64 8.64 0 0 0-7.777 5.479L14 24l.223.521A8.64 8.64 0 0 0 22 30a8.64 8.64 0 0 0 7.777-5.479L30 24zM22 28a4 4 0 1 1 4-4a4.005 4.005 0 0 1-4 4z" fill="currentColor" /><path d="M7 17h5v2H7z" fill="currentColor" /><path d="M7 12h12v2H7z" fill="currentColor" /><path d="M7 7h12v2H7z" fill="currentColor" /><path d="M22 2H4a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h8v-2H4V4h18v11h2V4a2.006 2.006 0 0 0-2-2z" fill="currentColor" /></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr [hidden]="!(PatientList.length == 0)" style="background:#fff;">
+                                <td [attr.colspan]="10" align="center">
+                                    <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                    <strong class="nodateFound">No record found</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f; margin-left: 16px; font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+            <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                    <a (click)="selectPage(page)">
+                        {{page}}
+                    </a>
+                </li>
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+            </ul>
+        </div>
+
+    </div>
+    <!--<app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="PatientList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>-->
+
+</div>
+

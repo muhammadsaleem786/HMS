@@ -1,0 +1,107 @@
+<div class="container-fluid main-container no-padding-lr" [ngClass]="{'toggleScreen': id===1} && slideToggleClass ? 'ArabicLanguage' : ''">
+    <div class="flex_Main_container">
+        <app-asidebar class="col-sm-12 no-padding-lr sidebar-container" (ClassAssign)="AssignParentClass()" (profilePopup)="GetProfile()"></app-asidebar>
+        <!--<app-main></app-main>-->
+        <div class="right-content setMaxWidth">
+            
+            <router-outlet></router-outlet>
+            <div class="slideToggle" [ngClass]="slideToggle ? 'active' : ''">
+                <div class="header">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h4 class="title">Notifications</h4>
+                        </div>
+                        <div class="col-sm-4">
+
+                            <span class="pull-right cursor-pointer font-20" (click)="HitslideToggle()">
+                                <i class="icon-cross iconImage"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slideToggle" [ngClass]="SettingToggle ? 'active' : ''" *ngIf="IsPortalLogin=='false'">
+                <div class="header">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h4 class="title">Setting</h4>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="pull-right cursor-pointer font-20" (click)="SettingSection()">
+                                <i class="icon-cross iconImage"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form [formGroup]="Form1" novalidate (ngSubmit)="SaveEditContactInfo(Form1.valid)">
+    <div class="modal fade" id="ContactModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading text-color-blue no-padding">
+                        {{Keywords['Key_Common_ContactPersonInformation']}}
+                    </h3>
+                    <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="usr">{{Keywords['Key_AsideNav_FirstName']}}*</label>
+                                <input type="text" formControlName="ContactPersonFirstName" [(ngModel)]="model.ContactPersonFirstName" class="form-control m-input" (keypress)="OnKeyPress($event)">
+                                <small *ngIf="Form1.controls.ContactPersonFirstName.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="usr">{{Keywords['Key_AsideNav_Email']}}</label>
+                                <input type="text" formControlName="Email" readonly ng-readonly="true" [(ngModel)]="model.Email" class="form-control m-input">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="usr">{{Keywords['Key_AsideNav_LastName']}}*</label>
+                                <input type="text" formControlName="ContactPersonLastName" [(ngModel)]="model.ContactPersonLastName" class="form-control m-input" (keypress)="OnKeyPress($event)">
+                                <small *ngIf="Form1.controls.ContactPersonLastName.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="usr">{{Keywords['Key_AsideNav_CellPhone']}}</label>
+                                <input type="text" formControlName="Phone" [(ngModel)]="model.Phone" class="form-control m-input" (change)="IsvalidPhone('CPM')">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="usr">{{Keywords['Key_Common_Gender']}}</label>
+                                <select formControlName="GenderID" [(ngModel)]="model.GenderID" class="form-control m-input">
+                                    <option value="1">{{Keywords['Key_Common_Male']}}</option>
+                                    <option value="2">{{Keywords['Key_Common_Female']}}</option>
+                                    <option value="3">{{Keywords['Key_Common_Others']}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="usr">{{Keywords['Key_AsideNav_WorkPhone']}}</label>
+                                <input type="text" formControlName="Fax" [(ngModel)]="model.Fax" class="form-control m-input" (change)="IsvalidPhone('WP')">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{Keywords['Key_Common_Cancel']}}</button>
+                    <button type="submit" class="btn btn-red">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

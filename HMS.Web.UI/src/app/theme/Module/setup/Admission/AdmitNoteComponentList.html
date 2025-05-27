@@ -1,0 +1,111 @@
+﻿<div class="tab-pane" id="Notes">
+    <div class="row">
+        <div class="col">
+            <div class="tab-pane active" id="Notes">
+                <div class="text-right mb-2" *ngIf="NoteRights.CreateRights">
+                    <button class="btn btn-danger btn-sm" (click)="AddNoteModal(NoteModal)"><i class="icon icon-plus"></i> Add Note </button>
+                </div>
+                <div class="TableView">
+                    <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+                        <div class="uk-overflow-container col-sm-12 p-0">
+                            <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                                <thead class="grid-header">
+                                    <tr>
+                                        <th>
+                                            Date
+                                        </th>
+                                        <th>
+                                            Authored By
+                                        </th>
+                                        <th>
+                                            Note
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of NoteList">
+                                        <td>{{item.Date |date: 'MM/dd/yyyy'}}</td>
+                                        <td>
+                                            {{item.AuthoredBy }}
+                                        </td>
+                                        <td>
+                                            {{item.Note }}
+                                        </td>
+                                        <td>
+                                            <span class="icon icon mr-3" (click)="Edit(item.ID)">
+                                                <i class="icon icon-pencil2"></i>
+                                            </span>
+                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="NoteRights.DeleteRights">
+                                                <i class="icon icon-trash2 text-danger"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                    <tr [hidden]="!(NoteList.length == 0)" style="background:#fff;">
+                                        <td [attr.colspan]="10" align="center">
+                                            <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                            <strong class="nodateFound">No record found</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                        <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                            <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                                <a (click)="selectPage(page)">
+                                    {{page}}
+                                </a>
+                            </li>
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #NoteModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            New Note for (Patient Name)
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="NoteSaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> On Behalf Of</label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="OnBehalfOf" [(ngModel)]="noteModel.OnBehalfOf" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Note</label>
+                </div>
+                <div class="col-8">
+                    <textarea class="form-control" formControlName="Note" [(ngModel)]="noteModel.Note"></textarea>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </form>
+</ng-template>

@@ -1,0 +1,50 @@
+﻿
+<form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">{{model.ID ? 'Edit' : 'Add'}} Public Holiday</h3>
+            <button type="button" class="close mt-modal-close" (click)="Close()" data-dismiss="modal"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Name*</label>
+                        <input type="text" formControlName="HolidayName" [(ngModel)]="model.HolidayName" maxlength="250" class="form-control" placeholder="a.g. Eid...">
+                        <small *ngIf="Form1.controls.HolidayName.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>From Date*</label>
+                        <Datetime-Component formControlName="FromDate" (DateChangeValue)="onFromDateChanged($event)" [(ngModel)]="model.FromDate">
+                        </Datetime-Component>
+                        <small *ngIf="Form1.controls.FromDate.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>To Date*</label>
+                        <Datetime-Component formControlName="ToDate" (DateChangeValue)="onToDateChanged($event)" [(ngModel)]="model.ToDate">
+                        </Datetime-Component>
+                        <small *ngIf="Form1.controls.ToDate.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-payday-cancel" routerLink="/home/holiday">Cancel</button>
+            <button type="submit" class="btn btn-primary" *ngIf="!IsEdit">Save</button>
+            <button type="submit" class="btn btn-primary" *ngIf="IsEdit">Update</button>
+            <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="IsEdit" (click)="Delete()">Delete</button>
+
+        </div>
+    </div>
+</form>
+

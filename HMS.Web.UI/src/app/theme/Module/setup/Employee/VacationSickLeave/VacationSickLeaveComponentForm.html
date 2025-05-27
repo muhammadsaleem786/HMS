@@ -1,0 +1,51 @@
+﻿
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)" (click)="IsModalClick()">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Vacation and Sick Leave Policy</h3>
+                    <button type="button" class="close mt-modal-close" (click)="Close()" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            <input type="radio" formControlName="Category" name="Category" [(ngModel)]="model.Category" value="V" checked> Vacation
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" formControlName="Category" name="Category" [(ngModel)]="model.Category" value="S"> Sick Leave
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Name*</label>
+                        <input type="text" formControlName="TypeName" [(ngModel)]="model.TypeName" class="form-control" maxlength="250">
+                        <small *ngIf="Form1.controls.TypeName.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label>Accrual Frequency</label>
+                        <select formControlName="AccrualFrequencyID" [(ngModel)]="model.AccrualFrequencyID" class="form-control">
+                            <option *ngFor="let item of AccrualFrequencyTypes" [value]="item.ID">
+                                {{item.Value}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Hours Earned Per Year*</label>
+                        <input type="number" formControlName="EarnedValue" [(ngModel)]="model.EarnedValue" min="0" value="80" pattern=".{0,4}" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
+                        <small *ngIf="Form1.controls.EarnedValue.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="Close()">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-blue"*ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                    <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="this.model.ID && IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,238 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">        
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Reports
+                    </h3>
+                </div>
+               
+            </div>            
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">          
+        </div>
+    </div>    
+    <div class="Cardview search_onTop px-2 pt-0 Report_Wrap">
+
+
+        <ngb-tabset [destroyOnHide]="false">
+            <ngb-tab title="Financial Reports">
+                <ng-template ngbTabContent>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(1)>-1">
+                                    <a class="report_block" routerLink="/home/PaymentSummaryRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Payment Summary Report
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(27)>-1">
+                                    <a class="report_block" routerLink="/home/CashFlowRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Cash Flow Report
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(28)>-1">
+                                    <a class="report_block" routerLink="/home/OutstandingIncomeRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+
+                                            Outstanding Income Report
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(29)>-1">
+                                    <a class="report_block" routerLink="/home/TreatmentwiseRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Treatment wise Report
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(29)>-1">
+                                    <a class="report_block" routerLink="/home/ProlossRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Profit and Loss Report
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Patient Reports">
+                <ng-template ngbTabContent>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(17)>-1">
+                                    <a class="report_block" routerLink="/home/PatientRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">Patient Details Report</span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(71)>-1">
+                                    <a class="report_block" routerLink="/home/ProRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">Procedure Report</span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(16)>-1">
+                                    <a class="report_block" routerLink="/home/FeeRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">Fee Report</span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(30)>-1">
+                                    <a class="report_block" routerLink="/home/OutstandingRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Outstanding Report
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(31)>-1">
+                                    <a class="report_block" routerLink="/home/PaymentRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Payment Report
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(15)>-1">
+                                    <a class="report_block" routerLink="/home/AppRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">Appointment Report</span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(32)>-1">
+                                    <a class="report_block" routerLink="/home/BirthdayRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Birthday Report
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(33)>-1">
+                                    <a class="report_block" routerLink="/home/FollowupRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Follow-up Report
+                                        </span>
+                                    </a>
+                                </div>
+                                <!--<div class="col-sm-3" *ngIf="Rights.indexOf(34)>-1">
+                                    <a class="report_block" routerLink="/home/DetailedPatientRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Detailed Patient wise Fees Report
+                                        </span>
+                                    </a>
+                                </div>-->
+
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Doctor/Clinic Reports">
+                <ng-template ngbTabContent>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(35)>-1">
+                                    <a class="report_block" routerLink="/home/DoctorswiseRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Doctors wise Fees Report
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(36)>-1">
+                                    <a class="report_block" routerLink="/home/DocPaymentRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Doctors wise Payment Report
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(37)>-1">
+                                    <a class="report_block" routerLink="/home/DocSummaryRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Doctors wise Summary Payment Report
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(38)>-1">
+                                    <a class="report_block" routerLink="/home/ClinicRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Clinic wise Payment Report
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Inventory Reports">
+                <ng-template ngbTabContent>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(35)>-1">
+                                    <a class="report_block" routerLink="/home/CurrentRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Current Stock
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(36)>-1">
+                                    <a class="report_block" routerLink="/home/SaleRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Sale By Patient
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(36)>-1">
+                                    <a class="report_block" routerLink="/home/PurRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Purchase Report
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,46 @@
+﻿<html>
+   <body>
+      <div style="max-width:201px;"><img alt="HMS" src = "https://app.HMS.com/ServiceApi/assets/img/HMS.png" style="width: 120px; max-width: 120px; max-height: 46px;"/></div>
+ <table border="0" cellpadding="0" cellspacing="0" width="100%">
+   <tbody>
+      <tr>
+         <td style="padding:20px 0 0 0; color: #222; font-size:18px;line-height:48px;font-family:Open Sans,Trebuchet MS,sans-serif">
+           <strong>Dear [[UserName]],</strong>
+         </td>
+      </tr>
+	  <tr>
+         <td style='padding:10px 0 0 0;font-size:14px;line-height:24px;font-family:Open Sans,Trebuchet MS,sans-serif'>
+           <p style="font-size:14px;">Thank you for joining HMS! Let us take a few minutes to get you started with your new HR & Payroll System. To access your HR, please visit: <br> 
+		   <a routerlink="[[WebUrl]]" style="display:block;margin: 20px auto; text-align:center; color:#2696eb;font-size: 20px; ">[[WebUrl]]</a> 
+		   
+		   
+		   You can now run payroll in minutes and save tons of money on operational costs. <a routerlink="/login">Login</a> to add employees and get started!</p>
+         <a style="background: #1367cd; font-size: 14px; color: #fff; padding: 10px 13px; text-decoration: none; border-radius: 3px; margin: 25px auto 15px; display: block; max-width: 230px; text-align: center;" href="https://www.HMS.com/documents/Getting_Started_Guide.pdf" target="_blank">Download Getting Started Guide</a>
+		</td>
+      </tr>
+      <tr>
+         <td style="padding:10px 0 0 0;font-size:14px;line-height:24px;font-family:Open Sans,Trebuchet MS,sans-serif">
+            <p style="font-size:14px;">Along with payroll in minutes, you can track each employee’s vacations, accruals, contributions and much more. Want to know how this year’s salaries compare to last year’s salaries? Just run a report under the reports tab.</p>
+         </td>
+      </tr>
+   </tbody>
+</table>
+<div>
+   <p>
+   </p>
+   <p style="padding:0; margin:0px;font-size:14px; font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;">Regards,</p>
+   <p style="padding:0; margin:0px;font-size:14px; font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;">HMS Team</p>
+   <p style="padding:0; margin:0px;font-size:14px;font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;"><a target="_blank" href="https://www.HMS.com/" style="text-decoration: none;color:#2696eb; ">www.HMS.com</a></p>
+   <p></p>
+   <p style="padding:0px 0 0px 0;font-size:14px;line-height:24px;font-family:Open Sans,Trebuchet MS,sans-serif;margin-bottom: 7px;">
+      <a style="color:#2696eb;text-decoration:none" href="mailto:support@HMS.pk" target="_blank">Contact us</a> for any queries.        <span class="mobile-link--footer">Office: <a href="tel:+92-333-3331225" style="font-family:Open Sans,Trebuchet MS,sans-serif; color: #333; text-decoration: none;">+92-333-3331225</a></span>                  
+   </p>
+   <div>
+      <a target="_blank" href="https://www.HMS.com/" style="text-decoration: none;color:#757575; font-size:14px;font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;"><img alt="HMS" style="display: inline-block; max-width: 14px; position: relative; top: 2px;" src="https://hms.com/assets/img/md-images/ic_place_black_24dp.png"> office (PK): 384 E, Johar Town Lahore, Pakistan
+      </a>
+   </div>
+</div>
+<p style="text-align: center;color: #ccc;font-family:Open Sans,Trebuchet MS,sans-serif; font-size: 14px;">© 2020 HMS, All rights reserved | powered by <a style="color:#ccc;font-size:14px;" href="https://www.HMS.com/">www.HMS.com</a></p>
+      <br/>
+   </body>
+</html>

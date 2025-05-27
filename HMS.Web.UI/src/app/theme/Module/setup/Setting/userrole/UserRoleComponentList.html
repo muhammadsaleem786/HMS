@@ -1,0 +1,34 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Roles
+                    </h3>
+                </div>
+            
+            </div>
+            
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">           
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+            <a *ngIf="ControlRights.CreateRights" class="btn btn-danger" (click)="AddNewRecord('0',false)">New Role</a>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="Cardview search_onTop px-2">
+          <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="UserRoleList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+            <setup-UserRoleComponentForm [hidden]="IsList" [id]="Id" (pageClose)="Close($event)"></setup-UserRoleComponentForm>
+
+        </div>
+
+    </div>
+    
+</div>
+   
+
+
+

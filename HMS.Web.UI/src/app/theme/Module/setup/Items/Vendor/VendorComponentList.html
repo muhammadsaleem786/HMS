@@ -1,0 +1,31 @@
+﻿
+
+<div class="margin-t-68 removeAction">
+
+    <div class="row headSection paginationHead">
+
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Vendor 
+                    </h3>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-danger btn-md"*ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Vendor</a>
+        </div>
+    </div>
+
+
+    <div class="Cardview search_onTop px-3 pt-0">
+        <div class="TableView">
+            <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="VendorList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+
+        </div>
+    </div>
+</div>
+
+

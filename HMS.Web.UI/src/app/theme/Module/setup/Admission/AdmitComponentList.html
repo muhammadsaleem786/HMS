@@ -1,0 +1,793 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Admit  Patient
+                    </h3>
+                </div>
+                <div class="col">
+                    <input class="form-control form-control-sm" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
+                            <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                {{item.Value}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+
+            <a class="btn btn-danger btn-md" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Admit Patient</a>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="Cardview">
+
+            <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                <div class="uk-overflow-container col-sm-12">
+                    <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                        <thead class="grid-header">
+                            <tr>
+                                <th>Admission No </th>
+                                <th>Patient Name </th>
+                                <th>IP Type</th>
+                                <th>Admit On</th>
+                                <th>Room</th>
+                                <th>Days</th>
+                                <th>Status</th>
+                                <th class="text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of PatientAdmitList">
+                                <td (click)="AddRecord(item.ID)">
+                                    <span class="badge badge-danger-light"> {{item.AdmissionNo}}</span>
+
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    <span class="user_img" *ngIf="item.Gender==1 && item.Image==null">
+                                        <img src="../assets/app/media/img/patient-icon-4.jpg" class="img-fluid radius">
+                                    </span>
+                                    <span class="user_img" *ngIf="(item.Gender==2 ||item.Gender==3) && item.Image==null">
+                                        <img src="../assets/app/media/img/patientgirl.png" class="img-fluid radius">
+                                    </span>
+                                    <span class="user_img" *ngIf="item.Image!=null && item.Image!='' ">
+                                        <img [src]="item.Image" class="img-fluid radius">
+                                    </span>
+                                    <a>
+                                        {{item.PatientName}}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{item.Type}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.AdmissionDate |date: 'MM/dd/yyyy'}}
+                                </td>
+
+                                <td>
+
+
+                                    <a (click)="openAllotNoModal(AllotNo,item.ID)">
+                                        {{item.Ward}}
+                                        <i class="icon icon-chevron-right" *ngIf="item.Room !== null"></i>
+                                        {{item.Room}}
+                                        <i class="icon icon-chevron-right" *ngIf="item.Bed !== null"></i>
+                                        {{item.Bed}}
+                                        <span *ngIf="item.Room == null && item.Bed == null">Select Room</span>
+                                    </a>
+                                </td>
+                                <td>{{item.DaysCount}}</td>
+                                <td>{{item.Status}}</td>
+                                <td class="text-right">
+                                    <div class="btn-group">
+                                        <a class="btn btn-light" (click)="ViewSummery(item.ID,item.PatientId)" data-toggle="tooltip" title="View Summary">Detail</a>
+                                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" (click)="DischargePatient(item.ID)" *ngIf="item.Status=='Admitted'">Discharge</a>
+                                            <a class="dropdown-item" (click)="openInvoiceModal(InvoiceModal,item.ID,item.PatientId)" *ngIf="item.Status=='Discharge'">Print</a>
+                                            <a class="dropdown-item" (click)="ViewReportModal(ReportModal,item.ID,item.PatientId)" *ngIf="item.Status=='Discharge'">Discharge Report</a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr [hidden]="!(PatientAdmitList.length == 0)" style="background:#fff;">
+                                <td [attr.colspan]="10" align="center">
+                                    <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                    <strong class="nodateFound">No record found</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f; margin-left: 16px; font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+            <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                    <a (click)="selectPage(page)">
+                        {{page}}
+                    </a>
+                </li>
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+<ng-template #AllotNo let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            Allot No
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="Form2" novalidate (ngSubmit)="SaveOrUpdate(Form2.valid)">
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label>
+                        Select Type
+                    </label>
+                    <select class="form-control" formControlName="TypeId" [(ngModel)]="modelAdmission.TypeId" (change)="changeType(modelAdmission.TypeId)">
+                        <option *ngFor="let item of TypeList" [value]="item.id">
+                            {{item.Name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label class="opacity0">-</label>
+                    <select class="form-control" formControlName="WardTypeId" [(ngModel)]="modelAdmission.WardTypeId" (change)="changeWard(modelAdmission.WardTypeId)" *ngIf="IsWard">
+                        <option disabled [ngValue]="null" selected>
+                            Select Ward
+                        </option>
+                        <option *ngFor="let item of WardList" [value]="item.ID">
+                            {{item.Value}}
+                        </option>
+                    </select>
+
+                    <select class="form-control" formControlName="RoomId" [(ngModel)]="modelAdmission.RoomId" *ngIf="IsRoom">
+                        <option disabled [ngValue]="null" selected>
+                            Select Room
+                        </option>
+                        <option *ngFor="let item of RoomList" [value]="item.ID">
+                            {{item.Value}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-12" *ngIf="IsBed">
+                    <div class="btn-group btn-group-toggle btnward" data-toggle="buttons">
+                        <label class="btn btn-light" *ngFor="let b of BedList ; let i = index;" (click)="selectBed(b.ID)">
+                            <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 48 48"><path fill="currentColor" fill-rule="evenodd" d="M16.096 11.105a3.771 3.771 0 0 0-5.333-.002l-.704.704a3.953 3.953 0 0 0-3.892 1.021a4.034 4.034 0 0 0 0 5.676l.833.839V30H4v2h2.05a3.5 3.5 0 1 0 4.899 0h26.102a3.5 3.5 0 1 0 4.899 0H44v-2h-4v-3.113a3.962 3.962 0 0 0 3-3.854c0-2.19-1.761-3.967-3.934-3.967H18.11a.307.307 0 0 1-.218-.09l-.366-.37l.369-.367a3.77 3.77 0 0 0 .001-5.333l-1.8-1.8Zm.02 6.083l.365-.364a1.77 1.77 0 0 0 0-2.504l-1.8-1.8a1.771 1.771 0 0 0-2.504-.002l-.35.35l4.29 4.32ZM41 23.033c0-1.102-.882-1.967-1.934-1.967H18.11a2.307 2.307 0 0 1-1.636-.68l-6.106-6.148a1.953 1.953 0 0 0-2.782 0a2.034 2.034 0 0 0 0 2.857L15.438 25h23.628C40.12 25 41 24.135 41 23.033Zm-26.725 3.634c.212.213.498.333.797.333H38v3H9v-8.644l5.275 5.311ZM10 34.5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0ZM39.5 36a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3Z" clip-rule="evenodd" /></svg>
+                            </span>
+                            <span class="number">{{i}}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<ng-template #InvoiceModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon">Invoice
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body Invoice_Template" id="printBill-section">
+        <div class="Invoice_template">
+            <header class="clearfix">
+
+                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+                    <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div id="company">
+                    <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                    <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                    <div>{{InvoiceCompanyInfo.CompanyPhone}}</div>
+                    <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                </div>
+
+            </header>
+            <main>
+                <div id="details" class="clearfix">
+                    <div id="client">
+                        <div class="to">INVOICE TO:</div>
+                        <h2 class="name">{{InvoiceCompanyInfo.PatientName}}</h2>
+                        <div class="address">{{InvoiceCompanyInfo.PatientAddress}}</div>
+                        <div class="email"><a href="mailto:john@example.com">{{InvoiceCompanyInfo.PatientEmail}}</a></div>
+                    </div>
+                    <div id="invoice">
+                        <h1>INVOICE-{{InvoiceCompanyInfo.invoiceNo}}</h1>
+                        <div class="date">Date of Invoice: {{InvoiceCompanyInfo.BillDate |date: 'MM/dd/yyyy'}}</div>
+                        <div class="date">Due Date: 30/06/2014</div>
+                    </div>
+                </div>
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th class="no">#</th>
+                            <th class="desc">Item</th>
+                            <th class="unit text-right">UNIT PRICE</th>
+                            <th class="total text-right">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let b of InvoiceBillModel">
+                            <td class="no">{{b.ID}}</td>
+                            <td class="desc">{{b.ServiceName}}</td>
+                            <td class="unit"> {{b.Price}}</td>
+                            <td class="total"> {{b.Price}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">SUBTOTAL</td>
+                            <td> {{SubTotal}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">Discount</td>
+                            <td> {{TotalDiscount}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">GRAND TOTAL</td>
+                            <td> {{Total}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div id="thanks">Thank you!</div>
+                <div id="notices">
+                    <div>NOTICE:</div>
+                    <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                </div>
+            </main>
+            <footer>
+                {{valueForUser.RepotFooter}}
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
+    </div>
+
+</ng-template>
+
+<!-- -----------------   Reprot Modal --------- -->
+<ng-template #ReportModal let-modal>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdateDischarge(Form1.valid)">
+        <div class="modal-body Invoice_Template simple_format DetailReportModal" id="printReport-section">
+            <div class="ReportPAge1 col-sm-12">
+
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+                            <img class="img-fluid radius" style="max-width: 100px;" [src]="InvoiceCompanyInfo.CompanyLogo">
+                        </div>
+                        <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+                            <img class="img-fluid radius" style="max-width: 100px;" src="../assets/app/media/img/icons/doctor-logo.png">
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div id="company">
+                            <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                            <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                            <div>Phnoe: {{InvoiceCompanyInfo.CompanyPhone}}</div>
+                            <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row border-bottom">
+                    <div class="col-sm-12">
+                        <div class="text-center">
+                            <h3>Discharge Summary ({{InvoiceCompanyInfo.DepartmentType}})</h3>
+                        </div>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
+                        </p>
+
+                    </div>
+                </div>
+                <div class="row border-bottom section-p-10">
+
+                    <div class="col-sm-6">
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">F/H Name</strong> {{InvoiceCompanyInfo.Father_Husband}}
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl"> DOA</strong> {{InvoiceCompanyInfo.AdmissionDate|date: 'MM/dd/yyyy'}}
+                        </p>
+
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">DOB</strong>{{InvoiceCompanyInfo.DOB|date: 'MM/dd/yyyy'}}
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl"> Consultant</strong> {{InvoiceCompanyInfo.DoctorName}}
+                        </p>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">Dept</strong> {{InvoiceCompanyInfo.Department}}
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl"> Martial Status</strong> Married
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">Age </strong> {{InvoiceCompanyInfo.Age}}
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl"> Sex</strong>{{InvoiceCompanyInfo.Sex}}
+                        </p>
+
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">Ward/ Room</strong> {{InvoiceCompanyInfo.Ward}}/ {{InvoiceCompanyInfo.Room}}
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl"> Hosp No</strong> 1234
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-4">
+                        <strong class="invoice_lbl">Weight</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        <input class="form-control" formControlName="Weight" [(ngModel)]="model.Weight" type="text" />
+                    </div>
+                    <div class="col-sm-4">
+                        <strong class="invoice_lbl">Temperature</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        <input class="form-control" formControlName="Temperature" [(ngModel)]="model.Temperature" type="text" />
+                    </div>
+
+                </div>
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-4">
+                        <strong class="invoice_lbl">Diagnosis at Admission (as primary)</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        <input class="form-control" formControlName="DiagnosisAdmission" [(ngModel)]="model.DiagnosisAdmission" type="text" />
+                    </div>
+                </div>
+
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-4">
+                        <strong class="invoice_lbl">Complaint &Aacute; Summary of History</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" formControlName="ComplaintSummary" [(ngModel)]="model.ComplaintSummary" rows="4"></textarea>
+                    </div>
+                </div>
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-4 mb-3">
+                        <strong class="invoice_lbl">  Condition at Admission</strong>
+                    </div>
+                    <div class="col-sm-7 mb-3">
+                        <input class="form-control" formControlName="ConditionAdmission" [(ngModel)]="model.ConditionAdmission" type="text" />
+                    </div>
+                    <div class="col-sm-4">
+                        <strong class="invoice_lbl">  G.P.E General Condition</strong>
+                    </div>
+                    <div class="col-sm-7">
+                        <input class="form-control" formControlName="GeneralCondition" [(ngModel)]="model.GeneralCondition" type="text" />
+                    </div>
+                </div>
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-4 field-inline">
+                        <strong class="invoice_lbl"> Respiratory Rate</strong><input class="form-control inline" formControlName="RespiratoryRate" [(ngModel)]="model.RespiratoryRate" type="text" />
+                    </div>
+
+                    <div class="col-sm-4 field-inline">
+                        <strong class="invoice_lbl"> B.P</strong> <input class="form-control inline" formControlName="BP" [(ngModel)]="model.BP" type="text" />
+                    </div>
+
+                    <div class="col-sm-4 field-inline">
+                        <strong class="invoice_lbl"> Other</strong> <input class="form-control inline" formControlName="Other" [(ngModel)]="model.Other" type="text" />
+                    </div>
+                </div>
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-12 text-center mb-3">
+                        <h3 style="font-size: 20px;">Systemic</h3>
+                    </div>
+                    <div class="col-sm-6 field-inline">
+                        <strong class="invoice_lbl"> P/A</strong> <input class="form-control inline" formControlName="PA" [(ngModel)]="model.PA" type="text" />
+                    </div>
+                    <div class="col-sm-6 field-inline">
+                        <strong class="invoice_lbl"> P/V</strong> <input class="form-control inline" formControlName="PV" [(ngModel)]="model.PV" type="text" />
+                    </div>
+                </div>
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-12 text-center mb-3">
+                        <h3 style="font-size: 20px;">Investigation</h3>
+                    </div>
+                    <div class="col-sm-4 field-inline">
+                        <strong class="invoice_lbl"> Urine Proteins</strong> <input class="form-control inline" formControlName="UrineProteins" [(ngModel)]="model.UrineProteins" type="text" />
+                    </div>
+
+                    <div class="col-sm-4 field-inline">
+                        <strong class="invoice_lbl">Sugar</strong> <input class="form-control inline" formControlName="Sugar" [(ngModel)]="model.Sugar" type="text" />
+                    </div>
+
+                    <div class="col-sm-4 field-inline">
+                        <strong class="invoice_lbl">Microscopy</strong> <input class="form-control inline" formControlName="Microscopy" [(ngModel)]="model.Microscopy" type="text" />
+                    </div>
+
+                </div>
+                <div class="row border-bottom section-p-10">
+
+                    <div class="col-sm-2">
+                        <strong class="invoice_lbl">Blood HB</strong><br />
+                        <input class="form-control" formControlName="BloodHB" [(ngModel)]="model.BloodHB" type="text" />
+                    </div>
+                    <div class="col-sm-2">
+                        <strong class="invoice_lbl"> TLC</strong><br />
+                        <input class="form-control" formControlName="TLC" [(ngModel)]="model.TLC" type="text" />
+                    </div>
+                    <div class="col-sm-2">
+                        <strong class="invoice_lbl"> P</strong><br />
+                        <input class="form-control inline" formControlName="P" [(ngModel)]="model.P" type="text" />
+                    </div>
+                    <div class="col-sm-2">
+                        <strong class="invoice_lbl">L</strong><br />
+                        <input class="form-control inline" formControlName="L" [(ngModel)]="model.L" type="text" />
+                    </div>
+                    <div class="col-sm-2">
+                        <strong class="invoice_lbl">E </strong><br />
+                        <input class="form-control inline" formControlName="E" [(ngModel)]="model.E" type="text" />
+                    </div>
+                    <div class="col-sm-2">
+                        <strong class="invoice_lbl">ESR</strong><br />
+                        <input class="form-control inline" formControlName="ESR" [(ngModel)]="model.ESR" type="text" />
+                    </div>
+
+                </div>
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-4 field-inline">
+                        <strong class="invoice_lbl">Blood Sugar</strong> <input class="form-control inline" formControlName="BloodSugar" [(ngModel)]="model.BloodSugar" type="text" />
+                    </div>
+                    <div class="col-sm-4 field-inline">
+                        <strong class="invoice_lbl">Blood Group</strong> <input class="form-control inline" formControlName="BloodGroup" [(ngModel)]="model.BloodGroup" type="text" />
+                    </div>
+
+
+                </div>
+
+
+                <div class="row border-bottom section-p-10">                  
+                    <div class="col-sm-4">
+                        <strong class="invoice_lbl">Other</strong> 
+                    </div>
+                    <div class="col-sm-8">                       
+                        <textarea class="form-control" formControlName="OtherRemarks" [(ngModel)]="model.OtherRemarks"></textarea>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <strong class="invoice_lbl">Ultrasound</strong> <input class="form-control" formControlName="Ultrasound" [(ngModel)]="model.Ultrasound" type="text" />
+                    </div>
+
+                    <div class="col-sm-8">
+                        <strong class="invoice_lbl">Remark</strong>
+                        <textarea class="form-control" formControlName="UltrasoundRemark" [(ngModel)]="model.UltrasoundRemark"></textarea>
+                    </div>
+
+                </div>
+
+
+                <div class="row border-bottom section-p-10">
+
+                    <div class="col-sm-4">
+                        <strong class="invoice_lbl">X-Ray</strong> <input class="form-control" formControlName="XRay" [(ngModel)]="model.XRay" type="text" />
+                    </div>
+
+                    <div class="col-sm-8">
+                        <strong class="invoice_lbl">Remark</strong>
+                        <textarea class="form-control" formControlName="XRayRemark" [(ngModel)]="model.XRayRemark"></textarea>
+                    </div>
+                </div>
+            </div>
+            <footer style="page-break-after: always;margin-bottom:30px;"></footer>
+            <!-- ===============  ----  ============= -->
+            <div class="ReportPage2 col-sm-12">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+                            <img class="img-fluid radius" style="max-width: 100px;" [src]="InvoiceCompanyInfo.CompanyLogo">
+                        </div>
+                        <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+                            <img class="img-fluid radius" style="max-width: 100px;" src="../assets/app/media/img/icons/doctor-logo.png">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-7">
+                        <div id="company">
+                            <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                            <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                            <div>Phnoe: {{InvoiceCompanyInfo.CompanyPhone}}</div>
+                            <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-12">
+                        <div class="text-center">
+                            <h3>Discharge Summary ({{InvoiceCompanyInfo.DepartmentType}})</h3>
+                        </div>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
+                        </p>
+                        <p class="margin-b-0">
+                            <strong class="invoice_lbl">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
+                        </p>
+
+                    </div>
+                </div>
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-12 text-center">
+                        <h5 class="margin-b-0">Management</h5>
+                        <p>
+
+                        </p>
+                    </div>
+                    <div class="col-sm-4 field-inline">
+                        <strong class="invoice_lbl">
+                            Conservative
+                        </strong> <input class="form-control inline" formControlName="Conservative" [(ngModel)]="model.Conservative" type="text" />
+                    </div>
+
+                </div>
+              
+                
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-12 text-center">
+                        <h5 class="margin-b-0">Management</h5>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Operation
+                                </strong> <input class="form-control inline" formControlName="Operation" [(ngModel)]="model.Operation" type="text" />
+                            </div>
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Surgeon
+                                </strong> <input class="form-control inline" formControlName="Surgeon" [(ngModel)]="model.Surgeon" type="text" />
+                            </div>
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Assistant
+                                </strong> <input class="form-control inline" formControlName="Assistant" [(ngModel)]="model.Assistant" type="text" />
+                            </div>
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Incision
+                                </strong> <input class="form-control inline" formControlName="Incision" [(ngModel)]="model.Incision" type="text" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-12 field-inline Dateinput">
+                                <strong class="invoice_lbl">
+                                    Date
+                                </strong>
+                                <Datetime-Component class="" formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="model.Date">
+                                </Datetime-Component>
+                            </div>
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Assistant
+                                </strong> <input class="form-control inline" formControlName="Assistant" [(ngModel)]="model.Assistant" type="text" />
+                            </div>
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Anaesthesia
+                                </strong> <input class="form-control inline" formControlName="Anaesthesia" [(ngModel)]="model.Anaesthesia" type="text" />
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-3">
+                        <strong class="invoice_lbl">Operative Finding</strong>
+
+                    </div>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" formControlName="OperativeFinding" [(ngModel)]="model.OperativeFinding"></textarea>
+                    </div>
+                </div>
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-3">
+                        <strong class="invoice_lbl">Opration Notes</strong>
+
+                    </div>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" formControlName="OprationNotes" [(ngModel)]="model.OprationNotes"> </textarea>
+                    </div>
+                </div>
+
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-3">
+                        <strong class="invoice_lbl">Post OP Medicines</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" formControlName="OPMedicines" [(ngModel)]="model.OPMedicines"></textarea>
+                    </div>
+                </div>
+
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-3">
+                        <strong class="invoice_lbl">Post OP Progress</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" formControlName="OPProgress" [(ngModel)]="model.OPProgress"></textarea>
+                    </div>
+                </div>
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-3">
+                        <strong class="invoice_lbl">Condition of Discharge</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" formControlName="ConditionDischarge" [(ngModel)]="model.ConditionDischarge"></textarea>
+                    </div>
+                </div>
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-3 Dateinput">
+                        <strong class="invoice_lbl"> stitches removal Date </strong>
+                        <Datetime-Component formControlName="RemovalDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.RemovalDate">
+                        </Datetime-Component>
+                    </div>
+                    <div class="col-sm-9">
+                        <strong class="invoice_lbl"> By </strong>
+                        <textarea class="form-control" formControlName="CheckedBy" [(ngModel)]="model.CheckedBy"></textarea>
+                    </div>
+                </div>
+
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-3">
+                        <strong class="invoice_lbl">Condition of Wound</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" formControlName="ConditionWound" [(ngModel)]="model.ConditionWound"></textarea>
+                    </div>
+                </div>
+
+
+
+                <div class="row border-bottom section-p-10">
+                    <div class="col-sm-3">
+                        <strong class="invoice_lbl"> Advise/ Medicine</strong>
+
+                    </div>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" formControlName="AdviseMedicine" [(ngModel)]="model.AdviseMedicine"></textarea>
+
+                    </div>
+                </div>
+
+
+                <div class="row margin-t-15 border-bottom" style="border-block:0;">
+                    <div class="col-sm-3">
+                        <strong class="invoice_lbl"> Follow Up</strong>
+
+                    </div>
+                    <div class="col-sm-3 Dateinput">
+                        <Datetime-Component formControlName="FollowUpDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.FollowUpDate">
+                        </Datetime-Component>
+
+                    </div>
+
+                    <div class="col-sm-5" style="width: auto; max-width: fit-content; margin-left: auto;">
+                        <div class="row">
+                            <div class="col-sm-12 field-inline Dateinput">
+                                <strong class="invoice_lbl">
+                                    Date
+                                </strong> <input class="form-control inline" type="date" placeholder="dd/mm/yyy" />
+                            </div>
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Name
+                                </strong> <input class="form-control inline" type="text" />
+                            </div>
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Dr Rubba
+                                </strong> <input class="form-control inline" type="text" />
+                            </div>
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Labour Room
+                                </strong> <input class="form-control inline" type="text" />
+                            </div>
+                            <div class="col-sm-12 field-inline">
+                                <strong class="invoice_lbl">
+                                    Checked By
+                                </strong> <input class="form-control inline" type="text" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
+
+            <button type="submit" class="btn btn-dark" useExistingCss="true" data-dismiss="modal" printSectionId="printReport-section" ngxPrint>Print & Save</button>
+ 
+            <button type="submit" class="btn btn-primary" data-dismiss="modal">Save</button>
+        </div>
+    </form>
+</ng-template>

@@ -1,0 +1,6 @@
+"Item Name","Description","SKU","Rate","Status","Product Type","Tax1 Name","Tax1 Type","Tax1 Percentage","Usage unit","Is Digital Service"
+"Economy Plan","This is a 12 months plan 10GB space 300GB transfer 500 email accounts 10 MYSQL databases 50 email forwards.","ECONOMY12","USD 5.00","Active","","GST","ItemAmount","7","1",""
+"Standard Plan","This is a 12 months plan 10GB space 300GB transfer 500 email accounts 10 MYSQL databases 50 email forwards.","STANDARD12","USD 7.00","Active","","GST","ItemAmount","7","1",""
+"Deluxe Plan","This is a 12 months plan 10GB space 300GB transfer 500 email accounts 10 MYSQL databases 50 email forwards.","DELUX12","USD 14.00","Active","","GST","ItemAmount","7","1",""
+"Premium Plan","This is a 12 months plan 10GB space 300GB transfer 500 email accounts 10 MYSQL databases 50 email forwards.","PREMIUM12","USD 17.00","Active","","GST","ItemAmount","7","1",""
+

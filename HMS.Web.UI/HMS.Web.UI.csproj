@@ -1,0 +1,712 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9580E684-0ED8-4657-B607-C540215F96F0}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HMS.Web.UI</RootNamespace>
+    <AssemblyName>HMS.Web.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>2.4</TypeScriptToolsVersion>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <Use64BitIISExpress />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.DependencyCollector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.0.0\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.0.0\lib\net45\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.ServerTelemetryChannel, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.0.0\lib\net45\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Web.2.0.0\lib\net45\Microsoft.AI.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.WindowsServer, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.2.0.0\lib\net45\Microsoft.AI.WindowsServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.0.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="QRCoder">
+      <HintPath>..\ERPISTO.Web\bin\QRCoder.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+    <Content Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="angular.json" />
+    <Content Include="package.json" />
+    <Content Include="src\app\AngularConfig\ManualScript\CrossDomainStorage.js" />
+    <Content Include="src\app\AngularConfig\ManualScript\MenuLayout.js" />
+    <Content Include="src\app\AngularConfig\systemjs.config.js" />
+    <Content Include="src\app\AngularElement\multiselect-dropdown.css" />
+    <Content Include="src\app\CommonComponent\DatetimePickerComponent\DatetimePickerComponent.html" />
+    <Content Include="src\app\CommonComponent\DatetimePickerComponent\DatetimePickerComponent.js" />
+    <Content Include="src\app\CommonComponent\DialogboxComponent\DialogboxComponent.css" />
+    <Content Include="src\app\CommonComponent\DialogboxComponent\DialogboxComponent.html" />
+    <Content Include="src\app\CommonComponent\FileUploadComponent\FileUploadComponent.html" />
+    <Content Include="src\app\CommonComponent\PageList\PageListComponent.html" />
+    <Content Include="src\app\CommonComponent\PaginationComponent.html" />
+    <Content Include="src\app\CommonComponent\ReportViewer\ViewerComponent.html" />
+    <Content Include="src\app\Module\account\account.component.css" />
+    <Content Include="src\app\Module\account\account.component.html" />
+    <Content Include="src\app\Module\account\contact\contact.component.html" />
+    <Content Include="src\app\Module\account\forgotpassconfirmation\forgotpassconfirmation.component.html" />
+    <Content Include="src\app\Module\account\forgotpassword\forgotpassword.component.css" />
+    <Content Include="src\app\Module\account\forgotpassword\forgotpassword.component.html" />
+    <Content Include="src\app\Module\account\login\login.component.css" />
+    <Content Include="src\app\Module\account\login\login.component.html" />
+    <Content Include="src\app\Module\account\passwordchanged\passwordchanged.component.html" />
+    <Content Include="src\app\Module\account\resetpassword\resetpassword.component.css" />
+    <Content Include="src\app\Module\account\resetpassword\resetpassword.component.html" />
+    <Content Include="src\app\theme\layouts\asidebar\asidebar.component.html" />
+    <Content Include="src\app\theme\layouts\footer\footer.component.html" />
+    <Content Include="src\app\theme\layouts\header-user\header-user.component.html" />
+    <Content Include="src\app\theme\Module\changepassword\changepassword.component.css" />
+    <Content Include="src\app\theme\Module\changepassword\changepassword.component.html" />
+    <Content Include="src\app\theme\Module\Dashboard\DashboardForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorPaymentSummaryComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorswisePaymentComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\ClinicwiseComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorswiseComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\FinancialReport\ProfitLossRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\FinancialReport\OutstandingIncomeRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\FinancialReport\TreatmentwiseRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\FinancialReport\MedicinewiseRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\FinancialReport\CashFlowRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\FinancialReport\PaymentSummaryRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\InventoryReport\PurchaseRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\InventoryReport\SaleByPatientRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\InventoryReport\CurrentStockRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\PatientReport\AppointmentComponentReportForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\PatientReport\DetailedPatientComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\PatientReport\ProcedureComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\PatientReport\OutstandingComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\PatientReport\PaymentComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\PatientReport\BirthdayComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\PatientReport\FollowupComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\PatientReport\FeeComponentForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\PatientReport\PatientDetailComponentForm.html" />
+    <Content Include="src\app\theme\Module\Reports\ReportComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Admin\Payment\RegisterComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Admin\Payment\PaymentComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Admin\Payment\PaymentComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admin\Subscriber\SubscriberComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitAppointSummeryComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitDocumentSummeryComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitLabsComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitImagingList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitMedicationList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitNoteComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitChargeComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitProcedureComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitDetailComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\DischargeReportComponent.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitVitalComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitPatientComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\AddEmp\EmployeeComponent.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\AddEmp\EmployeeComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Allowance\AllowanceComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Allowance\AllowanceComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Attendance\AttendanceComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Attendance\AttendanceComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\DeductionContribution\DeductionContributionComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\DeductionContribution\DeductionContributionComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Department\DepartmentComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Department\DepartmentComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Designation\designationComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Designation\designationComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\EmployeePayroll\EmployeePayrollComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\EmployeePayroll\EmployeePayrollComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Holidays\holidayComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Holidays\holidayComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\LeaveApplication\LeaveApplicationComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\LeaveApplication\LeaveApplicationComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Loans\LoanComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Loans\LoanComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Locations\LocationsComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Locations\LocationsComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Payschedule\PayScheduleComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\Payschedule\PayScheduleComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\TimeAttendance\TimeAttendanceComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\TimeAttendance\TimeAttendanceComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Integration\IntegrationComponent.html" />
+    <Content Include="src\app\theme\Module\setup\Items\AddItems\ExpireComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Items\AddItems\ItemComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Items\AddItems\ImportItemComponent.html" />
+    <Content Include="src\app\theme\Module\setup\Items\AddItems\ItemComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Items\AddItems\RestockComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Payment\ItemPaymentComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Payment\ItemPaymentComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Invoice\InvoiceComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Invoice\InvoiceComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Sale\SaleComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Sale\SaleHoldComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Sale\SaleComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\ApplicationUser\ProfileUserComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\ApplicationUser\ApplicationUserComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\ApplicationUser\ApplicationUserComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Appointment\AppointmentComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Appointment\AppointComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Appointment\BillComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Appointment\DocumentComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Appointment\VitalPresComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Billing\BillingComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Billing\BillingComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Company\CompanyComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Complaint\ComplaintComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Diagnos\DiagnosComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Expense\ExpenseComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Expense\ExpenseComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Income\IncomeComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Income\IncomeComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\DropDown\DropDownComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Investigation\InvestigationComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\MedicineInstruction\MedicineInstructionComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Medicine\MedicineComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Medicine\MedicineComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Observation\ObservationComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Patient\AppointSummeryComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Patient\DocumentSummeryComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Patient\BillSummeryComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Admission\AdmitSummeryComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Patient\SummeryComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Patient\VitalComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Patient\PatientComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Patient\PatientComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Prescription\PrescriptionComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Prescription\PrescriptionComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Reminder\ReminderComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Reminder\ReminderComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Service\ServiceComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Service\ServiceComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\SetupDashboard\SetupDashboardComponent.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\userrole\UserRoleComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\userrole\UserRoleComponentList.html" />
+    <Content Include="src\assets\.gitkeep" />
+    <Content Include="src\assets\app\css\bootstrap.min.4.5.2.css" />
+    <Content Include="src\assets\app\css\bootstrap.min.css" />
+    <Content Include="src\assets\app\css\font-awesome-5.1.1.css" />
+    <Content Include="src\assets\app\css\font-awesome.min.css" />
+    <Content Include="src\assets\app\css\print.css" />
+    <Content Include="src\assets\app\css\fonts.css" />
+    <Content Include="src\assets\app\css\fullcalendar.css" />
+    <Content Include="src\assets\app\css\jquery-ui.min.css" />
+    <Content Include="src\assets\app\css\jquery.timepicker.min.css" />
+    <Content Include="src\assets\app\css\scheduler.min.css" />
+    <Content Include="src\assets\app\css\slimselect.min.css" />
+    <Content Include="src\assets\app\css\summernote.min.css" />
+    <Content Include="src\assets\app\font\linearicons.svg" />
+    <Content Include="src\assets\app\js\bootstrap.min.js" />
+    <Content Include="src\assets\app\js\echarts.min.js" />
+    <Content Include="src\assets\app\js\fullcalendar.js" />
+    <Content Include="src\assets\app\js\jquery-3.3.1.min.js" />
+    <Content Include="src\assets\app\js\jquery-3.6.0.min.js" />
+    <Content Include="src\assets\app\js\jquery-timepicker.js" />
+    <Content Include="src\assets\app\js\jquery-ui.min.js" />
+    <Content Include="src\assets\app\js\jquery.min.js" />
+    <Content Include="src\assets\app\js\jquery.signalR.js" />
+    <Content Include="src\assets\app\js\jquery.signalR.min.js" />
+    <Content Include="src\assets\app\js\jquery.timepicker.min.js" />
+    <Content Include="src\assets\app\js\moment.js" />
+    <Content Include="src\assets\app\js\shim.min.js" />
+    <Content Include="src\assets\app\js\slimselect.min.js" />
+    <Content Include="src\assets\app\js\summernote.min.js" />
+    <Content Include="src\assets\app\js\xlsx.full.min.js" />
+    <Content Include="src\assets\app\media\img\aside\emp-icon-highlight.png" />
+    <Content Include="src\assets\app\media\img\aside\emp-icon.png" />
+    <Content Include="src\assets\app\media\img\aside\home-icon-highlight.png" />
+    <Content Include="src\assets\app\media\img\aside\home-icon.png" />
+    <Content Include="src\assets\app\media\img\aside\payroll-icon-highlight.png" />
+    <Content Include="src\assets\app\media\img\aside\payroll-icon.png" />
+    <Content Include="src\assets\app\media\img\aside\report-icon-highlight.png" />
+    <Content Include="src\assets\app\media\img\aside\report-icon.png" />
+    <Content Include="src\assets\app\media\img\aside\setup-icon-highlight.png" />
+    <Content Include="src\assets\app\media\img\aside\setup-icon.png" />
+    <Content Include="src\assets\app\media\img\bg.svg" />
+    <Content Include="src\assets\app\media\img\calande_icon.png" />
+    <Content Include="src\assets\app\media\img\gmail_logo.png" />
+    <Content Include="src\assets\app\media\img\HMS.png" />
+    <Content Include="src\assets\app\media\img\LateNess.png" />
+    <Content Include="src\assets\app\media\img\EarlyOut.png" />
+    <Content Include="src\assets\app\media\img\absent.png" />
+    <Content Include="src\assets\app\media\img\loadergif.gif" />
+    <Content Include="src\assets\app\media\img\Login.png" />
+    <Content Include="src\assets\app\media\img\Login.svg" />
+    <Content Include="src\assets\app\media\img\noResult.gif" />
+    <Content Include="src\assets\app\media\img\no_image.png" />
+    <Content Include="src\assets\app\media\img\onleave.png" />
+    <Content Include="src\assets\app\media\img\line-48.svg" />
+    <Content Include="src\assets\app\media\img\patient-icon-4.jpg" />
+    <Content Include="src\assets\app\media\img\patientgirl.png" />
+    <Content Include="src\assets\app\media\img\present.png" />
+    <Content Include="src\assets\app\media\img\telenor-logo.png" />
+    <Content Include="src\styles.scss" />
+    <Content Include="src\tsconfig.app.json" />
+    <Content Include="tsconfig.json" />
+    <Content Include="src\app\CommonComponent\DatetimePickerComponent\DatetimePickerComponent.js.map" />
+    <Content Include="src\assets\app\font\fontawesome-webfont.woff2" />
+    <Content Include="src\assets\app\font\OpenSans-Bold.ttf" />
+    <Content Include="src\assets\app\font\OpenSans-ExtraBold.ttf" />
+    <Content Include="src\assets\app\font\OpenSans-Light.ttf" />
+    <Content Include="src\assets\app\font\OpenSans-Regular.ttf" />
+    <Content Include="src\assets\app\font\OpenSans-SemiBold.ttf" />
+    <Content Include="src\assets\app\font\Averta-ExtraBoldItalic.otf" />
+    <Content Include="src\assets\app\font\Averta-Regular.otf" />
+    <Content Include="src\assets\app\font\linearicons.eot" />
+    <Content Include="src\assets\app\font\linearicons.ttf" />
+    <Content Include="src\assets\app\font\linearicons.woff" />
+    <Content Include="src\documents\Getting_Started_Guide.pdf" />
+    <Content Include="src\assets\app\font\summernote.eot" />
+    <Content Include="src\assets\app\font\summernote.ttf" />
+    <Content Include="src\assets\app\font\summernote.woff" />
+    <Content Include="src\assets\app\font\summernote.woff2" />
+    <Content Include="src\assets\app\font\proximanova-regular-webfont.woff" />
+    <Content Include="src\assets\app\font\proximanova-regular-webfont.woff2" />
+    <Content Include="src\assets\app\font\proxima_nova_alt_bold-webfont.woff" />
+    <Content Include="src\assets\app\font\proxima_nova_alt_bold-webfont.woff2" />
+    <Content Include="src\assets\app\font\proxima_nova_alt_light-webfont.woff" />
+    <Content Include="src\assets\app\font\proxima_nova_alt_light-webfont.woff2" />
+    <Content Include="src\assets\app\font\proxima_nova_alt_thin-webfont.woff" />
+    <Content Include="src\assets\app\font\proxima_nova_alt_thin-webfont.woff2" />
+    <Content Include="src\assets\app\font\proxima_nova_black-webfont.woff" />
+    <Content Include="src\assets\app\font\proxima_nova_black-webfont.woff2" />
+    <Content Include="src\assets\app\font\proxima_nova_bold-webfont.woff" />
+    <Content Include="src\assets\app\font\proxima_nova_bold-webfont.woff2" />
+    <Content Include="src\assets\app\font\proxima_nova_extrabold-webfont.woff" />
+    <Content Include="src\assets\app\font\proxima_nova_extrabold-webfont.woff2" />
+    <Content Include="src\assets\app\font\proxima_nova_thin-webfont.woff" />
+    <Content Include="src\assets\app\font\proxima_nova_thin-webfont.woff2" />
+    <TypeScriptCompile Include="src\app\AngularFilter\filter.pipe.ts" />
+    <TypeScriptCompile Include="src\app\CommonComponent\PhoneMaskDirective.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\Encryption.service.ts" />
+    <TypeScriptCompile Include="src\app\common\common-utils.module.ts" />
+    <TypeScriptCompile Include="src\app\common\passwordValidator.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\contact\contact.service.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\contact\contact.component.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\forgotpassconfirmation\forgotpassconfirmation.component.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\forgotpassword\forgotpassword.component.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\passwordchanged\passwordchanged.component.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\resetpassword\resetpassword.component.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\ProfitLossRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\InventoryReport\PurchaseRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\InventoryReport\SaleByPatientRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\InventoryReport\CurrentStockRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\ProcedureComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\report-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\report.module.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorPaymentSummaryComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorswisePaymentComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\ClinicwiseComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorswiseComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\OutstandingIncomeRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\TreatmentwiseRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\MedicinewiseRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\CashFlowRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\PaymentSummaryRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\AppointmentComponentReportForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\DetailedPatientComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\OutstandingComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\PaymentComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\BirthdayComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\FollowupComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\FeeComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\PatientDetailComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admin\Payment\RegisterComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admin\Payment\PaymentComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admin\Payment\PaymentComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admin\Payment\PaymentService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admin\Subscriber\SubscriberComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitChargeComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitProcedureComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitAppointSummeryComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitDocumentSummeryComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitLabsComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitImagingList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitMedicationList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitNoteComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitDetailComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\DischargeReportComponent.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitVitalComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitPatientComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\AddEmp\EmployeeComponent.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\AddEmp\EmployeeComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\AddEmp\EmployeeModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\AddEmp\EmployeeService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Allowance\AllowanceComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Allowance\AllowanceComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Allowance\AllowanceModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Allowance\AllowanceService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Attendance\AttendanceComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Attendance\AttendanceComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Attendance\AttendanceModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Attendance\AttendanceService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\DeductionContribution\DeductionContributionComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\DeductionContribution\DeductionContributionComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\DeductionContribution\DeductionContributionModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\DeductionContribution\DeductionContributionService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Department\DepartmentComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Department\DepartmentComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Department\DepartmentModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Department\DepartmentService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Designation\designationComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Designation\designationComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Designation\designationModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Designation\designationService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\employee-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\employee.module.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\EmployeePayroll\EmployeePayrollComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\EmployeePayroll\EmployeePayrollComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\EmployeePayroll\EmployeePayrollModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\EmployeePayroll\EmployeePayrollService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Holidays\holidayComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Holidays\holidayComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Holidays\holidayModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Holidays\holidayService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\LeaveApplication\LeaveApplicationComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\LeaveApplication\LeaveApplicationComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\LeaveApplication\LeaveApplicationModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\LeaveApplication\LeaveApplicationService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Loans\LoanComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Loans\LoanComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Loans\LoanModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Loans\LoanService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Locations\LocationsComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Locations\LocationsComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Locations\LocationsModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Locations\LocationsService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Payschedule\PayScheduleComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Payschedule\PayScheduleComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Payschedule\PayScheduleModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Payschedule\PayScheduleService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\TimeAttendance\TimeAttendanceComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\TimeAttendance\TimeAttendanceComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\TimeAttendance\TimeAttendanceModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\TimeAttendance\TimeAttendanceService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Integration\IntegrationComponent.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Integration\IntegrationModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Integration\IntegrationService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\ExpireComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\ItemComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\ImportItemComponent.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\ItemComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\ItemModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\ItemService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\RestockComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Payment\ItemPaymentComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Payment\ItemPaymentComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Payment\PaymentModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Payment\PaymentService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Invoice\InvoiceComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Invoice\InvoiceComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Invoice\InvoiceModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Invoice\InvoiceService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Sale\SaleComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Sale\SaleHoldComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Sale\SaleComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Sale\SaleModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Sale\SaleHoldService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Sale\SaleService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\ApplicationUser\ProfileUserComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\AppointmentComponentList.ts" />
+    <Content Include="src\assets\app\ExcelFile\Item.xlsx" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app\index.html" />
+    <Content Include="scripts\ai.0.22.9-build00167.js" />
+    <Content Include="scripts\ai.0.22.9-build00167.min.js" />
+    <Content Include="src\app\app.component.html" />
+    <Content Include="src\app\theme\theme.component.html" />
+    <Content Include="src\assets\app\js\dashboard.js" />
+    <Content Include="src\assets\app\js\layout-builder.js" />
+    <Content Include="src\index.html" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\app\AngularConfig\global.ts" />
+    <TypeScriptCompile Include="src\app\AngularConfig\main.ts" />
+    <TypeScriptCompile Include="src\app\AngularElement\multiselect-dropdown.ts" />
+    <TypeScriptCompile Include="src\app\app-client-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\app.component.ts" />
+    <TypeScriptCompile Include="src\app\app.module.ts" />
+    <TypeScriptCompile Include="src\app\CommonComponent\DatetimePickerComponent\DatetimePickerComponent.ts" />
+    <TypeScriptCompile Include="src\app\CommonComponent\DialogboxComponent\DialogboxComponent.ts" />
+    <TypeScriptCompile Include="src\app\CommonComponent\FileUploadComponent\FileUploadComponent.ts" />
+    <TypeScriptCompile Include="src\app\CommonComponent\PageList\PageListComponent.ts" />
+    <TypeScriptCompile Include="src\app\CommonComponent\PageList\PageListComponentConfig.ts" />
+    <TypeScriptCompile Include="src\app\CommonComponent\PaginationComponent.ts" />
+    <TypeScriptCompile Include="src\app\CommonComponent\PaginationComponentConfig.ts" />
+    <TypeScriptCompile Include="src\app\CommonComponent\ReportViewer\ViewerComponent.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\AuthenticationService.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\AuthGuard.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\CommonService.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\CookieService.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\DashboardMenuService.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\FileService.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\HttpService.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\AsidebarService.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\LoaderService.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\SystemInfoService.ts" />
+    <TypeScriptCompile Include="src\app\CommonService\CommonToastrService.ts" />
+    <TypeScriptCompile Include="src\app\helpers.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\account.component.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\account.service.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\login\login.component.ts" />
+    <TypeScriptCompile Include="src\app\Module\model\Login.model.ts" />
+    <TypeScriptCompile Include="src\app\Module\model\Portal.model.ts" />
+    <TypeScriptCompile Include="src\app\Module\model\User.model.ts" />
+    <TypeScriptCompile Include="src\app\theme\layouts\asidebar\asidebar.component.ts" />
+    <TypeScriptCompile Include="src\app\theme\layouts\footer\footer.component.ts" />
+    <TypeScriptCompile Include="src\app\theme\layouts\header-user\header-user.component.ts" />
+    <TypeScriptCompile Include="src\app\theme\layouts\layout.module.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\changepassword\changepassword.component.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\Dashboard\DashboardForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\Dashboard\DashboardModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\Dashboard\DashboardService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\models\adm-company-location.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\models\company.model.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\models\setup-pass.model.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\Reports\ReportModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\Reports\ReportComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\Reports\ReportService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\ApplicationUser\ApplicationUserComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\ApplicationUser\ApplicationUserComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\ApplicationUser\ApplicationUserModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\ApplicationUser\ApplicationUserService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\AppointmentModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\AppointmentService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\AppointComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\BillComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\DocumentComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\VitalPresComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Billing\BillingComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Billing\BillingComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Billing\BillingModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Billing\BillingService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Company\company.service.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Company\CompanyComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Complaint\ComplaintComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Complaint\ComplaintService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Complaint\ComplaintModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Diagnos\DiagnosComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Diagnos\DiagnosService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Diagnos\DiagnosModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Expense\ExpenseComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Expense\ExpenseComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Expense\ExpenseModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Expense\ExpenseService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Income\IncomeComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Income\IncomeComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Income\IncomeModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Income\IncomeService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\DropDown\DropDownComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\DropDown\DropDownModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\DropDown\DropDownService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Investigation\InvestigationComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Investigation\InvestigationService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Investigation\InvestigationModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\MedicineInstruction\MedicineInstructionComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\MedicineInstruction\MedicineInstructionService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\MedicineInstruction\InstructionModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Medicine\MedicineComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Medicine\MedicineComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Medicine\MedicineService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Observation\ObservationComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Observation\ObservationService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Observation\ObservationModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Patient\AppointSummeryComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Patient\DocumentSummeryComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Patient\BillSummeryComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitSummeryComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Patient\SummeryComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Patient\VitalComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Patient\PatientComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Patient\PatientComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Patient\PatientModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Patient\PatientService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Prescription\PrescriptionComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Prescription\PrescriptionComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Prescription\PrescriptionModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Prescription\PrescriptionService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Reminder\ReminderComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Reminder\ReminderComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Reminder\ReminderModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Reminder\ReminderService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Service\ServiceComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Service\ServiceModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Service\ServiceComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Service\Service.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\SetupDashboard\SetupDashboardComponent.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\SetupDashboard\SetupDashboardService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\userrole\UserRoleComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\userrole\UserRoleComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\userrole\UserRoleModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\userrole\UserRoleService.ts" />
+    <TypeScriptCompile Include="src\app\theme\theme-client-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\theme\theme-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\theme\theme.component.ts" />
+    <TypeScriptCompile Include="src\app\theme\themeModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\themeService.ts" />
+    <TypeScriptCompile Include="src\environments\environment.dev.ts" />
+    <TypeScriptCompile Include="src\environments\environment.prod.ts" />
+    <TypeScriptCompile Include="src\environments\environment.ts" />
+    <TypeScriptCompile Include="src\global.d.ts" />
+    <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\polyfills.ts" />
+    <TypeScriptCompile Include="src\typings.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="node_modules\" />
+    <Folder Include="src\app\theme\Module\shared\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>45758</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:45758/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,917 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-12 no-padding">
+            <h3 class="page-heading" style="display:inline-block">
+                {{model.PatientName}}
+            </h3>
+            <span class="text-muted ml-3">{{GenderName}} | {{model.Age}} Y</span> <span class="ml-3 badge badge-danger-light">{{model.AdmissionNo}}</span>
+        </div>
+    </div>
+    <div class="Cardview m-0 px-2">
+        <div class="card- border-0">
+            <span class="clsoe closePatietnDetail">
+                <a routerLink="/home/Admit"><i class="icon icon-cross"></i></a>
+            </span>
+            <div class="card-body p-2 NavtabLine">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item active" (click)="HomePage()" *ngIf="Rights.indexOf(48)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#History">
+                            Overview
+                        </a>
+                    </li>
+                    <li class="nav-item" (click)="loadNote()" *ngIf="Rights.indexOf(44)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Notes">Nurse Notes</a>
+                    </li>
+                    <li class="nav-item" (click)="LoadMedication()" *ngIf="Rights.indexOf(40)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Medication">Medication  </a>
+                    </li>
+
+                    <li class="nav-item" (click)="LoadVisit()" *ngIf="Rights.indexOf(39)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Visit">Consultant Register </a>
+                    </li>
+                    <li class="nav-item" (click)="LoadLab()" *ngIf="Rights.indexOf(42)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Labs"> Labs </a>
+                    </li>
+                    <li class="nav-item" (click)="LoadImaging()" *ngIf="Rights.indexOf(41)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Imaging"> Imaging </a>
+                    </li>
+                    <li class="nav-item" (click)="PatientTab()" *ngIf="Rights.indexOf(23)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#PatientInfo"> Medical History </a>
+                    </li>
+                    <li class="nav-item" (click)="LoadDocuments()" *ngIf="Rights.indexOf(25)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Documents">Documents  </a>
+                    </li>
+                    <li class="nav-item" (click)="loadCharge()" *ngIf="Rights.indexOf(47)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Charges">Charges</a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content" *ngIf="IsPatient==false">
+                    <router-outlet></router-outlet>
+                </div>
+                <div class="tab-content" *ngIf="IsPatient">
+                    <div class="tab-pane active" id="History">
+                        <div class="row mt-2">
+                            <div class="col-sm-5">
+                                <div class="card">
+                                    <div class="card-header gray">
+                                        Primary Diagnosis
+                                        <span class="pull-right" *ngIf="model.DischargeDate==null">
+                                            <i class="icon icon-plus-circle text-primary pointer" (click)="OpenPrimaryModal(PrimaryModal)"></i>
+                                        </span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row" *ngFor="let p of PrimaryList">
+                                            <div class="col-sm-3">
+                                                <label>
+                                                    {{p.Date|date: 'MM/dd/yyyy'}}
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-9">
+                                                <span>
+                                                    {{p.Description}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card mt-5">
+                                    <div class="card-header gray">
+
+                                        Differenial  Diagnosis
+                                        <span class="pull-right" *ngIf="model.DischargeDate==null">
+                                            <i class="icon icon-plus-circle text-primary pointer" (click)="OpenSecondaryModal(PrimaryModal)"></i>
+                                        </span>
+
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row" *ngFor="let S of SecondaryList">
+                                            <div class="col-sm-3">
+                                                <label>
+                                                    {{S.Date|date: 'MM/dd/yyyy'}}
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-9">
+                                                <span>
+                                                    {{S.Description}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card mt-5">
+                                    <div class="card-header gray">
+                                        Patient Allergies
+
+                                        <span class="pull-right" *ngIf="model.DischargeDate==null">
+                                            <i class="icon icon-plus-circle text-primary pointer" (click)="OpenAllergyModal(PrimaryModal)"></i>
+                                        </span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <span class="badge badge-primary" *ngFor="let a of AllergyList">
+                                                    {{a.Description}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-5">
+                                    <div class="card">
+                                        <div class="card-header gray">Medical History</div>
+                                        <div class="card-body">
+                                            <span *ngIf="model.MedicalHistory!=null || model.CurrentMedication!=null||model.HabitsHistory!=null">
+                                                Past Medical History: {{model.MedicalHistory}}<br />
+                                                Family History:{{model.CurrentMedication}}<br />
+                                                Surgical History:{{model.HabitsHistory}}
+                                            </span>
+                                            <span *ngIf="model.MedicalHistory==null && model.CurrentMedication==null && model.HabitsHistory == null">
+                                                No Data Found
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="card">
+                                    <div class="card-header gray">
+                                        Vitals
+                                        <span class="pull-right" *ngIf="model.DischargeDate==null">
+                                            <i class="icon icon-plus-circle text-primary pointer" (click)="OpenVitalModal(VitalModal)"></i>
+                                        </span>
+                                        <span class="">
+                                            <i class="text-primary pointer" (click)="OpenVitalList(VitalList)"> Vital List</i>
+                                        </span>
+                                    </div>
+                                    <div echarts [options]="chartOptions" class="echart-container"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="card">
+                                    <div class="card-header gray">
+                                        Intake/Output
+                                        <span class="pull-right" *ngIf="model.DischargeDate==null">
+                                            <i class="icon icon-plus-circle text-primary pointer" (click)="OpenInputModal(InputModal)"></i>
+                                        </span>
+                                    </div>
+                                    <div class="TableView">
+                                        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+                                            <div class="uk-overflow-container col-sm-12 p-0">
+                                                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                                                    <thead class="grid-header">
+                                                        <tr>
+                                                            <th>
+                                                            </th>
+                                                            <th *ngFor="let time of DynamicTimeHeaders">{{ time }} </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let row of TableData">
+                                                            <td>{{row.Medicine}}</td>
+                                                            <td *ngFor="let time of DynamicTimeHeaders">{{ row.values[time] || '-' }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td [attr.colspan]="DynamicTimeHeaders.length + 1" class="highlight-bold">
+                                                                Output
+                                                            </td>
+                                                        </tr>
+                                                        <tr *ngFor="let row of OutputTableData">
+                                                            <td>{{row.Medicine}}</td>
+                                                            <td *ngFor="let time of DynamicTimeHeaders">{{ row.values[time] || '-' }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="card">
+                                    <div class="card-header gray">
+                                        Medication
+                                        <span class="pull-right" *ngIf="model.DischargeDate==null">
+                                            <i class="icon icon-plus-circle text-primary pointer" (click)="OpenMedicationModal(MedicationModal)"></i>
+                                        </span>
+                                    </div>
+                                    <div class="TableView">
+                                        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+                                            <div class="uk-overflow-container col-sm-12 p-0">
+                                                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                                                    <thead class="grid-header">
+                                                        <tr>
+                                                            <th>
+                                                                Medication
+                                                            </th>
+                                                            <th>Route</th>
+                                                            <th *ngFor="let time of MedicationDynamicTimeHeaders" [title]="time">{{ time }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let row of MedicationData">
+                                                            <td>{{row.Medicine}}</td>
+                                                            <td>{{row.RouteVal}}</td>
+                                                            <td *ngFor="let time of MedicationDynamicTimeHeaders">{{ row.values[time] || '-' }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="card">
+                                    <div class="card-header gray">
+                                        Document
+                                        <span class="pull-right" *ngIf="model.DischargeDate==null">
+                                            <i class="icon icon-plus-circle text-primary pointer" (click)="LoadDocuments()"></i>
+                                        </span>
+                                    </div>
+                                    <div class="TableView">
+                                        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+                                            <div class="uk-overflow-container col-sm-12 p-0">
+                                                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                                                    <thead class="grid-header">
+                                                        <tr>
+                                                            <th>DATE </th>
+                                                            <th> DESCRIPTION	 </th>
+                                                            <th> DOCUMENT TAGS	 </th>
+                                                            <th> UPLOADED ON </th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let item of DocumentList">
+                                                            <td>
+                                                                {{item.Date|date: 'MM/dd/yyyy'}}
+                                                            </td>
+                                                            <td>
+                                                                {{item.Remarks}}
+                                                            </td>
+                                                            <td>
+                                                                {{item.Tag}}
+                                                            </td>
+                                                            <td>
+                                                                {{item.Uploaddate |date: 'MM/dd/yyyy'}}
+                                                            </td>
+                                                            <td>
+                                                                <span class="table_multi_icon">
+                                                                    <span class="btn btn-light" (click)="ViewDoc(item.DocumentImage)">
+                                                                        <i class="icon icon-eye text-primary"></i>
+                                                                    </span>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="card-header gray">
+                                    Nursing Notes
+                                    <span class="pull-right" *ngIf="model.DischargeDate==null">
+                                        <i class="icon icon-plus-circle text-primary pointer" (click)="AddNoteModal(NoteModal)"></i>
+                                    </span>
+                                </div>
+                                <div class="TableView">
+                                    <div class="row" *ngFor="let S of NotesList">
+                                        <div class="col-sm-3">
+                                            <label>
+                                                {{S.CreatedDate}}
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <span>
+                                                {{S.Note}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #VitalList let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon" />
+            Vital List
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="TableView">
+        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+            <div class="uk-overflow-container col-sm-12 p-0">
+                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                    <thead class="grid-header">
+                        <tr>
+                            <th>
+                                Taken By
+                            </th>
+                            <th>
+                                Date
+                            </th>
+                            <th>Time</th>
+                            <th>
+                                Temperature
+                            </th>
+                            <th>
+                                Weight
+                            </th>
+                            <th>
+                                Height
+                            </th>
+                            <th>
+                                BP
+                            </th>
+                            <th>
+                                SPO2
+                            </th>
+                            <th>
+                                Heart Rate
+                            </th>
+                            <th>
+                                Respiratory Rate
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of VitalArray">
+                            <td>{{item.TakenBy}}</td>
+                            <td>
+                                {{item.DateRecorded |date: 'MM/dd/yyyy'}}
+                            </td>
+                            <td>
+                                {{item.TimeRecorded}}
+                            </td>
+                            <td>
+                                {{item.Temperature}}
+                            </td>
+                            <td>
+                                {{item.Weight}}
+                            </td>
+                            <td>
+                                {{item.Height }}
+                            </td>
+                            <td>
+                                {{item.BP}}
+                            </td>
+                            <td>
+                                {{item.SPO2}}
+                            </td>
+                            <td>
+                                {{item.HeartRate}}
+                            </td>
+                            <td>
+                                {{item.RespiratoryRate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</ng-template>
+
+<!--Primary Diagnosis model-->
+<ng-template #PrimaryModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            <span *ngIf="diagnosisModel.IsType=='P'">Add Primary Diagnosis</span>
+            <span *ngIf="diagnosisModel.IsType=='S'">Add Secondary Diagnosis</span>
+            <span *ngIf="diagnosisModel.IsType=='A'">Add Allergy</span>
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="row form-group" *ngIf="IsAllergy==false">
+                <div class="col-4 text-right">
+                    <label>Date Recorded</label>
+                </div>
+                <div class="col-8">
+                    <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="diagnosisModel.Date">
+                    </Datetime-Component>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label *ngIf="IsAllergy==false" class="required"> Diagnosis </label>
+                    <label *ngIf="IsAllergy" class="required"> Allergy </label>
+                </div>
+                <div class="col-8">
+                    <textarea class="form-control" rows="1" formControlName="Description" [(ngModel)]="diagnosisModel.Description"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </form>
+</ng-template>
+<!--Notes model-->
+<ng-template #NoteModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            New Note for (Patient Name)
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form2" novalidate (ngSubmit)="NoteSaveOrUpdate(Form2.valid)">
+        <div class="modal-body">
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> On Behalf Of</label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="OnBehalfOf" [(ngModel)]="noteModel.OnBehalfOf" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Note</label>
+                </div>
+                <div class="col-8">
+                    <textarea class="form-control" formControlName="Note" [(ngModel)]="noteModel.Note"></textarea>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </form>
+</ng-template>
+<!--Vital model-->
+<ng-template #VitalModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            Add Vital Detail
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form3" novalidate (ngSubmit)="VitalSaveOrUpdate(Form3.valid)">
+        <div class="modal-body">
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Date Recorded</label>
+                </div>
+                <div class="col-4">
+                    <Datetime-Component formControlName="DateRecorded" placeholder="DD/MM/YYYY" [(ngModel)]="VitalModel.DateRecorded">
+                    </Datetime-Component>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control time" formControlName="TimeRecorded" [(ngModel)]="VitalModel.TimeRecorded" (click)="SelectTime()" id="TimeRecorded" autocomplete="off">
+
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Temperature </label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="Temperature" [(ngModel)]="VitalModel.Temperature" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Weight/Height</label>
+                </div>
+                <div class="col-4">
+                    <input class="form-control" placeholder="Weight in KG" type="number" formControlName="Weight" [(ngModel)]="VitalModel.Weight" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </div>
+                <div class="col-4">
+                    <input class="form-control" placeholder="Height in Feet" type="number" formControlName="Height" [(ngModel)]="VitalModel.Height" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </div>
+            </div>
+            <hr />
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>BP </label>
+                </div>
+                <div class="col-4 no-wrap align-items-center">
+                    <input type="text" class="form-control form-control-sm" formControlName="Measure" [(ngModel)]="VitalModel.Measure" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                </div>
+                <div class="col-4 no-wrap align-items-center">
+                    <input type="text" class="form-control" formControlName="Measure2" [(ngModel)]="VitalModel.Measure2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>SPO2  </label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="SPO2" [(ngModel)]="VitalModel.SPO2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Heart Rate   </label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="HeartRate" [(ngModel)]="VitalModel.HeartRate" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>  Respiratory Rate   </label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="RespiratoryRate" [(ngModel)]="VitalModel.RespiratoryRate" />
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </form>
+</ng-template>
+<!--input model-->
+<ng-template #InputModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon" />
+            Add Input Output
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="card-body p-2 NavtabLine">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" [ngClass]="{ active: activeTab === 'Intake' }" (click)="selectTab('Intake')">
+                    Intake
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [ngClass]="{ active: activeTab === 'Output' }" (click)="selectTab('Output')">
+                    Output
+                </a>
+            </li>
+        </ul>
+
+        <!-- Tab content -->
+        <div class="tab-content mt-3">
+            <!-- Intake Tab -->
+            <div *ngIf="activeTab === 'Intake'">
+                <form [formGroup]="Form4" novalidate (ngSubmit)="IntakeSaveOrUpdate(Form4.valid)">
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label>Select Date & Time</label>
+                            </div>
+                            <div class="col-4">
+                                <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="InputModel.Date">
+                                </Datetime-Component>
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control time" formControlName="Time" [(ngModel)]="InputModel.Time" (click)="SelectInputTime()" id="basicExample" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-">
+                                <label> Intake DropDown </label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control form-control-sm" formControlName="IntakeId" [(ngModel)]="InputModel.IntakeId">
+                                    <option *ngFor="let item of IntakeList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Intake</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="IntakeValue" [(ngModel)]="InputModel.IntakeValue" placeholder="Intake" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Value</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="Value" [(ngModel)]="InputModel.Value" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Output Tab -->
+            <div *ngIf="activeTab === 'Output'">
+                <form [formGroup]="Form4" novalidate (ngSubmit)="IntakeSaveOrUpdate(Form4.valid)">
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label>Select Date & Time</label>
+                            </div>
+                            <div class="col-4">
+                                <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="InputModel.Date">
+                                </Datetime-Component>
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control time" formControlName="Time" [(ngModel)]="InputModel.Time" (click)="SelectInputTime()" id="basicExample" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-">
+                                <label> Output DropDown </label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control form-control-sm" formControlName="OutputId" [(ngModel)]="InputModel.OutputId">
+                                    <option *ngFor="let item of OutputList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Output</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="Output" [(ngModel)]="InputModel.Output" />
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Output Value</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="Value" [(ngModel)]="InputModel.Value" />
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Output Status</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="OutputStatus" [(ngModel)]="InputModel.OutputStatus" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!--Madication model-->
+<ng-template #MedicationModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon" />
+            Add Medication
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form5" novalidate (ngSubmit)="MedicationSaveOrUpdate(Form5.valid)">
+        <div class="modal-body">
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Select Date & Time</label>
+                </div>
+                <div class="col-4">
+                    <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="MedicationModel.Date">
+                    </Datetime-Component>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control time" formControlName="Time" [(ngModel)]="MedicationModel.Time" (click)="SelectInputTime()" id="basicExample" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Drug </label>
+                </div>
+                <div class="col-8">
+                    <input type="text" id="txtDrug" class="form-control form-control-sm form-control-alternative" formControlName="MedicineName" [(ngModel)]="MedicationModel.MedicineName" (click)="LoadItem()" placeholder="Search Drug" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Dose</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Dose" [(ngModel)]="MedicationModel.Dose" placeholder="Dose" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="clo-4 text-right">
+                    <label> Route </label>
+                </div>
+                <div class="col-8">
+                    <select class="form-control form-control-sm" formControlName="RouteId" [(ngModel)]="MedicationModel.RouteId">
+                        <option *ngFor="let item of RouteList" [value]="item.ID">
+                            {{item.Value}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+
+</ng-template>
+<!-- ============================   Rx Print  Modal ========= -->
+<ng-template #PrintRx let-modal class="RxPrintModal TemplateTwo">
+    <div id="print-RxPrintModal">
+        <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
+            <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
+                <div class="col-6">
+                    <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;"> {{DoctorInfo.Name}} </h3>
+                    <p style="margin:0 0 5px;font-size:14px;line-height: normal;"> {{DoctorInfo.Qualification}} {{DoctorInfo.Designation}}</p>
+                    <strong style="margin:0;font-size:13px;line-height: normal;">
+                        {{DoctorInfo.Designation}}
+                    </strong>
+                    <p style="margin: 0; font-size: 14px; line-height: normal;">Ph: {{DoctorInfo.PhoneNo}}</p>
+                </div>
+                <div class="col-6 text-right" *ngIf="PatientRXmodel.ClinicIogo != '' && PatientRXmodel.ClinicIogo != null ">
+                    <img [src]="PatientRXmodel.ClinicIogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div class="col-6 text-right" *ngIf="PatientRXmodel.ClinicIogo =='' || PatientRXmodel.ClinicIogo == null ">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+            </div>
+        </div>
+        <div class="modal-body body_Prescription" style="height: calc(29.7cm - 200px);">
+            <div class="row" style="font-size: 14px;border-bottom: 1px solid #5e72e4; margin-bottom: 3px; padding-bottom: 8px;">
+                <div class="col-5">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Name" style="font-size: 14px;">P/Name:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;" name="Name" [(ngModel)]="PatientRXmodel.PatientName" readonly>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Age" style="font-size: 14px;">Age/Sex:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;" name="Name" [(ngModel)]="PatientRXmodel.Age" readonly>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Weight" style="font-size: 14px;">Weight:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;" name="Name" readonly>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Date" style="font-size: 14px;">Date:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:100px;" name="Name" [(ngModel)]="PatientRXmodel.AppointmentDate" readonly>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" style="border-top: 3px solid #5e72e4;height: 95%;">
+                <div class="col-3">
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Vitals:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of PatientVitalList">
+                            {{d.Name}}&nbsp;&nbsp;{{d.Measure}}&nbsp; {{d.Unit}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Diagnoses:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_diagnos_dynamicArray">
+                            {{d.Diagnos}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Complaint:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_complaint_dynamicArray">
+                            {{d.Complaint}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Investigation:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_investigation_dynamicArray">
+                            {{d.Investigation}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Examination:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_observation_dynamicArray">
+                            {{d.Observation}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-9" style="border-left: 1px solid #5e72e4">
+                    <table class="table" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Medicine
+                                </th>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Type
+                                </th>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Days
+                                </th>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Measure
+                                </th>
+                                <th style="border-top:0px; padding:0 2px 5px;">
+                                    Instruction
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let m of emr_prescription_treatment_dynamicArray">
+                                <td style="padding:2px;">{{m.MedicineName}}</td>
+                                <td style="padding:2px;">Tab</td>
+                                <td style="padding:2px;">{{m.Duration}}</td>
+                                <td style="padding:2px;">{{m.Measure}}</td>
+                                <td style="padding:2px;">{{m.Instructions}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3> Instructions</h3>
+                    <p style="font-size:12px;line-height:normal;" *ngFor="let m of emr_prescription_treatment_dynamicArray">
+                        {{m.Instructions}},
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer bg-secondary" style="padding: 5px 0 0px;text-align:center;">
+            <div class="col">
+                <p style="font-size: 13px;margin-bottom:5px; border-bottom:1px solid #efefef;">Clinic Days: Mon To Sat. Timing: 6:00 Pm To 9:00 Pm <strong>Off Day:</strong> Sunday</p>
+                <p style="font-size: 13px;">For Appointment, ring: St # 4, Nizam Pura (W) Bahawalnagar, 03000-11234123</p>
+            </div>
+        </div>
+    </div>
+    <div style="position:fixed; right: 20px;">
+        <button class="btn btn-primary" printSectionId="print-RxPrintModal" ngxPrint> Print</button>
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

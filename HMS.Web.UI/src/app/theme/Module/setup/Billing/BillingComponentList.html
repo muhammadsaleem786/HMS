@@ -1,0 +1,944 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Billing
+                    </h3>
+                </div>
+                <div class="col">
+                    <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Billing</a>
+        </div>
+    </div>
+    <div class="Cardview px-3 pb-3">
+        <div class="TableView">
+            <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                <div class="uk-overflow-container col-sm-12 p-0">
+                    <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                        <thead class="grid-header">
+                            <tr>
+                                <th>Bill No </th>
+                                <th> Patient </th>
+                                <th> Doctor </th>
+                                <th> Date </th>
+                                <th>Amount</th>
+                                <th>Discount</th>
+                                <th>Paid </th>
+                                <th>O/s Balance</th>
+                                <th>Admission No</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of BillList" index as i>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.ID}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.PatientName}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.DoctorName}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Date |date: 'dd/MM/yyyy'}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Amount}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    <span class="m-0 font-12 badge badge-primary p-1 px-2" *ngIf="item.Discount > 0">Dis:  {{item.Discount}}</span>
+                                </td>
+                                <td>
+                                    <strong style="min-width:40px;display:inline-block;">
+                                        {{item.PaidAmount}}
+                                    </strong>
+                                    <span class="btn text-danger" (click)="openAddBill(adBill,item.ID)">
+                                        <i class="icon icon-plus-circle"></i>
+                                    </span>
+                                    <span class="btn text-danger" (click)="openRefundBill(RefundBill,item.ID)">
+                                        <i class="icon icon-minus"></i>
+                                    </span>
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.OutstandingBalance}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">{{item.AdmissionNo}}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-light">
+                                            <i class="icon icon-printer"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item cursor-pointer" (click)="openInvoiceModal(InvoiceModal,item.ID)">
+                                                Bill Invoice
+                                            </a>
+                                            <a class="dropdown-item cursor-pointer" (click)="openinvoiceBillModal(DetailInvocie,item.AdmissionId,item.AppointmentId,item.PatientId)" *ngIf="item.AdmissionNo!=null">
+                                                Provisional Bill
+                                            </a>
+                                            <a class="dropdown-item cursor-pointer" (click)="openPaymentModal(PaymentModal,item.ID)">
+                                                Payment
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr [hidden]="!(BillList.length == 0)" style="background:#fff;">
+                                <td [attr.colspan]="10" align="center">
+                                    <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                    <strong class="nodateFound">No record found</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                    <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                        <a (click)="selectPage(page)">
+                            {{page}}
+                        </a>
+                    </li>
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #InvoiceModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"> <img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon">Invoice</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body Invoice_Template" id="printBill-section">
+        <div class="Invoice_template">
+            <header class="clearfix">
+                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+                    <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+
+                <div id="company">
+                    <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                    <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                    <div>{{InvoiceCompanyInfo.CompanyPhone}}</div>
+                    <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                </div>
+
+            </header>
+            <main>
+                <div id="details" class="clearfix">
+                    <div id="client">
+                        <div class="to">INVOICE TO:</div>
+                        <h2 class="name">{{InvoiceCompanyInfo.PatientName}}</h2>
+                        <div class="address">{{InvoiceCompanyInfo.PatientAddress}}</div>
+                        <div class="email"><a href="mailto:john@example.com">{{InvoiceCompanyInfo.PatientEmail}}</a></div>
+                    </div>
+                    <div id="invoice">
+                        <h1>INVOICE-{{InvoiceCompanyInfo.invoiceNo}}</h1>
+                        <div class="date">Date of Invoice: {{InvoiceCompanyInfo.BillDate |date: 'MM/dd/yyyy'}}</div>
+                        <div class="date">Due Date: 30/06/2014</div>
+                    </div>
+                </div>
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th class="no">#</th>
+                            <th class="desc">Item</th>
+                            <th class="unit text-right">UNIT PRICE</th>
+                            <th class="total text-right">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let b of InvoiceBillModel">
+                            <td class="no">{{b.ID}}</td>
+                            <td class="desc">{{b.ServiceName}}</td>
+                            <td class="unit"> {{b.Price}}</td>
+                            <td class="total"> {{b.Price}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">SUBTOTAL</td>
+                            <td> {{SubTotal}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">Discount</td>
+                            <td> {{TotalDiscount}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">GRAND TOTAL</td>
+                            <td> {{Total}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div id="thanks">Thank you!</div>
+                <div id="notices">
+                    <div>NOTICE:</div>
+                    <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                </div>
+            </main>
+            <footer>
+                {{valueForUser.RepotFooter}}
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
+    </div>
+
+</ng-template>
+<ng-template #adBill let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title"> Add Payment</h4>
+        <span type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <i class="icon icon-cross"></i>
+        </span>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="row">
+                        <div class="mb-3 col-sm-6">
+                            <label for="dateOfBirth" class="required">Payment</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="PartialAmount" [(ngModel)]="model.PartialAmount" (keyup)="PaidCalAmount()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                        </div>
+                        <div class="mb-3 col-sm-6">
+                            <label for="dateOfBirth" class="required">Date</label>
+                            <Datetime-Component formControlName="PaymentDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.PaymentDate">
+                            </Datetime-Component>
+                        </div>
+                        <div class="mb-3 col-sm-12">
+                            <textarea formControlName="Remarks" [(ngModel)]="model.Remarks" rows="4" style="height:70px;" class="form-control form-control-sm form-control-alternative" placeholder="Remarks Here"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-12 mt-3">
+                    <table class="table" style="font-size:13px;">
+                        <thead>
+                            <tr>
+                                <th style="width:70px;">Date</th>
+                                <th style="width:50px">Amount</th>
+                                <th>Remarks</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let b of model.emr_patient_payment">
+                                <td>{{b.PaymentDate|date: 'MM/dd/yyyy'}}</td>
+                                <td>
+                                    <strong>{{b.Amount}}</strong>
+                                </td>
+                                <td>{{b.Remarks}}</td>
+                                <td>
+                                    <a class="btn btn-light btn-sm p-1" (click)="PaymentRptModel(PaymentRptModal,Model.ID,b.ID)">
+                                        <i class="icon icon-printer"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="ControlRights.CreateRights">Save</button>
+        </div>
+    </form>
+</ng-template>
+<ng-template #RefundBill let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title"> Refund Payment</h4>
+        <span type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <i class="icon icon-cross"></i>
+        </span>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="RefundSaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="dateOfBirth">Refund Amount</label>
+                <input type="text" class="form-control form-control-sm" formControlName="RefundAmount" [(ngModel)]="model.RefundAmount" (keyup)="RefundCalAmount()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+            </div>
+            <div class="mb-3">
+                <Datetime-Component formControlName="RefundDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.RefundDate">
+                </Datetime-Component>
+            </div>
+            <div class="mb-3">
+                <textarea class="form-control form-control-sm" formControlName="Remarks" placeholder="Reason" [(ngModel)]="model.Remarks" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="ControlRights.CreateRights">Save</button>
+        </div>
+    </form>
+</ng-template>
+
+<!-- ==============Start of   Advance Paymetn Receipt -->
+<ng-template #PaymentModal let-modal>
+    <div class="modal-header">
+        <!--<h4 class="modal-title"> <img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon">Payment</h4>-->
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body Invoice_Template simple_format" id="printPayment-section">
+        <header class="clearfix">
+            <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+                <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
+            </div>
+            <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+                <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+            </div>
+            <div id="company">
+                <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                <div>Phnoe: {{InvoiceCompanyInfo.CompanyPhone}}</div>
+                <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+            </div>
+        </header>
+        <main>
+            <div class="clearfix text-center margin-t-30">
+                <h3 class="margin-b-5">
+                    Patient Management System
+                </h3>
+                <h5 class="margin-b-5">
+                    Advance Receipt
+                </h5>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table margin-t-15">
+                        <tbody>
+
+                            <tr>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong>Date:</strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            {{InvoiceCompanyInfo.BillDate|date: 'MM/dd/yyyy'}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong> Patient Name </strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            {{InvoiceCompanyInfo.PatientName}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong> Mr#</strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            {{InvoiceCompanyInfo.MRNo}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong>Admission Date</strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            {{InvoiceCompanyInfo.AdmissionDate|date: 'MM/dd/yyyy'}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong>Room / Ward #</strong>
+                                        </div>
+                                        <div class="col-sm-6" *ngIf="InvoiceCompanyInfo.Room != null && InvoiceCompanyInfo.Ward != null">
+                                            {{InvoiceCompanyInfo.Room}} /  {{InvoiceCompanyInfo.Ward}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong>Doctor Name</strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            {{InvoiceCompanyInfo.DoctorName}}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <table class="table margin-t-15">
+                        <tbody>
+
+                            <tr>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong>Receipt No</strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            {{InvoiceCompanyInfo.invoiceNo}}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <table class="table margin-t-15">
+                        <tbody>
+
+                            <tr>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong> Amount</strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            Rs,  {{InvoiceCompanyInfo.Amount}}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 margin-t-20" style="margin-left:auto;">
+                    <p class="margin-b-5 row align-items-center flex-nowrap text-nowrap">
+                        Prepared By : <span style="border-bottom:2px dashed #ccc;width:70%;"></span>
+                    </p>
+                    <p class="margin-b-5 row align-items-center flex-nowrap">
+                        Collection By: <span style="border-bottom: 2px dashed #ccc; width: 70%;"></span>
+                    </p>
+                </div>
+            </div>
+        </main>
+        <footer>
+            {{valueForUser.RepotFooter}}
+        </footer>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printPayment-section" ngxPrint>Print</button>
+    </div>
+</ng-template>
+<!-- ==============================================     Start of Detail Invocie  -->
+<ng-template #DetailInvocie let-modal>
+    <div class="modal-header">
+        <!--<h4 class="modal-title"> <img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon">Payment</h4>-->
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body Invoice_Template simple_format" id="printPayment-section">
+        <header class="clearfix">
+            <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+                <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
+            </div>
+            <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+                <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+            </div>
+
+            <div id="company">
+                <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                <div>Phnoe: {{InvoiceCompanyInfo.CompanyPhone}}</div>
+                <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+            </div>
+
+        </header>
+        <main>
+            <div id="details" class="clearfix">
+                <div id="client">
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Bill #
+                        </strong>{{InvoiceCompanyInfo.invoiceNo}}
+                    </p>
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Mr #
+                        </strong>{{InvoiceCompanyInfo.MRNo}}
+                    </p>
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Patient Name
+                        </strong>
+                        {{InvoiceCompanyInfo.PatientName}}
+                    </p>
+
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Father/ Husband
+                        </strong>
+                        {{InvoiceCompanyInfo.Father_Husband}}
+                    </p>
+
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Address
+                        </strong>
+                        {{InvoiceCompanyInfo.PatientAddress}}
+                    </p>
+
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Phone
+                        </strong>
+                        {{InvoiceCompanyInfo.PatientMobile}}
+                    </p>
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Consultant Name
+                        </strong>
+                        {{InvoiceCompanyInfo.DoctorName}}
+                    </p>
+                </div>
+                <div id="invoice">
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Date of Admission
+                        </strong>
+                        1{{InvoiceCompanyInfo.AdmissionDate|date: 'MM/dd/yyyy'}}
+                    </p>
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Days Stayed
+                        </strong>4
+                    </p>
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Date of Discharge
+                        </strong>{{InvoiceCompanyInfo.DischargeDate|date: 'MM/dd/yyyy'}}
+                    </p>
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Room/Ward/#
+                        </strong>
+                        {{InvoiceCompanyInfo.Room}}/{{InvoiceCompanyInfo.Ward}}
+                    </p>
+                    <p class="margin-b-0">
+                        <strong class="invoice_lbl">
+                            Company/Reference
+                        </strong> {{InvoiceCompanyInfo.CompanyName}}
+                    </p>
+                </div>
+            </div>
+            <table class="table table-border" cellspacing="0" cellpadding="0">
+                <caption>Provisional Bill</caption>
+                <thead>
+                    <tr>
+                        <th colspan="3">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <strong>Service Name</strong>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <strong>
+                                        No of Times
+                                    </strong>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <strong>
+                                        Total Amount
+                                    </strong>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let d of AdmitData">
+                    <tr>
+                        <td colspan="3">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>
+                                        <strong>General charges</strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>
+                                        Annual PE
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.AnnualPE}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>
+                                        General
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.General}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>
+                                        Medical
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.Medical}}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>
+                                        <strong> ICU charges </strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>
+                                        ICU charges
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.ICUCharges}}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>
+                                        <strong>  Private charges  </strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>
+                                        Exam room
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.ExamRoom}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>
+                                        Private Ward
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.PrivateWard}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>
+                                        RIP
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.RIP}}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <strong>
+                                        Other All charges
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    Other All charges
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.OtherAllCharges}}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+                <tbody>
+                    <tr *ngFor="let d of InvoiceBillModel" style="border-bottom:0px;">
+                        <td colspan="3" style="padding: 5px 7px">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>
+                                        <strong class="margin-left-20"> Dr.{{d.Name}}</strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>
+                                        Visit Fee
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.TotalVisit}}
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <p>
+                                        {{d.Amount}}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="border-top:1px solid #000;">
+                        <td colspan="3">
+                            <div class="row">
+
+                                <div class="col-sm-6">
+
+
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <strong>
+                                        Total Bill
+                                    </strong>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <strong>
+                                        {{TotalBill}}
+                                    </strong>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="row">
+                <div class="col-sm-6">
+                    <table class="table margin-t-30">
+                        <caption> Bill Summary</caption>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong>Total Bill </strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <strong>{{TotalBill}}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong>Total Advance</strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <strong>{{AdvanceAmount}}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <strong> Balance Due</strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <strong>{{TotalBill-AdvanceAmount}}</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        <footer>
+            {{valueForUser.RepotFooter}}
+        </footer>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printPayment-section" ngxPrint>Print</button>
+    </div>
+</ng-template>
+<ng-template #PaymentRptModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"> <img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon">Payment</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body Invoice_Template" id="printBill-section">
+        <div class="Invoice_template">
+            <header class="clearfix">
+                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+                    <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+
+                <div id="company">
+                    <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                    <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                    <div>{{InvoiceCompanyInfo.CompanyPhone}}</div>
+                    <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                </div>
+
+            </header>
+            <main>
+                <div id="details" class="clearfix">
+                    <div id="client">
+                        <div class="to">Patient Name:</div>
+                        <h2 class="name">{{InvoiceCompanyInfo.PatientName}}</h2>
+                        <div class="address">{{InvoiceCompanyInfo.PatientAddress}}</div>
+                        <div class="email"><a href="mailto:john@example.com">{{InvoiceCompanyInfo.PatientEmail}}</a></div>
+                    </div>
+                    <div id="invoice">
+                        <h1>Payment-{{InvoiceCompanyInfo.invoiceNo}}</h1>
+                        <div class="date">Date of Payment: {{InvoiceCompanyInfo.BillDate |date: 'MM/dd/yyyy'}}</div>
+                    </div>
+                </div>
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th class="no">#</th>
+                            <th class="desc">Item</th>
+                            <th class="unit text-right">UNIT PRICE</th>
+                            <th class="total text-right">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let b of PaymentRptData">
+                            <td class="no">{{b.ID}}</td>
+                            <td class="desc">{{b.Remarks}}</td>
+                            <td class="unit"> {{b.Amount}}</td>
+                            <td class="total"> {{b.Amount}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">SUBTOTAL</td>
+                            <td> {{SubTotal}}</td>
+                        </tr>                        
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">GRAND TOTAL</td>
+                            <td> {{Total}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div id="thanks">Thank you!</div>
+                <div id="notices">
+                    <div>NOTICE:</div>
+                    <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                </div>
+            </main>
+            <footer>
+                {{valueForUser.RepotFooter}}
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
+    </div>
+
+</ng-template>

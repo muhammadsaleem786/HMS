@@ -1,0 +1,172 @@
+<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Setting
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+        </div>
+    </div>
+    <div>
+        <div class="Cardview Setting_wraper">
+            <div class="row grid-box ">
+                <div class="col-md-4 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(3)>-1">
+                    <div class="col-md-12 no-padding-lr">
+                        <div class="col-md-12 margin-b-20">
+                            <div class="headTittle">
+                                <span class="Blockicon">
+                                    <img src="../assets/app/media/img/icons/setting1.png" class="img-fluid radius">
+                                </span><span class="left-margin blue-text">General Setting</span>
+                            </div>
+                            <ul class="list-group">
+
+                                <li class="list-group-item" *ngIf="Rights.indexOf(4 )>-1">
+                                    <a (click)="AddProfile()" class="left-margin link-Company link-color">Profile</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(18)>-1">
+                                    <a routerLink="/home/Appoint/company" class="left-margin link-Company link-color">Clinics</a>
+
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(19)>-1">
+                                    <a routerLink="/home/changepassword" class="left-margin link-Company link-color">Change Password</a>
+
+                                </li>
+                                <li class="list-group-item">
+                                    <a routerLink="/home/Vendor" class="left-margin link-color">Vendor</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(4)>-1">
+                    <div class="col-md-12 no-padding-lr">
+                        <div class="col-md-12 margin-b-20">
+                            <div class="headTittle">
+                                <span class="Blockicon">
+                                    <img src="../assets/app/media/img/icons/setting2.png" class="img-fluid radius">
+                                </span><span class="left-margin blue-text">Master Setting</span>
+                            </div>
+                            <ul class="list-group">
+                                <li class="list-group-item" *ngIf="Rights.indexOf(5)>-1">
+                                    <a routerLink="/home/Complaint" class="left-margin link-Company link-color">Complaints</a>
+
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(6)>-1">
+                                    <a routerLink="/home/Observation" class="left-margin link-color">Examination / Notes</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(7)>-1">
+                                    <a routerLink="/home/Diagnos" class="left-margin link-color">Diagnosis</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(8)>-1">
+                                    <a routerLink="/home/Invest" class="left-margin link-color">Investigations</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(9)>-1">
+                                    <a routerLink="/home/Medicine" class="left-margin link-color">Medicine</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(49)>-1">
+                                    <a routerLink="/home/DropDown" class="left-margin link-color">Master</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(10)>-1">
+                                    <a routerLink="/home/MedicineInst" class="left-margin link-color">Medicine Instructions</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(65)>-1">
+                                    <a routerLink="/home/Service" class="left-margin link-color">Services</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(67)>-1">
+                                    <a routerLink="/home/reminder" class="left-margin link-color">Reminder</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(72)>-1">
+                                    <a routerLink="/home/integration" class="left-margin link-color">Integration</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(1)>-1">
+                    <div class="col-md-12 no-padding-lr">
+                        <div class="col-md-12 margin-b-20">
+                            <div class="headTittle">
+                                <span class="Blockicon">
+                                    <img src="../assets/app/media/img/icons/setting3.png" class="img-fluid radius">
+                                </span><span class="left-margin blue-text">Users (Staff)</span>
+                            </div>
+                            <ul class="list-group">
+                                <li class="list-group-item" *ngIf="Rights.indexOf(3)>-1">
+                                    <a routerLink="/home/aplicationUser" class="left-margin link-color">User</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(2)>-1">
+                                    <a routerLink="/home/userrole" class="left-margin link-color">Role</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(50)>-1">
+                                    <a routerLink="/home/Employee" class="left-margin link-color">Employee</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(53)>-1">
+                                    <a routerLink="/home/Department" class="left-margin link-color">Department</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(54)>-1">
+                                    <a routerLink="/home/Designation" class="left-margin link-color">Designation</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(55)>-1">
+                                    <a routerLink="/home/Leaveentry" class="left-margin link-color">Leave</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(56)>-1">
+                                    <a routerLink="/home/Payroll" class="left-margin link-color">Payroll</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(57)>-1">
+                                    <a routerLink="/home/Attendance" class="left-margin link-color">Attendance</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(60)>-1">
+                                    <a routerLink="/home/Loan" class="left-margin link-color">Loan List</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="col-md-4 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(11)>-1">
+                    <div class="col-md-12 no-padding-lr">
+                        <div class="col-md-12 margin-b-20">
+                            <div class="headTittle">
+                                <span class="Blockicon">
+                                    <img src="../assets/app/media/img/icons/setting3.png" class="img-fluid radius">
+                                </span><span class="left-margin blue-text">Employee</span>
+                            </div>
+                            <ul class="list-group">
+                              
+
+                                <li class="list-group-item" *ngIf="Rights.indexOf(51)>-1">
+                                    <a routerLink="/home/Allowance" class="left-margin link-color">Allowance</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(52)>-1">
+                                    <a routerLink="/home/Deduction" class="left-margin link-color">Deduction</a>
+                                </li>
+                               
+                                <li class="list-group-item" *ngIf="Rights.indexOf(58)>-1">
+                                    <a routerLink="/home/Timeattendancelist" class="left-margin link-color">Attendance List</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(59)>-1">
+                                    <a routerLink="/home/holiday" class="left-margin link-color">Holiday List</a>
+                                </li>
+                               
+                            </ul>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+

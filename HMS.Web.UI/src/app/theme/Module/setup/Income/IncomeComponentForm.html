@@ -1,0 +1,132 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block"*ngIf="IsEdit">
+                Update Income
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                Add New Income
+            </h3>
+        </div>
+    </div>
+    <div class="row Cardview padding-20">
+        <div class="col-sm-12 mt-2">           
+            <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                <div class="row">
+                    <div class="col-sm-6">
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Category
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="CategoryId" [(ngModel)]="model.CategoryId">
+                                        <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form1.controls.CategoryId.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ============= -->
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Date*</label>
+
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateChanged($event)" [(ngModel)]="model.Date" [style.pointer-events]="true">
+                                    </Datetime-Component >
+                                </div>
+                                <small class="text-danger" *ngIf="Form1.controls.Date.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- ============ -->
+
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Due Amount</label>
+
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="DueAmount" [(ngModel)]="model.DueAmount" class="form-control form-control-sm form-control-alternative" placeholder="Due Amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <small class="text-danger" *ngIf="Form1.controls.DueAmount.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Received Amount</label>
+
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="ReceivedAmount" [(ngModel)]="model.ReceivedAmount" class="form-control form-control-sm form-control-alternative" placeholder="Received Amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Remark*</label>
+
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <textarea type="text" class="form-control m-input" placeholder="Remark" formControlName="Remark" [(ngModel)]="model.Remark"></textarea>
+                                    <small class="text-danger" *ngIf="Form1.controls.Remark.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="img-box">
+                            <div class="col-sm-12" *ngIf="model.Image!=''">
+                                <img [src]="AttachImage" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                            </div>
+                            <File-Component class="UploadActnWrap" [(ngModel)]="model.Image" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+                        </div>
+                    </div>
+                </div>
+                <div class="modalfooter border-top mt-3">
+                    <div class="row mt-2">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                
+                        </div>
+
+                        <div class="col-sm-6 text-right">
+                            <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                            <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+                            <button type="button" class="btn btn-light ml-2" routerLink="/home/Income">Cancel</button>
+                        </div>
+                    </div>
+                   
+                </div>
+            </form>      
+        </div>
+    </div>
+</div>
+
+

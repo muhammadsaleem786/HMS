@@ -1,0 +1,288 @@
+﻿<div class="tab-pane" id="Labs">
+    <div class="text-right mb-2"*ngIf="ControlRights.CreateRights">
+        <button class="btn btn-danger btn-sm" (click)="OpenLabs(OpenLabsModal)"><i class="icon icon-pulse"></i> New Labs  </button>
+    </div>
+    <div class="TableView">
+        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+            <div class="uk-overflow-container col-sm-12 p-0">
+                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                    <thead class="grid-header">
+                        <tr>
+                            <th>
+                                Date Requested
+                            </th>
+                            <th>
+                                Lab Type
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Date Processed
+                            </th>
+                            <th>
+                                Result
+                            </th>
+                            <th>
+                                Notes
+                            </th>
+                            <th>
+                                Requested By
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of LabList">
+                            <td>{{item.Date |date: 'MM/dd/yyyy'}}</td>
+                            <td>
+                                {{item.Type}}
+                            </td>
+                            <td>{{item.Status}}</td>
+                            <td>{{item.Date |date: 'MM/dd/yyyy'}}</td>
+                            <td>{{item.result}}</td>
+                            <td>
+                                {{item.Note}}
+                            </td>
+                            <td>
+                                {{item.AuthoredBy}}
+                            </td>
+                            <td>
+                                <span class="icon icon mr-3" (click)="Edit(item.ID)">
+                                    <i class="icon icon-pencil2"></i>
+                                </span>
+                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights">
+                                    <i class="icon icon-trash2 text-danger"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+                        <tr [hidden]="!(LabList.length == 0)" style="background:#fff;">
+                            <td [attr.colspan]="10" align="center">
+                                <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                <strong class="nodateFound">No record found</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+            <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                    <a (click)="selectPage(page)">
+                        {{page}}
+                    </a>
+                </li>
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+            </ul>
+        </div>
+    </div>
+
+    
+</div>
+<ng-template #OpenLabsModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            Labs Detail
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="LabSaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-6">                    
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label>Lab   Type</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm" formControlName="LabTypeId" [(ngModel)]="model.LabTypeId">
+                                <option *ngFor="let item of LabTypeList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label>Status Type</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm" formControlName="StatusId" [(ngModel)]="model.StatusId">
+                                <option *ngFor="let item of StatusList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label>Result Type</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm" formControlName="ResultId" [(ngModel)]="model.ResultId">
+                                <option *ngFor="let item of ResultList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label> Notes</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea class="form-control"formControlName="Notes" [(ngModel)]="model.Notes"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <h4>
+                Lab Report
+            </h4>
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            Name
+                        </label>
+                        <input class="form-control"[ngModelOptions]="{standalone:true}" [(ngModel)]="patientInfo.PatientName"/>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            Patient ID#:
+                        </label>
+                        <input class="form-control"[ngModelOptions]="{standalone:true}" [(ngModel)]="patientInfo.ID" />
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            DOB:
+                        </label>
+                        <input class="form-control"[ngModelOptions]="{standalone:true}" [(ngModel)]="patientInfo.DOB"/>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            Gender:
+                        </label>
+                        <input class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="patientInfo.Gender" />
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            Collect Date/Time
+                        </label>
+                        <Datetime-Component formControlName="CollectDate" placeholder="DD/MM/YYYY"  [(ngModel)]="model.CollectDate">
+                        </Datetime-Component>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            Test Date/Time
+                        </label>
+                        <Datetime-Component formControlName="TestDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.TestDate">
+                        </Datetime-Component>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            Report Date/Time
+                        </label>
+                        <Datetime-Component formControlName="ReportDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.ReportDate">
+                        </Datetime-Component>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            Ordering Physician:
+                        </label>
+                        <input class="form-control"  formControlName="OrderingPhysician" [(ngModel)]="model.OrderingPhysician"/>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            PARAMETER:
+                        </label>
+                        <textarea class="form-control" formControlName="Parameter" [(ngModel)]="model.Parameter"></textarea>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            Result Values:
+                        </label>
+                        <textarea class="form-control" formControlName="ResultValues" [(ngModel)]="model.ResultValues"></textarea>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            ABN
+                        </label>
+                        <textarea class="form-control" formControlName="ABN" [(ngModel)]="model.ABN"></textarea>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>
+                            Flags
+                        </label>
+                        <textarea class="form-control" formControlName="Flags" [(ngModel)]="model.Flags"></textarea>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>
+                            Comment
+                        </label>
+                        <textarea class="form-control" formControlName="Comment" [(ngModel)]="model.Comment"></textarea>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>
+                            Test Performed at:
+                        </label>
+                        <textarea class="form-control" formControlName="TestPerformedAt" [(ngModel)]="model.TestPerformedAt"></textarea>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <h4>
+                        BLOOD BANK
+                    </h4>
+                    <div class="form-group">
+                        <label>
+                            Test description:
+                        </label>
+                        <textarea class="form-control" formControlName="TestDescription" [(ngModel)]="model.TestDescription"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+        </form>
+</ng-template>

@@ -1,0 +1,114 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block"*ngIf="IsEdit">
+                Update Medicine
+                <a routerLink="/home/setup"><i class="fa fa-arrow-circle-left"></i></a>
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                New Medicine
+                <a routerLink="/home/setup"><i class="fa fa-arrow-circle-left"></i></a>
+            </h3>
+        </div>
+    </div>
+    <div class="col-sm-12 AddNewItem  padding-t-15" style="height: 80vh; overflow: auto;">
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+            <div class="modal-body bg-secondary">
+                <div class="row">
+                    <div class="col-sm-7">
+
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">Medicine </label>
+                            </div>
+                            <div class="col-8">
+
+                                <input type="text" id="" formControlName="Medicine" [(ngModel)]="model.Medicine" class="form-control form-control-sm form-control-alternative" placeholder="Medicine">
+                                <small class="text-danger" *ngIf="Form1.controls.Medicine.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">Measure </label>
+                            </div>
+                            <div class="col-8">
+
+                                <input type="text" id="" formControlName="Measure" [(ngModel)]="model.Measure" class="form-control form-control-sm form-control-alternative" placeholder="Measure">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">Instructions </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="input-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="InstructionId" [(ngModel)]="model.InstructionId">
+                                        <option *ngFor="let item of InstructionsList" [value]="item.ID">
+                                            {{item.Name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">Price </label>
+                            </div>
+                            <div class="col-8">
+
+                                <input type="text" id="" formControlName="Price" [(ngModel)]="model.Price" class="form-control form-control-sm form-control-alternative" placeholder="Price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+
+                                <small class="text-danger" *ngIf="Form1.controls.Price.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">Unit </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="input-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="UnitId" [(ngModel)]="model.UnitId">
+                                        <option *ngFor="let item of UnitList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form1.controls.UnitId.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">Type </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="input-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="TypeId" [(ngModel)]="model.TypeId">
+                                        <option *ngFor="let item of MadicineTypeList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form1.controls.TypeId.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+                <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                <button type="button" class="btn btn-secondary" routerLink="/home/setup">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

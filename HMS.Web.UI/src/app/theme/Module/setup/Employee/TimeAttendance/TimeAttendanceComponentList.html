@@ -1,0 +1,78 @@
+﻿<div class="margin-t-6">
+    <div class="clearfix backBtnMain">
+        <h1 class="MainTittle">Time Attendance</h1>
+       
+    </div>
+
+    
+    <div style="padding: 0 15px 0 15px;">
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Filter by month*</label>
+                    <Datetime-Component (DateChangeValue)="onMonthFilterDateChanged($event)" [ngModelOptions]="{standalone:true}" [(ngModel)]="MonthFilterDate">
+                    </Datetime-Component>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Search</label>
+                    <input (keyup)="applyFilter($event.target.value)" class="form-control" [(ngModel)]="txtSearch" [ngModelOptions]="{standalone:true}" placeholder="Search....">
+                </div>
+            </div>
+            <div class="col-md-2 text-right">
+                <label style="visibility:hidden">Attendan</label>
+                <button class="btn btn-transparent btn-block" (click)="AddAttendance('0')">Add Attendance</button>
+            </div>
+            <div class="col-md-2 text-right">
+                <label style="visibility:hidden">Holiday</label>
+                <button class="btn btn-transparent btn-block" routerLink="/home/holiday">Add Holiday</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <div class="mat-elevation-z8">
+                <mat-table class="mt-custom-table mt-nowhitespace timeMatTable" #table [dataSource]="dataSource" matSort >
+
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="Employee">
+                        <mat-header-cell mat-header-cell *matHeaderCellDef>Employee</mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let element"><span>{{element.Employee}}</span> </mat-cell>
+                    </ng-container>
+
+                    <div *ngFor="let itm of MonthDays; let ind = index">
+                        <div *ngIf="itm.id != 'Employee'">
+
+                            <ng-container matColumnDef="{{itm.id}}">
+                                <mat-header-cell *matHeaderCellDef>
+                                    {{(itm.value.getDate().toString().length == 1 ? ("0" + itm.value.getDate()) : itm.value.getDate()) +" " + (itm.value | date : 'EE')}}
+                                </mat-header-cell>
+                                <mat-cell mat-cell *matCellDef="let element; let i = index;" [ngClass]="GetTime(i,itm.value) == 'P' ? 'Present-circle' : 'Absent-circle'">
+                                    <!--<span>{{GetTime(i,itm.value)}}</span>-->
+                                    <span>{{GetTime(i,itm.value)}}</span>
+
+                                </mat-cell>
+
+                            </ng-container>
+                        </div>
+                    </div>
+
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row class="EmpAttendanceInfo" *matRowDef="let row; columns: displayedColumns; let indx = index" (click)="EditEvent(indx)"></mat-row>
+                </mat-table>
+                <mat-paginator showFirstLastButtons [length]="length"
+                               [pageSize]="pageSize"
+                               [pageSizeOptions]="pageSizeOptions"
+                               [hidePageSize]="true"
+                               (page)="pageEvent = $event">
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+

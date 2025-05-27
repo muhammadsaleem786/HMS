@@ -1,0 +1,741 @@
+﻿<!--<div *ngIf="IsShowPayrollMasterList && payrolShow == false">-->
+<div *ngIf="IsShowPayrollMasterList">
+    <div class="paypalWrap" *ngIf="!payrolShow">
+        <div class="MainTittleWrap">
+            <img src="../../../../assets/app/media/img/payrollMain.svg" />
+            <h1 class="font-32">
+                Payroll by Wave is only available<br />
+                to U.S. and Canadian businesses.
+            </h1>
+        </div>
+        <hr />
+        <div class="row">
+            <h4 class="text-center font-18">In order to use Payroll by Wave, please ensure the following:</h4>
+            <div class="col-sm-4">
+                <div class="payroll_Sect">
+                    <img src="../../../../assets/app/media/img/payroll1.png" />
+
+                    <p>
+                        Your business is registered in the U.S. or Canada. This enables us to follow the tax laws that apply to you.
+
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="payroll_Sect">
+                    <img src="../../../../assets/app/media/img/payroll2.png" />
+
+                    <p>
+                        Your employees live and work in the country where your business is located. This allows us to calculate the proper payroll deductions and contributions
+
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="payroll_Sect">
+                    <img src="../../../../assets/app/media/img/payrolll3.png" />
+
+                    <p>
+                        Your currency matches the country where your business is set up. This ensures that your bookkeeping is correct.
+
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 text-center margin-b-20">
+                <button (click)="showpayrollWrap()" class="btn btn-lightgreen btn-default" type="button">Payroll List</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="payroll_Wrap" *ngIf="payrolShow">
+        <div class="clearfix backBtnMain">
+            <div class="backBtn">
+                <a routerLink="/home/setup"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+            </div>
+        </div>
+        <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="PayrollList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+
+    </div>
+</div>
+<div class="margin-t-68">
+    <div *ngIf="!IsShowPayrollMasterList">
+        <!--<div class="col-sm-12">
+            <a routerLink="/payroll"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+        </div>-->
+        <div class="clearfix backBtnMain">
+            <div class="backBtn">
+                <a (click)="GoBack('/setup')" class="cursor-pointer"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+            </div>
+            <!--<div style="padding: 20px 40px 10px 40px; display: inline-block; float: right;">
+                <button class="btn btn-blue">Reports</button>
+            </div>-->
+        </div>
+        <div class="row" style="padding: 0 40px 0 40px;">
+            <div class="col-md-6">
+                <h3>Payroll</h3>
+                <p>({{PayPeriod}})</p>
+                <strong>Status:</strong> {{Status}}
+            </div>
+        </div>
+        <i id="SearchButton" style="display:none" class="btn btn-blue" data-toggle="modal" data-target="#FilterModal"></i>
+        <app-pagination [PModel]="PDetModel" [PConfig]="PDetConfig" [PData]="PayrollDetList" (pageChange)="GetDetList()" (AddOrEditEvent)="AddDetRecord($event)" (GoBackEvent)="GoBack($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)">
+        </app-pagination>
+        <div style="padding: 0 40px 0 40px;" *ngIf="PayrollDetList?.length > 0">
+            <table class="table" style="margin-top:0px;">
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalBaseSalary | number: '1.0-0') }}</strong></td>
+                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalAllowance | number: '1.0-0' )}}</strong></td>
+                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalDeduction | number: '1.0-0')}}</strong></td>
+                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalGrossSalary | number: '1.0-0')}}</strong></td>
+                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalNetSalary | number: '1.0-0')}}</strong></td>
+                </tr>
+            </table>
+            <div class="btnArea-footer" *ngIf="PayrollDetList[0]?.Status == 'O'">
+                <button id="saveSchedule" type="button" class="btn btn-blue" (click)="PublishPayroll()">Publish</button>
+                <button type="button" class="btn btn-blue btnDel pull-left" (click)="DeletePayroll()">Delete</button>
+            </div>
+        </div>
+        <div class="modal fade" id="FilterModal" data-backdrop="static" data-keyboard="false" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Run Payroll</h3>
+                        <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Location</label>
+                                    <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="PrLocationList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="PrEmpDtFilterModel.LocationsIds"></ss-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Department</label>
+                                    <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="PrDepartmentList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="PrEmpDtFilterModel.DepartmentsIds"></ss-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Designation</label>
+                                    <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="PrDesignationList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="PrEmpDtFilterModel.DesignationsIds"></ss-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Employee Type</label>
+                                    <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="PrEmployeeTypeList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="PrEmpDtFilterModel.EmployeeTypeIds"></ss-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Employees</label>
+                                    <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="PrEmployeeList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="PrEmpDtFilterModel.EmployeeIds"></ss-multiselect-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-blue btnDel pull-left" (click)="ResetPrDtFilter()">Reset</button>
+                        <button type="button" class="btn btn-default btn-payday-cancel" id="CloseFilterModal" data-dismiss="modal">Cancel</button>
+                        <button id="saveSchedule" type="button" class="btn btn-blue" (click)="FilterPrEmpDt()">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="IsShowPayrollMasterList">
+    <PayrollComponent [hidden]="IsList" [id]="Id" (pageClose)="Close($event)"></PayrollComponent>
+</div>
+
+<div *ngIf="!IsShowPayrollMasterList && !IsList">
+    <span style="display:none" id="ShowPayStubId" data-toggle="modal" data-target="#PayStubModal"></span>
+    <span style="display:none" id="ShowPublishPayrollConfirmationModal" data-toggle="modal" data-target="#PublishPayrollConfirmationModal"></span>
+    <div class="modal" id="PayStubModal" role="dialog">
+        <div class="modal-dialog">
+            <form novalidate (ngSubmit)="SavePayStubOfSingleEmp()">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row">
+                            <div class="col-xs-10">
+                                <div style="margin-top: 10px;">
+                                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding" style="display: inline-block;">
+                                        {{EmployeeModel.FirstName + ' ' +EmployeeModel.LastName+"'s"}} Pay Details -
+                                    </h3>
+                                    <strong>({{model.FromDate | date: "dd/MM/yyyy"}} - {{model.ToDate | date: "dd/MM/yyyy"}})</strong>
+                                </div>
+                            </div>
+                            <div class="col-xs-2">
+                                <button id="saveSchedule" *ngIf="!IsStatusPublished" type="button" class="btn btn-blue pull-right" (click)="ShowListModal('prorate')" data-toggle="modal" data-target="#ProrateModal">Prorate</button>
+                            </div>
+                        </div>
+                        <button type="button" class="close mt-modal-close" id="ClosePayStubModalId" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="label-font-normal">
+                            <!--<div class="row">
+                                <div class="col-sm-6">
+                                    <div class="mt-d-flex">
+                                        <div>
+                                            <h4 class="m-form__heading-title whiteSpaceNowrap mt-m-r-10">Base Salery</h4>
+                                        </div>
+                                        <div>
+                                            <div class="input-group">
+                                                <span class="input-group-addon" id="basic-addon1"> {{Currency}}</span>
+                                                <input type="number" min="0" pattern=".{0,8}" (change)="PayScreenBaseSalaryChangeCalculation()" [(ngModel)]="model.BasicSalary" [ngModelOptions]="{standalone: true}" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="usr">Pay Schedule</label>
+                                        <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#PayScheduleModal" (click)="IntializeModels()"></i>
+                                        <select class="form-control m-input" formControlName="PayScheduleID" [(ngModel)]="this.model.PayScheduleID">
+                                            <option *ngFor="let item of PaySchedules" [value]="item.ID">
+                                                {{item.ScheduleName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Starting*</label>
+                                        <Datetime-Component formControlName="EffectiveFrom" placeholder="DD/MM/YYYY" [(ngModel)]="EffectiveFrom">
+                                        </Datetime-Component>
+                                    </div>
+                                </div>
+                            </div>-->
+                            <strong class="pull-left">Allowances</strong>
+                            <div class="">
+                                <i class="fa fa-plus-square pull-right font-25 color-green cursor-pointer" *ngIf="!IsStatusPublished" data-toggle="modal" (click)="ShowListModal('A')" data-target="#AllowancesListModal" style="margin-top: 15px;"></i>
+                                <table class="table mt-coloredTable">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Name
+                                            </th>
+                                            <!--<th>
+                                                Percentage
+                                            </th>-->
+                                            <th>
+                                                Amount
+                                            </th>
+                                            <!--<th style="text-align: center;">
+                                                <div *ngIf="PayrollRegion != 'SA'">
+                                                    Taxable
+                                                </div>
+                                            </th>-->
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of model.pr_employee_payroll_dt; let i=index" [hidden]="item.Type == 'D' || item.Type == 'C'">
+                                            <td>
+                                                <label>
+                                                    {{GetAllowanceTitle(item.AllowDedID)}}
+                                                </label>
+                                            </td>
+                                            <!--<td>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="basic-addon1">%</span>
+                                                    <input type="number" readonly="readonly" class="form-control" [(ngModel)]="item.Percentage" [ngModelOptions]="{standalone: true}" />
+                                                </div>
+                                            </td>-->
+                                            <td class="max-width-250">
+                                                <div *ngIf="!IsStatusPublished">
+                                                    <div class="input-group max-width-250">
+                                                        <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                                                        <input type="number" class="form-control" [(ngModel)]="item.Amount" (blur)="ReCalculateSalary()" [ngModelOptions]="{standalone: true}" min="0" pattern=".{0,8}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="IsStatusPublished">
+                                                    <label [ngStyle]="item.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''">{{item.AdjustmentType == 'C' ? item.Amount + item.AdjustmentAmount : item.Amount - item.AdjustmentAmount}}</label>
+                                                    <i class="fa fa-pencil cursor-pointer" (click)="AdjustmentEditClick(item.AllowDedID,'A',item.RefID)" *ngIf="IsStatusPublished" data-toggle="modal" data-target="#AdjustmentModal"></i>
+                                                </div>
+                                            </td>
+                                            <!--<td class="max-width-250" style="text-align: center;">
+                                                <div class="checkboxDefault" *ngIf="PayrollRegion != 'SA' || (item.Taxable && IsStatusPublished)">
+                                                    <input type="checkbox" [(ngModel)]="item.Taxable" [attr.disabled]="IsStatusPublished ? true : null" [ngModelOptions]="{standalone: true}">
+                                                </div>
+                                            </td>-->
+                                            <td class="max-width-250">
+                                                <div *ngIf="!IsStatusPublished">
+                                                    <i class="fa fa-times" (click)="RemoveAllowanceFromSelList(item.AllowDedID)"></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <strong class="pull-left">Deductions</strong>
+                            <div class="">
+                                <i class="fa fa-plus-square pull-right font-25 color-green cursor-pointer" *ngIf="!IsStatusPublished" data-toggle="modal" (click)="ShowListModal('D')" data-target="#ContributionAndDeductionListModal" style="margin-top: 15px;"></i>
+                                <table class="table mt-coloredTable">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Name
+                                            </th>
+                                            <!--<th>
+                                                Percentage
+                                            </th>-->
+                                            <th>
+                                                Amount
+                                            </th>
+                                            <!--<th>
+                                                Starting Balance
+                                            </th>-->
+                                            <!--<th style="text-align: center;">
+                                                <div *ngIf="PayrollRegion != 'SA'">
+                                                    Taxable
+                                                </div>
+                                            </th>-->
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of model.pr_employee_payroll_dt; let i = index" [hidden]="item.Type == 'C' || item.Type == 'A'">
+                                            <td>
+                                                <label>
+                                                    {{GetContributionDeductionTitle(item.AllowDedID,item.Type)}}
+                                                </label>
+                                            </td>
+                                            <!--<td>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="basic-addon1">%</span>
+                                                    <input type="number" readonly="readonly" class="form-control" [(ngModel)]="item.Percentage" [ngModelOptions]="{standalone: true}" />
+                                                </div>
+                                            </td>-->
+                                            <td>
+                                                <div *ngIf="!IsStatusPublished">
+                                                    <div class="input-group max-width-250">
+                                                        <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                                                        <input type="number" class="form-control" [(ngModel)]="item.Amount"(blur)="ReCalculateSalary()" [ngModelOptions]="{standalone: true}" pattern=".{0,8}" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="IsStatusPublished">
+                                                    <label [ngStyle]="item.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''">{{item.AdjustmentType == 'C' ? item.Amount + item.AdjustmentAmount : item.Amount - item.AdjustmentAmount}}</label>
+                                                    <i class="fa fa-pencil cursor-pointer" (click)="AdjustmentEditClick(item.AllowDedID,'D',item.RefID)" *ngIf="IsStatusPublished" data-toggle="modal" data-target="#AdjustmentModal"></i>
+                                                </div>
+                                                <!--<div class="input-group">
+                                                    <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                                                    <input type="number" class="form-control" [(ngModel)]="item.Amount" [attr.disabled]="IsStatusPublished ? true : null" (change)="CalDedContPercentage(item.AllowDedID,item.Type)" [ngModelOptions]="{standalone: true}" />
+                                                    <i class="fa fa-pencil pull-right" *ngIf="IsStatusPublished" data-toggle="modal" (click)="AdjustmentEditClick(item,'D')" data-target="#AdjustmentModal"></i>
+                                                </div>-->
+                                            </td>
+                                            <!--<td>
+                                                <input type="number" class="form-control" *ngIf="GetContributionDeductionTitle(item.DeductionContributionID,item.Category) =='Provident Fund'" [(ngModel)]="item.StartingBalance" [ngModelOptions]="{standalone: true}" />
+                                            </td>-->
+                                            <!--<td>
+                                                <div class="text-center checkboxDefault" *ngIf="PayrollRegion != 'SA' || (item.Taxable && IsStatusPublished)">
+                                                    <input type="checkbox" [(ngModel)]="item.Taxable" [attr.disabled]="IsStatusPublished ? true : null" [ngModelOptions]="{standalone: true}">
+                                                </div>
+                                            </td>-->
+                                            <td>
+                                                <div *ngIf="!IsStatusPublished">
+                                                    <i class="fa fa-times" (click)="RemoveDeductionFromSelList(item.AllowDedID)"></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="display: table; margin: 0 auto; width: 80%;">
+                                <!--<div class="clearfix">
+                                    <span (click)="ReCalculateSalary()" *ngIf="!IsStatusPublished" class="reCalc pull-right"><i class="fa fa-refresh"></i> Re-Calculate</span>
+                                </div>-->
+                                <div class="row salarCalc">
+                                    <div class="col-sm-3" style="background: #00d399">
+                                        <span class="font-14">Basic salary</span>
+                                        <p [ngStyle]="model.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''">
+                                            {{SalaryModel.BasicSalary | number: '1.0-0'}}
+                                            <i class="fa fa-pencil cursor-pointer" *ngIf="IsStatusPublished" data-toggle="modal" (click)="AdjustmentEditClick(model.ID,'B',0)" data-target="#AdjustmentModal"></i>
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-3" style="background: #f05675">
+                                        <span class="font-14">Gross salary</span>
+                                        <p>
+                                            {{SalaryModel.GrossSalary | number: '1.0-0'}}
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-3" style="background: #00a4d3" *ngIf="PayrollRegion != 'SA'">
+                                        <span class="font-14">Deductions</span>
+                                        <p>
+                                            {{SalaryModel.DeductionTotal | number: '1.0-0'}}
+                                            <!--<i class="fa fa-pencil pull-right" *ngIf="IsStatusPublished" data-toggle="modal" (click)="AdjustmentEditClick(model.ID,'T')" data-target="#AdjustmentModal"></i>-->
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-3" style="background: #674390">
+                                        <span class="font-14">Net salary</span>
+                                        <p>
+                                            {{SalaryModel.NetSalary | number: '1.0-0'}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="saveSchedule" type="submit" class="btn btn-blue" *ngIf="!IsStatusPublished">Save</button>
+                        <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal>Close</button>
+                        <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="!IsStatusPublished" (click)="DeletePayStubOfSingleEmp()">Delete</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="AllowancesListModal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content" (click)="IsModalClick()">
+                <div class="modal-header">
+                    <h3 class="grid-heading font-weight-400 no-padding pull-left mt-m-r-20">Add Allowance</h3>
+                    <i class="fa fa-plus-square font-25 color-green cursor-pointer" data-toggle="modal" *ngIf="IsShowListPopModal" (click)="ShowModal()" data-target="#AllowanceModel"></i>
+                    <button type="button" class="close mt-modal-close" (click)="ShowListModal('cancel')" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <form [formGroup]="AllowanceForm" novalidate (ngSubmit)="SaveAllowance(AllowanceForm.valid)">
+                    <div class="modal-body">
+                        <div *ngIf="IsShowListPopModal">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Add
+                                        </th>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Amount
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of UnSelectedAllowancesList" [hidden]="item.Default">
+                                        <td>
+                                            <i class="fa fa-plus" (click)="AddAlowanceToSelList(item.ID)"></i>
+                                        </td>
+                                        <td>
+                                            <label>{{item.AllowanceName}}</label>
+                                        </td>
+                                        <td>
+                                            <label> {{Currency +' ' + (item.AllowanceValue | number: '1.0-0')}}</label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="ShowListModal('cancel')">Cancel</button>
+                            </div>
+                        </div>
+                        <div *ngIf="!IsShowListPopModal">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <select formControlName="CategoryID" [(ngModel)]="AllowanceModel.CategoryID" class="form-control" (change)="AllowancSelectionChange()">
+                                            <option *ngFor="let item of AllowanceCategoryTypes" [value]="item.ID">
+                                                {{item.Value}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group" [style.display]="IsAllowanceCategoryOtherID ? 'block' : 'none'">
+                                        <label>Name*</label>
+                                        <input type="text" formControlName="AllowanceName" [(ngModel)]="AllowanceModel.AllowanceName" maxlength="150" class="form-control">
+                                        <small *ngIf="AllowanceForm.controls.AllowanceName.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="margin-b-8">
+                                    <label>Allowance Amount* (Monthly)</label><br />
+                                </div>
+                                <label class="radio-inline">
+                                    <input type="radio" formControlName="AllowanceType" (change)="IsAllowanceValueValid()" name="AllowanceType" [(ngModel)]="AllowanceModel.AllowanceType" value="F" checked> Fixed
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" formControlName="AllowanceType" (change)="IsAllowanceValueValid()" name="AllowanceType" [(ngModel)]="AllowanceModel.AllowanceType" value="P"> % of Salary
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">{{AllowanceModel.AllowanceType == 'F' ? Currency:'%'}}</span>
+                                    <input type="number" formControlName="AllowanceValue" min="0" [(ngModel)]="AllowanceModel.AllowanceValue" pattern=".{0,8}" (keyup)="IsAllowanceValueValid()" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                </div>
+                                <small class="text-danger" *ngIf="AllowanceForm.controls.AllowanceValue.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                                <small class="text-danger" *ngIf="IsValidAllowValue && !AllowanceForm.controls.AllowanceValue.hasError('required')">
+                                    % value should be equal or less than 100 %.
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <!--<div class="checkbox checkboxDefault" *ngIf="PayrollRegion != 'SA'">
+                                    <input type="checkbox" id="checkTexable" formControlName="Taxable" [(ngModel)]="AllowanceModel.Taxable">
+                                    <label for="checkTexable">Taxable</label>
+                                </div>-->
+                                <div class="checkbox checkboxDefault">
+                                    <input type="checkbox" id="checkDefault" formControlName="Default" [(ngModel)]="AllowanceModel.Default">
+                                    <label for="checkDefault">Default</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" *ngIf="!IsShowListPopModal">
+                        <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowListModal('A')" data-dismiss="modal" #closeAllowanceModal>Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="ContributionAndDeductionListModal" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content" (click)="IsModalClick()">
+                <div class="modal-header">
+                    <h3 class="grid-heading font-weight-400 no-padding pull-left mt-m-r-20">Add Contribution / Deduction</h3>
+                    <i class="fa fa-plus-square font-25 color-green cursor-pointer" data-toggle="modal" *ngIf="IsShowListPopModal" (click)="ShowModal()" data-target="#ContributionDeductionModal"></i>
+                    <button type="button" class="close mt-modal-close" data-dismiss="modal" (click)="ShowListModal('cancel')"><i class="fa fa-times"></i></button>
+                </div>
+                <!--<div class="modal-header">
+                    <h3 class="grid-heading font-weight-400 no-padding pull-left mt-m-r-20">Add Contribution / Deduction</h3>
+                    <i class="fa fa-plus-square font-25 color-green" data-toggle="modal" *ngIf="IsShowListPopModal" (click)="ShowModal()" data-target="#ContributionDeductionModal"></i>
+                    <button type="button" class="close mt-modal-close" data-dismiss="modal" (click)="ShowListModal('cancel')"><i class="fa fa-times"></i></button>
+                </div>-->
+                <form [formGroup]="ConributionDeductionForm" novalidate (ngSubmit)="SaveContributionDeduction(ConributionDeductionForm.valid)">
+                    <div class="modal-body">
+                        <div *ngIf="IsShowListPopModal">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Add
+                                        </th>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Amount
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of (DedContModel.Category== 'C' ? UnSelectedContributionList : UnSelectedDeductionList)" [hidden]="item.Default">
+                                        <td>
+                                            <i class="fa fa-plus" *ngIf="item.Category == 'C'" (click)="AddContributionToSelList(item.ID)"></i>
+                                            <i class="fa fa-plus" *ngIf="item.Category == 'D'" (click)="AddDeductionToSelList(item.ID)"></i>
+                                        </td>
+                                        <td>
+                                            <label>{{item.DeductionContributionName}}</label>
+                                        </td>
+                                        <td>
+                                            <label>{{Currency +' '+ (item.DeductionContributionValue | number: '1.0-0')}}</label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="ShowListModal('cancel')">Cancel</button>
+                            </div>
+                        </div>
+                        <div *ngIf="!IsShowListPopModal">
+                            <div class="margin-b-8">
+                                <label class="radio-inline">
+                                    <input class="mt-Scale-1_8" type="radio" formControlName="Category" [attr.disabled]="true" name="Category" [(ngModel)]="DedContModel.Category" value="D" checked> Deduction - (Employee)
+                                </label>
+                            </div>
+                            <div class="margin-b-8">
+                                <label class="radio-inline">
+                                    <input class="mt-Scale-1_8" type="radio" formControlName="Category" name="Category" [attr.disabled]="true" [(ngModel)]="DedContModel.Category" value="C"> Contribution - (From Employer)
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Name*</label>
+                                <input type="text" formControlName="DeductionContributionName" [(ngModel)]="DedContModel.DeductionContributionName" [attr.disabled]="DedContModel.ID ? true :null" class="form-control" maxlength="150">
+                                <small *ngIf="ConributionDeductionForm.controls.DeductionContributionName.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <div class="margin-b-8">
+                                    <label>Amount* (Monthly)</label>
+                                </div>
+                                <label class="radio-inline">
+                                    <input type="radio" formControlName="DeductionContributionType" (change)="IsDedContValValid()" name="DeductionContributionType" [(ngModel)]="DedContModel.DeductionContributionType" value="F" checked> Fixed
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" formControlName="DeductionContributionType" (change)="IsDedContValValid()" name="DeductionContributionType" [(ngModel)]="DedContModel.DeductionContributionType" value="P"> % of Salary
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">{{DedContModel.DeductionContributionType == 'F' ? Currency:'%'}}</span>
+                                    <input type="number" formControlName="DeductionContributionValue" min="0" pattern=".{0,8}" (keyup)="IsDedContValValid()" [(ngModel)]="DedContModel.DeductionContributionValue" value="80" class="form-control" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                </div>
+                                <small *ngIf="ConributionDeductionForm.controls.DeductionContributionValue.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                                <small class="text-danger" *ngIf="IsValidDedConValue && !ConributionDeductionForm.controls.DeductionContributionValue.hasError('required')">
+                                    % value should be equal or less than 100 %.
+                                </small>
+                            </div>
+                            <!--<div>
+                                <div class="checkbox checkboxDefault" *ngIf="DedContModel.Category=='D' && PayrollRegion != 'SA'">
+                                    <input type="checkbox" id="checkTexable" formControlName="Taxable" [(ngModel)]="DedContModel.Taxable">
+                                    <label for="checkTexable">Taxable</label>
+                                </div>
+                            </div>-->
+                            <div>
+                                <div class="checkbox checkboxDefault">
+                                    <input type="checkbox" id="checkDefault" formControlName="Default" [(ngModel)]="DedContModel.Default">
+                                    <label for="checkDefault">Default</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#AllowancesModal"></i>-->
+
+                    </div>
+                    <div class="modal-footer" *ngIf="!IsShowListPopModal">
+                        <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowListModal(DedContModel.Category)" data-dismiss="modal" #closeDedContrModal>Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="ProrateModal" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog">
+            <form [formGroup]="ProrateForm" novalidate (ngSubmit)="SaveProrateDate(ProrateForm.valid)">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Proration Dates</h3>
+                        <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label>Start Date*</label>
+                                <Datetime-Component formControlName="FromDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onBatchStartDateChanged($event)" [(ngModel)]="ProrateModel.FromDate">
+                                </Datetime-Component>
+                                <em class="text-muted">Batch Start Date : {{model.PayScheduleFromDate | date: "dd/MM/yyyy"}}</em>
+                                <small *ngIf="ProrateForm.controls.FromDate.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>End Date*</label>
+                            <Datetime-Component formControlName="ToDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onBatchEndDateChanged($event)" [(ngModel)]="ProrateModel.ToDate">
+                            </Datetime-Component>
+                            <em class="text-muted">Batch End Date : {{model.PayScheduleToDate |  date: "dd/MM/yyyy"}} </em>
+                            <small *ngIf="ProrateForm.controls.ToDate.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" (click)="ShowListModal('CProrate')">Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="AdjustmentModal" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog">
+            <form [formGroup]="AdjustmentForm" novalidate (ngSubmit)="SavePayrollAdjustment(AdjustmentForm.valid)">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--<h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">{{model.ID ? 'Edit' : 'Add'}} Departments</h3>-->
+                        <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">0 Pay Stub - Adjustment</h3>
+                        <button type="button" style="display:none" id="CloseAdjustModal" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+
+
+                        <button type="button" class="close mt-modal-close" (click)="ShowListModal('cancel')" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                    </div>
+                    <!--<div class="modal-header no-padding no-border-b">
+                        <button type="button" class="close" data-dismiss="modal"><i class="glyphicon glyphicon-glyphicon-remove-circle"></i></button>
+                    </div>-->
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <strong>{{EmployeeModel.FirstName + ' ' + EmployeeModel.LastName + ' - ' }} {{model.FromDate | date: "dd/MM/yyyy"}} - {{model.ToDate | date: "dd/MM/yyyy"}}</strong>
+                            <h4>{{AdjustmentModel.AdjustmentTitle}}</h4>
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="well well-sm text-center center-block col-md-6 text-white" style="background: #00D399; color: #fff;">
+                                    <strong>Original {{AdjustmentModel.OrignalText}} Amount</strong>
+                                    <p>{{Currency}} {{AdjustmentModel.OrignalValue | number: '1.0-0'}}</p>
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Adjustment Date*</label>
+                            <Datetime-Component formControlName="AdjustmentDate" placeholder="DD/MM/YYYY" [(ngModel)]="AdjustmentModel.AdjustmentDate">
+                            </Datetime-Component>
+                            <em class="text-muted">Transaction Date : {{model.PayDate | date: "dd/MM/yyyy"}}</em>
+                            <small *ngIf="AdjustmentForm.controls.AdjustmentDate.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <h4>Adjustment Type </h4>
+                            <label class="radio-inline" style="margin-bottom: 10px;">
+                                <input type="radio" formControlName="AdjustmentType" (change)="CreditOrDebitAmount(AdjustmentValueClickIndex)" name="AdjustmentType" [(ngModel)]="AdjustmentModel.AdjustmentType" value="C" checked> Credit - Add adjustment amount to {{AdjustmentModel.AdjustmentText | lowercase}} amount
+                            </label>
+                            <label class="radio-inline" style="margin: 0;">
+                                <input type="radio" formControlName="AdjustmentType" (change)="CreditOrDebitAmount(AdjustmentValueClickIndex)" name="AdjustmentType" [(ngModel)]="AdjustmentModel.AdjustmentType" value="D"> Debit - Subtract adjustment amount from {{AdjustmentModel.AdjustmentText | lowercase}}
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <h4>Adjustment Amount* </h4>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                                <input type="number" formControlName="AdjustmentAmount" min="0" pattern=".{0,8}" (keyup)="CreditOrDebitAmount()" [(ngModel)]="AdjustmentModel.AdjustmentAmount" class="form-control" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                            </div>
+                            <small *ngIf="AdjustmentForm.controls.AdjustmentAmount.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label>Comments*</label>
+                            <textarea type="text" formControlName="AdjustmentComments" [(ngModel)]="AdjustmentModel.AdjustmentComments" maxlength="500" class="form-control"></textarea>
+                            <small *ngIf="AdjustmentForm.controls.AdjustmentComments.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="well well-sm text-center center-block col-md-6 text-white" style="background: #F05675; color: #fff;">
+                                    <strong>Adjustment {{AdjustmentModel.AdjustmentText}} Amount</strong>
+                                    <p>{{Currency}} {{AdjustmentModel.AdjustmentValue | number: '1.0-0'}}</p>
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="IsStatusPublished && IsSavedAdjustmentModel" (click)="DeleteAdjustmentModel(AdjustmentValueClickIndex)">Delete</button>
+                        <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" id="closeAdjustmentModal" (click)="ShowListModal('cancel')">Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

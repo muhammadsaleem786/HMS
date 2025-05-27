@@ -1,0 +1,214 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block"*ngIf="IsEdit">
+               Update Expense
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                Add New Expense
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <span class="closeICon" routerLink="/home/Expense/">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve" class="icon icon-sm"><path d="M455.2 9.2L256 208.4 56.8 9.2C44.5-3.1 24.6-3.1 12.2 9.2l-2.9 2.9C-3 24.4-3 44.4 9.3 56.7L208.4 256 9.2 455.2c-12.3 12.3-12.3 32.3 0 44.6l2.9 2.9c12.3 12.3 32.3 12.3 44.6 0L256 303.6l199.2 199.2c12.3 12.3 32.3 12.3 44.6 0l2.9-2.9c12.3-12.3 12.3-32.3 0-44.6L303.6 256 502.8 56.8c12.3-12.3 12.3-32.3 0-44.6l-2.9-2.9c-12.5-12.4-32.4-12.4-44.7-.1z"></path></svg>
+            </span>
+        </div>
+    </div>
+    <div class="row Cardview padding-20 m-0">
+       
+
+      <div class="col-sm-12">
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+            <div class="row justify-content-between">
+                <div class="col-sm-6">
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label>
+                                Category
+                            </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <select class="form-control form-control-sm form-control-alternative" formControlName="CategoryId" [(ngModel)]="model.CategoryId">
+                                    <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                                <small class="text-danger" *ngIf="Form1.controls.CategoryId.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Date*</label>
+                               
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group small-input">
+                                <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateChanged($event)" [(ngModel)]="model.Date">
+                                </Datetime-Component>
+                            </div>
+                            <small class="text-danger" *ngIf="Form1.controls.Date.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Remark*</label>
+                                    
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <textarea type="text" class="form-control m-input" placeholder="Remark" formControlName="Remark" [(ngModel)]="model.Remark"></textarea>
+                                <small class="text-danger" *ngIf="Form1.controls.Remark.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Amount</label>
+                                       
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <input type="text" id="" formControlName="Amount" [(ngModel)]="model.Amount" class="form-control form-control-sm form-control-alternative" placeholder="Amount"oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                <small class="text-danger" *ngIf="Form1.controls.Amount.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Clinic</label>
+                                            
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <select class="form-control form-control-sm form-control-alternative" formControlName="ClinicId" [(ngModel)]="model.ClinicId">
+                                    <option *ngFor="let item of CompanyList" [value]="item.ID">
+                                        {{item.CompanyName}}
+                                    </option>
+                                </select>
+                                <small class="text-danger" *ngIf="Form1.controls.ClinicId.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 p-0">
+                            <h6>
+                                Invoice Detail
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Invoice Date</label>
+                                                
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group  small-input">
+                                <Datetime-Component formControlName="InvoiceDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onInvoiceDateChanged($event)" [(ngModel)]="model.InvoiceDate">
+                                </Datetime-Component>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Invoice Number</label>
+                                                    
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <input type="text" id="" formControlName="InvoiceNumber" [(ngModel)]="model.InvoiceNumber" class="form-control form-control-sm form-control-alternative" placeholder="Invoice Number">
+                               
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Vendor</label>
+                                                          
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <input type="text" id="" formControlName="Vendor" [(ngModel)]="model.Vendor" class="form-control form-control-sm form-control-alternative" placeholder="Vendor">
+                             
+                             </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Payment Status</label>
+                                                                
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <select class="form-control form-control-sm form-control-alternative" formControlName="PaymentStatusId" [(ngModel)]="model.PaymentStatusId">
+                                    <option *ngFor="let item of PaymentList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Payment Remrks</label>
+                                                                  
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <textarea type="text" class="form-control m-input" placeholder="Payment Remrks" formControlName="PaymentRemrks" [(ngModel)]="model.PaymentRemrks"></textarea>
+                             
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="img-box">
+                        <div class="col-sm-12" *ngIf="model.Image!=''">
+                            <img [src]="AttachImage" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                        </div>
+                        <File-Component class="UploadActnWrap" [(ngModel)]="model.Attachment" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+                <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                <button type="button" class="btn btn-light" routerLink="/home/Expense">Cancel</button>
+            </div>
+        </form>
+
+      </div>
+
+    </div>
+</div>
+
+
+
+

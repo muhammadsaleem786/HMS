@@ -1,0 +1,349 @@
+﻿<div class="tab-pane" id="Procedure">
+    <div class="row">
+        <div class="col">
+            <div class="tab-pane active" id="Procedure">
+                <div class="text-right mb-2" *ngIf="ProeduresRights.CreateRights">
+                    <button class="btn btn-danger btn-sm" (click)="AddProedures(NewProcedure)"><i class="icon icon-plus"></i>Add Proedures </button>
+                </div>
+                <div class="TableView">
+                    <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+                        <div class="uk-overflow-container col-sm-12 p-0">
+                            <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                                <thead class="grid-header">
+                                    <tr>
+                                        <th>
+                                            Date
+                                        </th>
+                                        <th>
+                                            Procedure
+                                        </th>
+                                        <th>
+                                            Price
+                                        </th>
+                                        <th>Paid Amount</th>
+                                        <th>Balance</th>
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of ProcedureList">
+                                        <td>{{item.Date |date: 'MM/dd/yyyy'}}</td>
+                                        <td>
+                                            {{item.PatientProcedure}}
+                                        </td>
+                                        <td>
+                                            {{item.Price}}
+                                        </td>
+                                        <td>
+                                            {{item.PaidAmount}}
+                                        </td>
+                                        <td>
+                                            {{item.Balance}}
+                                        </td>
+
+
+                                        <td>
+                                            <span class="icon icon mr-3" (click)="Edit(item.ID)">
+                                                <i class="icon icon-pencil2"></i>
+                                            </span>
+                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ProeduresRights.DeleteRights">
+                                                <i class="icon icon-trash2 text-danger"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                    <tr [hidden]="!(ProcedureList.length == 0)" style="background:#fff;">
+                                        <td [attr.colspan]="10" align="center">
+                                            <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                            <strong class="nodateFound">No record found</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                        <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                            <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                                <a (click)="selectPage(page)">
+                                    {{page}}
+                                </a>
+                            </li>
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #NewProcedure let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            New Procedure
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="ProcedureSaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row form-group">
+                        <div class="col-4 text-">
+                            <label class="required"> Procedure </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="txtService" class="form-control form-control-sm form-control-alternative" formControlName="PatientProcedure" [(ngModel)]="model.PatientProcedure" (click)="LoadService()" placeholder="Search Service" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-">
+                            <label> CPT Code </label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm" formControlName="CPTCodeId" [(ngModel)]="model.CPTCodeId">
+                                <option *ngFor="let item of CPTCodeList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-">
+                            <label>Procedure Location </label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="Location" [(ngModel)]="model.Location" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-">
+                            <label>Price </label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="Price" [(ngModel)]="model.Price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-">
+                            <label>Discount </label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="Discount" [(ngModel)]="model.Discount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-">
+                            <label>PaidAmount </label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="PaidAmount" [(ngModel)]="model.PaidAmount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 border-left">
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label>Date/Time</label>
+                        </div>
+                        <div class="col-4">
+                            <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="model.Date">
+                            </Datetime-Component>
+                        </div>
+                        <div class="col-4">
+                            <input type="time" class="form-control" formControlName="Time" [(ngModel)]="model.Time" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="danger required">Physician </label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="Physician" [(ngModel)]="model.Physician" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label>Assistant </label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="Assistant" [(ngModel)]="model.Assistant" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group mt-3">
+                <div class="col-12">
+                    <textarea class="form-control" placeholder="Notes Here..." formControlName="Notes" [(ngModel)]="model.Notes"></textarea>
+                </div>
+            </div>
+            <hr />
+            <div class="row form-group mt-3">
+                <div class="col-sm-8">
+                    <h4>
+                        Charged Items
+                    </h4>
+                </div>
+                <div class="col-sm-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Item
+                                </th>
+                                <th>Batch</th>
+                                <th>
+                                    Quantity
+                                </th>
+                                <th class="text-right">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let dynamic of ipd_procedure_charged_dynamicArray; let i = index;">
+                                <td>
+                                    <input class="form-control form-control-sm" id="txtItem_{{i}}" [ngModelOptions]="{standalone:true}" (click)="LoadItem(i)" [(ngModel)]="dynamic.Item" />
+                                </td>
+                                <td *ngIf="dynamic.IsBatch">
+                                    <input class="form-control form-control-sm" id="txtBatch_{{i}}" [ngModelOptions]="{standalone:true}" (click)="LoadBatch(i)" [(ngModel)]="dynamic.Batch" />
+                                </td>
+                                <td *ngIf="dynamic.IsBatch==false">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Quantity" />
+                                </td>
+                                <td class="text-right">
+                                    <span class="btn-group">
+                                        <span class="btn btn-icon" (click)="RemoveChargedRow(i)">
+                                            <i class="icon icon-trash2"></i>
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button type="button" (click)="Addprocedure_charged()" class="btn btn-sm btn-danger" style="height:24px;">Add Charged</button>
+                </div>
+            </div>
+            <hr />
+
+            <div class="row form-group mt-3">
+                <div class="col-sm-8">
+                    <h4>
+                        Medication Used
+                    </h4>
+                </div>
+                <div class="col-sm-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:160px;">
+                                    Medication Used
+                                </th>
+                                <th>
+                                    Quantity
+                                </th>
+
+                                <th class="text-right">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let dynamic of ipd_procedure_medication_dynamicArray; let i = index;">
+
+                                <td style="min-width:200px;">
+                                    <input type="text" placeholder="Search medicane" class="form-control form-control-sm" id="txtMedicine_{{i}}" name="Medicine" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.MedicineName" (click)="LoadMedicine(i)" autocomplete="off">
+
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Quantity" />
+                                </td>
+                                <td class="text-right">
+                                    <span class="btn-group">
+                                        <span class="btn btn-icon" (click)="RemoveMedicationRow(i)">
+                                            <i class="icon icon-trash2"></i>
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" (click)="Addprocedure_medication()" class="btn btn-sm btn-danger py-1" style="height:24px;">Add Medication</button>
+                </div>
+            </div>
+            <hr />
+            <div class="row form-group mt-3">
+                <div class="col-sm-8">
+                    <h4>
+                        Expenses
+                    </h4>
+                </div>
+                <div class="col-sm-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:160px;">
+                                    Category
+                                </th>
+                                <th>
+                                    Amount
+                                </th>
+                                <th>
+                                    Remarks
+                                </th>
+
+                                <th class="text-right">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let dynamic of ipd_procedure_expense_dynamicArray; let i = index;">
+                                <td style="min-width:200px;">
+                                    <select class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.CategoryId">
+                                        <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control form-control-sm" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
+                                </td>
+                                <td>
+                                    <textarea class="form-control form-control-sm" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Description"></textarea>
+                                </td>
+                                <td class="text-right">
+                                    <span class="btn-group">
+                                        <span class="btn btn-icon" (click)="Remove_procedure_expense_row(i)">
+                                            <i class="icon icon-trash2"></i>
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" (click)="Addprocedure_expense()" class="btn btn-sm btn-danger py-1" style="height:24px;">Add Expense</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
+        </div>
+    </form>
+</ng-template>
+

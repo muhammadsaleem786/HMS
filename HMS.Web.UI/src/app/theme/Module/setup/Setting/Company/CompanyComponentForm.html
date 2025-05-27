@@ -1,0 +1,191 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Company
+                    </h3>
+                </div>
+            
+            </div>
+            
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+           
+        </div>
+    </div>
+
+    <div>
+    <div class="Cardview search_onTop px-3">
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)" style="border-top:0px;">
+            <div class="row pt-3">
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Company Type</label>
+                                <select formControlName="CompanyTypeID" [(ngModel)]="model.CompanyTypeID" class="form-control">
+                                    <option *ngFor="let item of CompanyTypes" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Company Name</label>
+                                <input type="text" formControlName="CompanyName" [(ngModel)]="model.CompanyName" maxlength="500" class="form-control">
+                                <small *ngIf="Form1.controls.CompanyName.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Website</label>
+                                <input type="text" formControlName="Website" [(ngModel)]="model.Website" maxlength="150" class="form-control" placeholder="WebSite">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" formControlName="Email" [(ngModel)]="model.Email" maxlength="250" class="form-control" placeholder="Email">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Company Address</label>
+                                <input type="text" formControlName="CompanyAddress1" [(ngModel)]="model.CompanyAddress1" maxlength="250" class="form-control" placeholder="Street 1">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label> Address 2</label>
+                                <input type="text" formControlName="CompanyAddress2" [(ngModel)]="model.CompanyAddress2" maxlength="250" class="form-control" placeholder="Street 2">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>City</label>
+                                <select formControlName="CityDropDownId" [(ngModel)]="model.CityDropDownId" class="form-control">
+                                    <option *ngFor="let item of CityTypeList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Province</label>
+                                <input type="text" formControlName="Province" [(ngModel)]="model.Province" maxlength="250" class="form-control" placeholder="Province">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Postal Code</label>
+                                <input type="text" formControlName="PostalCode" [(ngModel)]="model.PostalCode" maxlength="250" class="form-control" placeholder="Zip/PostalCode">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="text" formControlName="Phone" [(ngModel)]="model.Phone" maxlength="12" class="form-control" (change)="IsvalidPhone('HP')" placeholder="3009087854">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Fax</label>
+                                <input type="text" formControlName="Fax" [(ngModel)]="model.Fax" maxlength="250" class="form-control" placeholder="Fax">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Receipt Footer</label>
+                                <input type="text" formControlName="ReceiptFooter" [(ngModel)]="model.ReceiptFooter" class="form-control" placeholder="Receipt Footer">
+                            </div>
+                        </div>
+                        <!--<div class="col-sm-4">
+                <div class="form-group">
+                    <label>Language</label>
+                    <select formControlName="LanguageID" [(ngModel)]="model.LanguageID" class="form-control">
+                        <option *ngFor="let item of LanguageTypes" [value]="item.ID">
+                            {{item.Name}}
+                        </option>
+                    </select>
+                </div>
+            </div>-->
+
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Upload File Name</label>
+                        <input type="text" [value]="model.CompanyLogo" [(ngModel)]="model.CompanyLogo" [ngModelOptions]="{standalone:true}" class="form-control hidden" />
+
+                    </div>
+                    <div class="img-box" style="min-height: 230px;">
+
+                        <div class="col-sm-12 mt-3" *ngIf="model.CompanyLogo!=''">
+                            <img [src]="Image" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                        </div>
+                        <File-Component class="UploadActnWrap" [(ngModel)]="model.CompanyLogo" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Can Create Back Dated Appointment?</label>
+                        <input type="checkbox" formControlName="IsBackDatedAppointment" [(ngModel)]="model.IsBackDatedAppointment" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Can Update Bill Date?</label>
+                        <input type="checkbox" formControlName="IsUpdateBillDate" [(ngModel)]="model.IsUpdateBillDate" />
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>CNIC Mandatory</label>
+                        <input type="checkbox" formControlName="IsCNICMandatory" [(ngModel)]="model.IsCNICMandatory" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Date Format</label>
+                        <select formControlName="DateFormatId" [(ngModel)]="model.DateFormatId" class="form-control">
+                            <option *ngFor="let item of DateFormatList" [value]="item.ID">
+                                {{item.Value}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Standard Shift Hours</label>
+                        <input type="text" formControlName="StandardShiftHours" [(ngModel)]="model.StandardShiftHours" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Token No</label>
+                        <input type="text" formControlName="TokenNo" [(ngModel)]="model.TokenNo" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                    </div>
+                </div>
+                <div class="modal-footer col-sm-12">
+                    <button id="saveSchedule" type="submit" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn btn-light" routerLink="/home/setup">Cancel</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    </div>
+    
+</div>
+

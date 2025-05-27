@@ -1,0 +1,82 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">        
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Income
+                    </h3>
+                </div>
+                <div class="col">
+                    <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
+                            <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                {{item.Value}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>            
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights"(click)="AddRecord('0')">New Income</a>
+        </div>
+    </div>    
+    <div class="Cardview search_onTop px-3 pt-0">
+        <div class="TableView">
+            <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                <div class="uk-overflow-container col-sm-12 p-0">
+                    <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                        <thead class="grid-header">
+                            <tr>
+                                <th>Date </th>
+                                <th> Category </th>
+                                <th> Due Amount(PKR) </th>
+                                <th> Received(PKR) </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of IncomeList" index as i>
+                                <td (click)="AddRecord(item.ID)">
+                                    <span [ngClass]="{'today-highlight': isToday(item.Date)}">
+                                        {{ item.Date | date: 'dd/MM/yyyy' }}
+                                    </span>                                    
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Category}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.DueAmount}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.ReceivedAmount}}
+                                </td>
+                            </tr>
+                            <tr [hidden]="!(IncomeList.length == 0)" style="background:#fff;">
+                                <td [attr.colspan]="10" align="center">
+                                    <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                    <strong class="nodateFound">No record found</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                    <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                        <a (click)="selectPage(page)">
+                            {{page}}
+                        </a>
+                    </li>
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+

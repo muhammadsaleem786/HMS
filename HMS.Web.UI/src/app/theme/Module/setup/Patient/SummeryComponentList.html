@@ -1,0 +1,898 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block">
+                Patient Summary
+            </h3>
+        </div>
+    </div>
+    <div class="Cardview m-0 px-2">
+        <div class="card- border-0">
+            <span class="clsoe closePatietnDetail">
+                <a routerLink="/home/Patient"><i class="icon icon-cross"></i></a>
+
+            </span>
+            <div class="card-body p-2 NavtabLine">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item active" (click)="HomePage()" *ngIf="Rights.indexOf(23)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Home">
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item" (click)="loadVital()" *ngIf="Rights.indexOf(24)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Vital">Vital </a>
+                    </li>
+                    <li class="nav-item" (click)="HomePage()" *ngIf="Rights.indexOf(23)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Basic"> Basic Info </a>
+                    </li>
+                    <li class="nav-item" (click)="ShowAppointment()" *ngIf="Rights.indexOf(13)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Appointments">Appointments </a>
+                    </li>
+                    <li class="nav-item" (click)="HomePage()" *ngIf="Rights.indexOf(23)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Health">
+                            Health Information
+                        </a>
+                    </li>
+                    <li class="nav-item" (click)="HomePage()" *ngIf="Rights.indexOf(23)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Medical">Medical History </a>
+                    </li>
+                    <li class="nav-item" (click)="LoadBillList()" *ngIf="Rights.indexOf(12)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Billing">Billing  </a>
+                    </li>
+                    <li class="nav-item" (click)="LoadDocuments()" *ngIf="Rights.indexOf(25)>-1">
+                        <a class="nav-link" data-toggle="tab" href="#Documents">Documents  </a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content" *ngIf="IsPatient==false">
+                    <router-outlet></router-outlet>
+                </div>
+                <div class="tab-content" *ngIf="IsPatient">
+                    <div class="tab-pane active" id="Home">
+                        <div class="row mt-2">
+                            <div class="col-sm-5">
+                                <div class="card">
+                                    <div class="card-header gray">Personal Information</div>
+                                    <div class="card-body">
+
+                                        <div class="row">
+
+                                            <div class="col-sm-5">
+                                                <label>
+                                                    Mobile:
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span>
+                                                    {{model.Mobile}}
+                                                </span>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <label>
+                                                    Patient:
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span>
+                                                    {{model.PatientName}}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <label>
+                                                    Email:
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span>
+                                                    {{model.Email}}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <label>
+                                                    Patient ID:
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span>
+                                                    {{model.ID}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <label>
+                                                    O/s Amt:
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span>
+                                                    PKR {{OutStdAmount}} Send Reminder
+                                                </span>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <label>
+                                                    Clinics
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span>
+                                                    {{ClinicName}}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="custom-control custom-checkbox 2 mt-2 d-flex align-items-center">
+                                                    <input type="checkbox" class="custom-control-input" id="CurrentPat" name="CurrentPat">
+                                                    <label class="custom-control-label" for="CurrentPat">Mark as Current Patient</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5">
+                                    <div class="card">
+                                        <div class="card-header gray">Medical History</div>
+                                        <div class="card-body">
+                                            <span *ngIf="model.MedicalHistory!=null || model.CurrentMedication!=null||model.HabitsHistory!=null">
+                                                Past Medical History: {{model.MedicalHistory}}<br />
+                                                Family History:{{model.CurrentMedication}}<br />
+                                                Surgical History:{{model.HabitsHistory}}
+                                            </span>
+                                            <span *ngIf="model.MedicalHistory==null && model.CurrentMedication==null && model.HabitsHistory == null">
+                                                No Data Found
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-7">
+                                <div class="card">
+                                    <div class="card-header gray">Visits / Prescriptions</div>
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <tbody>
+                                                <tr *ngFor="let p of emr_prescription_dynamicArray">
+                                                    <td>
+                                                        {{p.AppointmentDate |date: 'MM/dd/yyyy'}}
+                                                    </td>
+                                                    <td>
+                                                        <p>
+                                                            <strong>Rx:</strong><span *ngFor="let m of p.MedicineList">{{m}}&nbsp;,</span>
+
+                                                        </p>
+                                                        <p *ngIf="p.emr_prescription_complaint.length > 0">
+
+                                                            <strong> Complaint:</strong><span *ngFor="let c of p.emr_prescription_complaint">{{c.Complaint}}&nbsp;, </span>
+                                                        </p>
+                                                        <p *ngIf="p.emr_prescription_diagnos.length > 0">
+                                                            <strong>Diagnos:</strong> <span *ngFor="let c of p.emr_prescription_diagnos">{{c.Diagnos}}&nbsp;,</span>
+                                                        </p>
+                                                        <p *ngIf="p.emr_prescription_investigation.length > 0">
+                                                            <strong>Investigation:</strong> <span *ngFor="let c of p.emr_prescription_investigation">{{c.Investigation}}&nbsp;,</span>
+                                                        </p>
+                                                        <p *ngIf="p.emr_prescription_observation.length > 0">
+                                                            <strong>Examination:</strong> <span *ngFor="let c of p.emr_prescription_observation">{{c.Observation}}&nbsp;,</span>
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        {{p.PaidAmount}}
+                                                        O/s:PKR {{p.OutAmount}}
+                                                    </td>
+                                                    <td (click)="PrintRxform(p.Id)">
+                                                        <span class="icon icon-p text-danger">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="font-size:30px;" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 48 48"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 4a1 1 0 0 0-1 1v38a1 1 0 0 0 1 1h28a1 1 0 0 0 1-1V15a1 1 0 0 0-.293-.707l-10-10A1 1 0 0 0 28 4H10zm1 38V6h16v9a1 1 0 0 0 1 1h9v26H11zm24.586-28L29 7.414V14h6.586zM17 33h2v-7h1.586l5 5l-3.293 3.293l1.414 1.414L27 32.414l3.293 3.293l1.414-1.414L28.414 31l3.293-3.293l-1.414-1.414L27 29.586l-3.605-3.605A4 4 0 0 0 23 18h-5a1 1 0 0 0-1 1v14zm6-9h-4v-4h4a2 2 0 1 1 0 4z" fill="currentColor" /></g></svg>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="Basic">
+                        <div class="px-4 mt-1">
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form [formGroup]="Form7" novalidate (ngSubmit)="PatientSaveOrUpdate(Form7.valid)">
+                                        <div class="row mt-4">
+                                            <div class="col-sm-6">
+
+                                                <div class="row form-group">
+                                                    <div class="col-4 text-right">
+                                                        <label class="form-control-label mt-2 pl-0 required"> Name</label>
+                                                    </div>
+                                                    <div class="col-8 d-flex">
+                                                        <select class="form-control" style="max-width:100px;" formControlName="PrefixTittleId" [(ngModel)]="model.PrefixTittleId">
+                                                            <option *ngFor="let item of TittleList" [value]="item.ID">
+                                                                {{item.Value}}
+                                                            </option>
+                                                        </select>
+                                                        <input type="text" class="form-control border-left-0" formControlName="PatientName" [(ngModel)]="model.PatientName" />
+                                                        <small class="text-danger" *ngIf="Form7.controls.PatientName.hasError('required') && submitted">
+                                                            This value is required.
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row form-group">
+
+                                                    <div class="col-4 text-right">
+                                                        <label class="form-control-label mt-2 pl-0 required"> Age</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <input type="text" formControlName="Age" [(ngModel)]="model.Age" (change)="AgeChange()" class="form-control  form-control-alternative" placeholder="Age">
+                                                                <small class="text-danger" *ngIf="Form7.controls.Age.hasError('required') && submitted">
+                                                                    This value is required.
+                                                                </small>
+                                                            </div>
+                                                            <div class="col-sm-1 p-0 mt-2 text-center">
+                                                                OR
+                                                            </div>
+
+                                                            <div class="col-sm-5">
+                                                                <Datetime-Component formControlName="DOB" placeholder="DD/MM/YYYY" (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="model.DOB">
+                                                                </Datetime-Component>
+
+                                                            </div>
+
+                                                            <div class="col-2 text-right">
+                                                                <label class="form-control-label mt-2 pl-0" for="input-username"> DOB</label>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row form-group">
+                                                    <div class="col-4 text-right">
+                                                        <label class="form-control-label mt-2 pl-0 required" for="input-username"> Gender</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <select class="form-control  form-control-alternative" formControlName="Gender" [(ngModel)]="model.Gender">
+                                                            <option *ngFor="let item of GenderList" [value]="item.ID">
+                                                                {{item.Value}}
+                                                            </option>
+                                                        </select>
+                                                        <small class="text-danger" *ngIf="Form7.controls.Gender.hasError('required') && submitted">
+                                                            This value is required.
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row form-group">
+                                                    <div class="col-4 text-right">
+                                                        <label class="form-control-label mt-2 pl-0 required" for="input-username"> Mobile</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile" class="form-control  form-control-alternative" placeholder="923001234567">
+                                                        <small class="text-danger" *ngIf="Form7.controls.Mobile.hasError('required') && submitted">
+                                                            This value is required.
+                                                        </small>
+                                                        <small *ngIf="Form7.controls.Mobile.hasError('pattern') && !Form7.controls.Mobile.hasError('required')">
+                                                            Please enter valid Mobile(923001234567).
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="row form-group">
+                                                    <div class="col-4 text-right">
+                                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Email</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <input type="text" id="" formControlName="Email" [(ngModel)]="model.Email" class="form-control  form-control-alternative" placeholder="Email">
+
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col-4 text-right">
+                                                        <label class="form-control-label mt-2 pl-0 required" for="input-username"> CNIC</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC" class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X">
+                                                        <small class="text-danger" *ngIf="Form7.controls.CNIC.hasError('required') && submitted">
+                                                            This value is required.
+                                                        </small>
+                                                        <small *ngIf="Form7.controls.CNIC.hasError('pattern') && !Form7.controls.CNIC.hasError('required')">
+                                                            CNIC No must follow the XXXXX-XXXXXXX-X format!"
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row form-group">
+                                                    <div class="col-4 text-right">
+                                                        <label class="form-control-label mt-2 pl-0" for="input-username"> MRNO</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <input type="text" id="" formControlName="MRNO" [(ngModel)]="model.MRNO" class="form-control  form-control-alternative" placeholder="MRNO" readonly="readonly">
+                                                        <small class="text-danger" *ngIf="Form7.controls.MRNO.hasError('required') && submitted">
+                                                            This value is required.
+                                                        </small>
+
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col-4 text-right">
+                                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Bill Type</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <select class="form-control  form-control-alternative" formControlName="BillTypeId" [(ngModel)]="model.BillTypeId">
+                                                            <option *ngFor="let item of BillTypeList" [value]="item.ID">
+                                                                {{item.Value}}
+                                                            </option>
+                                                        </select>
+                                                        <small class="text-danger" *ngIf="Form7.controls.Gender.hasError('required') && submitted">
+                                                            This value is required.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col-4 text-right">
+                                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Note</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <textarea type="text" class="form-control m-input" placeholder="Note" formControlName="Notes" [(ngModel)]="model.Notes"></textarea>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <div class="img-box">
+                                                    <div class="col-sm-12" *ngIf="model.Image!=''">
+                                                        <img [src]="PatientImage" class="Img_upload" />
+                                                    </div>
+                                                    <File-Component class="UploadActnWrap" [(ngModel)]="model.Image" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--<div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>-->
+                                    </form>
+
+                                </div>
+                                <div class="col-sm-12">
+                                    <form [formGroup]="Form7" novalidate (ngSubmit)="PatientSaveOrUpdate(Form7.valid)">
+                                        <div class="row justify-content-between mt-4">
+                                            <div class="col-sm-6">
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-right">
+                                                        <label>
+                                                            Blood Group
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <div class="form-group">
+                                                            <select class="form-control " formControlName="BloodGroupId" [(ngModel)]="model.BloodGroupId">
+                                                                <option *ngFor="let item of BloodList" [value]="item.ID">
+                                                                    {{item.Value}}
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-right">
+                                                        <label>
+                                                            Anniversary Date
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <div class="form-group">
+                                                            <Datetime-Component formControlName="AnniversaryDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onAnniversaryDateChanged($event)" [(ngModel)]="model.AnniversaryDate">
+                                                            </Datetime-Component>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-right">
+                                                        <label>
+                                                            Contact No (Alt)
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <div class="form-group">
+                                                            <input class="form-control" formControlName="ContactNo" [(ngModel)]="model.ContactNo" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-right">
+                                                        <label>
+                                                            Emergency No.
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <div class="form-group">
+                                                            <input class="form-control" formControlName="EmergencyNo" [(ngModel)]="model.EmergencyNo" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-right">
+                                                        <label>
+                                                            Address
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <div class="form-group">
+                                                            <textarea class="form-control" formControlName="Address" [(ngModel)]="model.Address"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-right">
+                                                        <label>
+                                                            Notes
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <div class="form-group">
+                                                            <textarea class="form-control" formControlName="Notes" [(ngModel)]="model.Notes"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-right">
+                                                        <label>
+                                                            Referred by
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <div class="form-group">
+                                                            <input class="form-control" formControlName="ReferredBy" [(ngModel)]="model.ReferredBy" placeholder="Enter Name" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer" *ngIf="ControlRights.CreateRights">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="Health">
+                        <form [formGroup]="Form7" novalidate (ngSubmit)="PatientSaveOrUpdate(Form7.valid)">
+                            <div class="row mt-5">
+                                <div class="col-sm-12 CustomAccordion">
+
+                                    <ngb-accordion [closeOthers]="true" activeIds="static-1">
+
+                                        <ngb-panel id="static-1">
+                                            <ng-template ngbPanelTitle>
+                                                <span>
+                                                    <img src="../assets/app/media/img/icons/illness.png" class="img-fluid radius">
+
+                                                    Illness
+                                                </span><i class="icon-chevron-right iconImage"></i>
+                                            </ng-template>
+                                            <ng-template ngbPanelContent>
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+                                                        <div class="custom-control custom-checkbox mb-3">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck" formControlName="Illness_Diabetes" [(ngModel)]="model.Illness_Diabetes">
+                                                            <label class="custom-control-label" for="customCheck">Diabetes</label>
+                                                        </div>
+
+                                                        <div class="custom-control custom-checkbox mb-3 ml-5">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckTuberculosis" formControlName="Illness_Tuberculosis" [(ngModel)]="model.Illness_Tuberculosis">
+                                                            <label class="custom-control-label" for="customCheckTuberculosis">Tuberculosis</label>
+                                                        </div>
+
+                                                        <div class="custom-control custom-checkbox mb-3 ml-5">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckHeartPatient" formControlName="Illness_HeartPatient" [(ngModel)]="model.Illness_HeartPatient">
+                                                            <label class="custom-control-label" for="customCheckHeartPatient"> Heart Patient</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="custom-control custom-checkbox mb-3">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckBloodPressure" formControlName="Illness_BloodPressure" [(ngModel)]="model.Illness_BloodPressure">
+                                                            <label class="custom-control-label" for="customCheckBloodPressure">Blood Pressure</label>
+                                                        </div>
+
+                                                        <div class="custom-control custom-checkbox mb-3 ml-5">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckMigraine" formControlName="Illness_Migraine" [(ngModel)]="model.Illness_Migraine">
+                                                            <label class="custom-control-label" for="customCheckMigraine">Migraine</label>
+                                                        </div>
+
+                                                        <div class="custom-control custom-checkbox mb-3 ml-5">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckLungsRelated" formControlName="Illness_LungsRelated" [(ngModel)]="model.Illness_LungsRelated">
+                                                            <label class="custom-control-label" for="customCheckLungsRelated">  Lungs related</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="mb-3 col-sm-7 p-0 mt-1">
+                                                            <div class="form-group">
+                                                                <input class="form-control" style="max-width: 428px;" placeholder="Other" formControlName="Illness_Other" [(ngModel)]="model.Illness_Other" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </ng-template>
+                                        </ngb-panel>
+
+                                        <ngb-panel id="static2">
+                                            <ng-template ngbPanelTitle>
+                                                <span>
+                                                    <img src="../assets/app/media/img/icons/allergies.png" class="img-fluid radius">
+
+                                                    Allergies
+                                                </span><i class="icon-chevron-right iconImage"></i>
+                                            </ng-template>
+                                            <ng-template ngbPanelContent>
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <div class="form-group">
+                                                            <input class="form-control" placeholder="Food" formControlName="Allergies_Food" [(ngModel)]="model.Allergies_Food" />
+                                                        </div>
+
+                                                        <div class="form-group mt-3 mb-3">
+                                                            <input class="form-control" placeholder="Drug" formControlName="Allergies_Drug" [(ngModel)]="model.Allergies_Drug" />
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <input class="form-control" placeholder="Others" formControlName="Allergies_Other" [(ngModel)]="model.Allergies_Other" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-template>
+                                        </ngb-panel>
+
+
+                                        <ngb-panel id="static3">
+                                            <ng-template ngbPanelTitle>
+                                                <span>
+                                                    <img src="../assets/app/media/img/icons/habits.png" class="img-fluid radius">
+
+                                                    Habits
+                                                </span><i class="icon-chevron-right iconImage"></i>
+                                            </ng-template>
+                                            <ng-template ngbPanelContent>
+                                                <div class="row">
+                                                    <div class="col-sm-8">
+                                                        <table class="table table-bordered">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="width:200px">
+                                                                        <h6>
+                                                                            Smoking
+                                                                        </h6>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input" name="Habits_Smoking" id="Habits_Smoking" value="N" formControlName="Habits_Smoking" [(ngModel)]="model.Habits_Smoking">
+                                                                            <label class="custom-control-label" for="Habits_Smoking">Never</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input" name="Habits_Smoking" id="Habits_Smoking1" value="O" formControlName="Habits_Smoking" [(ngModel)]="model.Habits_Smoking">
+                                                                            <label class="custom-control-label" for="Habits_Smoking1">Occational</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio">
+                                                                            <input type="radio" class="custom-control-input" name="Habits_Smoking" id="Habits_Smoking2" value="H" formControlName="Habits_Smoking" [(ngModel)]="model.Habits_Smoking">
+                                                                            <label class="custom-control-label" for="Habits_Smoking2">Habitual</label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+
+
+
+                                                                <tr>
+                                                                    <td>
+                                                                        <h6>
+                                                                            Drinking
+                                                                        </h6>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input" name="Habits_Drinking" id="Habits_Drinking" value="N" formControlName="Habits_Drinking" [(ngModel)]="model.Habits_Drinking">
+                                                                            <label class="custom-control-label" for="Habits_Drinking">Never</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input" name="Habits_Drinking" id="Habits_Drinking1" value="O" formControlName="Habits_Drinking" [(ngModel)]="model.Habits_Drinking">
+                                                                            <label class="custom-control-label" for="Habits_Drinking1">Occational</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio">
+                                                                            <input type="radio" class="custom-control-input" name="Habits_Drinking" id="Habits_Drinking2" value="H" formControlName="Habits_Drinking" [(ngModel)]="model.Habits_Drinking">
+                                                                            <label class="custom-control-label" for="Habits_Drinking2">Habitual</label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+
+
+                                                                <tr>
+                                                                    <td>
+                                                                        <h6>
+                                                                            Tobacco
+                                                                        </h6>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input" name="Habits_Tobacco" id="Habits_Tobacco" value="N" formControlName="Habits_Tobacco" [(ngModel)]="model.Habits_Tobacco">
+                                                                            <label class="custom-control-label" for="Habits_Tobacco">Never</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input" name="Habits_Tobacco" id="Habits_Tobacco1" value="O" formControlName="Habits_Tobacco" [(ngModel)]="model.Habits_Tobacco">
+                                                                            <label class="custom-control-label" for="Habits_Tobacco1">Occational</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio">
+                                                                            <input type="radio" class="custom-control-input" name="Habits_Tobacco" id="Habits_Tobacco2" value="H" formControlName="Habits_Tobacco" [(ngModel)]="model.Habits_Tobacco">
+                                                                            <label class="custom-control-label" for="Habits_Tobacco2">Habitual</label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="row">
+                                                    <div class="col-sm-8 mt-2">
+                                                        <div class="form-group">
+                                                            <input class="form-control" placeholder="Others" formControlName="Habits_Other" [(ngModel)]="model.Habits_Other" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-template>
+                                        </ngb-panel>
+
+
+                                    </ngb-accordion>
+                                </div>
+                            </div>
+                            <div class="modal-footer"*ngIf="ControlRights.CreateRights">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="Medical">
+                        <form [formGroup]="Form7" novalidate (ngSubmit)="PatientSaveOrUpdate(Form7.valid)">
+                            <div class="row mt-5">
+                                <div class="col-sm-7">
+                                    <div class="row">
+                                        <div class="col-sm-4 text-right">
+                                            <label>
+                                                Past Medical History
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="form-group">
+                                                <textarea class="form-control" formControlName="MedicalHistory" [(ngModel)]="model.MedicalHistory"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-4 text-right">
+                                            <label>
+                                                Family History
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="form-group">
+                                                <input class="form-control" formControlName="CurrentMedication" [(ngModel)]="model.CurrentMedication" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-4 text-right">
+                                            <label>
+                                                Surgical History
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="form-group">
+                                                <input class="form-control" formControlName="HabitsHistory" [(ngModel)]="model.HabitsHistory" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer"*ngIf="ControlRights.CreateRights">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<!-- ============================   Rx Print  Modal ========= -->
+<ng-template #PrintRx let-modal class="RxPrintModal TemplateTwo">
+    <div id="print-RxPrintModal">
+        <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
+            <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
+                <div class="col-6">
+                    <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;"> {{DoctorInfo.Name}} </h3>
+                    <p style="margin:0 0 5px;font-size:14px;line-height: normal;"> {{DoctorInfo.Qualification}} {{DoctorInfo.Designation}}</p>
+                    <strong style="margin:0;font-size:13px;line-height: normal;">
+                        {{DoctorInfo.Designation}}
+                    </strong>
+                    <p style="margin: 0; font-size: 14px; line-height: normal;">Ph: {{DoctorInfo.PhoneNo}}</p>
+                </div>
+                <div class="col-6 text-right" *ngIf="PatientRXmodel.ClinicIogo != '' && PatientRXmodel.ClinicIogo != null ">
+                    <img [src]="PatientRXmodel.ClinicIogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div class="col-6 text-right" *ngIf="PatientRXmodel.ClinicIogo =='' || PatientRXmodel.ClinicIogo == null ">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+            </div>
+        </div>
+        <div class="modal-body body_Prescription" style="height: calc(29.7cm - 200px);">
+            <div class="row" style="font-size: 14px;border-bottom: 1px solid #5e72e4; margin-bottom: 3px; padding-bottom: 8px;">
+                <div class="col-5">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Name" style="font-size: 14px;">P/Name:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;" name="Name" [(ngModel)]="PatientRXmodel.PatientName" readonly>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Age" style="font-size: 14px;">Age/Sex:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;" name="Name" [(ngModel)]="PatientRXmodel.Age" readonly>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Weight" style="font-size: 14px;">Weight:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;" name="Name" readonly>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Date" style="font-size: 14px;">Date:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:100px;" name="Name" [(ngModel)]="PatientRXmodel.AppointmentDate" readonly>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" style="border-top: 3px solid #5e72e4;height: 95%;">
+                <div class="col-3">
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Vitals:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of PatientVitalList">
+                            {{d.Name}}&nbsp;&nbsp;{{d.Measure}}&nbsp; {{d.Unit}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Diagnoses:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_diagnos_dynamicArray">
+                            {{d.Diagnos}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Complaint:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_complaint_dynamicArray">
+                            {{d.Complaint}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Investigation:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_investigation_dynamicArray">
+                            {{d.Investigation}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Examination:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_observation_dynamicArray">
+                            {{d.Observation}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-9" style="border-left: 1px solid #5e72e4">
+                    <table class="table" style="margin-top: 15px;">
+                        <thead>
+                        <th style="border-top:0px; padding: 2px;">
+                            Medicine
+                        </th>
+                        <th style="border-top:0px; padding: 2px;">
+                            Type
+                        </th>
+                        <th style="border-top:0px; padding: 2px;">
+                            Days
+                        </th>
+                        <th style="border-top:0px; padding: 2px;">
+                            Measure
+                        </th>
+                        <th style="border-top:0px; padding:0 2px 5px;">
+                            Instruction
+                        </th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let m of emr_prescription_treatment_dynamicArray">
+                                <td style="padding:2px;">{{m.MedicineName}}</td>
+                                <td style="padding:2px;">Tab</td>
+                                <td style="padding:2px;">{{m.Duration}}</td>
+                                <td style="padding:2px;">{{m.Measure}}</td>
+                                <td style="padding:2px;">{{m.Instructions}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3> Instructions</h3>
+                    <p style="font-size:12px;line-height:normal;" *ngFor="let m of emr_prescription_treatment_dynamicArray">
+                        {{m.Instructions}},
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer bg-secondary" style="padding: 5px 0 0px;text-align:center;">
+            <div class="col">
+                <p style="font-size: 13px;margin-bottom:5px; border-bottom:1px solid #efefef;">Clinic Days: Mon To Sat. Timing: 6:00 Pm To 9:00 Pm <strong>Off Day:</strong> Sunday</p>
+                <p style="font-size: 13px;">For Appointment, ring: St # 4, Nizam Pura (W) Bahawalnagar, 03000-11234123</p>
+            </div>
+        </div>
+    </div>
+    <div style="position:fixed; right: 20px;">
+        <button class="btn btn-primary" printSectionId="print-RxPrintModal" ngxPrint> Print</button>
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+</ng-template>

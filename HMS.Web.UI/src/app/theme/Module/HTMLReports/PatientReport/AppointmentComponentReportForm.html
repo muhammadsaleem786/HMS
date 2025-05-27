@@ -1,0 +1,147 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block">
+                Appointment Report
+
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right p-0">
+            <span class="closeICon" routerLink="/home/report">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve" class="icon icon-sm"><path d="M455.2 9.2L256 208.4 56.8 9.2C44.5-3.1 24.6-3.1 12.2 9.2l-2.9 2.9C-3 24.4-3 44.4 9.3 56.7L208.4 256 9.2 455.2c-12.3 12.3-12.3 32.3 0 44.6l2.9 2.9c12.3 12.3 32.3 12.3 44.6 0L256 303.6l199.2 199.2c12.3 12.3 32.3 12.3 44.6 0l2.9-2.9c12.3-12.3 12.3-32.3 0-44.6L303.6 256 502.8 56.8c12.3-12.3 12.3-32.3 0-44.6l-2.9-2.9c-12.5-12.4-32.4-12.4-44.7-.1z"></path></svg>
+            </span>
+        </div>
+    </div>
+    <div class="Cardview mx-0 px-3 Report_Wrap">
+
+        <div class="filter_bar row  pt-3">
+            <div class="col-sm-2">
+                <div class="form-group small-input">
+                    <label for="">From Date</label>
+                    <Datetime-Component placeholder="DD/MM/YYYY" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.FromDate">
+                    </Datetime-Component>
+                </div>
+            </div>
+
+            <div class="col-sm-2">
+                <div class="form-group small-input">
+                    <label for="">To Date</label>
+                    <Datetime-Component placeholder="DD/MM/YYYY" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.ToDate">
+                    </Datetime-Component>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="">Patient</label>
+                    <input type="text" id="PatientSearchByName" (click)="LoadPatient()" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.PatientName" placeholder="Search Patient" autocomplete="off">
+                </div>
+            </div>
+            <!--<div class="col-sm-3">
+                <div class="form-group">
+                    <label for="">Doctor</label>
+                    <input type="text" id="DoctorSearch" (click)="LoadDoctor()" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.DoctorName" class="form-control form-control-sm form-control-alternative" placeholder="Search Doctor" autocomplete="off">
+                </div>
+            </div>-->
+            <div class="col-sm-1">
+                <label class="opacity0">Report</label>
+                <button class="btn btn-primary" (click)="RunReport()">View</button>
+            </div>
+
+            <div class="col-sm-4">
+                <label class="opacity0 d-block">Report</label>
+                <div class="dropdown float-right">
+                    <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
+                        Actions
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" (click)="DownloadPDF()">Downlaod Pdf</a>
+                        <a class="dropdown-item" (click)="DownloadExcel()">Downlaod Excel</a>
+                        
+                       
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="row AddNewItem" id="RptPDF" #RptPDF>
+            <div class="col-sm-12">
+                <table class="table Reports_table" border="1">
+                    <thead class="gray_head">
+                        <tr>
+                            <th>
+                                Date / Time
+                            </th>
+                            <th>Appointment Time</th>
+                            <th>
+                                Duration (Min.)
+                            </th>
+                            <th>Patient Name</th>
+                            <th>
+                                Mr.No
+                            </th>
+                            <th>
+                                Mobile
+                            </th>
+                            <th>
+                                Location
+                            </th>
+                            <th>
+                                Doctor
+                            </th>
+                            <th>
+                                Remarks
+                            </th>
+                            <th>
+                                Missed
+                            </th>
+                            <th class="text-right">
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let app of DataList">
+                            <td>
+                                {{app.AppointmentDate|date: 'MM/dd/yyyy'}}
+                            </td>
+                            <td>{{convertTo12HourFormat(app.AppointmentTime)}}</td>
+                            <td>{{app.SlotTime}}</td>
+                            <td>
+                                {{app.PatientName}}
+                            </td>
+                            <td>
+                                {{app.MRNO}}
+                            </td>
+                            <td>
+                                {{app.Mobile}}
+                            </td>
+                            <td>
+                                {{app.CompanyName}}
+                            </td>
+                            <td>
+                                {{app.Name}}
+                            </td>
+                            <td>
+                                {{app.PatientProblem}}
+                            </td>
+                            <td>
+                                {{app.Missed}}
+                            </td>
+                            <td class="text-right">
+                                <span class="badge status_icon Cancelled">
+                                    {{app.Value}}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+

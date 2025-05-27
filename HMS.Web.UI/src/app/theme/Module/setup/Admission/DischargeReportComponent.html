@@ -1,0 +1,368 @@
+﻿<div class="tab-pane" id="DischargeReport">
+    <div class="row">
+        <div class="col">
+            <div class="tab-pane active">
+                <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label>Weight</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Weight" [(ngModel)]="model.Weight" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label>Temperature</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Temperature" [(ngModel)]="model.Temperature" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> DiagnosisAdmission</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="DiagnosisAdmission" [(ngModel)]="model.DiagnosisAdmission" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> ComplaintSummary</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="ComplaintSummary" [(ngModel)]="model.ComplaintSummary" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> ConditionAdmission</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="ConditionAdmission" [(ngModel)]="model.ConditionAdmission" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> GeneralCondition</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="GeneralCondition" [(ngModel)]="model.GeneralCondition" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> RespiratoryRate</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="RespiratoryRate" [(ngModel)]="model.RespiratoryRate" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> BP</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="BP" [(ngModel)]="model.BP" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Other</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Other" [(ngModel)]="model.Other" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Systemic</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Systemic" [(ngModel)]="model.Systemic" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> P/A</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="PA" [(ngModel)]="model.PA" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> P/V</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="PV" [(ngModel)]="model.PV" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> UrineProteins</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="UrineProteins" [(ngModel)]="model.UrineProteins" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Sugar</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Sugar" [(ngModel)]="model.Sugar" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Microscopy</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Microscopy" [(ngModel)]="model.Microscopy" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> BloodHB</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="BloodHB" [(ngModel)]="model.BloodHB" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> TLC</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="TLC" [(ngModel)]="model.TLC" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> P</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="P" [(ngModel)]="model.P" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> L</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="L" [(ngModel)]="model.L" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> E</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="E" [(ngModel)]="model.E" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> ESR</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="ESR" [(ngModel)]="model.ESR" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> BloodSugar</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="BloodSugar" [(ngModel)]="model.BloodSugar" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> BloodGroup</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="BloodGroup" [(ngModel)]="model.BloodGroup" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Ultrasound</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Ultrasound" [(ngModel)]="model.Ultrasound" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> UltrasoundRemark</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="UltrasoundRemark" [(ngModel)]="model.UltrasoundRemark" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> XRay</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="XRay" [(ngModel)]="model.XRay" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> XRayRemark</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="XRayRemark" [(ngModel)]="model.XRayRemark" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Conservative</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Conservative" [(ngModel)]="model.Conservative" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Operation</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Operation" [(ngModel)]="model.Operation" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Date</label>
+                            </div>
+                            <div class="col-8">
+                                <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="model.Date">
+                                </Datetime-Component>
+                            </div>
+                        </div>
+
+
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Assistant</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Assistant" [(ngModel)]="model.Assistant" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Anaesthesia</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Anaesthesia" [(ngModel)]="model.Anaesthesia" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Incision</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="Incision" [(ngModel)]="model.Incision" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> OperativeFinding</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="OperativeFinding" [(ngModel)]="model.OperativeFinding" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> OprationNotes</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="OprationNotes" [(ngModel)]="model.OprationNotes" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> OPMedicines</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="OPMedicines" [(ngModel)]="model.OPMedicines" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> OPProgress</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="OPProgress" [(ngModel)]="model.OPProgress" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> ConditionDischarge</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="ConditionDischarge" [(ngModel)]="model.ConditionDischarge" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> RemovalDate</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="RemovalDate" [(ngModel)]="model.RemovalDate" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> ConditionWound</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="ConditionWound" [(ngModel)]="model.ConditionWound" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> AdviseMedicine</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" formControlName="AdviseMedicine" [(ngModel)]="model.AdviseMedicine" class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> FollowUpDate</label>
+                            </div>
+                            <div class="col-8">
+                                <Datetime-Component formControlName="FollowUpDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.FollowUpDate">
+                                </Datetime-Component>
+                            </div>
+                        </div>
+                        <!--<div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label> Rason</label>
+                            </div>
+                            <div class="col-8">
+                                <textarea class="form-control" formControlName="PatientProblem" [(ngModel)]="model.PatientProblem"></textarea>
+                            </div>
+                        </div>-->
+                        <hr />
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+ 

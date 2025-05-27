@@ -1,0 +1,76 @@
+﻿
+
+<div class="modal" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)" (click)="IsModalClick()">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading font-weight-400 no-padding">{{model.ID ? 'Edit' : 'Add'}} Allowance</h3>
+                    <button type="button" class="close mt-modal-close" (click)="Close()" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select formControlName="CategoryID" [(ngModel)]="model.CategoryID" [attr.disabled]="model.SystemGenerated ? true : null" class="form-control" (change)="SelectionChange()">
+                                    <option *ngFor="let item of AllowanceCategorytypes" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group" [style.display]="IsOther ? 'block' : 'none'">
+                                <label>Name*</label>
+                                <input type="text" formControlName="AllowanceName" [(ngModel)]="model.AllowanceName" maxlength="150" class="form-control">
+                                <small *ngIf="Form1.controls.AllowanceName.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="margin-b-8">
+                            <label>Allowance Amount* (Monthly)</label><br />
+                        </div>
+                        <label class="radio-inline">
+                            <input type="radio" formControlName="AllowanceType"  (change)="IsAllowanceValid()" name="AllowanceType" [(ngModel)]="model.AllowanceType" value="F" checked> Fixed
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" formControlName="AllowanceType"  (change)="IsAllowanceValid()" name="AllowanceType" [(ngModel)]="model.AllowanceType" value="P"> % of Salary
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">{{model.AllowanceType == 'F' ? Currency:'%'}}</span>
+                            <input type="number" formControlName="AllowanceValue" min="0" [(ngModel)]="model.AllowanceValue" pattern=".{0,8}" (change)="IsAllowanceValid()" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                        </div>
+                        <small *ngIf="Form1.controls.AllowanceValue.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                        <small *ngIf="IsValidAllowValue && !Form1.controls.AllowanceValue.hasError('required')">
+                            % value should be equal or less than 100 %.
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox checkboxDefault" *ngIf="PayrollRegion!='SA'">
+                            <input type="checkbox" id="checkTexable" formControlName="Taxable" [(ngModel)]="model.Taxable">
+                            <label for="checkTexable">Taxable</label>
+                        </div>
+                        <div class="checkbox checkboxDefault">
+                            <input type="checkbox" id="checkDefault" formControlName="Default" [(ngModel)]="model.Default">
+                            <label for="checkDefault">Default</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="Close()">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-blue" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                    <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="model.ID && !model.SystemGenerated && IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

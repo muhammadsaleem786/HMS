@@ -1,0 +1,4 @@
+AccountName,AccountCode,Description,AccountType,ParentAccount,AccountNumber,Currency
+CASH ACCOUNT (CLINIC SALES),111001,,Other Current Asset,CASH AND CASH EQUIVALENTS,,
+PETTY CASH-ACCOUNTS,111002,,Other Current Asset,CASH AND CASH EQUIVALENTS,,
+CREDIT CARD,111003,,Other Current Asset,CASH AND CASH EQUIVALENTS,,

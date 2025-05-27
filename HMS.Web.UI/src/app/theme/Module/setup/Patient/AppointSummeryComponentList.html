@@ -1,0 +1,584 @@
+﻿<div class="tab-pane" id="Appointments">
+
+    <div class="col-sm-12 text-right mt-2 mb-2" (click)="openAppointmentModal(longContent)"*ngIf="ControlRights.CreateRights">
+        <button type="button" class="btn btn-red btnDel">Add Appointment</button>
+    </div>
+    <div class="col-sm-12 CustomAccordion">
+        <ngb-accordion [closeOthers]="true" activeIds="appointmenttab-1">
+            <ngb-panel id="appointmenttab-1">
+                <ng-template ngbPanelTitle>
+                    <span (click)="GetPreviousAppList()">
+                        <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid radius">
+                        Future Appointments
+                    </span><i class="icon-chevron-right iconImage"></i>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                    <div class="table-responsive dataTables_wrapper">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Doctor</th>
+                                    <th scope="col">Reason</th>
+                                    <th scope="col">Notes</th>
+                                    <th scope="col">Appt Status</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">0/S Amount</th>
+                                    <th scope="col">Billing Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let f of FutureAppList">
+                                    <td>
+                                        {{f.StartDate}}
+                                    </td>
+                                    <td scope="row">
+                                        {{f.DoctorName}}
+                                    </td>
+                                    <td>
+                                        Reason
+                                    </td>
+                                    <td>
+                                        {{f.Note}}
+                                    </td>
+                                    <td>
+                                        <span class="badge status_{{f.Status}} mr-4">
+                                            <i class="bg-warning"></i> {{f.Status}}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        {{f.Amount}}
+                                    </td>
+                                    <td>
+                                        {{f.OutStandingAmount}}
+                                    </td>
+                                    <td>
+                                        <span *ngIf="f.OutStandingAmount==0">
+                                            Paid
+                                        </span>
+                                        <span *ngIf="f.OutStandingAmount!=0">
+                                            UnPaid
+                                        </span>
+                                    </td>
+                                    <td (click)="Delete(f.ID)" *ngIf="ControlRights.DeleteRights">
+                                        <a class="ml-2 btn btn-light">
+                                            <i class="icon icon-trash2 text-danger"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                </ng-template>
+            </ngb-panel>
+            <ngb-panel id="appointmenttab-2">
+                <ng-template ngbPanelTitle>
+                    <span (click)="GetPreviousAppList()">
+                        <img src="../assets/app/media/img/icons/history.png" class="img-fluid radius">
+                        Previous Appointments
+                    </span><i class="icon-chevron-right iconImage"></i>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                    <div class="table_border">
+                        <div class="TableView">
+                            <div class="input-group searchAddEmployee">
+                                <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="PreviousGridList()" maxlength="30" aria-describedby="basic-addon1" />
+                            </div>
+                            <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                                <div class="uk-overflow-container col-sm-12 p-0">
+                                    <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                                        <thead class="grid-header">
+                                            <tr>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Doctor</th>
+                                                <th scope="col">Reason</th>
+                                                <th scope="col">Notes</th>
+                                                <th scope="col">Appt Status</th>
+                                                <th scope="col">Amount</th>
+                                                <th scope="col">0/S Amount</th>
+                                                <th scope="col">Billing Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let f of PreviousAppList">
+                                                <td>
+                                                    {{f.StartDate}}
+                                                </td>
+                                                <td scope="row">
+                                                    {{f.DoctorName}}
+                                                </td>
+                                                <td>
+                                                    Reason
+                                                </td>
+                                                <td>
+                                                    {{f.Note}}
+                                                </td>
+                                                <td>
+                                                    <span class="badge status_{{f.Status}} mr-4">
+                                                        <i class="bg-warning"></i> {{f.Status}}
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    {{f.Amount}}
+                                                </td>
+                                                <td>
+                                                    {{f.OutStandingAmount}}
+                                                </td>
+                                                <td>
+                                                    <span *ngIf="f.OutStandingAmount==0">
+                                                        Paid
+                                                    </span>
+                                                    <span *ngIf="f.OutStandingAmount!=0">
+                                                        UnPaid
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr [hidden]="!(PreviousAppList.length == 0)" style="background:#fff;">
+                                                <td [attr.colspan]="10" align="center">
+                                                    <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                                    <strong class="nodateFound">No record found</strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                                <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                                    <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                                        <a (click)="selectPage(page)">
+                                            {{page}}
+                                        </a>
+                                    </li>
+                                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                                </ul>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-panel>
+        </ngb-accordion>
+    </div>
+</div>
+
+<!-- =========== Appointment  Information Model ===================-->
+<ng-template #longContent let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            Appointment Detail
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" *ngIf="Rights.indexOf(12)>-1">
+        <ngb-tabset #t="ngbTabset">
+            <ngb-tab id="tab-selectbyid1" title="Appointment">
+                <ng-template ngbTabContent>
+                    <form [formGroup]="Form2">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+
+                                            <label class="form-control-label mt-2" for="input-username">Patient</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="input-group mb-3">
+
+                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (click)="LoadPatient()" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" placeholder="Search by name/mobile or cnic" autocomplete="off">
+                                                <!--<div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient(content)">
+                                                    <span class="svgIcon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
+                                                    </span>
+                                                </div>-->
+                                            </div>
+
+                                            <small class="text-danger" *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> CNIC</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="CNIC" [(ngModel)]="AppointmentModel.CNIC" placeholder="CNIC" autocomplete="off" disabled="disabled">
+
+                                            <small class="text-danger" *ngIf="Form2.controls.CNIC.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                            <small *ngIf="Form2.controls.CNIC.hasError('pattern') && !Form2.controls.CNIC.hasError('required')">
+                                                CNIC No must follow the XXXXX-XXXXXXX-X format!"
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Mobile</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile" placeholder="Mobile" autocomplete="off" disabled="disabled">
+                                            <small class="text-danger" *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Patient Prob</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" id="" class="form-control form-control-sm form-control-alternative" formControlName="PatientProblem" [(ngModel)]="AppointmentModel.PatientProblem" placeholder="Patient Problem">
+                                        </div>
+                                    </div>
+
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Notes</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <textarea class="form-control-alternative form-control" formControlName="Notes" [(ngModel)]="AppointmentModel.Notes"></textarea>
+                                        </div>
+                                    </div>
+                                    <!-- =============== -->
+                                </div>
+                                <div class="col-sm-6">
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Doctor</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" (change)="DoctorChange()" formControlName="DoctorId" [(ngModel)]="AppointmentModel.DoctorId">
+                                                <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                    {{item.Name}}
+                                                </option>
+                                            </select>
+                                            <small class="text-danger" *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Date</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <Datetime-Component formControlName="AppointmentDate" placeholder="DD/MM/YYYY" [(ngModel)]="AppointmentModel.AppointmentDate">
+                                            </Datetime-Component>
+                                            <small class="text-danger" *ngIf="Form2.controls.AppointmentDate.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Time </label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" formControlName="AppointmentTime" [(ngModel)]="AppointmentModel.AppointmentTime" (click)="SelectTime()" (change)="SelectTime()" class="form-control time" id="basicExample" autocomplete="off">
+                                            <small class="text-danger" *ngIf="Form2.controls.AppointmentTime.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Status</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" formControlName="StatusId" [(ngModel)]="AppointmentModel.StatusId">
+                                                <option *ngFor="let item of StatusList" [value]="item.ID">
+                                                    {{item.Value}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-selectbyid2">
+                <ng-template ngbTabTitle>Billing</ng-template>
+                <ng-template ngbTabContent>
+                    <form [formGroup]="Form2" novalidate (ngSubmit)="AppointmentSaveOrUpdate(Form2.valid)">
+                        <div class="row">
+                            <div class="col-sm-7 mt-3">
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label>
+                                            Service
+                                        </label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="text" id="ServiceSearch" (click)="LoadService()" formControlName="ServiceId" [(ngModel)]="AppointmentModel.ServiceName" class="form-control form-control-sm form-control-alternative" placeholder="Search Service" autocomplete="off">
+                                            <small class="text-danger" *ngIf="Form2.controls.ServiceId.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Bill Date*</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <Datetime-Component formControlName="BillDate" placeholder="DD/MM/YYYY" [(ngModel)]="AppointmentModel.BillDate">
+                                            </Datetime-Component>
+                                            <small class="text-danger" *ngIf="Form2.controls.BillDate.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Price</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="number" id="" formControlName="Price" [(ngModel)]="AppointmentModel.Price" (keyup)="CalAmount()" class="form-control form-control-sm form-control-alternative" placeholder="Price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4 text-right">
+
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Discount</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="text" id="" formControlName="Discount" [(ngModel)]="AppointmentModel.Discount" (keyup)="CalAmount()" class="form-control form-control-sm form-control-alternative" placeholder="Discount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Paid Amount</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="text" id="" formControlName="PaidAmount" [(ngModel)]="AppointmentModel.PaidAmount" (keyup)="PaidCalAmount()" class="form-control form-control-sm form-control-alternative" placeholder="Paid Amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                            <small class="text-danger" *ngIf="Form2.controls.PaidAmount.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Outstanding Balance</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="text" id="" formControlName="OutstandingBalance" [(ngModel)]="AppointmentModel.OutstandingBalance" class="form-control form-control-sm form-control-alternative" placeholder="Outstanding Balance" readonly="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Remarks</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <textarea class="form-control form-control-sm" formControlName="Remarks" [(ngModel)]="AppointmentModel.Remarks" autocomplete="off"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-5 mt-3" id="print-section">
+                                <!-- ========== Print Setion ----------------- -->
+                                <div class="coupn_card" style="border: 2px dashed #b1d0f1; padding: 10px; border-radius: 5px; line-height: normal; background: #edf6ff; color: #000000; max-width: 250px;">
+                                    <h3 style="text-align: center;">
+                                        {{AppointmentModel.PatientName}}
+                                    </h3>
+                                    <p style="text-align: center;">
+                                        Paid:  {{AppointmentModel.PaidAmount}}
+                                    </p>
+                                    <p style="text-align: center;">
+                                        Outstanding:  {{AppointmentModel.OutstandingBalance}}
+                                    </p>
+                                    <h1 style="text-align: center; font-size: 70px; font-weight: bold; margin: 0;">
+                                        {{AppointmentModel.TokenNo}}
+                                    </h1>
+                                    <p style="text-align: center;">
+                                        App Date:{{AppointmentModel.AppointmentDate|date: 'MM/dd/yyyy'}}
+                                    </p>
+                                </div>
+                                <!-- ========== Print Setion ----------------- -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-light" useExistingCss="true" printSectionId="print-section" ngxPrint><i class="icon icon-printer"></i> Print Coupn</button>
+                            <button type="submit" class="btn btn-primary"*ngIf="ControlRights.CreateRights" >Save</button>
+                        </div>
+                    </form>
+                </ng-template>
+            </ngb-tab>
+
+        </ngb-tabset>
+    </div>
+    <div class="modal-body NavtabLine" *ngIf="Rights.indexOf(12)==-1">
+        <ngb-tabset #t="ngbTabset">
+            <ngb-tab id="tab-selectbyid1" title="Appointment">
+                <ng-template ngbTabContent>
+                    <form [formGroup]="Form2" novalidate (ngSubmit)="AppointmentSaveOrUpdate(Form2.valid)">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+
+                                            <label class="form-control-label mt-2" for="input-username">Patient</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="input-group mb-3">
+
+                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" (click)="LoadPatient()" placeholder="Search by name/mobile or cnic" autocomplete="off">
+                                                <!--<div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient(content)">
+                                                    <span class="svgIcon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
+                                                    </span>
+                                                </div>-->
+                                            </div>
+                                            <small class="text-danger" *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> CNIC</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="CNIC" [(ngModel)]="AppointmentModel.CNIC" placeholder="XXXXX-XXXXXXX-X" autocomplete="off" disabled="disabled">
+                                            <small class="text-danger" *ngIf="Form2.controls.CNIC.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                            <small *ngIf="Form2.controls.CNIC.hasError('pattern') && !Form2.controls.CNIC.hasError('required')">
+                                                CNIC No must follow the XXXXX-XXXXXXX-X format!"
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Mobile</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile" placeholder="Mobile" autocomplete="off" disabled="disabled">
+                                            <small class="text-danger" *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Patient Prob</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" id="" class="form-control form-control-sm form-control-alternative" formControlName="PatientProblem" [(ngModel)]="AppointmentModel.PatientProblem" placeholder="Patient Problem">
+                                        </div>
+                                    </div>
+
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Notes</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <textarea class="form-control-alternative form-control" formControlName="Notes" [(ngModel)]="AppointmentModel.Notes"></textarea>
+                                        </div>
+                                    </div>
+                                    <!-- =============== -->
+                                </div>
+                                <div class="col-sm-6">
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Doctor</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" (change)="DoctorChange()" formControlName="DoctorId" [(ngModel)]="AppointmentModel.DoctorId">
+                                                <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                    {{item.Name}}
+                                                </option>
+                                            </select>
+                                            <small class="text-danger" *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Date</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <Datetime-Component formControlName="AppointmentDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onAppDateChanged($event)" [(ngModel)]="AppointmentModel.AppointmentDate">
+                                            </Datetime-Component>
+                                            <small class="text-danger" *ngIf="Form2.controls.AppointmentDate.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Time </label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" formControlName="AppointmentTime" [(ngModel)]="AppointmentModel.AppointmentTime" (click)="SelectTime()" (change)="SelectTime()" class="form-control time" id="basicExample" autocomplete="off">
+                                            <small class="text-danger" *ngIf="Form2.controls.AppointmentTime.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Status</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" formControlName="StatusId" [(ngModel)]="AppointmentModel.StatusId">
+                                                <option *ngFor="let item of StatusList" [value]="item.ID">
+                                                    {{item.Value}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary"*ngIf="ControlRights.CreateRights">Save</button>
+                        </div>
+                    </form>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</ng-template>

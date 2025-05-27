@@ -1,0 +1,267 @@
+﻿<div class="tab-pane" id="Charges">
+    <div class="row">
+        <div class="col">
+            <div class="tab-pane active" id="Charges">
+                <div class="col-sm-12 CustomAccordion">
+                    <a class="dropdown-item cursor-pointer" (click)="openInvoiceModal(InvoiceModal)">
+                        Print Invoice
+                    </a>
+                    <div class="tab-content">
+                        <ngb-accordion [closeOthers]="true" activeIds="">
+                            <ngb-panel id="patienttab-1">
+                                <ng-template ngbPanelTitle>
+                                    <span>
+                                        <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid radius">
+                                        Procedure
+                                    </span><i class="icon-chevron-right iconImage"></i>
+                                </ng-template>
+                                <ng-template ngbPanelContent>
+                                    <router-outlet></router-outlet>
+                                </ng-template>
+                            </ngb-panel>
+                        </ngb-accordion>
+                    </div>
+                    <form [formGroup]="Form1" novalidate (ngSubmit)="ChargeSaveOrUpdate(Form1.valid)">
+                        <ngb-accordion [closeOthers]="true" activeIds="">
+                            <ngb-panel id="charges-1">
+                                <ng-template ngbPanelTitle>
+                                    <span>
+                                        <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid radius">
+                                        General charges
+                                    </span><i class="icon-chevron-right iconImage"></i>
+                                </ng-template>
+                                <ng-template ngbPanelContent>
+
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Annual PE</label>
+                                                <input type="text" formControlName="AnnualPE" [(ngModel)]="model.AnnualPE" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>General</label>
+                                                <input type="text" formControlName="General" [(ngModel)]="model.General" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Medical</label>
+                                                <input type="text" formControlName="Medical" [(ngModel)]="model.Medical" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </ng-template>
+                            </ngb-panel>
+                            <ngb-panel id="charges-2">
+                                <ng-template ngbPanelTitle>
+                                    <span>
+                                        <img src="../assets/app/media/img/icons/history.png" class="img-fluid radius">
+                                        ICU charges
+                                    </span><i class="icon-chevron-right iconImage"></i>
+                                </ng-template>
+                                <ng-template ngbPanelContent>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>ICU charges</label>
+                                                <input type="text" formControlName="ICUCharges" [(ngModel)]="model.ICUCharges" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </ng-template>
+                            </ngb-panel>
+                            <ngb-panel id="charges-3">
+                                <ng-template ngbPanelTitle>
+                                    <span>
+                                        <img src="../assets/app/media/img/icons/history.png" class="img-fluid radius">
+                                        Private charges
+                                    </span><i class="icon-chevron-right iconImage"></i>
+                                </ng-template>
+                                <ng-template ngbPanelContent>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Exam room</label>
+                                                <input type="text" formControlName="ExamRoom" [(ngModel)]="model.ExamRoom" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Private Ward</label>
+                                                <input type="text" formControlName="PrivateWard" [(ngModel)]="model.PrivateWard" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>RIP</label>
+                                                <input type="text" formControlName="RIP" [(ngModel)]="model.RIP" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </ng-template>
+                            </ngb-panel>
+                            <ngb-panel id="charges-4">
+                                <ng-template ngbPanelTitle>
+                                    <span>
+                                        <img src="../assets/app/media/img/icons/history.png" class="img-fluid radius">
+                                        Other All charges
+
+                                    </span><i class="icon-chevron-right iconImage"></i>
+                                </ng-template>
+                                <ng-template ngbPanelContent>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Other All charges</label>
+                                                <input type="text" formControlName="OtherAllCharges" [(ngModel)]="model.OtherAllCharges" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </ng-template>
+                            </ngb-panel>
+                        </ngb-accordion>
+                        <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
+                            <button type="submit" class="btn btn-primary">Add</button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #InvoiceModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon">Invoice
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body Invoice_Template" id="printBill-section">
+        <div class="Invoice_template">
+            <header class="clearfix">
+
+                <div id="logo" *ngIf="invoiceModel.length > 0 && invoiceModel.CompanyLogo != null">
+                    <img [src]="invoiceModel.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div id="logo" *ngIf="invoiceModel.length ==0 || invoiceModel.CompanyLogo == null">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div id="company">
+                    <h2 class="name">{{invoiceModel.CompanyName}}</h2>
+                    <div>{{invoiceModel.CompanyAddress1}}</div>
+                    <div>{{invoiceModel.Phone}}</div>
+                    <div><a href="mailto:company@example.com">{{invoiceModel.Email}}</a></div>
+                </div>
+
+            </header>
+            <main>
+                <div id="details" class="clearfix">
+                    <div id="client">
+                        <div class="to">INVOICE TO:</div>
+                        <h2 class="name">{{invoiceModel.PatientName}}</h2>
+                        <div class="address">{{invoiceModel.Address}}</div>
+                        <div class="address">{{invoiceModel.PatientMobile}}</div>
+                        <div class="email"><a href="mailto:john@example.com">{{invoiceModel.PatientEmail}}</a></div>
+                    </div>
+                </div>
+                <h2>Procedure Item</h2>
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th class="no">#</th>
+                            <th class="desc">Service Name</th>
+                            <th class="desc">Item</th>
+                            <th class="desc">Batch</th>
+                            <th class="desc">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let b of ProcedureItem;let i = index;">
+                            <td class="no">{{i}}</td>
+                            <td class="desc">{{b.ServiceName}}</td>
+                            <td class="unit"> {{b.Item}}</td>
+                            <td class="total"> {{b.Batch}}</td>
+                            <td class="total"> {{b.Quantity}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h2>Medicine</h2>
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th class="no">#</th>
+                            <th class="desc">Medicine</th>
+                            <th class="desc">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let b of ProcedureMedicine;let i = index;">
+                            <td class="no">{{i}}</td>
+                            <td class="desc">{{b.Medicine}}</td>
+                            <td class="unit"> {{b.Quantity}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div id="details" class="clearfix">
+                    <div id="client">
+                        <div class="to">Procedure Charges</div>
+                    </div>
+                    <div id="invoice">
+                        <div class="to">Price:{{invoiceModel.Price}}</div>
+                        <div class="to">Discount:{{invoiceModel.Discount}}</div>
+                        <div class="to">PaidAmount:{{invoiceModel.PaidAmount}}</div>
+                        <hr />
+                        <div class="to">Balance: {{ (invoiceModel.Price || 0) - (invoiceModel.PaidAmount || 0) - (invoiceModel.Discount || 0) }}</div>
+                    </div>
+                </div>
+                <div id="details" class="clearfix">
+                    <div id="client">
+                        <div class="to">Other Charges</div>
+                    </div>
+                    <div id="invoice">
+                        <div class="to">AnnualPE:{{invoiceModel.AnnualPE}}</div>
+                        <div class="date">General: {{invoiceModel.General}}</div>
+                        <div class="date">Medical: {{invoiceModel.Medical}}</div>
+                        <div class="date">ICUCharges: {{invoiceModel.ICUCharges}}</div>
+                        <div class="date">ExamRoom: {{invoiceModel.ExamRoom}}</div>
+                        <div class="date">PrivateWard: {{invoiceModel.PrivateWard}}</div>
+                        <div class="date">RIP: {{invoiceModel.RIP}}</div>
+                        <div class="date">OtherAllCharges: {{invoiceModel.OtherAllCharges}}</div>
+                        <hr />
+                        <div class="to">Total:{{(invoiceModel.AnnualPE || 0) +(invoiceModel.General || 0) +(invoiceModel.Medical || 0) +(invoiceModel.ICUCharges || 0)+(invoiceModel.ExamRoom || 0)+(invoiceModel.PrivateWard || 0) +(invoiceModel.RIP || 0)+(invoiceModel.OtherAllCharges || 0) }}</div>
+
+
+                    </div>
+                </div>
+                <div id="thanks">Thank you!</div>
+                <div id="notices">
+                    <div>NOTICE:</div>
+                    <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                </div>
+            </main>
+            <footer>
+                {{valueForUser.RepotFooter}}
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
+    </div>
+
+</ng-template>
+

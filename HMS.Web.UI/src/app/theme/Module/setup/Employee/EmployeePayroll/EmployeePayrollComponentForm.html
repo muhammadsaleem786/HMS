@@ -1,0 +1,46 @@
+﻿
+
+<i id="btnParoll" style="display:none" class="btn btn-blue" data-toggle="modal" data-target="#PayrollModal"></i>
+<div class="modal" id="PayrollModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Run Payroll</h3>
+                <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+            </div>
+            <!--<div class="modal-header">
+                <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Run Payroll</h3>
+                <button type="button" class="close" data-dismiss="modal"><i class="glyphicon glyphicon-glyphicon-remove-circle"></i></button>
+            </div>-->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Pay Schedule</label>
+                            <select class="form-control" [(ngModel)]="model.PayScheduleId" (change)="PayScheduleSelChange()">
+                                <option *ngFor="let item of PayScheduleList" [value]="item.ID" [hidden]="item.NoOfEmps==0 || (item.Status=='O' && item.IsLock)">
+                                    {{item.ScheduleName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Employees</label>
+                            <!--<select class="form-control" name="ngmodel" [(ngmodel)]="model.ID">
+        <option *ngfor="let item of employeeslist" [value]="item.id">
+            {{item.firstname + ' ' +item.lastname}}
+        </option>
+    </select>-->
+                            <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="EmployeesList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="model.EmployeeIds"></ss-multiselect-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-payday-cancel" id="CloseRunPayrollModal" data-dismiss="modal" #closeModal (click)="Close()">Cancel</button>
+                <button id="saveSchedule" type="submit" class="btn btn-blue" (click)="RunPayroll()">Run</button>
+            </div>
+        </div>
+    </div>
+</div>

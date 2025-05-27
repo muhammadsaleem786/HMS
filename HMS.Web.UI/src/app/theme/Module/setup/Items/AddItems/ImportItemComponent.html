@@ -1,0 +1,125 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Import Items
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-light mr-1" routerLink="/home/Item">Back</a>
+        </div>
+    </div>
+    <div class="Cardview px-3 pb-3">
+        <div class="TableView">
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="file" (change)="onFileChange($event)" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-blue btn-block" (click)="CheckImportDataError()">Import Data!</button>
+
+                </div>
+                <div class="col-md-3">
+                    <a href="../../../../../assets/app/ExcelFile/Item.xlsx" class="btn btn-blue btn-block">Download Format</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #ImportDataModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon" />
+            Error Report
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="TableView">
+        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+            <div class="uk-overflow-container col-sm-12 p-0">
+                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                    <thead class="grid-header">
+                        <tr>
+                            <th>Error Description</th>
+
+                            <th>
+                                Group Name
+                            </th>
+                            <th>
+                                Item Type
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Unit
+                            </th>
+                            <th>
+                                Category
+                            </th>
+                            <th>
+                                CostPrice
+                            </th>
+                            <th>
+                                SalePrice
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                TrackInventory
+                            </th>
+                            <th>
+                                POS Item
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of ExcelErrorList">
+                            <td> {{item.ErrorDescription}}</td>
+                            <td>
+                                {{item.Group}}
+                            </td>
+                            <td>
+                                {{item.Type}}
+                            </td>
+                            <td>
+                                {{item.Name}}
+                            </td>
+                            <td>
+                                {{item.Unit}}
+                            </td>
+                            <td>
+                                {{item.Category }}
+                            </td>
+                            <td>
+                                {{item.CostPrice }}
+                            </td>
+                            <td>
+                                {{item.SalePrice }}
+                            </td>
+                            <td>
+                                {{item.Status }}
+                            </td>
+                            <td>
+                                {{item.TrackInventory }}
+                            </td>
+                            <td>
+                                {{item.POSItem }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</ng-template>
+
+

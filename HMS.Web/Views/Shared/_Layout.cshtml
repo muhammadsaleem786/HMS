@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Remove Tap Highlight on Windows Phone IE -->
+    <meta name="msapplication-tap-highlight" content="no" />
+    <link rel="icon" type="image/png" href="assets/img/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="assets/img/favicon-32x32.png" sizes="32x32">
+    <title>HMS Admin</title>
+    <!-- uikit -->
+    <link rel="stylesheet" href="~/bower_components/uikit/css/uikit.almost-flat.min.css" media="all">
+    <!-- style switcher -->
+    <link rel="stylesheet" href="assets/css/style_switcher.min.css" media="all">
+    <!-- altair admin -->
+    <link rel="stylesheet" href="assets/css/main.css" media="all">
+    <!-- themes -->
+    <link rel="stylesheet" href="assets/css/modify.css" media="all">
+    <link rel="stylesheet" href="assets/css/modify-font.css" media="all">
+    @*<link rel="stylesheet" href="assets/css/login_page.css" />*@
+    <!-- matchMedia polyfill for testing media queries in JS -->
+    <!--[if lte IE 9]>
+            <script type="text/javascript" src="bower_components/matchMedia/matchMedia.js"></script>
+            <script type="text/javascript" src="bower_components/matchMedia/matchMedia.addListener.js"></script>
+            <link rel="stylesheet" href="assets/css/ie.css" media="all">
+        <![endif]-->
+    @*@Styles.Render("~/Content/css")*@
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    <script src="assets/js/common.min.js"></script>
+
+    <!-- uikit functions -->
+    <script src="assets/js/uikit_custom.min.js"></script>
+    <!-- altair common functions/helpers -->
+    <script src="assets/js/altair_admin_common.min.js"></script> 
+
+    <!-- google web fonts -->
+    <script>
+        WebFontConfig = {
+            google: {
+                families: [
+                    'Source+Code+Pro:400,700:latin',
+                    'Roboto:400,300,500,700,400italic:latin'
+                ]
+            }
+        };
+        (function() {
+            var wf = document.createElement('script');
+            wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+            '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+        })();
+
+    </script>
+
+</head>
+<body class="sidebar_mini">
+
+    @RenderBody()
+
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

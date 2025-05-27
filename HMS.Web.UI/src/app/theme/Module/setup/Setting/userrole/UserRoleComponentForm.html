@@ -1,0 +1,126 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block"*ngIf="IsEdit">
+                        Update Role
+                    </h3>
+                    <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                        New Role
+                    </h3>
+                </div>
+            
+            </div>
+            
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-light ml-1" routerLink="/home/setup"><i class="icon icon-cross"></i></a>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="Cardview search_onTop px-2">
+            <div class="row pt-4">
+                <div class="col">
+                    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                        <div class="col-sm-6">
+                            <div class="row form-group">
+                                <div class="col-sm-4 text-right">
+                                    <label class="required"> Role Name</label>
+                                </div>
+                                <div class="col-sm-8  small-input">
+                                    <input type="text" formControlName="RoleName" [(ngModel)]="model.RoleName" [attr.disabled]="IsAdmin ||IsUpdateText ? true : null" class="form-control" maxlength="250">
+                                    <small class="text-danger" *ngIf="Form1.controls.RoleName.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-sm-4 text-right">
+                                    <label class="required"> Description</label>
+                                </div>
+                                <div class="col-sm-8  small-input">
+                                    <textarea formControlName="Description" [(ngModel)]="model.Description" class="form-control input-sm"></textarea>
+                                </div>
+                            </div>
+
+                           
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="row form-group">
+                                <div class="col-sm-2 text-right">
+                                </div>
+                                <div class="col-sm-8  small-input">
+                                    <div class="CardWraper WithTable" *ngFor="let module of Modules; let i=index">
+                                        <div class="card mb-5">
+                                            <div class="card-header">
+                                                <div class="card-title font-large mb-0"> {{module.ModuleName}} </div>
+                                            </div>
+                                            <table class="table table-bordered role-table mb-0">
+                                                <colgroup>
+                                                    <col>
+                                                    <col style="background: #fcfcfc;">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <td style="min-width:220px;"></td>
+                                                        <!--<td class="permission">Full Access</td>-->
+                                                        <td class="permission text-capitalize">view</td>
+                                                        <td class="permission" *ngIf="module.ModuleName == 'Reports'">Own Data</td>
+                                                        <td class="permission" *ngIf="module.ModuleName == 'Reports'">Own Clinic</td>
+                                                        <td class="permission" *ngIf="module.ModuleName == 'Reports'">All Clinic</td>
+                                                        <td class="permission" *ngIf="module.ModuleName != 'Reports'">Create</td>
+                                                        <td class="permission" *ngIf="module.ModuleName != 'Reports'">Edit</td>
+                                                        <td class="permission" *ngIf="module.ModuleName != 'Reports'">Delete</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody *ngFor="let screen of GetScreensOfModule(module.ModuleID)">
+                                                    <tr *ngIf="ShowScreenName(screen.ScreenID)">
+                                                        <td>{{screen.ScreenName}}</td>
+                                                        <!--<td class="permission">
+                                                            <div class="inline-check">
+                                                                <input type="checkbox">
+                                                            </div>
+                                                        </td>-->
+                                                        
+                                                        <td class="permission">
+                                                            <div class="inline-check"> <input type="checkbox" [disabled]="IsAdministrator" [ngModelOptions]="{standalone:true}" (change)="ScreenChk(module.ModuleID)" [(ngModel)]="screen.ViewRights" /></div>
+                                                        </td>
+                                                        <td class="permission">
+                                                            <div class="inline-check"><input type="checkbox" [disabled]="IsAdministrator" [ngModelOptions]="{standalone:true}" (change)="ScreenChk(module.ModuleID)" [(ngModel)]="screen.CreateRights" /> </div>
+                                                        </td>
+                                                        <td class="permission">
+                                                            <div class="inline-check"> <input type="checkbox" [disabled]="IsAdministrator" [ngModelOptions]="{standalone:true}" (change)="ScreenChk(module.ModuleID)" [(ngModel)]="screen.EditRights" /> </div>
+                                                        </td>
+                                                        <td class="permission">
+                                                            <div class="inline-check"> <input type="checkbox" [disabled]="IsAdministrator" [ngModelOptions]="{standalone:true}" (change)="ScreenChk(module.ModuleID)" [(ngModel)]="screen.DeleteRights" /> </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    
+                        </div>
+                        
+                        <div class="btnArea-footer col">
+                            <button id="saveSchedule" type="submit" class="btn btn-red" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                            <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+                            <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                            <button type="button" class="btn btn-secondary" routerLink="/home/userrole">Cancel</button>
+            
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+   

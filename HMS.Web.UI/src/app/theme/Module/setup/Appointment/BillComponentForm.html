@@ -1,0 +1,329 @@
+﻿<div class="tab-pane" id="Billing">
+    <div class="row mt-2">
+        <div class="col-sm-12 text-right">
+            <button class="btn btn-danger btn-sm" (click)="openBillModal(BillContent)"*ngIf="ControlRights.CreateRights  && IsEdit">
+                <i class="icon icon-pulse"></i>    Update Bill
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="openBillModal(BillContent)" *ngIf="ControlRights.CreateRights && IsEdit==false">
+                <i class="icon icon-pulse"></i>    Add New Bill
+            </button>
+        </div>
+        <div class="col table_border">
+
+            <div class="TableView">
+                <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                    <div class="uk-overflow-container col-sm-12 p-0">
+                        <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                            <thead class="grid-header">
+                                <tr>
+                                    <th>Bill No </th>
+                                    <th> Patient </th>
+                                    <th> Doctor </th>
+                                    <th> Date </th>
+                                    <th>Amount</th>
+                                    <th>Discount</th>
+                                    <th>Paid </th>
+                                    <th>O/s Balance</th>
+                                    <th>Created By </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of BillingList">
+                                    <td (click)="UpdatebillRecord(item.ID)">
+                                        {{item.ID}}
+                                    </td>
+                                    <td (click)="UpdatebillRecord(item.ID)">
+                                        {{item.PatientName}}
+                                    </td>
+                                    <td (click)="UpdatebillRecord(item.ID)">
+                                        {{item.DoctorName}}
+                                    </td>
+                                    <td (click)="UpdatebillRecord(item.ID)">
+                                        {{item.Date |date: 'MM/dd/yyyy'}}
+                                    </td>
+                                    <td (click)="UpdatebillRecord(item.ID)">
+                                        {{item.Amount}}
+                                    </td>
+                                    <td (click)="UpdatebillRecord(item.ID)">
+                                        <span class="m-0 font-12 badge badge-primary p-1 px-2" *ngIf="item.Discount > 0">Dis:  {{item.Discount}}</span>
+                                    </td>
+                                    <td (click)="UpdatebillRecord(item.ID)">{{item.PaidAmount}}</td>
+                                    <td (click)="UpdatebillRecord(item.ID)">{{item.OutstandingBalance}}</td>
+                                    <td (click)="UpdatebillRecord(item.ID)">{{item.CreatedBy}}</td>
+                                    <td>
+                                        <button class="btn btn-light btn-sm" (click)="openInvoiceModal(InvoiceModal,item.ID)">
+                                            <i class="icon icon-printer">
+                                            </i>
+                                        </button>
+                                        <button class="btn btn-light btn-sm" (click)="Delete(item.ID)"*ngIf="ControlRights.DeleteRights">
+                                            <i class="icon icon-trash2 text-danger"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr [hidden]="!(BillingList.length == 0)" style="background:#fff;">
+                                    <td [attr.colspan]="10" align="center">
+                                        <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                        <strong class="nodateFound">No record found</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                    <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                    <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                        <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                        <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                            <a (click)="selectPage(page)">
+                                {{page}}
+                            </a>
+                        </li>
+                        <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-------Add Bill Model-->
+
+<ng-template #BillContent let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"><img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon"> Add Bill</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form9" novalidate (ngSubmit)="SaveOrUpdateBill(Form9.valid)">
+        <div class="modal-body DoctorShiftModal">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label>
+                                Doctor
+                            </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+
+                                <input type="text" id="BillDoctorSearch" (click)="LoadBillDoctor()" formControlName="DoctorId" [(ngModel)]="BillModel.DoctorName" class="form-control form-control-sm form-control-alternative" placeholder="Search Doctor" autocomplete="off">
+                                <small class="text-danger" *ngIf="Form9.controls.DoctorId.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label>
+                                Patient
+                            </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+
+                                <input type="text" id="PatientSearch" (click)="LoadPatient()" formControlName="PatientId" [(ngModel)]="BillModel.PatientName" class="form-control form-control-sm form-control-alternative" placeholder="Search Patient" autocomplete="off">
+                                <small class="text-danger" *ngIf="Form9.controls.PatientId.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label>
+                                Service
+                            </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+
+                                <input type="text" id="BillServiceSearch" (click)="LoadBillService()" formControlName="ServiceId" [(ngModel)]="BillModel.ServiceName" class="form-control form-control-sm form-control-alternative" placeholder="Search Service" autocomplete="off">
+                                <small class="text-danger" *ngIf="Form9.controls.ServiceId.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Bill Date*</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <Datetime-Component formControlName="BillDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateChanged($event)" [(ngModel)]="BillModel.BillDate">
+                                </Datetime-Component>
+                                <small class="text-danger" *ngIf="Form9.controls.BillDate.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Price</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <input type="text" id="" formControlName="Price" [(ngModel)]="BillModel.Price" (keyup)="BillCalAmount()" class="form-control form-control-sm form-control-alternative" placeholder="Price">
+                                <small class="text-danger" *ngIf="Form9.controls.Price.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Discount</label>
+                        </div>
+                        <div class="col-8">
+
+                            <div class="form-group">
+                                <input type="text" id="" formControlName="Discount" [(ngModel)]="BillModel.Discount" (keyup)="BillCalAmount()" class="form-control form-control-sm form-control-alternative" placeholder="Discount">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Paid Amount</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <input type="text" id="" formControlName="PaidAmount" [(ngModel)]="BillModel.PaidAmount" (keyup)="PaidCalAmount()" class="form-control form-control-sm form-control-alternative" placeholder="Paid Amount">
+                                <small class="text-danger" *ngIf="Form9.controls.PaidAmount.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Outstanding Balance</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <input type="text" id="" formControlName="OutstandingBalance" [(ngModel)]="BillModel.OutstandingBalance" class="form-control form-control-sm form-control-alternative" placeholder="Outstanding Balance" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Remarks</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <textarea class="form-control form-control-sm" formControlName="Remarks" [(ngModel)]="BillModel.Remarks" autocomplete="off"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="saveSchedule" type="submit" class="btn btn-primary && ControlRights.CreateRights">Save</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </form>
+</ng-template>
+<ng-template #InvoiceModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"> <img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon">Invoice</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body Invoice_Template" id="printBill-section">
+        <div class="Invoice_template">
+            <header class="clearfix">
+                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+                    <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div id="company">
+                    <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                    <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                    <div>{{InvoiceCompanyInfo.CompanyPhone}}</div>
+                    <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                </div>
+            </header>
+            <main>
+                <div id="details" class="clearfix">
+                    <div id="client">
+                        <div class="to">INVOICE TO:</div>
+                        <h2 class="name">{{InvoiceCompanyInfo.PatientName}}</h2>
+                        <div class="address">{{InvoiceCompanyInfo.PatientAddress}}</div>
+                        <div class="email"><a href="mailto:john@example.com">{{InvoiceCompanyInfo.PatientEmail}}</a></div>
+                    </div>
+                    <div id="invoice">
+                        <h1>INVOICE-{{InvoiceCompanyInfo.invoiceNo}}</h1>
+                        <div class="date">Date of Invoice: {{InvoiceCompanyInfo.BillDate |date: 'MM/dd/yyyy'}}</div>
+                        <div class="date">Due Date: 30/06/2014</div>
+                    </div>
+                </div>
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th class="no">#</th>
+                            <th class="desc">Item</th>
+                            <th class="unit text-right">UNIT PRICE</th>
+                            <th class="total text-right">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let b of InvoiceBillModel">
+                            <td class="no">{{b.ID}}</td>
+                            <td class="desc">{{b.ServiceName}}</td>
+                            <td class="unit"> {{b.Price}}</td>
+                            <td class="total"> {{b.Price}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">SUBTOTAL</td>
+                            <td> {{SubTotal}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">Discount</td>
+                            <td> {{TotalDiscount}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">GRAND TOTAL</td>
+                            <td> {{Total}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div id="thanks">Thank you!</div>
+                <div id="notices">
+                    <div>NOTICE:</div>
+                    <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                </div>
+            </main>
+            <footer>
+                {{valueForUser.RepotFooter}}
+            </footer>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="button" class="btn btn-danger"useExistingCss="true"  data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
+    </div>
+</ng-template>

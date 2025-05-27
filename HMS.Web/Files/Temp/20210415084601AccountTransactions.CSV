@@ -1,0 +1,75 @@
+﻿DATE,ACCOUNT,TRANSACTION DETAILS,TRANSACTION TYPE,TRANSACTION#,REFERENCE#,DEBIT,CREDIT,AMOUNT
+3/12/21,Accounts Receivable حسابات الذمم المدينة,Auto generated voucher,,INV-1,INV-1, 1000Dr ,,1000
+3/12/21,Sales,Auto generated voucher,,INV-1,INV-1,, 1000Cr ,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,21,billNo, 50Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,21,billNo,, 30Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,21,billNo, 1020Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,21,billNo,, 1020Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,25,billNo, 1000Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,25,billNo,, 1000Cr ,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,25,billNo, 50Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,25,billNo,, 30Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,25,billNo, 2020Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,25,billNo,, 2020Cr ,1000
+3/29/21,Trade Debtors - Othersمدينون تجاريون - آخرون,Payment,Journal,26,billNo, 1000Dr ,,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,26,billNo, 50Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,26,billNo,, 30Cr ,1000
+3/29/21,Revenue الإيرادات,Payment,Journal,26,billNo,, 1020Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,26,billNo, 1000Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,26,billNo,, 1000Cr ,1000
+3/29/21,Trade Debtors - Othersمدينون تجاريون - آخرون,Payment,Journal,27,billNo, 1000Dr ,,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,27,billNo, 50Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,27,billNo,, 30Cr ,1000
+3/29/21,Revenue الإيرادات,Payment,Journal,27,billNo,, 1020Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,27,billNo, 1000Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,27,billNo,, 1000Cr ,1000
+3/29/21,Trade Debtors - Othersمدينون تجاريون - آخرون,Payment,Journal,28,billNo, 1000Dr ,,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,28,billNo, 50Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,28,billNo,, 30Cr ,1000
+3/29/21,Revenue الإيرادات,Payment,Journal,28,billNo,, 1020Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,28,billNo, 1000Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,28,billNo,, 1000Cr ,1000
+3/29/21,Trade Debtors - Othersمدينون تجاريون - آخرون,Payment,Journal,29,billNo, 1000Dr ,,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,29,billNo, 50Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,29,billNo,, 30Cr ,1000
+3/29/21,Revenue الإيرادات,Payment,Journal,29,billNo,, 1020Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,29,billNo, 1000Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,29,billNo,, 1000Cr ,1000
+4/2/21,Capital Profitأرباح رأسمالية,gg,Journal,30,, 100Dr ,,100
+4/2/21,Misc. Revenueإيرادات متنوعة,gg,Journal,30,,, 100Cr ,100
+3/29/21,Trade Debtors - Othersمدينون تجاريون - آخرون,Payment,Journal,31,billNo, 1000Dr ,,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,31,billNo, 50Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,31,billNo,, 30Cr ,1000
+3/29/21,Revenue الإيرادات,Payment,Journal,31,billNo,, 1020Cr ,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,31,billNo,, 20Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,31,billNo, 980Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,31,billNo,, 980Cr ,1000
+3/29/21,Trade Debtors - Othersمدينون تجاريون - آخرون,Payment,Journal,32,billNo, 1000Dr ,,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,32,billNo, 50Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,32,billNo,, 30Cr ,1000
+3/29/21,Revenue الإيرادات,Payment,Journal,32,billNo,, 1020Cr ,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,32,billNo,, 20Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,32,billNo, 1000Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,32,billNo,, 1000Cr ,1000
+3/29/21,Trade Debtors - Othersمدينون تجاريون - آخرون,Payment,Journal,33,billNo, 1000Dr ,,1000
+3/29/21,Revenue الإيرادات,Payment,Journal,33,billNo,, 1000Cr ,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,33,billNo,, 20Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,33,billNo, 1000Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,33,billNo,, 1000Cr ,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,34,billNo, 16.95Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,34,billNo,, 82.19Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,34,billNo, 564.9Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,34,billNo,, 564.9Cr ,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,35,billNo, 16.95Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,35,billNo,, 82.19Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,35,billNo, 564.9Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,35,billNo,, 564.9Cr ,1000
+3/29/21,Trade Debtors - Othersمدينون تجاريون - آخرون,Payment,Journal,36,billNo, 630.14Dr ,,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,36,billNo, 16.95Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,36,billNo,, 82.19Cr ,1000
+3/29/21,COS Medical تكاليف التشغيل للأنشطة الطبية,Payment,Journal,36,billNo, 564.9Dr ,,1000
+3/29/21,Inventory Sub Stores - Clinic # 1001مخزون مستودع العيادة رقم 1001,Payment,Journal,36,billNo,, 564.9Cr ,1000
+3/29/21,Trade Debtors - Othersمدينون تجاريون - آخرون,Payment,Journal,37,billNo, 630.14Dr ,,1000
+3/29/21,Non-Medical Revenue Discount خصم من إيرادات الأنشطة غير الطبية,Payment,Journal,37,billNo, 16.95Dr ,,1000
+3/29/21,Accrued VATضريبة القيمة المضافة المستحقة,Payment,Journal,37,billNo,, 82.19Cr ,1000
+3/29/21,Revenue الإيرادات,Payment,Journal,37,billNo,, 564.9Cr ,1000

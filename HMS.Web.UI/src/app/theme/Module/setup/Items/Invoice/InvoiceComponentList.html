@@ -1,0 +1,171 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Purchase
+                    </h3>
+                </div>
+                <div class="col">
+                    <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
+                            <option id="A" value="A">All</option>
+                            <option id="D" value="D">Due</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Purchase</a>
+        </div>
+    </div>
+    <div class="Cardview px-3 pb-3">
+        <div class="TableView">
+            <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                <div class="uk-overflow-container col-sm-12 p-0">
+                    <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                        <thead class="grid-header">
+                            <tr>
+                                <th>Date </th>
+                                <th> Bill No </th>
+                                <th>Vendor Name</th>
+                                <th>Status</th>
+                                <th>Due Date</th>
+                                <th>Amount</th>
+                                <th>Due Balance</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of InvoiveList" index as i>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.date |date: 'dd/MM/yyyy'}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Invoiceno}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.name}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.status}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.duedate |date: 'dd/MM/yyyy'}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.amount}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.DueBalance}}
+                                </td>
+                                <td>
+                                    <a *ngIf="item.SaveStatus=='Publish' && item.DueBalance > 0 && PaymentControlRights.CreateRights" (click)="AddNewPayment(content,item.ID)">
+                                        Record a Payment
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr [hidden]="!(InvoiveList.length == 0)" style="background:#fff;">
+                                <td [attr.colspan]="10" align="center">
+                                    <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                    <strong class="nodateFound">No record found</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                    <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                        <a (click)="selectPage(page)">
+                            {{page}}
+                        </a>
+                    </li>
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<ng-template #content let-modal class="PaymentModal">
+    <div class="modal-header PatientModal">
+        <h4 class="modal-title" id="modal-basic-title">
+            <img src="../assets/app/media/img/icons/addpatient.png" class="img-fluid icon">
+            Add New Payment
+        </h4>
+        <button type="button" #closeModal class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-7">
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Payment Method</label>
+                        </div>
+                        <div class="col-8 d-flex">
+                            <select class="form-control form-control-sm" formControlName="PaymentMethodID" [(ngModel)]="paymentModel.PaymentMethodID">
+                                <option *ngFor="let item of PaymentMethodList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <small class="text-danger" *ngIf="Form1.controls.PaymentMethodID.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Amount</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="Amount" [(ngModel)]="paymentModel.Amount" class="form-control  form-control-alternative">
+                            <small class="text-danger" *ngIf="Form1.controls.Amount.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required"> Payment Date</label>
+                        </div>
+                        <div class="col-8">
+                            <Datetime-Component formControlName="PaymentDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="paymentModel.PaymentDate">
+                            </Datetime-Component>
+                            <small class="text-danger" *ngIf="Form1.controls.PaymentDate.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Notes</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea type="text" class="form-control m-input" formControlName="Notes" [(ngModel)]="paymentModel.Notes" placeholder="Notes"></textarea>
+                            <small class="text-danger" *ngIf="Form1.controls.Notes.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</ng-template>
+
+

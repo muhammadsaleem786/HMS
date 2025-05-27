@@ -1,0 +1,4 @@
+AccountName,AccountCode,Description,AccountType,ParentAccount,AccountNumber,Currency
+Wages Payable,221100,Amount owed to employees for hours worked but not yet paid.,Other Current Liability,,,
+Prepaid Insurance,141000,Cost of insurance that is paid in advance and includes a future accounting period.,Other Current Asset,Prepaid Expenses,,
+Citi Bank,103020,,Bank,,1.00E+12,

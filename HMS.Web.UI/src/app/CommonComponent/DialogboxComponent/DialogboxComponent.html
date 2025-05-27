@@ -1,0 +1,11 @@
+﻿<div *ngIf="visible" class="dialog modal-dialog" [ngClass]="{'mt-widedialog' :isoverridemt}">
+    <div class="modal-header">
+        <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding"></h3>
+        <button class="close mt-modal-close" *ngIf="closable" (click)="close()" aria-label="Close">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    <ng-content></ng-content>
+    
+</div>
+<div *ngIf="visible" class="overlay" (click)="close()"></div>

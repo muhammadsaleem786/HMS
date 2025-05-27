@@ -1,0 +1,20 @@
+﻿@model HMS.Entities.CustomModel.PaymentToken
+@{
+    ViewBag.Title = "EasyPaaisashopPostBack";
+}
+
+<div style="display:none;">
+    @Html.BeginForm(null, null, FormMethod.Post, new { @action = ViewBag.confirmUrl, @id = "easyPayAuthForm" })
+    {
+
+    @Html.HiddenFor(model => model.auth_token, new { id = "auth_token", @Value = ViewBag.auth_token })
+    @Html.HiddenFor(model => model.postBackURL, new { id = "postBackURL", @Value = ViewBag.postBackURL })
+    <input value="confirm" type="submit" name="pay" />
+    }
+</div>
+
+<script>
+(function() {
+  document.getElementById("easyPayAuthForm").submit();
+})();
+</script>

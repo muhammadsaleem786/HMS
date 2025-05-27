@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="en" appunwraptag="">
+<!-- begin::Head -->
+<head>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8" />
+    <title>
+        HMS | Software
+    </title>
+    <base href="/">
+    <meta name="description" content="Latest updates and statistic charts">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="./assets/app/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="./assets/app/css/summernote.min.css" rel="stylesheet" />
+    <link href="./assets/app/css/slimselect.min.css" rel="stylesheet" />
+    <link href="./assets/app/css/fonts.css" rel="stylesheet" />
+    <link href="./assets/app/css/fullcalendar.css" rel="stylesheet" />
+    <link href="./assets/app/css/scheduler.min.css" rel="stylesheet" />
+    <link href="./assets/app/css/jquery.timepicker.min.css" rel="stylesheet" />
+    <link href="./assets/app/css/jquery-ui.min.css" rel="stylesheet" />
+    <!-- HMS Favicon -->
+    <link rel="shortcut icon" href="./assets/app/media/img/favicon-32x32.png" />
+  
+</head>
+<body class="">
+    <script src="./assets/app/js/jquery-3.6.0.min.js"></script>  
+    <script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+    <script src="./assets/app/js/bootstrap.min.js"></script>
+    <script src="./assets/app/js/summernote.min.js"></script>
+    <script src="./assets/app/js/slimselect.min.js"></script>
+    <script src="./assets/app/js/jquery.min.js"></script>
+    <script src="assets/app/js/jquery-ui.min.js"></script>
+    <!--<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>-->
+    <script src="./assets/app/js/moment.js"></script>
+    <script src="./assets/app/js/fullcalendar.js"></script>
+    <script src="./assets/app/js/jquery.timepicker.min.js"></script>
+
+    <script src="./assets/app/js/scheduler.js"></script>
+    <!--<script src="./assets/app/js/jquery-timepicker.js"></script>-->
+    <script type="text/javascript">
+
+        (function () {
+            var lastTime = 0;
+
+            var vendors = ['ms', 'moz', 'webkit', 'o'];
+
+            for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+
+                window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+
+                window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame']
+
+                    || window[vendors[x] + 'CancelRequestAnimationFrame'];
+
+            }
+
+
+
+            if (!window.requestAnimationFrame)
+
+                window.requestAnimationFrame = function (callback, element) {
+
+                    var currTime = new Date().getTime();
+
+                    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+
+                    var id = window.setTimeout(function () { callback(currTime + timeToCall); },
+
+                        timeToCall);
+
+                    lastTime = currTime + timeToCall;
+
+                    return id;
+
+                };
+
+
+
+            if (!window.cancelAnimationFrame)
+
+                window.cancelAnimationFrame = function (id) {
+
+                    clearTimeout(id);
+
+                };
+
+        }());
+
+        $(document).ready(function () {
+            $(document).on("mouseenter", ".tooltipText", function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+
+
+        });
+    </script>
+
+    
+
+
+</body>
+<!-- end::Body -->
+</html>

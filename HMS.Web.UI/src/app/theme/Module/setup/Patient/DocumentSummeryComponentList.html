@@ -1,0 +1,152 @@
+﻿
+<div class="tab-pane" id="Documents">
+    <div class="row table_border">
+        <div class="col text-right">
+            <button class="btn btn-danger btn-sm" style="position: absolute; top: 0px; right: 15px; z-index: 10;" (click)="openDocumentModal(DocumentContent)"*ngIf="ControlRights.CreateRights && IsEdit">
+                <i class="icon icon-pulse"></i>    Update Document
+            </button>
+            <button class="btn btn-danger btn-sm" style="position: absolute; top: 0px; right: 15px; z-index: 10;" (click)="openDocumentModal(DocumentContent)" *ngIf="ControlRights.CreateRights && IsEdit==false">
+                <i class="icon icon-pulse"></i>    Add New Document
+            </button>
+            <div class="TableView">
+                <div class="input-group searchAddEmployee">
+                    <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="GetDocList()" maxlength="30" aria-describedby="basic-addon1" />
+                </div>
+                <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0 mt-3">
+                    <div class="uk-overflow-container col-sm-12 p-0">
+                        <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                            <thead class="grid-header">
+                                <tr>
+                                    <th>DATE </th>
+                                    <th> DESCRIPTION	 </th>
+                                    <th> DOCUMENT TAGS	 </th>
+                                    <th> UPLOADED ON </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of DocumentList">
+                                    <td (click)="UpdateDocRecord(item.ID)">
+                                        {{item.Date|date: 'MM/dd/yyyy'}}
+                                    </td>
+                                    <td (click)="UpdateDocRecord(item.ID)">
+                                        {{item.Remarks}}
+                                    </td>
+                                    <td (click)="UpdateDocRecord(item.ID)">
+                                        {{item.Tag}}
+                                    </td>
+                                    <td (click)="UpdateDocRecord(item.ID)">
+                                        {{item.Uploaddate |date: 'MM/dd/yyyy'}}
+                                    </td>
+                                    <td>
+                                        <span class="table_multi_icon">
+                                            <span class="btn btn-light" (click)="ViewDoc(item.DocumentImage)">
+                                                <i class="icon icon-eye text-primary"></i>
+                                            </span>
+                                            <a class="ml-2 btn btn-light" (click)="Delete(item.ID)"*ngIf="ControlRights.DeleteRights">
+                                                <i class="icon icon-trash2 text-danger"></i>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr [hidden]="!(DocumentList.length == 0)" style="background:#fff;">
+                                    <td [attr.colspan]="5" align="center">
+                                        <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                        <strong class="nodateFound">No record found</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                    <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                    <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                        <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                        <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                            <a (click)="selectPage(page)">
+                                {{page}}
+                            </a>
+                        </li>
+                        <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                    </ul>
+
+                </div>
+
+            </div>
+            <!--<app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="DocumentList" (pageChange)="GetDocList()" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>-->
+
+        </div>
+    </div>
+</div>
+<!-------Add Document Model-->
+<ng-template #DocumentContent let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"><img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon"> Add Document</h4>
+
+
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form4" novalidate (ngSubmit)="DocSaveOrUpdate(Form4.valid)">
+        <div class="modal-body DoctorShiftModal">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label>Date*</label>
+                        </div>
+                        <div class="col-8">
+                            <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" (DateChangeValue)="onDocDateChanged($event)" [(ngModel)]="Docmodel.Date">
+                            </Datetime-Component>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+
+                            <label>DocumentType*</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm form-control-alternative" formControlName="DocumentTypeId" [(ngModel)]="Docmodel.DocumentTypeId">
+                                <option *ngFor="let item of DocumentTypeList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Description</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea type="text" class="form-control m-input" formControlName="Remarks" [(ngModel)]="Docmodel.Remarks" placeholder="Description"></textarea>
+
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                        </div>
+                        <div class="col-8">
+                            <div class="img-box">
+                                <div class="" *ngIf="Docmodel.DocumentUpload!=''">
+                                    <img [src]="DocumentImage" />
+                                </div>
+                                <File-Component class="UploadActnWrap" [(ngModel)]="Docmodel.DocumentUpload" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getDocImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="saveSchedule" type="submit" class="btn btn-primary" *ngIf="!IsAdmin && ControlRights.CreateRights">Save</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </form>
+</ng-template>

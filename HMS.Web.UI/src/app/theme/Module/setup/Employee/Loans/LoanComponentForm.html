@@ -1,0 +1,189 @@
+﻿<div class="modal" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)" (click)="IsModalClick()">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding mt-d-inline-block">New Loan</h3>
+                    <button type="button" class="close mt-modal-close" (click)="Close()" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                    <p class="salaryCal">
+                        <strong>Salary</strong><br />
+                        <span><strong> {{Currency}} {{BasicSalary | number: '1.0-0'}}</strong> </span>
+                    </p>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Employee*</label>
+                                <input type="text" [(ngModel)]="model.EmployeeID" formControlName="EmployeeID" [hidden]="true" />
+                                <input type="text" [(ngModel)]="DisplayMember" [ngModelOptions]="{standalone : true}" required (keyup)="FilterEmployees()" [attr.disabled]="model.ID" (change)="MatchesFound()" class="form-control" placeholder="Search Employee" />
+                                <small *ngIf="Form1.controls.EmployeeID.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                                <div class="suggestions" *ngIf="EmpfilteredList.length > 0">
+                                    <ul style="list-style:none">
+                                        <li *ngFor="let item of EmpfilteredList">
+                                            <a (click)="SelectItem(item)">{{item.FirstName}}  {{item.LastName}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="suggestions" *ngIf="EmpfilteredList.length <= 0 && !IsEmpFound && !Form1.controls.EmployeeID.hasError('required')">
+                                    <p>No search result match</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description*</label>
+                                <input type="text" formControlName="Description" [(ngModel)]="model.Description" maxlength="500" class="form-control" />
+                                <small *ngIf="Form1.controls.Description.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label>Loan Date*</label>
+                                <Datetime-Component formControlName="LoanDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.LoanDate">
+                                </Datetime-Component>
+                                <small *ngIf="Form1.controls.LoanDate.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label>Loan Amount*</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                                    <input type="number" formControlName="LoanAmount" min="0" [(ngModel)]="model.LoanAmount" pattern=".{0,8}" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                </div>
+                                <small *ngIf="Form1.controls.LoanAmount.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Loan Type*</label>
+                                <select formControlName="LoanTypeID" [(ngModel)]="model.LoanTypeID" class="form-control">
+                                    <option *ngFor="let item of LoanTypeList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Loan Code*</label>
+                                <div class="input-group">                                    
+                                    <input type="text" formControlName="LoanCode" [(ngModel)]="model.LoanCode"  class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Payment Method*</label>
+                                <select formControlName="PaymentMethodID" [(ngModel)]="model.PaymentMethodID" class="form-control">
+                                    <option *ngFor="let item of PaymentMethodList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Payment Start Date*</label>
+                                <Datetime-Component formControlName="PaymentStartDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.PaymentStartDate">
+                                </Datetime-Component>
+                                <small *ngIf="Form1.controls.PaymentStartDate.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <div class="margin-b-8">
+                                    <label>Payment Installment Amount</label><br />
+                                </div>
+                                <label class="radio-inline">
+                                    <input type="radio" formControlName="DeductionType" (change)="IsLoanValid()" name="DeductionType" [(ngModel)]="model.DeductionType" value="F" checked> Fixed
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" formControlName="DeductionType" (change)="IsLoanValid()" name="DeductionType" [(ngModel)]="model.DeductionType" value="P"> % of Salary
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Deduction Value</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">{{model.DeductionType == 'F' ? Currency:'%'}}</span>
+                                    <input type="number" formControlName="DeductionValue" min="0" [(ngModel)]="model.DeductionValue" pattern=".{0,8}" (change)="IsLoanValid()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" />
+                                </div>
+                                <small *ngIf="Form1.controls.DeductionValue.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                                <small class="text-danger" *ngIf="IsValidLoanValue && !Form1.controls.DeductionValue.hasError('required')">
+                                    % value should be equal or less than 100%.
+                                </small>
+                            </div>
+                            <div class="form-group" *ngIf="model.DeductionType == 'P' && model.DeductionValue > 0">
+                                <label>Installment By Base Salary</label>
+                                <input type="number" formControlName="InstallmentByBaseSalary" min="0" [attr.disabled]="true" [(ngModel)]="model.InstallmentByBaseSalary" pattern=".{0,8}" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="Close()">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="LoanPaymentDetailModal" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog modal-md">
+        <form>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Loan Detail</h3>
+                    <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal" id="AddPaymentModal" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog modal-md">
+        <form>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Loan Payment</h3>
+                    <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal" id="LoanAdjustmentModal" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog modal-md">
+        <form>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Loan Adjustment</h3>
+                    <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

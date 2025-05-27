@@ -1,0 +1,71 @@
+﻿<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)" (click)="IsModalClick()">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">{{model.ID ? 'Edit' : 'Add'}} Locations</h3>
+                    <button type="button" class="close mt-modal-close" (click)="Close()" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Location*</label>
+                                <input type="text" formControlName="LocationName" [(ngModel)]="model.LocationName" maxlength="500" class="form-control">
+                                <small *ngIf="Form1.controls.LocationName.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Country*</label>
+                                <select formControlName="CountryID" [(ngModel)]="model.CountryID"  class="form-control" (change)="CountrySelChange()">
+                                    <option *ngFor="let item of Countries" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                                <small *ngIf="Form1.controls.CountryID.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>City*</label>
+                                <select formControlName="CityID" [(ngModel)]="model.CityID" class="form-control">
+                                    <option *ngFor="let item of FilterCities" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                                <small *ngIf="Form1.controls.CityID.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Zip/Postel Code</label>
+                                <input type="text" formControlName="ZipCode" [(ngModel)]="model.ZipCode" maxlength="150" class="form-control">
+                            </div>
+                        </div>                     
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Address*</label>
+                                <textarea type="text" formControlName="Address" [(ngModel)]="model.Address" maxlength="500" class="form-control"></textarea>
+                                <small *ngIf="Form1.controls.Address.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="Close()">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    <button type="button" class="btn btn-blue pull-left btnDel" *ngIf="model.ID && !model.Employees" (click)="Delete()">Delete</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

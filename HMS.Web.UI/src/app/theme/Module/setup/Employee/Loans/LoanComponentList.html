@@ -1,0 +1,260 @@
+﻿<div class="margin-t-68">
+    <div class="clearfix backBtnMain">
+        <div class="backBtn">
+            <a routerLink="/home/setup"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+        </div>
+    </div>
+    <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="LoanList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+    <div style="padding: 0 40px 0 40px;" *ngIf="LoanList?.length > 0">
+        <table class="table tblTotal" style="margin-top:0px;">
+            <tr>
+                <td width="56%"><strong>Total</strong></td>
+                <td><strong>{{Currency}} {{PagSumModel.LoanSum | number: '1.0-0' }}</strong></td>
+                <td><strong>{{Currency}} {{PagSumModel.PaymentSum | number: '1.0-0' }}</strong></td>
+                <td><strong>{{Currency}} {{PagSumModel.BalanceSum | number: '1.0-0'}}</strong></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<LoanComponentForm *ngIf="!IsShowLoanDetailModal" [hidden]="IsList" [id]="Id" (pageClose)="Close($event)"></LoanComponentForm>
+
+<div *ngIf="IsShowLoanDetailModal">
+    <span style="display:none" id="ShowLoanDetailModalId" data-toggle="modal" data-target="#LoanPaymentDetailModal"></span>
+    <div class="modal" id="LoanPaymentDetailModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <form>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="mt-d-inline-block">
+                            <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Loan Detail - {{PRDModel?.Description}}</h3>
+                            <h4><strong>{{PRDModel?.EmpName}}</strong></h4>
+                        </div>
+                        <button class="salaryCal cursor-pointer" id="ShowAddPaymentModalId" (click)="ShowHideModal('ShowAP')" data-toggle="modal" [style.cursor]="(PRDModel.TotalBalance <= 0) ? 'not-allowed' : 'pointer' " [attr.disabled]="(PRDModel.TotalBalance <= 0) ? true : null" data-target="#AddPaymentModal">Add Payment</button>
+                        <button type="button" id="CloseLoanDetailModal" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mat-elevation-z8">
+                            <mat-table class="mt-custom-table" #table [dataSource]="dataSource" matSort>
+
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="Transaction">
+                                    <mat-header-cell mat-header-cell *matHeaderCellDef>Transaction </mat-header-cell>
+                                    <mat-cell mat-cell *matCellDef="let element"> {{element.Transaction}} </mat-cell>
+                                    <!--<mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>-->
+                                </ng-container>
+
+                                <!-- Weight Column -->
+                                <ng-container matColumnDef="LoanDate">
+                                    <mat-header-cell *matHeaderCellDef> Loan Date</mat-header-cell>
+                                    <mat-cell mat-cell *matCellDef="let element">
+                                        {{element.LoanDate  | date: "dd/MM/yyyy"}}
+                                    </mat-cell>
+                                    <!--<mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>-->
+                                </ng-container>
+
+                                <!-- Weight Column -->
+                                <ng-container matColumnDef="LoanAmount">
+                                    <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
+                                    <mat-cell mat-cell *matCellDef="let element">
+                                        <span [ngStyle]="element?.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''" *ngIf="element.LoanAmount != 0">
+                                            {{Currency}} {{(element?.AdjustmentType == 'C' ? element.LoanAmount + element.AdjustmentAmount : element.LoanAmount - element.AdjustmentAmount) | number: '1.0-0'}}
+                                            <i *ngIf="element.Payment == 0" (click)="GetAdjustmentModel(element?.ID,'LMF')" class="fa fa-pencil cursor-pointer" data-toggle="modal" data-target="#LoanAdjustmentModal"></i>
+                                        </span>
+                                    </mat-cell>
+
+                                    <!--<mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>-->
+                                </ng-container>
+
+                                <!-- Weight Column -->
+                                <ng-container matColumnDef="Payment">
+                                    <mat-header-cell *matHeaderCellDef>Payment</mat-header-cell>
+                                    <mat-cell mat-cell *matCellDef="let element">
+                                        <span [ngStyle]="element.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''" *ngIf="element.Payment != 0">
+                                            {{Currency}} {{(element.AdjustmentType == 'C' ? element.Payment + element.AdjustmentAmount : element.Payment - element.AdjustmentAmount) | number: '1.0-0'}}
+                                            <i *ngIf="element.LoanAmount == 0" (click)="GetAdjustmentModel(element?.ID,element.ScreenType)" class="fa fa-pencil cursor-pointer" data-toggle="modal" data-target="#LoanAdjustmentModal"></i>
+                                        </span>
+                                    </mat-cell>
+                                    <!--<mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>-->
+                                </ng-container>
+
+
+                                <!-- Symbol Column -->
+
+                                <ng-container matColumnDef="Balance">
+                                    <mat-header-cell *matHeaderCellDef>Balance</mat-header-cell>
+                                    <mat-cell mat-cell *matCellDef="let element">
+                                        {{Currency}} {{element.Balance | number: '1.0-0'}}
+                                    </mat-cell>
+
+                                </ng-container>
+
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                <!--<mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>-->
+                            </mat-table>
+                            <mat-paginator showFirstLastButtons [length]="length"
+                                           [pageSize]="pageSize"
+                                           [pageSizeOptions]="pageSizeOptions"
+                                           [hidePageSize]="true"
+                                           (page)="pageEvent = $event">
+                            </mat-paginator>
+                        </div>
+                        <div style="padding: 0 40px 0 40px;">
+                            <table class="table" style="margin-top:0px;">
+                                <tr>
+                                    <td><strong>To Date Total</strong></td>
+                                    <td><strong>{{Currency}} {{PagDetailSumModel.LoanSum | number: '1.0-0' }}</strong></td>
+                                    <td><strong>{{Currency}} {{PagDetailSumModel.PaymentSum | number: '1.0-0' }}</strong></td>
+                                    <td><strong>{{Currency}} {{PagDetailSumModel.BalanceSum | number: '1.0-0'}}</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal">Cancel</button>
+                        <!--<button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>-->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="AddPaymentModal" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog modal-md">
+            <form [formGroup]="PaymentForm" (ngSubmit)="AddPayment(PaymentForm.valid)">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="mt-d-inline-block">
+                            <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Loan Payment - {{PRDModel?.Description}}</h3>
+                            <h4><strong>{{PRDModel?.EmpName}}</strong></h4>
+                        </div>
+                        <div class="salaryCal">
+                            <strong>Loan Balance</strong><br />
+                            <strong>
+                                {{Currency}} {{PRDModel.TotalBalance | number: '1.0-0'}}
+                            </strong>
+                        </div>
+                        <button type="button" id="CloseAddPaymentModal" (click)="ShowHideModal('HideAP')" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Payment Date*</label>
+                                    <Datetime-Component formControlName="PaymentDate" placeholder="dd/MM/YYYY" [(ngModel)]="PaymentModel.PaymentDate">
+                                    </Datetime-Component>
+                                    <small class="text-muted">Loan Date - {{PRDModel?.LoanDate | date : 'dd/MM/yyyy'}}</small>
+                                    <small *ngIf="PaymentForm.controls.PaymentDate.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Amount*</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                                        <input type="number" formControlName="Amount" [(ngModel)]="PaymentModel.Amount" min="0" pattern=".{0,8}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" />
+                                        <small *ngIf="PaymentForm.controls.Amount.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Comments*</label>
+                                    <textarea rows="3" type="text" formControlName="Comment" [(ngModel)]="PaymentModel.Comment" maxlength="500" class="form-control"></textarea>
+                                    <small *ngIf="PaymentForm.controls.Comment.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowHideModal('HideAP')" data-dismiss="modal">Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="LoanAdjustmentModal" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog modal-md">
+            <form [formGroup]="AdjustmentForm" novalidate (ngSubmit)="AddAdjustment(AdjustmentForm.valid)">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Loan - Adjustment</h3>
+                        <!--<button type="button" style="display:none"  class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>-->
+                        <button type="button" class="close mt-modal-close" (click)="ShowHideModal('HideAd')" id="CloseAdjustModal" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <strong>{{ AdjustmentModel.AdjustmentTitle}}</strong>
+                            <h4>{{AdjustmentModel.AdjustmentText}} Adjustment Amount</h4>
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="well well-sm text-center center-block col-md-6 text-white" style="background: #00D399; color: #fff;">
+                                    <strong>Original {{AdjustmentModel.AdjustmentText}} Amount</strong>
+                                    <p>{{Currency}} {{AdjustmentModel.OrignalValue | number: '1.0-0'}}</p>
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Adjustment Date*</label>
+                            <Datetime-Component formControlName="AdjustmentDate" placeholder="DD/MM/YYYY" [(ngModel)]="AdjustmentModel.AdjustmentDate">
+                            </Datetime-Component>
+                            <em class="text-muted">Transaction Date : {{AdjustmentModel.TransactionDate  | date: "dd/MM/yyyy"}}</em><br />
+                            <small *ngIf="AdjustmentForm.controls.AdjustmentDate.hasError('required') && Adjustmentsubmitted">
+                                This value is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <h4>Adjustment Type </h4>
+                            <label class="radio-inline" style="margin-bottom: 10px;">
+                                <input type="radio" formControlName="AdjustmentType" (change)="CreditOrDebitAmount()" name="AdjustmentType" [(ngModel)]="AdjustmentModel.AdjustmentType" value="C" checked> Credit - Add adjustment amount to {{AdjustmentModel.AdjustmentText}} Amount
+                            </label>
+                            <label class="radio-inline" style="margin: 0;">
+                                <input type="radio" formControlName="AdjustmentType" (change)="CreditOrDebitAmount()" name="AdjustmentType" [(ngModel)]="AdjustmentModel.AdjustmentType" value="D"> Debit - Subtract adjustment amount from {{AdjustmentModel.AdjustmentText}} Amount
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <h4>Adjustment Amount* </h4>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                                <input type="number" formControlName="AdjustmentAmount" min="0" pattern=".{0,8}" maxlength="8" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" (keyup)="CreditOrDebitAmount()" [(ngModel)]="AdjustmentModel.AdjustmentAmount" class="form-control" aria-describedby="basic-addon1" />
+                            </div>
+                            <small *ngIf="AdjustmentForm.controls.AdjustmentAmount.hasError('required') && Adjustmentsubmitted">
+                                This value is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label>Comments*</label>
+                            <textarea type="text" formControlName="AdjustmentComments" [(ngModel)]="AdjustmentModel.AdjustmentComments" maxlength="500" class="form-control"></textarea>
+                            <small *ngIf="AdjustmentForm.controls.AdjustmentComments.hasError('required') && Adjustmentsubmitted">
+                                This value is required.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="well well-sm text-center center-block col-md-6 text-white" style="background: #F05675; color: #fff;">
+                                    <strong>Adjustment {{AdjustmentModel.AdjustmentText}} Amount</strong>
+                                    <p>{{Currency}} {{AdjustmentModel.AdjustmentValue | number: '1.0-0'}}</p>
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="AdjustmentModel.AdjustmentBy > 0" (click)="DeleteAdjustmentModel()">Delete</button>
+                        <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowHideModal('HideAd')" data-dismiss="modal" id="closeAdjustmentModal">Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

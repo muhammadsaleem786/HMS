@@ -1,0 +1,270 @@
+﻿
+<div class="margin-t-68 col-sm-12" style="margin-bottom:100px;">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
+                Update Purchase
+                <a routerLink="/home/Invoice"><i class="fa fa-arrow-circle-left"></i></a>
+
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                Add New Purchase
+                <a routerLink="/home/Invoice"><i class="fa fa-arrow-circle-left"></i></a>
+
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <span class="closeICon" routerLink="/home/Invoice">
+
+            </span>
+        </div>
+    </div>
+    <div>
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+            <div class="AddNewItem margin-t-15">
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label class="required">Vendor</label>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" id="txtVandor" class="form-control form-control-sm form-control-alternative" formControlName="VendorName" [(ngModel)]="model.VendorName" (click)="LoadVendor()" placeholder="Search Vendor" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="col-sm-12 no-padding">
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <label class="required">Bill No</label>
+                        </div>
+                        <div class="col-sm-4  small-input">
+                            <input type="text" formControlName="BillNo" [(ngModel)]="model.BillNo" maxlength="150" class="form-control input-sm">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <label>Order No</label>
+                        </div>
+                        <div class="col-sm-4  small-input">
+                            <input type="text" formControlName="OrderNo" [(ngModel)]="model.OrderNo" maxlength="50" class="form-control input-sm">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <label class="">Bill Date</label>
+                        </div>
+                        <div class="col-sm-4  small-input">
+                            <Datetime-Component (DateChangeValue)="onEstimateDate($event)" formControlName="BillDate" [(ngModel)]="model.BillDate">
+                            </Datetime-Component>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <label class="required">Due Date </label>
+                        </div>
+                        <div class="col-sm-4 small-input">
+                            <Datetime-Component (DateChangeValue)="onExpiryDate($event)" formControlName="DueDate" [(ngModel)]="model.DueDate">
+                            </Datetime-Component>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 margin-top10" style="width:92%;">
+                            <table class="line-table noramal-padding margin-top10">
+                                <thead class="line-item-header">
+                                    <tr>
+                                        <th class="line-item-column" style="width:150px;">Item</th>
+                                        <th class="line-item-column" style="width:150px;">Quantity</th>
+                                        <th class="line-item-column" style="width:150px;">Rate</th>
+                                        <th class="line-item-column" style="width:130px;">Amount</th>
+                                        <th class="line-item-column" style="width:130px;"></th>
+                                    </tr>
+                                </thead>
+                                <thead>
+                                    <tr *ngFor="let dynamic of Invoice_itemdynamicArray; let i = index;">
+                                        <td>
+                                            <input class="form-control form-control-sm" id="txtItem_{{i}}" [ngModelOptions]="{standalone:true}" (click)="LoadItem(i)" [(ngModel)]="dynamic.Item" placeholder="Serach Item" />
+                                            <!--<select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.ItemID" class="form-control ItemDetail1" (change)="loadItemDetail(dynamic.ItemID,i)">
+                                                <option *ngFor="let item of ItemList" [ngValue]="item.ID">{{item.Name}}</option>
+                                            </select>-->
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Quantity" [readonly]="dynamic.ItemType == 'Sarial'" (change)="QuantityChange(i,dynamic.Quantity)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Rate" (change)="RateChange(i,dynamic.Rate)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                        </td>
+                                        <td class="relative">
+                                            {{dynamic.Amount}}
+                                            <div class="item-actions">
+                                                <span (click)="RemoveRow(i)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon icon-sm icon-cancel-circled cursor-pointer icon-red">
+                                                        <path d="M256 32c30.3 0 59.6 5.9 87.2 17.6 26.7 11.3 50.6 27.4 71.2 48s36.7 44.5 48 71.2c11.7 27.6 17.6 56.9 17.6 87.2s-5.9 59.6-17.6 87.2c-11.3 26.7-27.4 50.6-48 71.2s-44.5 36.7-71.2 48C315.6 474.1 286.3 480 256 480s-59.6-5.9-87.2-17.6c-26.7-11.3-50.6-27.4-71.2-48s-36.7-44.5-48-71.2C37.9 315.6 32 286.3 32 256s5.9-59.6 17.6-87.2c11.3-26.7 27.4-50.6 48-71.2s44.5-36.7 71.2-48C196.4 37.9 225.7 32 256 32m0-32C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0z"></path>
+                                                        <path d="M284.3 250.3l62.3-62.3c6.2-6.2 6.2-16.2 0-22.4l-.2-.2c-6.2-6.2-16.2-6.2-22.4 0l-62.3 62.3c-3.1 3.1-8.2 3.1-11.3 0L188 165.4c-6.2-6.2-16.2-6.2-22.4 0l-.2.2c-6.2 6.2-6.2 16.2 0 22.4l62.3 62.3c3.1 3.1 3.1 8.2 0 11.3L165.4 324c-6.2 6.2-6.2 16.2 0 22.4l.2.2c6.2 6.2 16.2 6.2 22.4 0l62.3-62.3c3.1-3.1 8.2-3.1 11.3 0l62.3 62.3c6.2 6.2 16.2 6.2 22.4 0l.2-.2c6.2-6.2 6.2-16.2 0-22.4l-62.3-62.3c-3-3.2-3-8.2.1-11.4z"></path>
+                                                    </svg>
+                                                </span>
+                                                <span *ngIf="dynamic.IsBatch">
+                                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#BatchModal" (click)="IntializeModels(i)"></i>
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <button class="btn btn-secondary add-btn btn-xs  margin-top10" style="color:#d64830;" type="button" (click)="Add()">
+
+                                        Add Item
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-sm-offset-1 col-sm-6 no-padding">
+                                <div class="row grey-bg rounded-xlg SummaryWrap colum3">
+                                    <div class="col-sm-8">
+                                        <label class="margin-b-0 lh-normal">Sub Total</label>
+                                    </div>
+                                    <div class="col-sm-4 text-right pull-right">
+                                        <div class="value_lable">
+                                            {{SubTotal}}
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+
+
+                                    <div class="col-sm-4">
+                                        <label>Discount</label>
+                                    </div>
+                                    <div class="col-sm-4 text-right pull-right">
+                                        <div class="flex-row">
+                                            <input type="text" class="form-control text-right input-sm text-" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.Discount" (change)="DiscountValue(model.Discount)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            <select class="form-control input-medium-select" (change)="changeDiscountType($event.target.value)" [ngModelOptions]="{standalone:true}" [(ngModel)]="DisType">
+                                                <option *ngFor="let item of DiscountTypeList" [value]="item.id">
+                                                    {{item.Name}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 pull-right text-right">
+                                        <div class="value_lable">
+                                            {{DiscountAmount}}
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="clearfix"></div>
+
+                                    <div class="clearfix"></div>
+                                    <div class="col-sm-8">
+                                        <strong><label>Total</label></strong>
+                                    </div>
+                                    <div class="col-sm-4 text-right pull-right">
+                                        <strong>  {{Total}}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="btnArea-footer btnFixed dropup">
+                <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save as Draft</button>
+                <button type="submit" class="btn btn-primary" *ngIf="IsEdit && model.SaveStatus==1 && ControlRights.EditRights" (click)="model.action = 'Update'">Update</button>
+                <button type="submit" class="btn btn-primary" *ngIf="IsEdit && model.SaveStatus==1 && ControlRights.CreateRights"(click)="model.action = 'Publish'">Publish</button>
+                <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && model.SaveStatus==1 && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                <button type="button" class="btn btn-light" routerLink="/home/Invoice">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="Cardview search_onTop px-3 pt-0">
+    <div class="TableView">
+        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+            <div class="uk-overflow-container col-sm-12 p-0">
+                <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                    <thead class="grid-header">
+                        <tr>
+                            <th>Payment Date </th>
+                            <th> Payment Method </th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of PaymentList" index as i>
+                            <td>
+                                {{item.date |date: 'dd/MM/yyyy'}}
+                            </td>
+                            <td>
+                                {{item.PaymentMethod}}
+                            </td>
+                            <td>
+                                {{item.amount}}
+                            </td>
+                            <td (click)="DeletePayment(item.ID)">
+                                <button type="button" class="btn btn-danger">
+                                    <i class="icon fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr [hidden]="!(PaymentList.length == 0)" style="background:#fff;">
+                            <td [attr.colspan]="10" align="center">
+                                <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                <strong class="nodateFound">No record found</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+            <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                    <a (click)="selectPage(page)">
+                        {{page}}
+                    </a>
+                </li>
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+<div class="modal" id="BatchModal" role="dialog">
+    <div class="modal-dialog modal-md">
+        <form [formGroup]="Form6" novalidate (ngSubmit)="BatchSave(Form6.valid)">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading font-weight-400 no-padding">Add </h3>
+                    <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label *ngIf="BatchType=='Sarial'">Sarial Number*</label>
+                        <label *ngIf="BatchType!='Sarial'">Batch Number*</label>
+                        <input type="text" formControlName="BatchSarialNumber" [(ngModel)]="batchModel.BatchSarialNumber" maxlength="250" class="form-control m-input">
+                        <small *ngIf="Form6.controls.BatchSarialNumber.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label *ngIf="BatchType=='Sarial'">Warranty Expire Date*</label>
+                        <label *ngIf="BatchType !='Sarial'">Expire Date*</label>
+                        <Datetime-Component (DateChangeValue)="onEstimateDate($event)" formControlName="ExpiredWarrantyDate" [(ngModel)]="batchModel.ExpiredWarrantyDate">
+                        </Datetime-Component>
+                        <small *ngIf="Form6.controls.ExpiredWarrantyDate.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeBatchModal>Cancel</button>
+                    <button type="submit" class="btn btn-blue">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

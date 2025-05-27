@@ -1,0 +1,130 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block">
+                SignUp
+            </h3>
+        </div>
+    </div>
+    <div class="row Cardview padding-20 m-0">
+        <div class="col-sm-12">
+            <form [formGroup]="Form2" novalidate (ngSubmit)="SaveOrUpdate(Form2.valid)" action="">
+
+                <div class="row no-row-margin-lr root-elem">
+                    <div class="col-sm-6 m-auto">
+                        <div class="col-sm-12 text-center" style="margin-bottom:20px;">
+                            <h5 id="lblError" style="visibility:hidden" class="text-danger">Error</h5>
+                            <h5 id="lblInfo" style="visibility:hidden;font-size:13px;" class="text-color-lightgray"></h5>
+                        </div>
+                        <div class="col-sm-12 registercomplete">
+
+                            <div class="input-group mb-4">
+
+                                <input class="form-control md-input" type="text" placeholder="Name" maxlength="100" formControlName="Name" [(ngModel)]="model.Name">
+                                <small *ngIf="Form2.controls.Name.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                                <small *ngIf="!Form2.controls.Name.valid && submitted && !Form2.controls.Name.hasError('required')">
+                                    Only Alphabets Required
+                                </small>
+                            </div>
+                            <div class="row">
+
+
+                                <div class="col-sm-6">
+
+                                    <div class="input-group mb-4">
+
+                                        <input class="form-control md-input" formControlName="Email" type="text" maxlength="250" placeholder="Email" [(ngModel)]="model.Email">
+                                        <small *ngIf="Form2.controls.Email.hasError('pattern') && !Form2.controls.Email.hasError('required')">
+                                            Please enter valid email.
+                                        </small>
+                                        <small *ngIf="Form2.controls.Email.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group m-form__group" ng-show="isNewUser">
+                                        <input class="form-control md-input" type="text" formControlName="PhoneNo" appPhoneMask placeholder="Phone No" minlength="6" maxlength="50"
+                                               [(ngModel)]="model.PhoneNo" autocomplete="off">
+                                        <small *ngIf="Form2.controls.PhoneNo.hasError('required') && submitted ">
+                                            This value is required.
+                                        </small>
+                                        <!--<small *ngIf="Form2.controls.PhoneNo.hasError('pattern') && submitted">
+                                            Please enter only number.
+                                        </small>
+                                        <small *ngIf="Form2.controls.PhoneNo.hasError('minlength') && !Form2.controls.PhoneNo.hasError('pattern')">
+                                            At least 6 chracters
+                                        </small>
+                                        <small *ngIf="Form2.controls.PhoneNo.hasError('maxlength') && !Form2.controls.PhoneNo.hasError('pattern')">
+                                            Not more than 20 chracters
+                                        </small>-->
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="input-group mb-4">
+
+                                <input class="form-control md-input" type="text" placeholder="Clinic Name" maxlength="100" formControlName="CompanyName" [(ngModel)]="model.CompanyName">
+                                <small *ngIf="Form2.controls.CompanyName.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                                <small *ngIf="!Form2.controls.CompanyName.valid && submitted && !Form2.controls.CompanyName.hasError('required')">
+                                    Only Alphabets Required
+                                </small>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-sm-6">
+                                    <div class="input-group mb-4 ng-scope" ng-if="isNewUser || isJobeeUser">
+
+                                        <input class="form-control md-input" type="password" formControlName="Pwd" [(ngModel)]="model.Pwd" maxlength="1000" placeholder="Password">
+                                        <div *ngIf="passwordControl?.errors && passwordControl?.touched">
+                                            <small *ngIf="passwordControl?.errors?.minLength">Password must be at least 10 characters.</small>
+                                            <small *ngIf="passwordControl?.errors?.uppercase">Password must contain at least one uppercase letter.</small>
+                                            <small *ngIf="passwordControl?.errors?.lowercase">Password must contain at least one lowercase letter.</small>
+                                            <small *ngIf="passwordControl?.errors?.number">Password must contain at least one number.</small>
+                                            <small *ngIf="passwordControl?.errors?.specialChar">Password must contain at least one special character.</small>
+                                            <small *ngIf="passwordControl?.errors?.commonPassword">Password is too common. Choose a different password.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="input-group mb-4 ng-scope" ng-if="isNewUser">
+
+                                        <input class="form-control md-input" type="password" placeholder="Confirm Password" formControlName="CPassword" [(ngModel)]="model.CPassword"
+                                               maxlength="1000">
+                                        <small *ngIf="model.Pwd!=model.CPassword  && submitted">
+                                            Password not match.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group text-right">
+                                <button type="button" class="btn btn-light mr-2" routerLink="/home/Admin">Cancel</button>
+                                <button class="btn btn-primary" type="submit">Sign up</button>
+                            </div>
+                        </div>
+
+                        <br />
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+

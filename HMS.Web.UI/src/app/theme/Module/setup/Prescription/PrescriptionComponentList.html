@@ -1,0 +1,253 @@
+﻿<div class="margin-t-68 removeAction">
+
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Prescription
+                    </h3>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Prescription</a>
+        </div>
+    </div>
+
+
+    <div class="Cardview search_onTop  search_large_left px-3 pb-3 pt-0">
+        <div class="input-group searchAddEmployee">
+            <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
+        </div>
+        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+            <div class="uk-overflow-container col-sm-12 p-0">
+                <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                    <thead class="grid-header">
+                        <tr>
+                            <th>Date </th>
+                            <th> Patient Name </th>
+                            <th> Medication </th>
+                            <th> Amount </th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of PrescriptionList">
+                            <td (click)="AddRecord(item.ID)">
+                                {{item.AppointmentDate |date: 'MM/dd/yyyy'}}
+                            </td>
+                            <td (click)="AddRecord(item.ID)">
+                                {{item.PatientName}}
+                            </td>
+                            <td (click)="AddRecord(item.ID)">
+                                {{item.MedicineName}}
+                            </td>
+                            <td (click)="AddRecord(item.ID)">
+                                {{item.PaidAmount}}/{{item.OutstandingBalance}}
+                            </td>
+
+                            <td (click)="PrintRxform(item.ID)">
+                                <span class="icon icon-p text-danger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="font-size:30px;" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 48 48"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 4a1 1 0 0 0-1 1v38a1 1 0 0 0 1 1h28a1 1 0 0 0 1-1V15a1 1 0 0 0-.293-.707l-10-10A1 1 0 0 0 28 4H10zm1 38V6h16v9a1 1 0 0 0 1 1h9v26H11zm24.586-28L29 7.414V14h6.586zM17 33h2v-7h1.586l5 5l-3.293 3.293l1.414 1.414L27 32.414l3.293 3.293l1.414-1.414L28.414 31l3.293-3.293l-1.414-1.414L27 29.586l-3.605-3.605A4 4 0 0 0 23 18h-5a1 1 0 0 0-1 1v14zm6-9h-4v-4h4a2 2 0 1 1 0 4z" fill="currentColor" /></g></svg>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr [hidden]="!(PrescriptionList.length == 0)" style="background:#fff;">
+                            <td [attr.colspan]="10" align="center">
+                                <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                <strong class="nodateFound">No record found</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f; margin-left: 16px; font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+        <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+            <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                <a (click)="selectPage(page)">
+                    {{page}}
+                </a>
+            </li>
+            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+        </ul>
+
+        <!--<app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="PrescriptionList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>-->
+
+    </div>
+</div>
+
+
+<!-- ============================   Rx Print  Modal ========= -->
+<ng-template #PrintRx let-modal class="RxPrintModal TemplateTwo">
+    <div id="print-RxPrintModal">
+        <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
+            <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
+                <div class="col-6">
+                    <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;"> {{DoctorInfo.Name}} </h3>
+                    <p style="margin:0 0 5px;font-size:14px;line-height: normal;"> {{DoctorInfo.Qualification}} {{DoctorInfo.Designation}}</p>
+                    <strong style="margin:0;font-size:13px;line-height: normal;">
+                        {{DoctorInfo.Designation}}
+                    </strong>
+                    <p style="margin: 0; font-size: 14px; line-height: normal;">Ph: {{DoctorInfo.PhoneNo}}</p>
+                </div>
+                <div class="col-6" style="text-align: right; direction: rtl;" *ngIf="DoctorInfo.TemplateId==2">
+                    <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;"> {{DoctorInfo.NameUrdu}} </h3>
+                    <p style="margin:0 0 5px;font-size:14px;line-height: normal;"> {{DoctorInfo.QualificationUrdu}} {{DoctorInfo.DesignationUrdu}}</p>
+                    <strong style="margin:0;font-size:13px;line-height: normal;">
+                        {{DoctorInfo.DesignationUrdu}}
+                    </strong>
+                    <p style="margin:0 0 5px;font-size:14px;line-height: normal;"> {{DoctorInfo.HeaderDescription}}</p>
+
+                </div>
+                <div class="col-6 text-right" *ngIf="PatientRXmodel.ClinicIogo != '' && PatientRXmodel.ClinicIogo != null ">
+                    <img [src]="PatientRXmodel.ClinicIogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div class="col-6 text-right" *ngIf="PatientRXmodel.ClinicIogo =='' || PatientRXmodel.ClinicIogo == null ">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+            </div>
+        </div>
+        <div class="modal-body body_Prescription" style="height: calc(29.7cm - 200px);">
+            <div class="row" style="font-size: 14px;border-bottom: 1px solid #5e72e4; margin-bottom: 3px; padding-bottom: 8px;">
+                <div class="col-5">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Name" style="font-size: 14px;">P/Name:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;" name="Name" [(ngModel)]="PatientRXmodel.PatientName" readonly>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Age" style="font-size: 14px;">Age/Sex:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;" name="Name" [(ngModel)]="PatientRXmodel.Age" readonly>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Weight" style="font-size: 14px;">Weight:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;" name="Name" readonly>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Date" style="font-size: 14px;">Date:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:100px;" name="Name" [(ngModel)]="PatientRXmodel.AppointmentDate" readonly>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" style="border-top: 3px solid #5e72e4;height: 95%;">
+                <div class="col-3">
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Vitals:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of PatientVitalList">
+                            {{d.Name}}&nbsp;&nbsp;{{d.Measure}}&nbsp; {{d.Unit}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Diagnoses:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_diagnos_dynamicArray">
+                            {{d.Diagnos}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Complaint:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_complaint_dynamicArray">
+                            {{d.Complaint}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Investigation:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_investigation_dynamicArray">
+                            {{d.Investigation}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Examination:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of emr_prescription_observation_dynamicArray">
+                            {{d.Observation}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-9" style="border-left: 1px solid #5e72e4">
+                    <table class="table" style="margin-top: 15px;">
+                        <thead>
+                        <th style="border-top:0px; padding: 2px;">
+                            Medicine
+                        </th>
+                        <th style="border-top:0px; padding: 2px;">
+                            Type
+                        </th>
+                        <th style="border-top:0px; padding: 2px;">
+                            Days
+                        </th>
+                        <th style="border-top:0px; padding: 2px;">
+                            Measure
+                        </th>
+                        <th style="border-top:0px; padding:0 2px 5px;">
+                            Instruction
+                        </th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let m of emr_prescription_treatment_dynamicArray">
+                                <td style="padding:2px;">
+                                    {{m.MedicineName}}
+                                    <label *ngIf="DoctorInfo.TemplateId==2">
+                                        {{m.Instructions}}
+                                    </label><br />
+                                    <label *ngIf="DoctorInfo.TemplateId==2">
+                                        (
+                                        <span *ngIf="m.Morning > 0">{{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }} {{m.Morning}} </span>
+                                        <span *ngIf="m.AfterNoon > 0">+ {{ m.TypeId == 39 ? 'گولی دوپہر' : 'دوپہر' }} {{m.AfterNoon}} </span>
+                                        <span *ngIf="m.Evening > 0">+ {{ m.TypeId == 39 ? 'گولی شام' : 'شام' }} {{m.Evening}} </span>
+                                        <span *ngIf="m.Night > 0">+ {{ m.TypeId == 39 ? 'گولی رات' : 'رات' }} {{m.Night}} </span>
+                                        )
+                                    </label>
+                                    <label *ngIf="DoctorInfo.TemplateId==1">
+                                        (
+                                        <span *ngIf="m.Morning > 0"> {{m.Morning}} </span>
+                                        <span *ngIf="m.AfterNoon > 0">+  {{m.AfterNoon}} </span>
+                                        <span *ngIf="m.Evening > 0">+ {{m.Evening}} </span>
+                                        <span *ngIf="m.Night > 0">+  {{m.Night}} </span>
+                                        )
+                                    </label>
+                                </td>
+                                <td style="padding:2px;">{{m.MedicineType}}</td>
+                                <td style="padding:2px;">{{m.Duration}}</td>
+                                <td style="padding:2px;">{{m.Measure}}</td>
+                                <td style="padding:2px;">{{m.Instructions}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3> Instructions</h3>
+                    <p style="font-size:12px;line-height:normal;" *ngFor="let m of emr_prescription_treatment_dynamicArray">
+                        {{m.Instructions}},
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer bg-secondary" style="padding: 5px 0 0px;text-align:center;">
+            <div class="col">
+                <p style="font-size: 13px;margin-bottom:5px; border-bottom:1px solid #efefef;">{{DoctorInfo.Footer}}</p>
+            </div>
+        </div>
+    </div>
+    <div style="position:fixed; right: 20px;">
+        <button class="btn btn-primary" useExistingCss="true" printSectionId="print-RxPrintModal" ngxPrint> Print</button>
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+</ng-template>

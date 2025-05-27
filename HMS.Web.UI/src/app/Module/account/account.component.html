@@ -1,0 +1,19 @@
+<app-header-user></app-header-user>
+<div class="container body-content mt-bodycontent" id="main-container">
+    <div class="row no-row-margin-lr">
+        <div class="UserAtentWrap" style="margin-left: auto; margin-right: auto;">
+            <router-outlet></router-outlet>
+            <div class="col-xs-12 text-center margin-t-50 Areafooter">
+                <span *ngIf="PayrollRegion=='PK'">
+                    <p>
+                        &copy; 2024 HMS, All rights reserved | <span>
+                            powered by
+                            <a href="https://www.HMS.com/" class="">www.HMS.com</a>
+                        </span>
+                    </p>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</div>

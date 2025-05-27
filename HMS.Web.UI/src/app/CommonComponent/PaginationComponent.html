@@ -1,0 +1,83 @@
+﻿<style>
+    .rightSec .uk-form-row {
+        float: right;
+        margin-left: 6px;
+    }
+
+        .rightSec .uk-form-row + .uk-form-row {
+            margin: 0;
+            margin-top: 1px;
+        }
+
+    .rightSec select {
+        height: 40px;
+    }
+</style>
+
+<div class="row no-row-margin-lr grid-box pt-0">
+
+    <div class="col-sm-12 p-0 mb-2 paginationSearchBox" [ngClass]="{hidden : PModel.ShowSearch == true ? true :false}">
+        <!--<div *ngIf="PConfig.Action.IsShowScreenName" class="row">
+            <h2 class="grid-heading margin-t-15">{{PConfig.Action.ScreenName}}</h2>
+        </div>-->
+        <div class="clearfix" *ngIf="PConfig.Action.IsShowSearchAndAddButton">
+            <div class="input-group searchAddEmployee">
+                <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="RefreshList('')" maxlength="30" aria-describedby="basic-addon1" />
+                <div *ngIf="PConfig.Action.Add" class="input-group-addon cursor-pointer" (click)="AddOrEditEvent.emit(0)" data-toggle="modal" data-target="#myModal">
+                    <button type="button" class="btn btn-red btn-sm  margin-t-10">
+                        <span *ngIf="PConfig.Action.AddTextType == 'T'" class="text-btn">{{PConfig.Action.AddText}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 no-padding">
+        <div id="dt_tableTools_wrapper" class="row dataTables_wrapper form-inline dt-uikit md-processed">
+            <div class="uk-overflow-container col-sm-12">
+                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                    <thead class="grid-header thead-light">
+                        <tr>
+                            <th *ngFor="let tblheading of PConfig.Fields;let index = index;" [hidden]="VisibleColumn.indexOf(tblheading.Name)==-1">
+                                <a class="sorting" *ngIf="tblheading.SortingAllow" (click)="ApplySorting(tblheading.Name)" [ngClass]="{'sorting_asc' : tblheading.Name == PModel.SortName && PModel.SortOrder == 'Asc','sorting_desc' : tblheading.Name == PModel.SortName && PModel.SortOrder == 'Desc'}">{{tblheading.Title}}</a>
+                                <span *ngIf="!tblheading.SortingAllow">{{tblheading.Title}}</span>
+                            </th>                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of PData" (click)="RowButton(item[PConfig.PrimaryColumn])" data-toggle="modal" data-target="#myModal">
+                            <!--<td *ngIf="IsCheckBox"></td>-->
+                            <td *ngFor="let tblheading of PConfig.Fields;let index = index;" [hidden]="VisibleColumn.indexOf(tblheading.Name)==-1" [ngClass]="{'mt-whitespace' : convertToString(item[tblheading.Name]).toString().length > 15}">
+                                {{(tblheading.isDate==false?GetCellValueWithFormate(item[tblheading.Name],tblheading.IsShowCurrency):(item[tblheading.Name] | date:(tblheading.DateFormat == '' ? DateFormat : tblheading.DateFormat)))
+                                }}
+                            </td>
+                            <td style="text-align: center;" *ngIf="PConfig.Action.Edit || PConfig.Action.View || PConfig.Action.CopyTo">
+                                <a *ngIf="PConfig.Action.Edit" (click)="AddOrEditEvent.emit(item[PConfig.PrimaryColumn])" class="ts_remove_row" style="display: inline-block"><i class="md-icon material-icons"></i></a>
+                                <a *ngIf="PConfig.Action.CopyTo" (click)="CopyToEvent.emit(item[PConfig.PrimaryColumn])" class="ts_remove_row" style="display: inline-block"><i class="md-icon material-icons">content_copy</i></a>
+                                <a *ngIf="PConfig.Action.View" (click)="ViewEvent.emit('V'+item[PConfig.PrimaryColumn])" class="ts_remove_row" style="display: inline-block"><i class="md-icon material-icons"></i></a>
+                                <a *ngIf="PConfig.Action.CustomAction1" (click)="CustomAction1Event.emit(item)" class="ts_remove_row" style="display: inline-block"><i class="md-icon material-icons">{{PConfig.CustomAction1Icon}}</i></a>
+                                <a *ngIf="PConfig.Action.CustomAction2" (click)="CustomAction2Event.emit(item)" class="ts_remove_row" style="display: inline-block"><i class="md-icon material-icons">{{PConfig.CustomAction2Icon}}</i></a>
+                                <a *ngIf="PConfig.Action.CustomAction3" (click)="CustomAction3Event.emit(item)" class="ts_remove_row" style="display: inline-block"><i class="md-icon material-icons">{{PConfig.CustomAction3Icon}}</i></a>
+                            </td>
+                        </tr>
+                        <tr [hidden]="!(PData.length == 0)" style="background:#fff;">
+                            <td [attr.colspan]="PConfig.Fields.length" align="center">
+                                <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                <strong class="nodateFound">No record found</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="float: left; margin-top: 30px; font-size: 13px; color: #003d5b; font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+        <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+            <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                <a (click)="selectPage(page)">
+                    {{page}}
+                </a>
+            </li>
+            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)"> Next</a></li>
+        </ul>
+    </div>
+</div>

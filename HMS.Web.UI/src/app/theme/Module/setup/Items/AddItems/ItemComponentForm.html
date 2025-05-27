@@ -1,0 +1,263 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
+                Update Item
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                Add New Item
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <span class="closeICon" routerLink="/home/Item/">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve" class="icon icon-sm"><path d="M455.2 9.2L256 208.4 56.8 9.2C44.5-3.1 24.6-3.1 12.2 9.2l-2.9 2.9C-3 24.4-3 44.4 9.3 56.7L208.4 256 9.2 455.2c-12.3 12.3-12.3 32.3 0 44.6l2.9 2.9c12.3 12.3 32.3 12.3 44.6 0L256 303.6l199.2 199.2c12.3 12.3 32.3 12.3 44.6 0l2.9-2.9c12.3-12.3 12.3-32.3 0-44.6L303.6 256 502.8 56.8c12.3-12.3 12.3-32.3 0-44.6l-2.9-2.9c-12.5-12.4-32.4-12.4-44.7-.1z"></path></svg>
+            </span>
+        </div>
+    </div>
+    <div class="row Cardview padding-20 m-0">
+        <div class="col-sm-12">
+            <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                <div class="row justify-content-between">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Group
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="GroupId" [(ngModel)]="model.GroupId">
+                                        <option *ngFor="let item of GroupList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form1.controls.GroupId.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Type
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="ItemTypeId" (change)="ChangeItemType(model.ItemTypeId)" [(ngModel)]="model.ItemTypeId">
+                                        <option *ngFor="let item of ItemTypeList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form1.controls.ItemTypeId.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Name*</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="Name" [(ngModel)]="model.Name" class="form-control form-control-sm form-control-alternative" placeholder="Enter Item Name">
+                                </div>
+                                <small class="text-danger" *ngIf="Form1.controls.Name.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> SKU</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="SKU" [(ngModel)]="model.SKU" class="form-control form-control-sm form-control-alternative" placeholder="Enter SKU">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Unit
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="UnitID" [(ngModel)]="model.UnitID">
+                                        <option *ngFor="let item of unitList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form1.controls.UnitID.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Category
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="CategoryID" [(ngModel)]="model.CategoryID">
+                                        <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form1.controls.CategoryID.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Instructions
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="InstructionId" [(ngModel)]="model.InstructionId">
+                                        <option *ngFor="let item of InstructionsList" [value]="item.ID">
+                                            {{item.Name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <hr>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Cost Price</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="CostPrice" [(ngModel)]="model.CostPrice" class="form-control form-control-sm form-control-alternative" placeholder="Cost Price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <small class="text-danger" *ngIf="Form1.controls.CostPrice.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Sale Price</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="SalePrice" [(ngModel)]="model.SalePrice" class="form-control form-control-sm form-control-alternative" placeholder="Sale Price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <small class="text-danger" *ngIf="Form1.controls.SalePrice.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username">Status </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="checkbox" class="" formControlName="IsActive" [(ngModel)]="model.IsActive">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username">Track Inventory </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input id="IsTrack" type="checkbox" class="" formControlName="TrackInventory" [(ngModel)]="model.TrackInventory" (click)="ShowInventory(model.TrackInventory)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username">POS Item </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input id="IsPOSItem" type="checkbox" class="" formControlName="POSItem" [(ngModel)]="model.POSItem" />
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="IsTrackInventory">
+                            <div class="row">
+                                <div class="col-4 text-right">
+                                    <label class="form-control-label mt-2 pl-0" for="input-username"> Opening Stock Unit</label>
+                                </div>
+                                <div class="col-8">
+                                    <div class="form-group">
+                                        <input type="text" id="" formControlName="InventoryOpeningStock" [(ngModel)]="model.InventoryOpeningStock" class="form-control form-control-sm form-control-alternative" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right">
+                                    <label class="form-control-label mt-2 pl-0" for="input-username"> Opening Stock Value Per Unit</label>
+                                </div>
+                                <div class="col-8">
+                                    <div class="form-group">
+                                        <input type="text" id="" formControlName="InventoryStockPerUnit" [(ngModel)]="model.InventoryStockPerUnit" class="form-control form-control-sm form-control-alternative" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right">
+                                    <label class="form-control-label mt-2 pl-0" for="input-username"> Reorder Stock Qty</label>
+                                </div>
+                                <div class="col-8">
+                                    <div class="form-group">
+                                        <input type="text" id="" formControlName="InventoryStockQuantity" [(ngModel)]="model.InventoryStockQuantity" class="form-control form-control-sm form-control-alternative" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="img-box">
+                            <div class="col-sm-12" *ngIf="model.Image!=''">
+                                <img [src]="AttachImage" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                            </div>
+                            <File-Component class="UploadActnWrap" [(ngModel)]="model.Image" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save as Draft</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="IsEdit && model.SaveStatus==1 && ControlRights.CreateRights" (click)="PublishItem()">Publish</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="IsEdit && (model.SaveStatus==2 || model.SaveStatus==1)  && ControlRights.EditRights" (click)="model.action = 'Update'">Update</button>
+                    <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && model.SaveStatus ==1 && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                    <button type="button" class="btn btn-light" routerLink="/home/Item">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+

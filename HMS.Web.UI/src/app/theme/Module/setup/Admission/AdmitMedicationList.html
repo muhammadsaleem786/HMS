@@ -1,0 +1,260 @@
+﻿<div class="tab-pane" id="Medication">
+    <div class="text-right mb-2" *ngIf="ControlRights.CreateRights">
+        <button class="btn btn-danger btn-sm" (click)="OpenMedication(Medication)"><i class="icon icon-pulse"></i> New Medication  </button>
+    </div>
+    <ngb-accordion [closeOthers]="true" activeIds="madicne-1">
+        <ngb-panel id="madicne-1">
+            <ng-template ngbPanelTitle>
+                <span>                   
+                    Active Medication
+                </span>
+            </ng-template>
+            <ng-template ngbPanelContent>
+                <div class="TableView">
+                    <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+                        <div class="uk-overflow-container col-sm-12 p-0">
+                            <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                                <thead class="grid-header">
+                                    <tr>
+                                        <th>
+                                            Date
+                                        </th>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Status
+                                        </th>
+                                        <th>
+                                            Prescription
+                                        </th>
+                                        <th>
+                                            Requested By
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of MedicitionList">
+                                        <td>{{item.PrescriptionDate |date: 'MM/dd/yyyy'}}</td>
+                                        <td>
+                                            {{item.Medicine }}
+                                        </td>
+                                        <td>
+                                            {{item.Status}}
+                                        </td>
+                                        <td>
+                                            {{item.Prescription}}
+                                        </td>
+                                        <td>
+                                            {{item.AuthoredBy}}
+                                        </td>
+                                        <td>
+                                            <span class="icon icon mr-3" (click)="Edit(item.ID)">
+                                                <i class="icon icon-pencil2"></i>
+                                            </span>
+                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights">
+                                                <i class="icon icon-trash2 text-danger"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                    <tr [hidden]="!(MedicitionList.length == 0)" style="background:#fff;">
+                                        <td [attr.colspan]="10" align="center">
+                                            <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                            <strong class="nodateFound">No record found</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                        <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                            <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                                <a (click)="selectPage(page)">
+                                    {{page}}
+                                </a>
+                            </li>
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+            </ng-template>
+        </ngb-panel>
+        <ngb-panel id="madicne-2">
+            <ng-template ngbPanelTitle>
+                <span>                    
+                    Past Medication
+                </span>
+            </ng-template>
+            <ng-template ngbPanelContent>
+                <div class="TableView">
+                    <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+                        <div class="uk-overflow-container col-sm-12 p-0">
+                            <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                                <thead class="grid-header">
+                                    <tr>
+                                        <th>
+                                            Date
+                                        </th>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Status
+                                        </th>
+                                        <th>
+                                            Prescription
+                                        </th>
+                                        <th>
+                                            Requested By
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of PastMedicitionList">
+                                        <td>{{item.PrescriptionDate |date: 'MM/dd/yyyy'}}</td>
+                                        <td>
+                                            {{item.Medicine }}
+                                        </td>
+                                        <td>
+                                            {{item.Status}}
+                                        </td>
+                                        <td>
+                                            {{item.Prescription}}
+                                        </td>
+                                        <td>
+                                            {{item.AuthoredBy}}
+                                        </td>
+                                        <td>
+                                            <span class="icon icon mr-3" (click)="Edit(item.ID)">
+                                                <i class="icon icon-pencil2"></i>
+                                            </span>
+                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights">
+                                                <i class="icon icon-trash2 text-danger"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                    <tr [hidden]="!(MedicitionList.length == 0)" style="background:#fff;">
+                                        <td [attr.colspan]="10" align="center">
+                                            <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                            <strong class="nodateFound">No record found</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                        <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                            <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                                <a (click)="selectPage(page)">
+                                    {{page}}
+                                </a>
+                            </li>
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+            </ng-template>
+        </ngb-panel>
+    </ngb-accordion>
+</div>
+<ng-template #Medication let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            Medication Request
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="MedicationSaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Medication</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" id="txtMedicine" class="form-control form-control-sm form-control-alternative" formControlName="MedicineName" [(ngModel)]="model.MedicineName" (click)="LoadMedicine()" placeholder="Search madicane" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label class="required"> Prescription</label>
+                </div>
+                <div class="col-8">
+                    <textarea class="form-control" formControlName="Prescription" [(ngModel)]="model.Prescription"></textarea>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Prescription Date</label>
+                </div>
+                <div class="col-8">
+                    <Datetime-Component formControlName="PrescriptionDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.PrescriptionDate">
+                    </Datetime-Component>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Quantity Requested</label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="QuantityRequested" [(ngModel)]="model.QuantityRequested" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Refills</label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="Refills" [(ngModel)]="model.Refills" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                </div>
+                <div class="col-8">
+                    <div class="custom-control custom-checkbox mb-3">
+                        <input type="checkbox" class="custom-control-input" id="Fulfill" formControlName="IsRequestNow" [(ngModel)]="model.IsRequestNow">
+                        <label class="custom-control-label" for="Fulfill">Fulfill Request Now</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                </div>
+                <div class="col-8">
+                    <div class="custom-control custom-checkbox mb-3">
+                        <input type="checkbox" class="custom-control-input" id="IsActive" formControlName="IsActive" [(ngModel)]="model.IsActive">
+                        <label class="custom-control-label" for="IsActive">IsActive</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    Bill To
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="BillTo" [(ngModel)]="model.BillTo" />
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </form>
+</ng-template>

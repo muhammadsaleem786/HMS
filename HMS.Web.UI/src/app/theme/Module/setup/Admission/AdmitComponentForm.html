@@ -1,0 +1,715 @@
+﻿<div class="AddRoleWraper">
+
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block"*ngIf="IsEdit">
+                       Update Admit  Patient
+                    </h3>
+                    <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                        Add New Admit Patient
+                    </h3>
+                </div>
+            </div>            
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+        </div>
+    </div>
+
+    <div class="Cardview">
+    <div class="row AddNewItem px-4">
+        <div class="col-sm-12 mt-2 px-0">           
+                <ngb-tabset [destroyOnHide]="true">
+                    <ngb-tab title="Patient Detail">
+                        <ng-template ngbTabContent>
+                            <form [formGroup]="Form2" novalidate (ngSubmit)="SaveOrUpdate(Form2.valid)">
+                                <div class="row">
+                                    <div class="col-sm-6 mt-3">
+                                        <div class="row form-group">
+                                            <div class="col-4 text-right">
+                                                <label class="form-control-label mt-2 required" for="input-username">Patient</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <div class="input-group mb-3">
+
+                                                    <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="modelAdmission.PatientName" (click)="LoadPatient()" (focusout)="onPatientNameEvent(modelAdmission.PatientName)" placeholder="Search by name/mobile or cnic" autocomplete="off">
+                                                    <div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient(content)">
+                                                        <span class="svgIcon">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <small class="text-danger" *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
+                                                    This value is required.
+                                                </small>
+
+                                            </div>
+                                        </div>
+
+                                       
+
+
+                                        <div class="row form-group">
+                                            <div class="col-4 text-right">
+                                                <label class="form-control-label mt-2 pl-0" for="input-username"> CNIC</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="CNIC" [(ngModel)]="modelAdmission.CNIC" placeholder="CNIC" autocomplete="off" readonly="readonly">
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col-4 text-right">
+                                                <label class="form-control-label mt-2 pl-0" for="input-username"> Mobile</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Mobile" [(ngModel)]="modelAdmission.Mobile"appPhoneMask placeholder="Mobile" autocomplete="off" readonly="readonly">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <div class="col-4 text-right">
+                                                <label class="form-control-label mt-2 pl-0 required" for="input-username"> Surgery (IP TYPE)</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <select class="form-control form-control-sm form-control-alternative" formControlName="AdmissionTypeId" [(ngModel)]="modelAdmission.AdmissionTypeId">
+                                                    <option *ngFor="let item of AdmissionTypeList" [value]="item.ID">
+                                                        {{item.Value}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row form-group">
+                                            <div class="col-4 text-right">
+                                                <label class="form-control-label mt-2 required" for="input-username"> Examiner</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <select class="form-control form-control-sm form-control-alternative" formControlName="DoctorId" [(ngModel)]="modelAdmission.DoctorId">
+                                                    <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                        {{item.Name}}
+                                                    </option>
+                                                </select>
+                                                <small class="text-danger" *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
+                                                    This value is required.
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col-4 text-right">
+                                                <label class="form-control-label mt-2 required" for="input-username"> Admission Date / Time</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <Datetime-Component formControlName="AdmissionDate" placeholder="DD/MM/YYYY" [(ngModel)]="modelAdmission.AdmissionDate">
+                                                </Datetime-Component>
+                                                <small class="text-danger" *ngIf="Form2.controls.AdmissionDate.hasError('required') && submitted">
+                                                    This value is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-4">
+                                                <input type="text" formControlName="AdmissionTime" [(ngModel)]="modelAdmission.AdmissionTime" (click)="SelectTime()" (change)="SelectTime()" class="form-control" id="basicExample" autocomplete="off">
+                                                <small class="text-danger" *ngIf="Form2.controls.AdmissionTime.hasError('required') && submitted">
+                                                    This value is required.
+                                                </small>
+                                            </div>
+
+                                        </div>
+                                        <!-- =============== -->
+
+                                        <div class="row form-group">
+                                            <div class="col-4 text-right">
+                                                <label class="form-control-label mt-2" for="input-username"> Location</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Location" [(ngModel)]="modelAdmission.Location" placeholder="Location">
+
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <!-- =============== -->
+                                        <div class="row form-group">
+                                            <div class="col-4 text-right">
+                                                <label class="form-control-label mt-2" for="input-username"> Reason for Visit</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <textarea class="form-control-alternative form-control" formControlName="ReasonForVisit" [(ngModel)]="modelAdmission.ReasonForVisit"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                                    <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+                                    <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                                    <button type="button" class="btn btn-secondary" routerLink="/home/Admit">Cancel</button>
+                                </div>
+                            </form>
+                        </ng-template>
+                    </ngb-tab>
+
+                    <ngb-tab title="Personal Information">
+                        <ng-template ngbTabContent>
+                            <form [formGroup]="Form2" novalidate (ngSubmit)="SaveOrUpdate(Form2.valid)">
+                                <div class="row justify-content-between mt-4">
+                                    <div class="col-sm-6">
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Blood Group
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <select class="form-control " formControlName="BloodGroupId" >
+                                                        <option *ngFor="let item of BloodList" [value]="item.ID">
+                                                            {{item.Value}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Anniversary Date
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <Datetime-Component formControlName="AnniversaryDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onAnniversaryDateChanged($event)" >
+                                                    </Datetime-Component>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Contact No (Alt)
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <input class="form-control" formControlName="ContactNo"  />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Emergency No.
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <input class="form-control" formControlName="EmergencyNo"  />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Address
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <textarea class="form-control" formControlName="Address" ></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Notes
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <textarea class="form-control" formControlName="Notes"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Referred by 
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <input class="form-control" formControlName="ReferredBy" placeholder="Enter Name"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                                    <button type="submit" class="btn btn-primary" *ngIf="IsEdit  && ControlRights.EditRights">Update</button>
+                                    <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                                    <button type="button" class="btn btn-secondary" routerLink="/home/Admit">Cancel</button>
+                                </div>
+                            </form>
+                        </ng-template>
+                    </ngb-tab>
+
+                    <ngb-tab title="Health Information">
+                        <ng-template ngbTabContent>
+                            <form [formGroup]="Form2" novalidate (ngSubmit)="SaveOrUpdate(Form2.valid)">
+                                <div class="row mt-5">
+                                    <div class="col-sm-12 CustomAccordion">
+
+                                        <ngb-accordion [closeOthers]="true" activeIds="static-1">
+
+                                            <ngb-panel id="static-1" >
+                                                <ng-template ngbPanelTitle>
+                                                  <span>
+                                                    <img src="../assets/app/media/img/icons/illness.png" class="img-fluid radius">
+                         
+                                                  Illness </span><i class="icon-chevron-right iconImage"></i>
+                                                </ng-template>
+                                                <ng-template ngbPanelContent>
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="custom-control custom-checkbox mb-3">
+                                                                <input type="checkbox" class="custom-control-input" id="customCheck" formControlName="Illness_Diabetes" >
+                                                                <label class="custom-control-label" for="customCheck">Diabetes</label>
+                                                            </div>
+
+                                                            <div class="custom-control custom-checkbox mb-3 ml-5">
+                                                                <input type="checkbox" class="custom-control-input" id="customCheckTuberculosis" formControlName="Illness_Tuberculosis">
+                                                                <label class="custom-control-label" for="customCheckTuberculosis">Tuberculosis</label>
+                                                            </div>
+
+                                                            <div class="custom-control custom-checkbox mb-3 ml-5">
+                                                                <input type="checkbox" class="custom-control-input" id="customCheckHeartPatient" formControlName="Illness_HeartPatient">
+                                                                <label class="custom-control-label" for="customCheckHeartPatient"> Heart Patient</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="custom-control custom-checkbox mb-3">
+                                                                <input type="checkbox" class="custom-control-input" id="customCheckBloodPressure" formControlName="Illness_BloodPressure" >
+                                                                <label class="custom-control-label" for="customCheckBloodPressure">Blood Pressure</label>
+                                                            </div>
+
+                                                            <div class="custom-control custom-checkbox mb-3 ml-5">
+                                                                <input type="checkbox" class="custom-control-input" id="customCheckMigraine" formControlName="Illness_Migraine" >
+                                                                <label class="custom-control-label" for="customCheckMigraine">Migraine</label>
+                                                            </div>
+
+                                                            <div class="custom-control custom-checkbox mb-3 ml-5">
+                                                                <input type="checkbox" class="custom-control-input" id="customCheckLungsRelated" formControlName="Illness_LungsRelated" >
+                                                                <label class="custom-control-label" for="customCheckLungsRelated">  Lungs related</label>
+                                                            </div>
+                                                        </div>
+                                                       <div class="row">
+                                                        <div class="mb-3 col-sm-5 p-0 mt-1">
+                                                            <div class="form-group">
+                                                                <input class="form-control" style="max-width: 428px;" placeholder="Other" formControlName="Illness_Other" />
+                                                            </div>
+                                                        </div>
+                                                       </div>
+
+                                                    </div>
+                                                </ng-template>
+                                              </ngb-panel>
+
+                                              <ngb-panel  id="static2">
+                                                <ng-template ngbPanelTitle>
+                                                  <span>
+                                                    <img src="../assets/app/media/img/icons/allergies.png" class="img-fluid radius">
+                           
+                                                    Allergies</span><i class="icon-chevron-right iconImage"></i>
+                                                </ng-template>
+                                                <ng-template ngbPanelContent>
+                                                   <div class="row">
+                                                        <div class="col-sm-5">
+                                                            <div class="form-group">
+                                                                <input class="form-control" placeholder="Food" formControlName="Allergies_Food" />
+                                                            </div>
+        
+                                                            <div class="form-group mt-3 mb-3">
+                                                                <input class="form-control" placeholder="Drug" formControlName="Allergies_Drug"  />
+                                                            </div>
+        
+                                                            <div class="form-group">
+                                                                <input class="form-control" placeholder="Others" formControlName="Allergies_Other" />
+                                                            </div>
+                                                        </div>
+                                                   </div>
+                                                </ng-template>
+                                              </ngb-panel>
+
+
+                                              <ngb-panel  id="static3">
+                                                <ng-template ngbPanelTitle>
+                                                  <span>
+                                                    <img src="../assets/app/media/img/icons/habits.png" class="img-fluid radius">
+                             
+                                                   Habits </span><i class="icon-chevron-right iconImage"></i>
+                                                </ng-template>
+                                                <ng-template ngbPanelContent>
+                                                    <div class="row">
+                                                       <div class="col-sm-6">
+                                                        <table class="table table-bordered">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="width:200px">
+                                                                        <h6>
+                                                                            Smoking
+                                                                        </h6>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input"  name="Habits_Smoking" id="Habits_Smoking" value="N" formControlName="Habits_Smoking" >
+                                                                            <label class="custom-control-label" for="Habits_Smoking">Never</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input"  name="Habits_Smoking" id="Habits_Smoking1"value="O" formControlName="Habits_Smoking" >
+                                                                            <label class="custom-control-label" for="Habits_Smoking1">Occational</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio">
+                                                                            <input type="radio" class="custom-control-input"  name="Habits_Smoking"id="Habits_Smoking2" value="H" formControlName="Habits_Smoking" >
+                                                                            <label class="custom-control-label" for="Habits_Smoking2">Habitual</label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+
+
+
+                                                                <tr>
+                                                                    <td>
+                                                                        <h6>
+                                                                            Drinking
+                                                                        </h6>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input"  name="Habits_Drinking"id="Habits_Drinking" value="N" formControlName="Habits_Drinking">
+                                                                            <label class="custom-control-label" for="Habits_Drinking">Never</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input"  name="Habits_Drinking"id="Habits_Drinking1" value="O" formControlName="Habits_Drinking" >
+                                                                            <label class="custom-control-label" for="Habits_Drinking1">Occational</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio">
+                                                                            <input type="radio" class="custom-control-input"  name="Habits_Drinking"id="Habits_Drinking2" value="H" formControlName="Habits_Drinking" >
+                                                                            <label class="custom-control-label" for="Habits_Drinking2">Habitual</label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+
+                                                                
+                                                                <tr>
+                                                                    <td>
+                                                                        <h6>
+                                                                            Tobacco
+                                                                        </h6>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input"  name="Habits_Tobacco" id="Habits_Tobacco"value="N" formControlName="Habits_Tobacco" >
+                                                                            <label class="custom-control-label" for="Habits_Tobacco">Never</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio mr-5">
+                                                                            <input type="radio" class="custom-control-input"  name="Habits_Tobacco"id="Habits_Tobacco1" value="O" formControlName="Habits_Tobacco">
+                                                                            <label class="custom-control-label" for="Habits_Tobacco1">Occational</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="custom-control custom-radio">
+                                                                            <input type="radio" class="custom-control-input"  name="Habits_Tobacco" id="Habits_Tobacco2"value="H" formControlName="Habits_Tobacco" >
+                                                                            <label class="custom-control-label" for="Habits_Tobacco2">Habitual</label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div class="row">
+                                                        <div class="col-sm-6 mt-2">
+                                                            <div class="form-group">
+                                                                <input class="form-control" placeholder="Others" formControlName="Habits_Other" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ng-template>
+                                              </ngb-panel>
+
+
+                                        </ngb-accordion>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                                    <button type="submit" class="btn btn-primary" *ngIf="IsEdit  && ControlRights.EditRights">Update</button>
+                                    <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                                    <button type="button" class="btn btn-secondary" routerLink="/home/Admit">Cancel</button>
+                                </div>
+                            </form>
+                        </ng-template>
+                    </ngb-tab>
+
+                    <ngb-tab title="Medical History">
+                        <ng-template ngbTabContent>
+                            <form [formGroup]="Form2" novalidate (ngSubmit)="SaveOrUpdate(Form2.valid)">
+                                <div class="row mt-4">
+                                    <div class="col-sm-7">
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Past Medical History
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <textarea class="form-control" formControlName="MedicalHistory" ></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Family History
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <input class="form-control" formControlName="CurrentMedication"  />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-4 text-right">
+                                                <label>
+                                                    Surgical History
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <input class="form-control" formControlName="HabitsHistory" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary"*ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                                    <button type="submit" class="btn btn-primary"*ngIf="IsEdit  && ControlRights.EditRights">Update</button>
+                                    <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                                    <button type="button" class="btn btn-secondary" routerLink="/home/Admit">Cancel</button>
+                                </div>
+                            </form>
+                        </ng-template>
+                    </ngb-tab>
+                </ngb-tabset>
+           
+        </div>
+    </div> </div>
+</div>
+
+
+<!-- Add New Patient Modal  content -->
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            <img src="../assets/app/media/img/icons/addpatient.png" class="img-fluid icon">
+            Add New Patient
+        </h4>
+        <button type="button" #closeModal class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="PatientSaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+
+            <div class="row">
+                <div class="col-sm-7">
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required required" for="input-username"> Name</label>
+                        </div>
+                        <div class="col-8 d-flex">
+                            <select class="form-control form-control-sm" style="max-width:100px;" formControlName="PrefixTittleId" [(ngModel)]="model.PrefixTittleId">
+                                <option *ngFor="let item of TittleList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <input type="text" id="" formControlName="PatientName" [(ngModel)]="model.PatientName" class="form-control form-control-sm form-control-alternative" placeholder="Patient Name">
+                            <small class="text-danger" *ngIf="Form1.controls.PatientName.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+
+                    <div class="row form-group">
+
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required"> Age</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <input type="text" formControlName="Age" [(ngModel)]="model.Age" (change)="AgeChange()" class="form-control  form-control-alternative" placeholder="Age">
+                                    <small class="text-danger" *ngIf="Form1.controls.Age.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                                <div class="col-sm-1 p-0 mt-2 text-center text-danger" style="right:8px;">
+                                    OR
+                                </div>
+
+                                <div class="col-sm-5 p-0">
+                                    <Datetime-Component formControlName="DOB" placeholder="DD/MM/YYYY" (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="model.DOB">
+                                    </Datetime-Component>
+
+                                </div>
+
+                                <div class="col-2 text-right">
+                                    <label class="form-control-label mt-2 pl-0" for="input-username"> DOB</label>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Gender</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm form-control-alternative" formControlName="Gender" [(ngModel)]="model.Gender">
+                                <option *ngFor="let item of GenderList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+
+                            </select>
+                            <small class="text-danger" *ngIf="Form1.controls.Gender.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Mobile</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile" class="form-control form-control-sm form-control-alternative" placeholder="Mobile">
+                            <small class="text-danger" *ngIf="Form1.controls.Mobile.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Email</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Email" [(ngModel)]="model.Email" class="form-control form-control-sm form-control-alternative" placeholder="Email">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> CNIC</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC" class="form-control form-control-sm form-control-alternative" placeholder="XXXXX-XXXXXXX-X">
+                            <small class="text-danger" *ngIf="Form1.controls.CNIC.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                            <small *ngIf="Form1.controls.CNIC.hasError('pattern') && !Form1.controls.CNIC.hasError('required')">
+                                CNIC No must follow the XXXXX-XXXXXXX-X format!"
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> MRNO</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="MRNO" [(ngModel)]="model.MRNO" class="form-control form-control-sm form-control-alternative" placeholder="MRNO" readonly="readonly">
+                            <small class="text-danger" *ngIf="Form1.controls.MRNO.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Bill Type</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control  form-control-alternative" formControlName="BillTypeId" [(ngModel)]="model.BillTypeId">
+                                <option *ngFor="let item of BillTypeList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <small class="text-danger" *ngIf="Form1.controls.Gender.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Note</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea type="text" class="form-control m-input" formControlName="Notes" [(ngModel)]="model.Notes" placeholder="Note"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="form-group img-box">
+                        <div class="col-sm-12" *ngIf="model.Image!=''">
+                            <img [src]="PatientImage" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                        </div>
+                        <File-Component class="UploadActnWrap" [(ngModel)]="model.Image" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</ng-template>
+
+

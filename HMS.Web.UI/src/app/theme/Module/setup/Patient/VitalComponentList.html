@@ -1,0 +1,88 @@
+﻿<div class="tab-pane" id="Vital">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="row mt-2">
+                <div class="col">
+                    <div class="form-group small-input">
+                        <label>
+                            Date
+                        </label>
+                        <Datetime-Component placeholder="DD/MM/YYYY" (DateChangeValue)="onFollowUpDateChanged($event)" [ngModelOptions]="{standalone:true}" [(ngModel)]="VitalModel.Date">
+                        </Datetime-Component>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>
+                            Select
+                        </label>
+                        <select class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="VitalModel.VitalId" (change)="VitalChange(VitalModel.VitalId)">
+                            <option *ngFor="let stat of VitalList" [value]="stat.ID">
+                                {{stat.Value}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>
+                            Measure
+                        </label>
+                        <div class="row no-wrap align-items-center">
+                            <input type="text" class="form-control form-control-sm" id="" [ngModelOptions]="{standalone:true}" [(ngModel)]="VitalModel.Measure" autocomplete="off">
+                            <input type="text" class="form-control" *ngIf="VitalModel.VitalId==68" [ngModelOptions]="{standalone:true}" [(ngModel)]="VitalModel.Measure2" />
+                            <div class="ml-3">{{VitalModel.Unit}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col text-right" *ngIf="ControlRights.CreateRights">
+                    <label class="opacity0">
+                    </label>
+                    <div>
+                        <button class="btn btn-md btn-primary" (click)="AddVital()">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2 dataTables_wrapper ">
+                <div class="col-sm-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Particulars
+                                </th>
+                                <th>
+                                    Measure
+                                </th>
+                                <th>
+
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let v of emr_vital_dynamicArray ; let i = index;">
+                                <td>
+                                    {{v.Date |date: 'MM/dd/yyyy'}}
+                                </td>
+                                <td>
+                                    {{v.Name}}
+                                </td>
+                                <td>
+                                    {{v.Measure}}
+                                    <span class="">{{v.Unit}}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="icon icon-cross text-danger" (click)="DeleteVital(v.Id,v.VitalId)"*ngIf="ControlRights.DeleteRights">
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>

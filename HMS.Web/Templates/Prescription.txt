@@ -1,0 +1,135 @@
+﻿<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <style type="text/css">
+     
+    </style>
+</head>
+<body>
+    <div>
+        <div style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
+            <div style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
+                <div>
+                    <h3 style="font-size: 26px; margin: 0; line-height:normal; color: #5e72e4; font-weight: bold;"> [[DoctorName]] </h3>
+                    <p style="margin:0 0 5px;font-size:14px;line-height:normal;">[[DoctorDesignationQualification]]</p>
+                    <strong style="margin:0;font-size:13px;line-height:normal;">
+                        [[DoctorDesignation]]
+                    </strong>
+                    <p style="margin: 0; font-size: 14px; line-height: normal;">Ph [[DoctorPhoneNo]]</p>
+                </div>               
+            </div>
+        </div>
+        <div>
+            <div style="font-size: 14px;border-bottom: 1px solid #5e72e4; margin-bottom: 3px; padding-bottom: 8px;">
+                <div>
+                    <div style="flex-wrap:nowrap;">
+                        <label for="Name" style="font-size: 14px;">P/Name</label>
+						<label style="border:0px;outline: none; border-bottom:1px solid #efefef;">[[PatientName]] </label>
+                    </div>
+                </div>
+                <div>
+                    <div style="flex-wrap:nowrap;">
+                        <label for="Age" style="font-size: 14px;">Age/Sex</label>
+						<label style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;">[[PatientAge]] </label>
+                    </div>
+                </div>
+                <div>
+                    <div style="flex-wrap:nowrap;">
+                        <label for="Weight" style="font-size: 14px;">Weight</label>
+						<label class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;">90</label>
+                    </div>
+                </div>
+                <div>
+                    <div style="flex-wrap:nowrap;">
+                        <label for="Date" style="font-size: 14px;">Date</label>
+						<label style="border:0px;outline: none; border-bottom:1px solid #efefef;width:100px;">[[AppointmentDate]] </label>
+                    </div>
+                </div>
+            </div>
+            <div style="border-top: 3px solid #5e72e4;height: 95%;">
+                <div>
+                    <div>
+                        <div>
+                            <strong>Vitals:</strong>
+                        </div>
+                        <div>
+                             [[VitalList]]
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <strong>Diagnoses:</strong>
+                        </div>
+                        <div>
+                           [[diagnos]]
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <strong>Complaint:</strong>
+                        </div>
+                        <div>
+                            [[Complaint]]
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <strong>Investigation:</strong>
+                        </div>
+                        <div>
+                            [[Investigation]]
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <strong>Observation:</strong>
+                        </div>
+                        <div>
+                            [[Observation]]
+                        </div>
+                    </div>
+                </div>
+				
+                <div style="border-left:1px solid #5e72e4">
+				  <table class="table" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Medicine
+                                </th>                                
+                                <th style="border-top:0px; padding: 2px;">
+                                    Days
+                                </th>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Measure
+                                </th>
+                                <th style="border-top:0px; padding:0 2px 5px;">
+                                    Instruction
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                               [[Treatment]]
+                            </tr>
+                        </tbody>
+                    </table>                
+                    <h3> Instructions</h3>
+                    <p style="font-size:12px;line-height:normal;">
+                        [[Instructions]]
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 5px 0 0px;text-align:center;">
+            <div>
+                <p style="font-size: 13px;margin-bottom:5px; border-bottom:1px solid #efefef;">Clinic Days: Mon To Sat. Timing: 6:00 Pm To 9:00 Pm <strong>Off Day:</strong> Sunday</p>
+                <p style="font-size: 13px;">For Appointment, ring: St # 4, Nizam Pura (W) Bahawalnagar, 03000-11234123</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+

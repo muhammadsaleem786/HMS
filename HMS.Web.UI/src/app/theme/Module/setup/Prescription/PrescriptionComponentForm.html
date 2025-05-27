@@ -1,0 +1,1308 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
+                Update Prescription
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                New Prescription
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <span class="closeICon" routerLink="/home/Prescription">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve" class="icon icon-sm"><path d="M455.2 9.2L256 208.4 56.8 9.2C44.5-3.1 24.6-3.1 12.2 9.2l-2.9 2.9C-3 24.4-3 44.4 9.3 56.7L208.4 256 9.2 455.2c-12.3 12.3-12.3 32.3 0 44.6l2.9 2.9c12.3 12.3 32.3 12.3 44.6 0L256 303.6l199.2 199.2c12.3 12.3 32.3 12.3 44.6 0l2.9-2.9c12.3-12.3 12.3-32.3 0-44.6L303.6 256 502.8 56.8c12.3-12.3 12.3-32.3 0-44.6l-2.9-2.9c-12.5-12.4-32.4-12.4-44.7-.1z"></path></svg>
+            </span>
+        </div>
+    </div>
+    <div class="row Cardview m-0">
+        <div class="col">
+            <form [formGroup]="Form6" novalidate (ngSubmit)="PrescriptionSaveOrUpdate(Form6.valid)">
+                <div class="row">
+                    <div class="col-sm-12 mt-3">
+                        <div class="row mb-2">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Clinic</label>
+                                    <div class="form-group">
+                                        <select class="form-control form-control-sm" formControlName="ClinicId" [(ngModel)]="PrescriptionModel.ClinicId">
+                                            <option *ngFor="let item of ClinicList" [value]="item.CompanyID">
+                                                {{item.CompanyName}}
+                                            </option>
+                                        </select>
+                                        <small class="text-danger" *ngIf="Form6.controls.ClinicId.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="required">Patient</label>
+                                    <div class="input-group mb-3">
+                                        <input class="form-control  form-control-sm" id="PatientSearchByName" placeholder="Search Patient" (click)="LoadPatient()" formControlName="PatientName" [(ngModel)]="PrescriptionModel.PatientName" autocomplete="off" />
+                                        <small class="text-danger" *ngIf="Form6.controls.PatientName.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="required">Doctor</label>
+                                    <select class="form-control form-control-sm" formControlName="DoctorId" [(ngModel)]="PrescriptionModel.DoctorId" (change)="OnChangeDoctor()">
+                                        <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                            {{item.Name}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form6.controls.DoctorId.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="required">Date</label>
+                                <div class="input-group mb-3 input-group-sm" style="flex-wrap:nowrap;">
+                                    <div class="small-input">
+                                        <select class="form-control form-control-sm flex-grow-1" formControlName="AppointmentDate" [(ngModel)]="PrescriptionModel.AppointmentDate" (change)="CheckPrescription()">
+                                            <option disabled="disabled">Select Date</option>
+                                            <option [value]="d.AppointmentDate" *ngFor="let d of CurntPrevDateList">
+                                                {{d.AppointmentDate}}
+                                            </option>
+                                        </select>
+                                        <small class="text-danger" *ngIf="Form6.controls.AppointDate.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                    </div>
+                                    <div class="input-group-append" *ngIf="PrescriptionExist">
+                                        <span class="btn btn-danger px-1" placement="right" ngbTooltip="Add Appointment" (click)="openAppointmentModal(longContent)" *ngIf="AppControlRights.CreateRights">
+                                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" style="font-size:21px;" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M10.75 8c-.41 0-.75.34-.75.75v4.69c0 .35.18.67.47.85l3.64 2.24a.713.713 0 1 0 .74-1.22L11.5 13.3V8.75c0-.41-.34-.75-.75-.75z" fill="currentColor" /><path d="M17.92 12A6.957 6.957 0 0 1 11 20c-3.9 0-7-3.1-7-7s3.1-7 7-7c.7 0 1.37.1 2 .29V4.23c-.64-.15-1.31-.23-2-.23c-5 0-9 4-9 9s4 9 9 9a8.963 8.963 0 0 0 8.94-10h-2.02z" fill="currentColor" /><path d="M22 5h-2V3c0-.55-.45-1-1-1s-1 .45-1 1v2h-2c-.55 0-1 .45-1 1s.45 1 1 1h2v2c0 .55.45 1 1 1s1-.45 1-1V7h2c.55 0 1-.45 1-1s-.45-1-1-1z" fill="currentColor" /></svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 p-0 CustomAccordion dark">
+                    <ngb-accordion [closeOthers]="false" activeIds="prescription0">
+                        <ngb-panel id="prescription0">
+                            <ng-template ngbPanelTitle>
+                                <span>
+                                    <img src="../assets/app/media/img/icons/clinic.png" class="img-fluid radius">
+                                    Clinic Note
+                                </span><i class="icon-chevron-right iconImage"></i>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <div class="mt-2">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <h6 scope="col">Complaint</h6>
+                                            <div class="d-flex">
+                                                <input class="form-control form-control-sm form-control-alternative" placeholder="Search Complaint" value="" id="ComplaintSearch" (click)="LoadComplaint()" [ngModelOptions]="{standalone:true}" [(ngModel)]="complaintModel.Complaint">
+                                                <span class="btn btn-secondary ml-2" (click)="AddComplaint(complaintModel.Complaint)">Add</span>
+                                            </div>
+                                            <div class="btn-group btn-group-toggle btn-toggle-label btn_suggestion" data-toggle="buttons" *ngFor="let c of emr_prescription_complaint_dynamicArray;  let h = index">
+                                                <div class="suggestion_label w-100 btn p-0" *ngIf="c.IsSelected">
+                                                    <label class="btn-light  w-100 active mb-0">
+                                                        <span (click)="ExistComplaint(c)">
+                                                            <input type="checkbox" name="options" id="ComplaintList__{{h}}" autocomplete="off" checked>
+                                                            <i class="icon icon-check"></i>
+                                                            {{c.Complaint}}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <!-- ======== -->
+                                                <div class="suggestion_label w-100  btn p-0" *ngIf="c.IsSelected==false">
+                                                    <label class="btn-light  w-100 mb-0">
+                                                        <span (click)="ExistComplaint(c)">
+                                                            <input type="checkbox" name="options" id="ComplaintList{{h}}" autocomplete="off">
+                                                            <i class="icon icon-check"></i>
+                                                            {{c.Complaint}}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <span class="fav_icon active" placement="right" ngbTooltip="Now This will show as most used" (click)="AddFavorite(c,'C')" *ngIf="c.Isfavorite == 1 && c.ComplaintId != null">
+                                                    <span class="fa fa-star" style="color:#fdd273;"></span>
+                                                </span>
+                                                <span class="fav_icon" placement="right" ngbTooltip="Make this Most used Suggestion" (click)="AddFavorite(c,'C')" *ngIf="c.Isfavorite == 0 && c.ComplaintId != null">
+                                                    <span class="fa fa-star-o"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <h6 scope="col">Examination</h6>
+                                            <div class="d-flex">
+                                                <input class="form-control form-control-sm form-control-alternative" placeholder="Search Examination" value="" id="ObservationSearch" (click)="LoadObservation()" [ngModelOptions]="{standalone:true}" [(ngModel)]="observationModel.Observation">
+                                                <span class="btn btn-secondary ml-2" (click)="AddObservation(observationModel.Observation)">Add</span>
+                                            </div>
+                                            <div class="btn-group btn-group-toggle btn-toggle-label btn_suggestion" data-toggle="buttons" *ngFor="let c of emr_prescription_observation_dynamicArray;  let h = index">
+                                                <div class="suggestion_label w-100 btn p-0" *ngIf="c.IsSelected">
+                                                    <label class="btn-light  w-100 active mb-0">
+                                                        <span (click)="ExistObservation(c)">
+                                                            <input type="checkbox" name="options" id="ObservationList__{{h}}" autocomplete="off" checked>
+                                                            <i class="icon icon-check"></i>
+                                                            {{c.Observation}}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <!-- ======== -->
+                                                <div class="suggestion_label w-100  btn p-0" *ngIf="c.IsSelected==false">
+                                                    <label class="btn-light  w-100 mb-0">
+                                                        <span (click)="ExistObservation(c)">
+                                                            <input type="checkbox" name="options" id="ObservationList{{h}}" autocomplete="off">
+                                                            <i class="icon icon-check"></i>
+                                                            {{c.Observation}}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <span class="fav_icon active" placement="right" ngbTooltip="Now This will show as most used" (click)="AddFavorite(c,'O')" *ngIf="c.Isfavorite == 1 && c.ObservationId != null">
+                                                    <span class="fa fa-star" style="color:#fdd273;"></span>
+                                                </span>
+                                                <span class="fav_icon" placement="right" ngbTooltip="Make this Most used Suggestion" (click)="AddFavorite(c,'O')" *ngIf="c.Isfavorite == 0 && c.ObservationId != null">
+                                                    <span class="fa fa-star-o"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-sm-3">
+                                            <h6 scope="col">Investigations</h6>
+                                            <div class="d-flex">
+                                                <input class="form-control form-control-sm form-control-alternative" placeholder="Search Investigations" value="" id="InvestigationSearch" (click)="LoadInvestigation()" [ngModelOptions]="{standalone:true}" [(ngModel)]="investigationModel.Investigation">
+                                                <span class="btn btn-secondary ml-2" (click)="AddInvestigations(investigationModel.Investigation)">Add</span>
+                                            </div>
+                                            <div class="btn-group btn-group-toggle btn-toggle-label btn_suggestion" data-toggle="buttons" *ngFor="let c of emr_prescription_investigation_dynamicArray;  let h = index">
+                                                <div class="suggestion_label w-100 btn p-0" *ngIf="c.IsSelected">
+                                                    <label class="btn-light  w-100 active mb-0">
+                                                        <span (click)="ExistInvestigations(c)">
+                                                            <input type="checkbox" name="options" id="InvestigationsList__{{h}}" autocomplete="off" checked>
+                                                            <i class="icon icon-check"></i>
+                                                            {{c.Investigation}}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <!-- ======== -->
+                                                <div class="suggestion_label w-100  btn p-0" *ngIf="c.IsSelected==false">
+                                                    <label class="btn-light  w-100 mb-0">
+                                                        <span (click)="ExistInvestigations(c)">
+                                                            <input type="checkbox" name="options" id="InvestigationsList{{h}}" autocomplete="off">
+                                                            <i class="icon icon-check"></i>
+                                                            {{c.Investigation}}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <span class="fav_icon active" placement="right" ngbTooltip="Now This will show as most used" (click)="AddFavorite(c,'I')" *ngIf="c.Isfavorite == 1 && c.InvestigationId != null">
+                                                    <span class="fa fa-star" style="color:#fdd273;"></span>
+                                                </span>
+                                                <span class="fav_icon" placement="right" ngbTooltip="Make this Most used Suggestion" (click)="AddFavorite(c,'I')" *ngIf="c.Isfavorite == 0 && c.InvestigationId != null">
+                                                    <span class="fa fa-star-o"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-sm-3">
+
+                                            <h6 scope="col">Diagnosis</h6>
+                                            <div class="d-flex">
+                                                <input class="form-control form-control-sm form-control-alternative" placeholder="Search Diagnosis" value="" id="DiagnosSearch" (click)="LoadDiagnos()" [ngModelOptions]="{standalone:true}" [(ngModel)]="diagnosModel.Diagnos">
+                                                <span class="btn btn-secondary ml-2" (click)="AddDiagnosis(diagnosModel.Diagnos)">Add</span>
+                                            </div>
+                                            <div class="btn-group btn-group-toggle btn-toggle-label btn_suggestion" data-toggle="buttons" *ngFor="let c of emr_prescription_diagnos_dynamicArray;  let h = index">
+                                                <div class="suggestion_label w-100 btn p-0" *ngIf="c.IsSelected">
+                                                    <label class="btn-light  w-100 active mb-0">
+                                                        <span (click)="ExistDiagnosis(c)">
+                                                            <input type="checkbox" name="options" id="DiagnosList__{{h}}" autocomplete="off" checked>
+                                                            <i class="icon icon-check"></i>
+                                                            {{c.Diagnos}}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <!-- ======== -->
+                                                <div class="suggestion_label w-100  btn p-0" *ngIf="c.IsSelected==false">
+                                                    <label class="btn-light  w-100 mb-0">
+                                                        <span (click)="ExistDiagnosis(c)">
+                                                            <input type="checkbox" name="options" id="DiagnosList{{h}}" autocomplete="off">
+                                                            <i class="icon icon-check"></i>
+                                                            {{c.Diagnos}}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <span class="fav_icon active" placement="right" ngbTooltip="Now This will show as most used" (click)="AddFavorite(c,'D')" *ngIf="c.Isfavorite == 1 && c.DiagnosId != null">
+                                                    <span class="fa fa-star" style="color:#fdd273;"></span>
+                                                </span>
+                                                <span class="fav_icon" placement="right" ngbTooltip="Make this Most used Suggestion" (click)="AddFavorite(c,'D')" *ngIf="c.Isfavorite == 0 && c.DiagnosId != null">
+                                                    <span class="fa fa-star-o"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngb-panel>
+                        <ngb-panel id="prescription-1">
+                            <ng-template ngbPanelTitle>
+                                <span>
+                                    <img src="../assets/app/media/img/icons/Medicines.png" class="img-fluid radius">
+                                    Medicines
+                                </span><i class="icon-chevron-right iconImage"></i>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <div style="position: absolute; top: -67px; left: 160px;">
+                                            <span placement="right" ngbTooltip="Medicine Template" class="font-12 ml-2 badge bg-danger  text-white font-weight-normal" (click)="OpemMedicineTemplate(MedicineTemplate)">
+                                                Tempaltes <i class="icon icon-plus"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" style="width:150px;">Medicine</th>
+                                                <th style="width:90px;">-</th>
+                                                <th scope="col">Dosage</th>
+                                                <th scope="col" style="width:70px;">Duration</th>
+                                                <th scope="col" style="width:90px;"></th>
+                                                <th scope="col">Instruction</th>
+                                                <th>-</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let dynamic of emr_prescription_treatment_dynamicArray; let i = index;">
+                                                <td>
+                                                    <input type="text" class="form-control form-control-sm" id="txtMedicine_{{i}}" name="Medicine" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.MedicineName" (click)="LoadMedicine(i)" autocomplete="off">
+                                                </td>
+                                                <td class="smallbox">
+                                                    <div class="custom-control custom-checkbox" style="min-width: 95px;" placement="top" ngbTooltip="If you check this, You can save Medicine for , Future used. ">
+                                                        <input type="checkbox" class="custom-control-input" id="Futureusage_{{i}}" name="FutureUsage" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Futureusage" (change)="SaveMedicine(dynamic.Futureusage,i)">
+                                                        <label class="custom-control-label" for="Futureusage_{{i}}">Future <i class="fa fa-question-circle" aria-hidden="true"></i></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col d-flex flex-checkbox smallbox">
+                                                            <div class="custom-control">
+                                                                <label class="" for="Morning_{{i}}">M</label>
+                                                                <input type="text" class="form-control form-control-sm" id="Morning_{{i}}" name="Morning" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Morning">
+                                                            </div>
+                                                            <div class="">
+                                                                <label class="" for="AfterNoon_{{i}}">A</label>
+                                                                <input type="text" class="form-control form-control-sm" id="AfterNoon_{{i}}" name="AfterNoon" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.AfterNoon">
+                                                            </div>
+                                                            <div class="">
+                                                                <label class="" for="Evening_{{i}}">E</label>
+                                                                <input type="text" class="form-control form-control-sm" id="Evening_{{i}}" name="Evening" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Evening">
+                                                            </div>
+                                                            <div class="">
+                                                                <label class="" for="Night_{{i}}">N</label>
+                                                                <input type="text" class="form-control form-control-sm" id="Night_{{i}}" name="Night" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Night">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input class="form-control form-control-sm form-control-alternative" placeholder="Days" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Duration" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                </td>
+                                                <td>
+                                                    <select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.DurationValue" class="form-control">
+                                                        <option *ngFor="let item of DurationList" [ngValue]="item.Name">{{item.Name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <textarea class="form-control form-control-sm" rows="1" id="txtInstructions_{{i}}" name="Instructions" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Instructions" (click)="LoadInstructions(i)" autocomplete="off"></textarea>
+                                                </td>
+                                                <td>
+                                                    <i class="icon icon-cross" (click)="RemoveRow(i)"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <span class="btn btn-light btn-sm text-primary" style="height: 28px;" (click)="Addtreatment()">
+                                                <i class="icon icon-plus-circle"></i> Add Row
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-3 px-0">
+                                            <div *ngIf="PrescriptionModel.IsTemplate ">
+                                                <input type="text" formControlName="TemplateName" [(ngModel)]="PrescriptionModel.TemplateName" class="form-control form-control-sm" placeholder="Tempalte Name" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3 pl-0 text-right">
+                                            <div class="custom-control custom-checkbox mb-2 py-1">
+                                                <input formControlName="IsTemplate" [(ngModel)]="PrescriptionModel.IsTemplate" type="checkbox" class="custom-control-input" id="templateSave" name="template">
+                                                <label class="custom-control-label" for="templateSave">Save as Template </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngb-panel>
+                        <ngb-panel id="prescription2">
+                            <ng-template ngbPanelTitle>
+                                <span>
+                                    <img src="../assets/app/media/img/icons/remakrs.png" class="img-fluid radius">
+                                    Detail Remarks
+                                </span><i class="icon-chevron-right iconImage"></i>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <div class="row mt-2">
+                                    <div class="col-sm-12 mt-2">
+                                        <textarea formControlName="Notes" [(ngModel)]="PrescriptionModel.Notes" rows="4" style="height:70px;" class="form-control form-control-sm form-control-alternative" placeholder="Detail Notes Here"></textarea>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngb-panel>
+                        <ngb-panel id="prescription">
+                            <ng-template ngbPanelTitle>
+                                <span>
+                                    <img src="../assets/app/media/img/icons/Follow.png" class="img-fluid radius">
+                                    Follow Up / Surgery
+                                </span><i class="icon-chevron-right iconImage"></i>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <div class="row mt-4">
+
+                                    <div class="col-sm-3">
+                                        <div class="custom-control custom-checkbox mb-3 py-1">
+                                            <input type="checkbox" class="custom-control-input" id="CreateAppointment" formControlName="IsCreateAppointment" [(ngModel)]="PrescriptionModel.IsCreateAppointment">
+                                            <label class="custom-control-label" for="CreateAppointment">Create Appointment</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <strong>OR</strong>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="custom-control custom-checkbox mb-3 py-1">
+                                            <input type="checkbox" class="custom-control-input" id="ScheduleSurgery">
+                                            <label class="custom-control-label" for="ScheduleSurgery">Schedule Surgery</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-sm-3 small-input">
+                                        <div class="form-group">
+                                            <label>Day</label>
+                                            <input type="text" formControlName="Day" [(ngModel)]="PrescriptionModel.Day" maxlength="500" class="form-control" (keyup)="OnDayEnter()">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 small-input">
+                                        <div class="form-group">
+                                            <label>Date</label>
+                                            <Datetime-Component formControlName="FollowUpDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onFollowUpDateChanged($event)" [(ngModel)]="PrescriptionModel.FollowUpDate">
+                                            </Datetime-Component>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Time</label>
+                                            <input type="text" class="form-control time" formControlName="FollowUpTime" [(ngModel)]="PrescriptionModel.FollowUpTime" (click)="FollowUpSelectTime()" (change)="ChnageFollowUpSelectTime()" id="FollowupbasicTime" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="row mt-4">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>FollowUp Note</label>
+                                            <textarea formControlName="FollowUpNotes" [(ngModel)]="PrescriptionModel.FollowUpNotes" rows="4" style="height:70px;" class="form-control form-control-sm form-control-alternative" placeholder="FollowUp Notes Here"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngb-panel>
+                    </ngb-accordion>
+
+                    <div class="row">
+                        <div class="col-sm-5  mt-4">
+
+                            <button type="button" class="btn btn-red btnDel mb-2" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                        </div>
+                        <div class="col text-right col-sm-7 mt-4">
+                            <span class="btn btn-secondary btn- mb-2 mr-2" printSectionId="print-RxPrintModal" ngxPrint (click)="PrintAndSave()"> Rx Print</span>
+                            <button type="submit" class="btn btn-primary btn- mb-2" *ngIf="ControlRights.CreateRights"> Save </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- =========== Appointment  Information Model ===================-->
+<ng-template #longContent let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            Appointment Detail
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" *ngIf="Rights.indexOf(12)>-1">
+        <ngb-tabset #t="ngbTabset">
+            <ngb-tab id="tab-selectbyid1" title="Appointment">
+                <ng-template ngbTabContent>
+                    <form [formGroup]="Form2">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+
+                                            <label class="form-control-label mt-2 required" for="input-username">Patient</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="input-group mb-3">
+
+                                                <input type="text" id="AppPatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (click)="LoadAppPatient()" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" placeholder="Search by name/mobile or cnic" autocomplete="off">
+                                                <div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient(content)">
+                                                    <span class="svgIcon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <small class="text-danger" *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> CNIC</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="CNIC" [(ngModel)]="AppointmentModel.CNIC" placeholder="CNIC" autocomplete="off" disabled="disabled">
+
+                                            <small class="text-danger" *ngIf="Form2.controls.CNIC.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                            <small *ngIf="Form2.controls.CNIC.hasError('pattern') && !Form2.controls.CNIC.hasError('required')">
+                                                CNIC No must follow the XXXXX-XXXXXXX-X format!"
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Mobile</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile" placeholder="Mobile" autocomplete="off" disabled="disabled">
+                                            <small class="text-danger" *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Patient Prob</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" id="" class="form-control form-control-sm form-control-alternative" formControlName="PatientProblem" [(ngModel)]="AppointmentModel.PatientProblem" placeholder="Patient Problem">
+                                        </div>
+                                    </div>
+
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Notes</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <textarea class="form-control-alternative form-control" formControlName="Notes" [(ngModel)]="AppointmentModel.Notes"></textarea>
+                                        </div>
+                                    </div>
+                                    <!-- =============== -->
+                                </div>
+                                <div class="col-sm-6">
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 required" for="input-username"> Doctor</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" (change)="DoctorChange()" formControlName="DoctorId" [(ngModel)]="AppointmentModel.DoctorId">
+                                                <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                    {{item.Name}}
+                                                </option>
+                                            </select>
+                                            <small class="text-danger" *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 required" for="input-username"> Date</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <Datetime-Component formControlName="AppointmentDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onAppDateChanged($event)" [(ngModel)]="AppointmentModel.AppointmentDate">
+                                            </Datetime-Component>
+                                            <small class="text-danger" *ngIf="Form2.controls.AppointmentDate.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 required" for="input-username"> Time </label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" formControlName="AppointmentTime" [(ngModel)]="AppointmentModel.AppointmentTime" (click)="SelectTime()" (change)="ChnageSelectTime()" class="form-control time" id="basicExample" autocomplete="off">
+                                            <small class="text-danger" *ngIf="Form2.controls.AppointmentTime.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Status</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" formControlName="StatusId" [(ngModel)]="AppointmentModel.StatusId">
+                                                <option *ngFor="let item of StatusList" [value]="item.ID">
+                                                    {{item.Value}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col text-right">
+                            <button class="btn btn-primary" (click)="t.select('tab-selectbyid2')">Next</button>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-selectbyid2">
+                <ng-template ngbTabTitle>Billing</ng-template>
+                <ng-template ngbTabContent>
+                    <form [formGroup]="Form2" novalidate (ngSubmit)="AppointmentSaveOrUpdate(Form2.valid)">
+                        <div class="row">
+                            <div class="col-sm-7 mt-3">
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="required">
+                                            Service
+                                        </label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="text" id="ServiceSearch" (click)="LoadService()" formControlName="ServiceId" [(ngModel)]="AppointmentModel.ServiceName" class="form-control form-control-sm form-control-alternative" placeholder="Search Service" autocomplete="off">
+                                            <small class="text-danger" *ngIf="Form2.controls.ServiceId.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Bill Date*</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <Datetime-Component formControlName="BillDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateChanged($event)" [(ngModel)]="AppointmentModel.BillDate">
+                                            </Datetime-Component>
+                                            <small class="text-danger" *ngIf="Form2.controls.BillDate.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0 required" for="input-username"> Price</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="number" id="" formControlName="Price" [(ngModel)]="AppointmentModel.Price" (keyup)="CalAmount()" class="form-control form-control-sm form-control-alternative" placeholder="Price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4 text-right">
+
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Discount</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="text" id="" formControlName="Discount" [(ngModel)]="AppointmentModel.Discount" (keyup)="CalAmount()" class="form-control form-control-sm form-control-alternative" placeholder="Discount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0 required" for="input-username"> Paid Amount</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="text" id="" formControlName="PaidAmount" [(ngModel)]="AppointmentModel.PaidAmount" (keyup)="PaidCalAmount()" class="form-control form-control-sm form-control-alternative" placeholder="Paid Amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                            <small class="text-danger" *ngIf="Form2.controls.PaidAmount.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Outstanding Balance</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <input type="text" id="" formControlName="OutstandingBalance" [(ngModel)]="AppointmentModel.OutstandingBalance" class="form-control form-control-sm form-control-alternative" placeholder="Outstanding Balance" readonly="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-right">
+                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Remarks</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <textarea class="form-control form-control-sm" formControlName="Remarks" [(ngModel)]="AppointmentModel.Remarks" autocomplete="off"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-5 mt-3" id="print-section">
+                                <!-- ========== Print Setion ----------------- -->
+                                <div class="coupn_card" style="border: 2px dashed #b1d0f1; padding: 10px; border-radius: 5px; line-height: normal; background: #edf6ff; color: #000000; max-width: 250px;">
+                                    <h3 style="text-align: center;">
+                                        {{AppointmentModel.PatientName}}
+                                    </h3>
+                                    <p style="text-align: center;">
+                                        Paid:  {{AppointmentModel.PaidAmount}}
+                                    </p>
+                                    <p style="text-align: center;">
+                                        Outstanding:  {{AppointmentModel.OutstandingBalance}}
+                                    </p>
+                                    <h1 style="text-align: center; font-size: 70px; font-weight: bold; margin: 0;">
+                                        {{AppointmentModel.TokenNo}}
+                                    </h1>
+                                    <p style="text-align: center;">
+                                        App Date:{{AppointmentModel.AppointmentDate|date: 'MM/dd/yyyy'}}
+                                    </p>
+                                </div>
+                                <!-- ========== Print Setion ----------------- -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-light" useExistingCss="true" printSectionId="print-section" ngxPrint><i class="icon icon-printer"></i> Print Coupn</button>
+                            <button type="submit" class="btn btn-primary" *ngIf="ControlRights.CreateRights">Save</button>
+                        </div>
+                    </form>
+                </ng-template>
+            </ngb-tab>
+
+        </ngb-tabset>
+    </div>
+    <div class="modal-body NavtabLine" *ngIf="Rights.indexOf(12)==-1">
+        <ngb-tabset #billright="ngbTabset">
+            <ngb-tab id="tab-selectbyid1" title="Appointment">
+                <ng-template ngbTabContent>
+                    <form [formGroup]="Form2" novalidate (ngSubmit)="AppointmentSaveOrUpdate(Form2.valid)">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+
+                                            <label class="form-control-label mt-2 required" for="input-username">Patient</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="input-group mb-3">
+
+                                                <input type="text" id="AppPatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (click)="LoadAppPatient()" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" placeholder="Search by name/mobile or cnic" autocomplete="off">
+                                                <div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient(content)">
+                                                    <span class="svgIcon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <small class="text-danger" *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> CNIC</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="CNIC" [(ngModel)]="AppointmentModel.CNIC" placeholder="XXXXX-XXXXXXX-X" autocomplete="off" disabled="disabled">
+                                            <small class="text-danger" *ngIf="Form2.controls.CNIC.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                            <small *ngIf="Form2.controls.CNIC.hasError('pattern') && !Form2.controls.CNIC.hasError('required')">
+                                                CNIC No must follow the XXXXX-XXXXXXX-X format!"
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Mobile</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile" placeholder="Mobile" autocomplete="off" disabled="disabled">
+                                            <small class="text-danger" *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Patient Prob</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" id="" class="form-control form-control-sm form-control-alternative" formControlName="PatientProblem" [(ngModel)]="AppointmentModel.PatientProblem" placeholder="Patient Problem">
+                                        </div>
+                                    </div>
+
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Notes</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <textarea class="form-control-alternative form-control" formControlName="Notes" [(ngModel)]="AppointmentModel.Notes"></textarea>
+                                        </div>
+                                    </div>
+                                    <!-- =============== -->
+                                </div>
+                                <div class="col-sm-6">
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 required" for="input-username"> Doctor</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" formControlName="DoctorId" [(ngModel)]="AppointmentModel.DoctorId">
+                                                <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                    {{item.Name}}
+                                                </option>
+                                            </select>
+                                            <small class="text-danger" *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 required" for="input-username"> Date</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <Datetime-Component formControlName="AppointmentDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onAppDateChanged($event)" [(ngModel)]="AppointmentModel.AppointmentDate">
+                                            </Datetime-Component>
+                                            <small class="text-danger" *ngIf="Form2.controls.AppointmentDate.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <!-- =============== -->
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2 required" for="input-username"> Time </label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" formControlName="AppointmentTime" [(ngModel)]="AppointmentModel.AppointmentTime" (click)="SelectTime()" (change)="ChnageSelectTime()" class="form-control time" id="basicExample" autocomplete="off">
+                                            <small class="text-danger" *ngIf="Form2.controls.AppointmentTime.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Status</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" formControlName="StatusId" [(ngModel)]="AppointmentModel.StatusId">
+                                                <option *ngFor="let item of StatusList" [value]="item.ID">
+                                                    {{item.Value}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" *ngIf="ControlRights.CreateRights">Save</button>
+                        </div>
+                    </form>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</ng-template>
+<!-- ============================   Medicine Tempalte Modal ========= -->
+<ng-template #MedicineTemplate let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"> <img src="../assets/app/media/img/icons/Medicines.png" class="img-fluid icon"> Choose Medicine Template</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="row form-group">
+                    <div class="col-12">
+                        <div class="form-group mb-0">
+                            <div class="input-group input-group-alternative">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="icon icon-search"></i></span>
+                                </div>
+                                <input class="form-control form-control-sm form-control-alternative" placeholder="Search Medicine Template" type="text">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-secondary templateBox mb-2" role="alert" *ngFor="let temp of TemplateList" (click)="LoadTemplate(temp.MfId)">
+                            <div class="mb-3">
+                                <label class="" for="">{{temp.Name}}</label>
+                            </div>
+                            <span class="badge badge-primary mr-2" placement="top" ngbPopover="This is a very beautiful popover, show some love." *ngFor="let med of temp.medicine">{{med}} </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <!--<button type="button" class="btn btn-primary" (click)="LoadTemplate()">Load</button>-->
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+</ng-template>
+<!-- ============================   Rx Print  Modal ========= -->
+<ng-template #PrintRx let-modal class="RxPrintModal TemplateTwo">
+    <div id="print-RxPrintModal">
+        <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
+            <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
+                <div class="col-6">
+                    <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;"> {{DoctorInfo.Name}} </h3>
+                    <p style="margin:0 0 5px;font-size:14px;line-height: normal;"> {{DoctorInfo.Qualification}} {{DoctorInfo.Designation}}</p>
+                    <strong style="margin:0;font-size:13px;line-height: normal;">
+                        {{DoctorInfo.Designation}}
+                    </strong>
+                    <p style="margin: 0; font-size: 14px; line-height: normal;">Ph: {{DoctorInfo.PhoneNo}}</p>
+                </div>
+                <div class="col-6 text-right" *ngIf="PatientRXmodel.ClinicIogo != '' && PatientRXmodel.ClinicIogo != null ">
+                    <img [src]="PatientRXmodel.ClinicIogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div class="col-6 text-right" *ngIf="PatientRXmodel.ClinicIogo =='' || PatientRXmodel.ClinicIogo == null ">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+            </div>
+        </div>
+        <div class="modal-body body_Prescription" style="height: calc(29.7cm - 200px);">
+            <div class="row" style="font-size: 14px;border-bottom: 1px solid #5e72e4; margin-bottom: 3px; padding-bottom: 8px;">
+                <div class="col-5">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Name" style="font-size: 14px;">P/Name:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;" name="Name" [(ngModel)]="PatientRXmodel.PatientName" readonly>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Age" style="font-size: 14px;">Age/Sex:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;" name="Name" [(ngModel)]="PatientRXmodel.Age" readonly>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Weight" style="font-size: 14px;">Weight:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:60px;" name="Name" readonly>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-inline" style="flex-wrap: nowrap;">
+                        <label for="Date" style="font-size: 14px;">Date:</label>
+                        <input type="text" class="bottom-line" style="border:0px;outline: none; border-bottom:1px solid #efefef;width:100px;" name="Name" [(ngModel)]="PatientRXmodel.AppointmentDate" readonly>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" style="border-top: 3px solid #5e72e4;height: 95%;">
+                <div class="col-3">
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Vitals:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of PatientVitalList">
+                            {{d.Name}}&nbsp;&nbsp;{{d.Measure}}&nbsp; {{d.Unit}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Diagnoses:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of PrescriptionModel.emr_prescription_diagnos">
+                            {{d.Diagnos}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Complaint:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of PrescriptionModel.emr_prescription_complaint">
+                            {{d.Complaint}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Investigation:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of PrescriptionModel.emr_prescription_investigation">
+                            {{d.Investigation}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12  text-danger">
+                            <strong>Observation:</strong>
+                        </div>
+                        <div class="col-12 text-danger" *ngFor="let d of PrescriptionModel.emr_prescription_observation">
+                            {{d.Observation}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-9" style="border-left: 1px solid #5e72e4">
+                    <table class="table" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Medicine
+                                </th>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Type
+                                </th>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Days
+                                </th>
+                                <th style="border-top:0px; padding: 2px;">
+                                    Measure
+                                </th>
+                                <th style="border-top:0px; padding:0 2px 5px;">
+                                    Instruction
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let m of emr_prescription_treatment_dynamicArray">
+                                <td style="padding:2px;">{{m.MedicineName}}</td>
+                                <td style="padding:2px;">Tab</td>
+                                <td style="padding:2px;">{{m.Duration}}</td>
+                                <td style="padding:2px;">{{m.Measure}}</td>
+                                <td style="padding:2px;">{{m.Instructions}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3> Instructions</h3>
+                    <p style="font-size:12px;line-height:normal;" *ngFor="let m of emr_prescription_treatment_dynamicArray">
+                        {{m.Instructions}},
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer bg-secondary" style="padding: 5px 0 0px;text-align:center;">
+            <div class="col">
+                <p style="font-size: 13px;margin-bottom:5px; border-bottom:1px solid #efefef;">Clinic Days: Mon To Sat. Timing: 6:00 Pm To 9:00 Pm <strong>Off Day:</strong> Sunday</p>
+                <p style="font-size: 13px;">For Appointment, ring: St # 4, Nizam Pura (W) Bahawalnagar, 03000-11234123</p>
+            </div>
+        </div>
+    </div>
+    <div style="position:fixed; right: 20px;">
+        <button class="btn btn-primary" useExistingCss="true" printSectionId="print-RxPrintModal" ngxPrint> Print</button>
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+</ng-template>
+
+<!-- Add New Patient Modal  content -->
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            <img src="../assets/app/media/img/icons/addpatient.png" class="img-fluid icon">
+            Add New Patient
+        </h4>
+        <button type="button" #closeModal class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="PatientSaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+
+            <div class="row">
+                <div class="col-sm-7">
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Name</label>
+                        </div>
+                        <div class="col-8 d-flex">
+                            <select class="form-control form-control-sm" style="max-width:100px;" formControlName="PrefixTittleId" [(ngModel)]="model.PrefixTittleId">
+                                <option *ngFor="let item of TittleList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <input type="text" id="" formControlName="PatientName" [(ngModel)]="model.PatientName" class="form-control form-control-sm form-control-alternative" placeholder="Patient Name">
+                            <small class="text-danger" *ngIf="Form1.controls.PatientName.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Father/Husband</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="Father_Husband" [(ngModel)]="model.Father_Husband" class="form-control  form-control-alternative">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required"> Age</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <input type="text" formControlName="Age" [(ngModel)]="model.Age" (change)="AgeChange()" class="form-control  form-control-alternative" placeholder="Age">
+                                    <small class="text-danger" *ngIf="Form1.controls.Age.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                                <div class="col-sm-1 p-0 mt-2 text-center text-danger" style="right:8px;">
+                                    OR
+                                </div>
+
+                                <div class="col-sm-5 p-0">
+                                    <Datetime-Component formControlName="DOB" placeholder="DD/MM/YYYY" (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="model.DOB">
+                                    </Datetime-Component>
+
+                                </div>
+
+                                <div class="col-2 text-right">
+                                    <label class="form-control-label mt-2 pl-0" for="input-username"> DOB</label>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Gender</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm form-control-alternative" formControlName="Gender" [(ngModel)]="model.Gender">
+                                <option *ngFor="let item of GenderList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+
+                            </select>
+                            <small class="text-danger" *ngIf="Form1.controls.Gender.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Mobile</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile" class="form-control form-control-sm form-control-alternative" placeholder="Mobile">
+                            <small class="text-danger" *ngIf="Form1.controls.Mobile.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Email</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Email" [(ngModel)]="model.Email" class="form-control form-control-sm form-control-alternative" placeholder="Email">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> CNIC</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC" class="form-control form-control-sm form-control-alternative" placeholder="XXXXX-XXXXXXX-X">
+                            <small class="text-danger" *ngIf="Form1.controls.CNIC.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                            <small *ngIf="Form1.controls.CNIC.hasError('pattern') && !Form1.controls.CNIC.hasError('required')">
+                                CNIC No must follow the XXXXX-XXXXXXX-X format!"
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> MRNO</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="MRNO" [(ngModel)]="model.MRNO" class="form-control form-control-sm form-control-alternative" placeholder="MRNO" disabled="disabled">
+                            <small class="text-danger" *ngIf="Form1.controls.MRNO.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Bill Type</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control  form-control-alternative" formControlName="BillTypeId" [(ngModel)]="model.BillTypeId">
+                                <option *ngFor="let item of BillTypeList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <small class="text-danger" *ngIf="Form1.controls.Gender.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Note</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea type="text" class="form-control m-input" formControlName="Notes" [(ngModel)]="model.Notes" placeholder="Note"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="form-group img-box">
+                        <div class="col-sm-12" *ngIf="model.Image!=''">
+                            <img [src]="PatientImage" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                        </div>
+                        <File-Component class="UploadActnWrap" [(ngModel)]="model.Image" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</ng-template>
+
+<!-------Add Medicine Model-->
+<ng-template #MedicinePresModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Enter Medicine for Future Use</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form5" novalidate (ngSubmit)="MedicineSaveOrUpdate(Form5.valid)">
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Medicine </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Medicine" [(ngModel)]="MedicineModel.Medicine" class="form-control form-control-sm form-control-alternative" placeholder="">
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Measure </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Measure" [(ngModel)]="MedicineModel.Measure" class="form-control form-control-sm form-control-alternative" placeholder="">
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Instructions </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group">
+                                <select class="form-control form-control-sm form-control-alternative" formControlName="InstructionId" [(ngModel)]="MedicineModel.InstructionId">
+                                    <option *ngFor="let item of InstructionsList" [value]="item.ID">
+                                        {{item.Name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Unit </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group">
+                                <select class="form-control form-control-sm form-control-alternative" formControlName="UnitId" [(ngModel)]="MedicineModel.UnitId">
+                                    <option *ngFor="let item of UnitList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Type </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group">
+                                <select class="form-control form-control-sm form-control-alternative" formControlName="TypeId" [(ngModel)]="MedicineModel.TypeId">
+                                    <option *ngFor="let item of MadicineTypeList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </form>
+</ng-template>

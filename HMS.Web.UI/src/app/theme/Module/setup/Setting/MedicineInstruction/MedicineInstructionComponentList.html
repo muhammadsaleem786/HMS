@@ -1,0 +1,72 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Medicine Instruction
+                    </h3>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-light mr-2" routerLink="/home/setup">Back</a>
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights"(click)="AddRecord('0',false)">New Med Instruction</a>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="Cardview search_onTop search_xlarge_left px-2">
+            <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="InstructionList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+<ng-template #InvestigationModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"*ngIf="IsEdit">Update Instruction</h4>
+        <h4 class="modal-title" *ngIf="IsEdit==false">Add Instruction</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body bg-secondary">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Instructions </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Instructions" [(ngModel)]="model.Instructions" class="form-control form-control-sm form-control-alternative" placeholder="Instructions">
+                            <small class="text-danger" *ngIf="Form1.controls.Instructions.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+            <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+            <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </form>
+</ng-template>

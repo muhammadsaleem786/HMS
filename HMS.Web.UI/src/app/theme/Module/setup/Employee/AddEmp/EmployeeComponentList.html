@@ -1,0 +1,316 @@
+﻿<div class="margin-t-68">
+    <div class="clearfix backBtnMain">
+        <div class="backBtn">
+            <a routerLink="/home/setup"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+        </div>
+    </div>    
+    <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="EmployeeList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+</div>
+<div class="modal fade" id="BulkUpdateModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <form [formGroup]="Form1" novalidate >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Bulk Update</h3>
+                    <button type="button" id="CloseBulkUpdateModalId" class="close mt-modal-close" data-dismiss="modal" (click)="BulkUpdateCloseClick()"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <strong class="font-15">What would you like to update ?</strong>
+                    <br />
+                    <br />
+                    <ul class="list-unstyled bulkupdatelist">
+                        <li>
+                            <label class="radio-inline">
+                                <input class="mt-Scale-1_8" name="BulkCategoryType" [ngModelOptions]="{standalone: true}" [(ngModel)]="BulkModel.BulkUpdateCategoryType" value="A" type="radio"> Allowances
+                            </label>
+                        </li>
+                        <li>
+                            <label class="radio-inline">
+                                <input class="mt-Scale-1_8" name="BulkCategoryType" [ngModelOptions]="{standalone: true}" [(ngModel)]="BulkModel.BulkUpdateCategoryType" value="D" type="radio"> Deductions
+                            </label>
+                        </li>
+                        <li>
+                            <label class="radio-inline">
+                                <input class="mt-Scale-1_8" name="BulkCategoryType" [ngModelOptions]="{standalone: true}" [(ngModel)]="BulkModel.BulkUpdateCategoryType" value="C" type="radio"> Contributions
+                            </label>
+                        </li>
+                       
+                        <li>
+                            <label class="radio-inline">
+                                <input class="mt-Scale-1_8" name="BulkCategoryType" [ngModelOptions]="{standalone: true}" [(ngModel)]="BulkModel.BulkUpdateCategoryType" value="B" type="radio"> Basic Salary
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="BulkUpdateCloseClick()">Cancel</button>
+                    <button id="saveSchedule" type="button" class="btn btn-blue" (click)="Next()">Next</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<i id="OpenBulkModalfilterId" style="display:none" data-toggle="modal" data-target="#BulkUpdateFilterModal"></i>
+<div class="modal fade" id="BulkUpdateFilterModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <form [formGroup]="Form1" novalidate (ngSubmit)="GetBulkFilterEmployee(Form1.valid)">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!--<h3 class="grid-heading font-weight-400 no-padding">Allowance</h3>-->
+                    <div class="col-md-12">
+                        <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Update {{BulkModel.BulkUpdateCategoryType == 'A'? 'Allowance' : (BulkModel.BulkUpdateCategoryType == 'C' ? 'Contribution' : (BulkModel.BulkUpdateCategoryType == 'D' ? 'Deduction' : 'Base Salary'))}}</h3>
+                    </div>
+                    <button type="button" id="CloseBulkModalfilterId" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong class="grid-heading text-color-skyblue font-weight-400 no-padding">{{BulkModel.BulkUpdateCategoryType == 'A'? 'Select Allowance' : (BulkModel.BulkUpdateCategoryType == 'C' ? 'Select Contribution' : (BulkModel.BulkUpdateCategoryType == 'D' ? 'Select Deduction' : 'Base Salary'))}}</strong>
+                            <br />
+                            <br />
+                            <div *ngIf="BulkModel.BulkUpdateCategoryType != 'B'">
+                                <label>{{BulkModel.BulkUpdateCategoryType == 'A'? 'Select Allowance' : (BulkModel.BulkUpdateCategoryType == 'C' ? 'Select Contribution' : (BulkModel.BulkUpdateCategoryType == 'D' ? 'Select Deduction' : 'Base Salary'))}}</label>
+                                <div class="form-group">
+                                    <select formControlName="AllConDedId" [(ngModel)]="BulkModel.AllConDedId" class="form-control" (change)="AllConDedTypesChange()">
+                                        <option *ngFor="let item of AllConDedTypes" [value]="item.ID">
+                                            {{item.Name}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="margin-b-8">
+                                        <label>{{BulkModel.BulkUpdateCategoryType == 'A'? 'Allowance' : (BulkModel.BulkUpdateCategoryType == 'C' ? 'Contribution' : 'Deduction')}} Amount* (Monthly)</label><br />
+                                    </div>
+                                    <label class="radio-inline">
+                                        <input type="radio" formControlName="AllConDedValueType" (change)="IsAllConDedValid()" name="AllConDedValueType" [(ngModel)]="BulkModel.AllConDedValueType" value="F" checked> Fixed
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" formControlName="AllConDedValueType" (change)="IsAllConDedValid()" name="AllConDedValueType" [(ngModel)]="BulkModel.AllConDedValueType" value="P"> % of Salary
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">{{BulkModel.AllConDedValueType == 'F' ? Currency:'%'}}</span>
+                                        <input type="number" formControlName="Amount" min="0" [(ngModel)]="BulkModel.Amount" pattern=".{0,8}" (keyup)="IsAllConDedValid()" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                    </div>
+                                    <small class="text-danger" *ngIf="Form1.controls.Amount.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                    <small class="text-danger" *ngIf="IsAllConDedValueValid && !Form1.controls.Amount.hasError('required')">
+                                        % value should be equal or less than 100 %.
+                                    </small>
+
+                                </div>
+                                <div class="form-group" *ngIf="BulkModel.BulkUpdateCategoryType != 'C' && PayrollRegion!='SA'">
+                                    <div class="checkbox checkboxDefault" >
+                                        <input type="checkbox" id="checkTexable" formControlName="Taxable" [(ngModel)]="BulkModel.Taxable">
+                                        <label for="checkTexable">Taxable</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="BulkModel.BulkUpdateCategoryType == 'B'">
+                                <label>Base Salary</label>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                                        <input type="number" formControlName="Amount" min="0" [(ngModel)]="BulkModel.Amount" pattern=".{0,8}" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                    </div>
+                                    <small class="text-danger" *ngIf="Form1.controls.Amount.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                    <small class="text-danger" *ngIf="IsAllConDedValueValid && !Form1.controls.Amount.hasError('required')">
+                                        Please enter a valid amount.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="col-md-12">
+                                <div class="row no-padding-lr">
+                                    <div class="col-xs-12">
+                                        <strong class="grid-heading text-color-skyblue font-weight-400 no-padding">Select Employees</strong>
+                                     </div>
+                                         <br />
+                                        <br />
+                                        <div class="col-xs-12 no-padding-lr">
+                                            <div class="col-md-12 form-group">
+                                                <label>Location</label>
+                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="LocationsIds" [options]="BulkLocationsList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.LocationsIds"></ss-multiselect-dropdown>
+                                            </div>
+                                            <div class="col-md-12 form-group">
+                                                <label>Department</label>
+                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="DepartmentsIds" [options]="BulkDepartmentsList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.DepartmentsIds"></ss-multiselect-dropdown>
+                                            </div>
+                                            <div class="col-md-12 form-group">
+                                                <label>Designation</label>
+                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="DesignationsIds" [options]="BulkDesignationsList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.DesignationsIds"></ss-multiselect-dropdown>
+                                            </div>
+                                            <div class="col-md-12 form-group">
+                                                <label>Employee Type</label>
+                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="EmployeeTypeIds" [options]="BulkEmployeeTypeList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.EmployeeTypeIds"></ss-multiselect-dropdown>
+                                            </div>
+                                            <div class="col-md-12 form-group">
+                                                <label>Employees</label>
+                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="EmployeeIds" [options]="BulkEmployeeList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.EmployeeIds"></ss-multiselect-dropdown>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-default btn-blue" data-dismiss="modal" (click)="BulkUpdateFilterPreviousClick()">Previous</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-blue">Next</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<i id="OpenBulkFilterEmplyeeModalId" style="display:none" data-toggle="modal" data-target="#BulkFilteredEmplyeeModal"></i>
+<div class="modal fade" id="BulkFilteredEmplyeeModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg BulkFilteredEmplyee">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding mt-d-inline-block">
+                    {{BulkModel.BulkUpdateCategoryType == 'A'? ('Update Allowance - ' + BulkModel.Name) : (BulkModel.BulkUpdateCategoryType == 'C' ? ('Update Contribution - ' + BulkModel.Name) : (BulkModel.BulkUpdateCategoryType == 'D' ? ('Update Deduction - ' + BulkModel.Name) : 'Update Base Salary'))}} 
+                </h3>
+                <input (keyup)="applyFilter($event.target.value)" class="form-control max-width-250 pull-right" placeholder="Search....">
+                <button type="button" id="CloseBFiltEmplyeeModaId" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+            </div>
+            <!--<mat-form-field>-->
+            <!--<div class="form-group">
+                
+            </div>-->
+            <div class="">
+                <div class="mat-elevation-z8">
+                    <mat-table class="mt-custom-table mt-nowhitespace" #table [dataSource]="dataSource" matSort>
+
+                        <ng-container matColumnDef="Employee">
+                            <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>Employee </mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element"> {{element.Employee}} </mat-cell>
+                            <!--<mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>-->
+                        </ng-container>
+
+                        <!-- Weight Column -->
+                        <ng-container matColumnDef="ExistingAmount">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Existing  {{BulkModel.BulkUpdateCategoryType == 'B' ? 'Salary' : 'Amount'}}</mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element">
+                                <div *ngIf="!element?.Remove">
+                                    {{Currency}} {{element.ExistingAmount | number: '1.0-0'}}
+                                </div>
+                            </mat-cell>
+                            <!--<mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>-->
+                        </ng-container>
+
+                        <ng-container matColumnDef="UseExistingAmount">
+                            <mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="BulkExistamntAllChkToggle()"
+                                              [checked]="IsExistAmntAllChked"
+                                              [indeterminate]="IsExistAmntIntermediate"
+                                              [(ngModel)]="IsExistAmntAllChked">
+                                    Use Existing {{BulkModel.BulkUpdateCategoryType == 'B' ? 'Salary' : 'Amount'}}
+                                </mat-checkbox>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let row">
+                                <mat-checkbox *ngIf="!row?.Remove" (change)="ExistamntChecked(row)"
+                                              [checked]="row.UseExistingAmount"
+                                              [(ngModel)]="row.UseExistingAmount">
+                                </mat-checkbox>
+                            </mat-cell>
+                        </ng-container>
+
+                        <!-- Symbol Column -->
+
+
+                        <ng-container matColumnDef="Amount">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header class="text-center"> {{BulkModel.BulkUpdateCategoryType == 'B' ? 'Salary' : 'Amount'}} </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <div class="input-group">
+                                    <span class="input-group-addon" *ngIf="!element?.Remove" id="basic-addon1">{{Currency}}</span>
+                                    <input type="number" min="0" *ngIf="!element?.Remove" pattern=".{0,8}" class="form-control" [(ngModel)]="element.Amount" (change)="CalculateAmntAndSum(false)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                </div>
+                                <!--<input type="number" *ngIf="!element?.Remove" min="0" [(ngModel)]="element.Amount" pattern=".{0,8}" class="form-control" (change)="CalculateAmntAndSum()" oninput="validity.valid||(value='');" />-->
+                            </mat-cell>
+                        </ng-container>
+
+
+                        <!--<ng-container matColumnDef="Category">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Category </mat-header-cell>
+                    <mat-cell mat-cell *matCellDef="let element" *ngIf="!row.Remove"> {{element.Category}} </mat-cell>
+                    <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
+                </ng-container>-->
+                        <div>
+                            <ng-container matColumnDef="Taxable">
+                                <mat-header-cell *matHeaderCellDef>
+                                    <mat-checkbox (change)="BulkTaxableAllChkToggle()"
+                                                  [checked]="IsTaxableAllChked"
+                                                  [indeterminate]="IsTaxableIntermediate"
+                                                  [(ngModel)]="IsTaxableAllChked">
+                                        Is Taxable
+                                    </mat-checkbox>
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let row">
+                                    <mat-checkbox *ngIf="!row?.Remove" (change)="TaxableChecked()"
+                                                  [checked]="row.Taxable"
+                                                  [(ngModel)]="row.Taxable">
+                                    </mat-checkbox>
+                                </mat-cell>
+                            </ng-container>
+                        </div>
+
+                        <ng-container matColumnDef="Remove">
+                            <mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="BulkRemAllChkToggle()"
+                                              [checked]="IsRemoveAllChked"
+                                              [indeterminate]="IsRemoveIntermediate"
+                                              [(ngModel)]="IsRemoveAllChked">
+                                    Remove
+                                </mat-checkbox>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let row">
+                                <mat-checkbox (change)="RemoveChecked(row)"
+                                              [checked]="row.Remove"
+                                              [(ngModel)]="row.Remove">
+                                </mat-checkbox>
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        <!--<mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>-->
+                    </mat-table>
+                    <mat-paginator showFirstLastButtons [length]="length"
+                                   [pageSize]="pageSize"
+                                   [pageSizeOptions]="pageSizeOptions"
+                                   [hidePageSize]="true"
+                                   (page)="pageEvent = $event">
+                    </mat-paginator>
+                </div>
+                <div style="padding: 0 40px 0 40px;">
+                    <table class="table" style="margin-top:0px;">
+                        <thead>
+                            <tr>
+                                <td ><strong>Total</strong></td>
+                                <td><strong>{{Currency}} {{BulkEmpSumAmountModel.TotalExistingAmount | number: '1.0-0'}}</strong></td>
+                                <td></td>
+                                <td><strong>{{Currency}} {{BulkEmpSumAmountModel.TotalAmount | number: '1.0-0'}}</strong></td>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <!--<div class="btnArea-footer">
+                <button id="saveSchedule" type="button" class="btn btn-blue">Publish</button>
+                <button type="button" class="btn btn-blue btnDel pull-left">Delete</button>
+            </div>-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-blue" data-dismiss="modal" (click)="BulkFilterEmpPreviousClick()">Previous</button>
+                <button id="saveSchedule" type="button" (click)="SaveBulkEmployee()" class="btn btn-blue">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

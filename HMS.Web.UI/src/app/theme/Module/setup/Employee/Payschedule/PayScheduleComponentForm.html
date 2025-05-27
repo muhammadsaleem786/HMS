@@ -1,0 +1,90 @@
+﻿
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)" (click)="IsModalClick()">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">{{model.ID ? 'Edit' : 'Add'}} Schedule</h3>
+                    <button type="button" class="close mt-modal-close" (click)="Close()" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label>Pay Period</label>
+                                        <select formControlName="PayTypeID" [(ngModel)]="model.PayTypeID" [attr.disabled]="model.Lock ? true : null" class="form-control">
+                                            <option *ngFor="let item of Paytypes" [value]="item.ID">
+                                                {{item.Value}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Name*</label>
+                                        <input type="text" formControlName="ScheduleName" [(ngModel)]="model.ScheduleName" class="form-control" maxlength="250" placeholder="Name">
+                                        <small *ngIf="Form1.controls.ScheduleName.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>If Pay Day Fall On Holiday</label>
+                                        <select formControlName="FallInHolidayID" [(ngModel)]="model.FallInHolidayID" [attr.disabled]="model.Lock ? true : null" class="form-control">
+                                            <option *ngFor="let item of FallInHolidaytypes" [value]="item.ID">
+                                                {{item.Value}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="checkbox checkboxDefault">
+                                            <input type="checkbox" id="DefaultCheck" formControlName="Active" [attr.disabled]="ChkState ? true : null"  [(ngModel)]="model.Active">
+                                            <label for="DefaultCheck">Default</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label>Pay Period Start Date*</label>
+                                        <Datetime-Component formControlName="PeriodStartDate" [IsDisabled]="model.Lock"  (DateChangeValue)="onDateChanged($event)" [(ngModel)]="model.PeriodStartDate">
+                                        </Datetime-Component>
+                                        <small *ngIf="Form1.controls.PeriodStartDate.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Pay Period End Date</label>
+                                        <Datetime-Component formControlName="PeriodEndDate" [IsDisabled]="true" placeholder="DD/MM/YYYY" [(ngModel)]="model.PeriodEndDate">
+                                        </Datetime-Component>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Pay Date*</label>
+                                        <Datetime-Component formControlName="PayDate" [IsDisabled]="model.Lock" placeholder="DD/MM/YYYY"  [(ngModel)]="model.PayDate" (DateChangeValue)="getPayDate($event)">
+                                        </Datetime-Component>
+                                        <small *ngIf="Form1.controls.PayDate.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="clearfix box-shadow text-left padding-b-15 padding-t-15" style="background-color:#F7F8FA; padding-left:15px; padding-right: 15px;">
+                                <h4 class="heading">Pay Batch</h4>
+                                <div *ngIf="model.PayDate">
+                                    <p>{{model.PeriodStartDate | date: "dd/MM/yyyy"}} - {{model.PeriodEndDate | date: "dd/MM/yyyy"}}</p>
+                                    <p>will be paid on {{model.PayDate | date: "dd/MM/yyyy" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-payday-cancel" #closeModal data-dismiss="modal" (click)="Close()">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    <button type="button" class="btn btn-blue pull-left btnDel" *ngIf="!model.Active && model.ID && !model.Lock" (click)="Delete()">Delete</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

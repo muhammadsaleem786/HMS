@@ -1,0 +1,122 @@
+﻿
+<div class="margin-t-68 UserAttendInfo">
+    <div class="clearfix backBtnMain">
+        <div class="backBtn">
+            <a routerLink="/timeattendancelist"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+        </div>
+    </div>
+
+    <div style="padding: 0 40px 0 40px;">
+        <div class="row col-sm-12 InfoBlockRow">
+            <div class="col-sm-2 timeInfoBlock">
+                <strong>Employee Name</strong><br />
+                <span><span>{{EmployeeTimeList?.Employee}}</span> {{EmployeeTimeList?.Designation}}</span>
+            </div>
+            <div class="col-sm-2 timeInfoBlock">
+                <strong>Total Working Hours : </strong><br />
+                <span>{{EmployeeTimeList?.TotalWorkingHours}}</span>
+            </div>
+            <div class="col-sm-2 timeInfoBlock">
+                <strong>Total Delay Hours</strong><br />
+                <span>{{EmployeeTimeList?.TotalDelayHours}}</span>
+            </div>
+            <div class="col-sm-2 timeInfoBlock">
+                <strong>Total Excused Hours</strong><br />
+                <span>{{EmployeeTimeList?.TotalExcusedHours}}</span>
+            </div>
+            <div class="col-sm-2 timeInfoBlock">
+                <strong>Total Presents</strong><br />
+                <span>{{EmployeeTimeList.TotalPresents}}</span>
+            </div>
+            <div class="col-sm-2 timeInfoBlock">
+                <strong>Total Absents</strong><br />
+                <span>{{EmployeeTimeList.TotalAbsents}}</span>
+            </div>
+            <div class="col-sm-2 timeInfoBlock">
+                <strong>Total Leaves</strong><br />
+                <span>{{EmployeeTimeList.TotalLeaves}}</span>
+            </div>
+            <div class="col-sm-2 timeInfoBlock">
+                <strong>Total Holidays</strong><br />
+                <span>{{EmployeeTimeList.TotalHolidays}}</span>
+            </div>
+            <div class="col-sm-2 timeInfoBlock">
+                <strong>Total Weekends</strong><br />
+                <span>{{EmployeeTimeList?.TotalWeekends}}</span>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Filter by day*</label>
+                    <Datetime-Component (DateChangeValue)="ondayFilterDateChanged($event)" [ngModelOptions]="{standalone:true}" [(ngModel)]="MonthFilterDate">
+                    </Datetime-Component>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Search</label>
+                    <input (keyup)="applyFilter($event.target.value)" [(ngModel)]="txtSearch" [ngModelOptions]="{standalone:true}" class="form-control" placeholder="Search....">
+                </div>
+            </div>
+        </div>
+
+        <div class="mat-elevation-z8 AttendInfoWrap">
+            <mat-table class="mt-custom-table" #table [dataSource]="dataSource" matSort>            
+                    <ng-container matColumnDef="Date">
+                        <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>Day</mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let element" class="WordSpace"> 
+                        {{element.Date}}
+                         </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="Status">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Present</mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let element">
+                         {{element.Status}}
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="TimeIn">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>In Time</mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let element">
+                           {{element.TimeIn}}
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="TimeOut">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Out Time</mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let element">
+                            {{element.TimeOut}}
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="WorkingHours">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Working Hours</mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let element">
+                            {{element.WorkingHours}}
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="DelayTime">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Delay</mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let element">
+                            {{element.DelayTime}}
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="ExcusedTime">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Excused Time</mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let element">
+                            {{element.ExcusedTime}}
+                        </mat-cell>
+                    </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator showFirstLastButtons [length]="length"
+                           [pageSize]="pageSize"
+                           [pageSizeOptions]="pageSizeOptions"
+                           [hidePageSize]="true"
+                           (page)="pageEvent = $event">
+            </mat-paginator>
+        </div>
+    </div>
+</div>

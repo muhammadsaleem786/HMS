@@ -1,0 +1,62 @@
+﻿<!--<style type="text/css">
+    .file {
+        background: url(/assets/img/avatars/no_image_placeholder.png);
+        cursor: pointer;
+        border: none;
+    }
+    #myFile {
+        background: url(/assets/img/avatars/no_image_placeholder.png);
+        cursor: pointer;
+        border: none;
+    src="assets/img/avatars/no_image_placeholder.png"
+    }
+</style>-->
+<style>
+    .image-upload  input {
+        display: none;
+    }
+</style>
+
+
+
+
+
+<div class="uk-clearfix UplaodBtnWrap">
+    <ul class="list-inline col-sm-12" style="display: block; text-align: center;">
+        <li>
+            <div class="image-upload">
+                <label for="myFile">
+                    File Uplaod &nbsp; <i class="icon-upload"></i>
+                </label>
+                <P class="text-muted" *ngIf="!showbar">
+                    No File Choose
+                </P>
+                    <input type="file" id="myFile" (change)="fileChangeEvent($event)" />
+               
+            </div>
+        </li>
+    </ul>
+
+    <div *ngIf="showbar" class="uk-clearfix showbarWrap col-sm-12 p-0">
+        <div class="d-flex uploadbar_row">
+            
+            <div class="uploadBar text-muted">{{imagedata}}</div>
+            
+            <div style="width: 198px;margin: 10px;">
+                <progress value="{{percentage}}" max="{{max}}" style="width:100%;height:5px;" >
+                    {{percentage}}
+                </progress>
+            </div>
+
+            <div class="image-clear">
+                <label for="myFile2" class="mb-0 mt-2">
+                    <i class="icon icon-cross text-danger"></i>
+                </label>
+                <input id="myFile2" type="button" (click)="clearValue()" hidden />
+            </div>
+
+        </div>
+       
+
+    </div>
+</div>

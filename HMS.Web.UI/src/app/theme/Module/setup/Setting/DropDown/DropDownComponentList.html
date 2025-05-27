@@ -1,0 +1,86 @@
+﻿
+
+
+<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        DropDown
+                    </h3>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+
+        </div>
+    </div>
+
+
+    <div>
+        <div class="Cardview search_onTop px-2">
+
+            <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                <div class="row pt-3 pl-2">
+                    <div class="col-sm-4">
+                        <div class="input-group mb-3">
+
+                            <input type="text" formControlName="Value" maxlength="150" class="form-control" [(ngModel)]="model.Value" placeholder="Add New Value">
+
+                            <div class="input-group-prepend">
+
+                                <button type="button" class="btn btn-light" (click)="Clear()">Clear</button>
+                            </div>
+                            <div class="input-group-prepend">
+                                <button id="saveSchedule" type="submit" class="btn btn-blue">{{model.ID ? 'Update' : 'Save'}}</button>
+                            </div>
+
+
+                            <div class="input-group-prepend" *ngIf="model.ID != 0 && !model.SystemGenerated">
+                                <button type="button" class="btn btn-danger btnDel dropdownbtndelete" style="margin-left:0px;" (click)="Delete()">Delete</button>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2 pl-2">
+                    <div class="col-sm-4">
+                        <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="model.DropDownID" (change)="MFDDChange()">
+                            <option disabled>
+                                Select Dropedown Type
+                            </option>
+                            <option *ngFor="let item of MFDropDownList" [value]="item.ID">
+                                {{item.Name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="model.DependedDropDownValueID" *ngIf="hideShowSecondDropDown" (change)="DTDDChange()">
+                            <option *ngFor="let item of DepDropdownValuesList" [value]="item.ID">
+                                {{item.Value}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="PaginationList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+

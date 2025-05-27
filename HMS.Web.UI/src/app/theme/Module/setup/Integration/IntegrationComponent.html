@@ -1,0 +1,199 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Integration
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+        </div>
+    </div>
+    <div class="Cardview px-3 pb-3">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow p-4 h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="../../../../../assets/app/media/img/telenor-logo.png" alt="Cloudpital" style="height: 40px;" class="me-3" />
+                        <div>
+                            <h3 class="mb-1">Integration with Telenor</h3>
+                            <p class="text-muted small mb-1">
+                                Integration with Telenor enhances EasyHMS by enabling seamless communication between hospital systems and patients. It supports automated messaging for appointment reminders and improving patient engagement, operational efficiency, and overall service delivery.
+                            </p>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled mb-4">
+                        <li><strong>User Name:</strong> {{ SMSModel.UserName }}</li>
+                        <li>
+                            <strong>Password:</strong> {{ '*'.repeat(SMSModel.Password?.length || 0) }}
+                        </li>
+                        <li><strong>Masking:</strong> {{ SMSModel.Masking }}</li>
+                    </ul>
+                    <div *ngIf="SMSModel.ID == 0">
+                        <button class="btn btn-primary" (click)="openSMSModel(adSMS)">Add</button>
+                    </div>
+                    <div *ngIf="SMSModel.IsActive==false && SMSModel.ID!=0">
+                        <button class="btn btn-primary" *ngIf="ControlRights.EditRights"(click)="SmsActivate()">Activate</button>
+                    </div>
+                    <div *ngIf="SMSModel.IsActive==true">
+                        <button class="btn btn-primary"*ngIf="ControlRights.EditRights" (click)="SmsDectivate()">Dectivate</button>
+                        <button class="btn btn-primary" (click)="openSMSModel(adSMS)">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow p-4 h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="../../../../../assets/app/media/img/gmail_logo.png" alt="Cloudpital" style="height: 40px;" class="me-3" />
+                        <div>
+                            <h3 class="mb-1">Integration with Email</h3>
+                            <p class="text-muted small mb-1">
+                                Integration with Gmail enhances EasyHMS by enabling seamless communication between hospital systems and patients. It supports automated messaging for appointment reminders and improving patient engagement, operational efficiency, and overall service delivery.
+                            </p>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled mb-4">
+                        <li><strong>Email:</strong> {{ EmailModel.UserName }}</li>
+                        <li>
+                            <strong>Password:</strong>  {{ '*'.repeat(EmailModel.Password?.length || 0) }}
+                        </li>
+                        <li><strong>SMTP:</strong> {{ EmailModel.SMTP }}</li>
+                        <li><strong>Port No:</strong> {{ EmailModel.PortNo }}</li>
+                    </ul>
+                    <div *ngIf="EmailModel.ID==0">
+                        <button class="btn btn-primary" (click)="openEmailModel(adEmail)">Add</button>
+                    </div>
+                    <div *ngIf="EmailModel.IsActive==false && EmailModel.ID!=0">
+                        <button class="btn btn-primary" *ngIf="ControlRights.EditRights" (click)="EmailActivate()">Activate</button>
+                    </div>
+                    <div *ngIf="EmailModel.IsActive==true">
+                        <button class="btn btn-primary"*ngIf="ControlRights.EditRights" (click)="EmailDectivate()">Dectivate</button>
+                        <button class="btn btn-primary" (click)="openEmailModel(adEmail)">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #adSMS let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title"> Activating Telenor Integration</h4>
+        <span type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <i class="icon icon-cross"></i>
+        </span>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="UserName" class="form-label text-danger">User Name</label>
+                <input type="text"
+                       id="UserName"
+                       class="form-control"
+                       formControlName="UserName"
+                       [(ngModel)]="model.UserName"
+                       placeholder="Enter user name" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Password" class="form-label text-danger">Password</label>
+                <input type="text"
+                       id="Password"
+                       class="form-control"
+                       formControlName="Password"
+                       [(ngModel)]="model.Password"
+                       placeholder="Enter password" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Masking" class="form-label text-danger">Masking</label>
+                <input type="text"
+                       id="Masking"
+                       class="form-control"
+                       formControlName="Masking"
+                       [(ngModel)]="model.Masking"
+                       placeholder="Enter masking" />
+            </div>
+            <input type="hidden" formControlName="Type" [value]="T" />
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="ControlRights.CreateRights && model.IsActive==false">
+                Save
+            </button>
+            <button type="submit" class="btn btn-primary" *ngIf="ControlRights.EditRights && model.IsActive==true">
+                Update
+            </button>
+        </div>
+    </form>
+
+</ng-template>
+<ng-template #adEmail let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title"> SMTP Configuration</h4>
+        <span type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <i class="icon icon-cross"></i>
+        </span>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="Email" class="form-label text-danger">Email</label>
+                <input type="text"
+                       id="Email"
+                       class="form-control form-control-sm"
+                       formControlName="UserName"
+                       [(ngModel)]="model.UserName"
+                       placeholder="Enter email" />
+            </div>
+            <div class="mb-3">
+                <label for="Password" class="form-label text-danger">Password</label>
+                <input type="text"
+                       id="Password"
+                       class="form-control form-control-sm"
+                       formControlName="Password"
+                       [(ngModel)]="model.Password"
+                       placeholder="Enter password" />
+            </div>
+
+            <div class="mb-3">
+                <label for="SMTP" class="form-label text-danger">Email SMTP</label>
+                <input type="text"
+                       id="SMTP"
+                       class="form-control form-control-sm"
+                       formControlName="SMTP"
+                       [(ngModel)]="model.SMTP"
+                       placeholder="Enter SMTP" />
+            </div>
+
+            <div class="mb-3">
+                <label for="PortNo" class="form-label text-danger">Port No</label>
+                <input type="text"
+                       id="PortNo"
+                       class="form-control form-control-sm"
+                       formControlName="PortNo"
+                       [(ngModel)]="model.PortNo"
+                       placeholder="Enter port number" />
+            </div>
+        </div>
+        <input type="hidden" formControlName="Type" [value]="E" />
+
+        <div class="modal-footer">
+            <button type="submit"
+                    class="btn btn-primary"
+                    *ngIf="ControlRights.CreateRights && model.IsActive==false">
+                Save
+            </button>
+            <button type="submit"
+                    class="btn btn-primary"
+                    *ngIf="ControlRights.EditRights && model.IsActive==true">
+                Update
+            </button>
+        </div>
+    </form>
+
+</ng-template>
+

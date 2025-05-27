@@ -1,0 +1,202 @@
+﻿<div class="tab-pane" id="Vitals">
+    <div class="row">
+        <div class="col">
+            <div class="tab-pane active" id="Vitals">
+                <div class="text-right mb-2" *ngIf="VitalRights.CreateRights">
+                    <button class="btn btn-danger btn-sm" (click)="OpenVitalModal(VitalModal)"><i class="icon icon-pulse"></i> Add Vitals </button>
+                </div>
+                <div class="TableView">
+                    <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+                        <div class="uk-overflow-container col-sm-12 p-0">
+                            <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                                <thead class="grid-header">
+                                    <tr>
+                                        <th>
+                                            Taken By
+                                        </th>
+                                        <th>
+                                            Date
+                                        </th>
+                                        <th>
+                                            Temperature
+                                        </th>
+                                        <th>
+                                            Weight
+                                        </th>
+                                        <th>
+                                            Height
+                                        </th>
+                                        <th>
+                                            BP
+                                        </th>
+                                        <th>
+                                            SPO2
+                                        </th>
+                                        <th>
+                                            Heart Rate
+                                        </th>
+                                        <th>
+                                            Respiratory Rate
+                                        </th>
+                                        <th>
+                                            Delete
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of VitalList">
+                                        <td>{{item.TakenBy}}</td>
+                                        <td>
+                                            {{item.DateRecorded |date: 'MM/dd/yyyy'}}
+                                        </td>
+                                        <td>
+                                            {{item.Temperature}}
+                                        </td>
+                                        <td>
+                                            {{item.Weight}}
+                                        </td>
+                                        <td>
+                                            {{item.Height }}
+                                        </td>
+                                        <td>
+                                            {{item.BP}}
+                                        </td>
+                                        <td>
+                                            {{item.SPO2}}
+                                        </td>
+                                        <td>
+                                            {{item.HeartRate}}
+                                        </td>
+                                        <td>
+                                            {{item.RespiratoryRate}}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="VitalRights.DeleteRights">
+                                                <i class="icon icon-trash2 text-danger"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                    <tr [hidden]="!(VitalList.length == 0)" style="background:#fff;">
+                                        <td [attr.colspan]="10" align="center">
+                                            <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                            <strong class="nodateFound">No record found</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+
+                            </table>
+                        </div>
+                        <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                        <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                            <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                                <a (click)="selectPage(page)">
+                                    {{page}}
+                                </a>
+                            </li>
+                            <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #VitalModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            Add Vital Detail
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="VitalSaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Date Recorded</label>
+                </div>
+                <div class="col-4">
+                    <Datetime-Component formControlName="DateRecorded" placeholder="DD/MM/YYYY" [(ngModel)]="VitalModel.DateRecorded">
+                    </Datetime-Component>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control time" formControlName="TimeRecorded" [(ngModel)]="VitalModel.TimeRecorded" (click)="SelectTime()" id="TimeRecorded" autocomplete="off">
+
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Temperature </label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="Temperature" [(ngModel)]="VitalModel.Temperature" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Weight/Height</label>
+                </div>
+                <div class="col-4">
+                    <input class="form-control" placeholder="Weight in KG" type="number" formControlName="Weight" [(ngModel)]="VitalModel.Weight" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </div>
+                <div class="col-4">
+                    <input class="form-control" placeholder="Height in Feet" type="number" formControlName="Height" [(ngModel)]="VitalModel.Height" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </div>
+            </div>
+            <hr />
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>BP </label>
+                </div>
+                <div class="col-4 no-wrap align-items-center">
+                    <input type="text" class="form-control form-control-sm" formControlName="Measure" [(ngModel)]="VitalModel.Measure" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                </div>
+                <div class="col-4 no-wrap align-items-center">
+                    <input type="text" class="form-control" formControlName="Measure2" [(ngModel)]="VitalModel.Measure2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>SPO2  </label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="SPO2" [(ngModel)]="VitalModel.SPO2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Heart Rate   </label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="HeartRate" [(ngModel)]="VitalModel.HeartRate" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>  Respiratory Rate   </label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" formControlName="RespiratoryRate" [(ngModel)]="VitalModel.RespiratoryRate" />
+                </div>
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </form>
+</ng-template>

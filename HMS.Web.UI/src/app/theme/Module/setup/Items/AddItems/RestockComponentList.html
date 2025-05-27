@@ -1,0 +1,23 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="backBtn">
+                <a routerLink="/home/Item"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+            </div>
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Restock
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="Cardview search_onTop px-3 pt-0">
+        <div class="TableView">
+            <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="ItemList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+
+

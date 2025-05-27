@@ -1,0 +1,158 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Items
+                    </h3>
+                </div>
+                <div class="col">
+                    <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="RefreshList('')" maxlength="30" aria-describedby="basic-addon1" />
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
+                            <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                {{item.Value}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">            
+            <a class="btn btn-danger btn-md ml-1"*ngIf="ImportControlRights.CreateRights" routerLink="/home/ImportItem">Import Item</a>
+            <a class="btn btn-danger btn-md" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Item</a>
+            <a class="btn btn-danger btn-md ml-1"*ngIf="RestockControlRights.ViewRights" routerLink="/home/Restock">Restock Item</a>
+            <a class="btn btn-danger btn-md ml-1"*ngIf="ExpireControlRights.ViewRights" routerLink="/home/Expire">Near to Expire</a>
+        </div>
+    </div>
+    <div class="Cardview px-3 pb-3">
+        <div class="TableView">
+            <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                <div class="uk-overflow-container col-sm-12 p-0">
+                    <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                        <thead class="grid-header">
+                            <tr>
+                                <th>Name </th>
+                                <th> Group </th>
+                                <th>Code</th>
+                                <th>Rate</th>
+                                <th>Usage Unit</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of ItemList" index as i>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Name}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Group}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Code}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.CostPrice}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Unit}}
+                                </td>
+                                <td (click)="OpenStockModel(item.ID,StockModel)">
+                                    {{item.Stock}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Status}}
+                                </td>
+                            </tr>
+                            <tr [hidden]="!(ItemList.length == 0)" style="background:#fff;">
+                                <td [attr.colspan]="10" align="center">
+                                    <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                    <strong class="nodateFound">No record found</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                    <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                        <a (click)="selectPage(page)">
+                            {{page}}
+                        </a>
+                    </li>
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #StockModel let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon" />
+            ItemStock List
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="TableView">
+        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+            <div class="uk-overflow-container col-sm-12 p-0">
+                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                    <thead class="grid-header">
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Rate
+                            </th>
+                            <th>
+                                Usage Unit
+                            </th>
+                            <th>
+                                Batch Number
+                            </th>
+                            <th>
+                                Expire Date
+                            </th>
+                            <th>
+                                Stock
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of ItemStockList">
+                            <td>{{item.Name}}</td>
+                            <td>
+                                {{item.CostPrice}}
+                            </td>
+                            <td>
+                                {{item.Unit}}
+                            </td>
+                            <td>
+                                {{item.BatchSarialNumber}}
+                            </td>
+                            <td>
+                                {{item.ExpiredWarrantyDate|date: 'dd/MM/yyyy' }}
+                            </td>
+                            <td>
+                                {{item.Stock }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</ng-template>
+
+

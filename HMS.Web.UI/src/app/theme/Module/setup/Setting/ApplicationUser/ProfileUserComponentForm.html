@@ -1,0 +1,355 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Profile
+                    </h3>
+                </div>
+            
+            </div>
+            
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <span class="closeICon" routerLink="/home/setup" tabindex="0" ng-reflect-router-link="/home/Prescription"><svg xml:space="preserve" class="icon icon-sm" id="Layer_1" version="1.1" viewBox="0 0 512 512" x="0" xmlns="http://www.w3.org/2000/svg" y="0"><path d="M455.2 9.2L256 208.4 56.8 9.2C44.5-3.1 24.6-3.1 12.2 9.2l-2.9 2.9C-3 24.4-3 44.4 9.3 56.7L208.4 256 9.2 455.2c-12.3 12.3-12.3 32.3 0 44.6l2.9 2.9c12.3 12.3 32.3 12.3 44.6 0L256 303.6l199.2 199.2c12.3 12.3 32.3 12.3 44.6 0l2.9-2.9c12.3-12.3 12.3-32.3 0-44.6L303.6 256 502.8 56.8c12.3-12.3 12.3-32.3 0-44.6l-2.9-2.9c-12.5-12.4-32.4-12.4-44.7-.1z"></path></svg></span>
+            
+        </div>
+    </div>
+
+    <div>
+        <div class="Cardview search_onTop px-2">
+            <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                <div class="row pt-4">
+                    <div class="col-sm-6">
+
+
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+
+                                <label>Email*</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <input type="text" formControlName="Email" [(ngModel)]="model.Email" [attr.disabled]="model.ID" class="form-control" maxlength="250">
+                                    <small *ngIf="Form1.controls.Email.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                    <small *ngIf="Form1.controls.Email.hasError('pattern') && !Form1.controls.Email.hasError('required')">
+                                        Please enter valid email.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Password</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input class="form-control md-input" id="password-field" type="password" formControlName="Pwd" [(ngModel)]="model.Pwd" maxlength="1000" placeholder="Password">
+
+                                        <span class="input-group-addon">
+                                            <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                        </span>
+                                    </div>
+
+                                    <small *ngIf="Form1.controls.Pwd.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                    <small *ngIf="Form1.controls.Pwd.hasError('minlength') && !Form1.controls.Pwd.hasError('required')">
+                                        At least 6 chracters
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Phone Number*</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+
+                                    <input type="text" formControlName="PhoneNo" [(ngModel)]="model.PhoneNo" class="form-control" maxlength="50">
+                                    <small *ngIf="Form1.controls.PhoneNo.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+
+                                    <input type="text" formControlName="Name" [(ngModel)]="model.Name" class="form-control" maxlength="250">
+                                    <small *ngIf="Form1.controls.Name.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Role *</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <select formControlName="RoleID" [(ngModel)]="model.adm_user_company[0].RoleID" [attr.disabled]="IsAdmin == true ? true : null" class="form-control" (change)="onRoleChange($event.target.value)">
+                                        <option *ngFor="let item of RoleList" [value]="item.ID">
+                                            {{item.RoleName}}
+                                        </option>
+                                    </select>
+
+                                    <small *ngIf="Form1.controls.RoleID.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Gender</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="GenderList" [texts]="ColumnTexts" [settings]="ColumnSettings" formControlName="GenderDropdown" [(ngModel)]="model.GenderDropdown"></ss-multiselect-dropdown>
+
+                                    <small *ngIf="Form1.controls.GenderDropdown.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+
+                    <div class="col-sm-5">
+                        <div class="img-box">
+                            <div class="col-sm-12" *ngIf="model.UserImage!=''">
+                                <img [src]="UserProfileImage" class="Img_upload" />
+                            </div>
+                            <File-Component class="UploadActnWrap" [(ngModel)]="model.UserImage" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="IsDoctor">
+                    <div class="col-sm-12">
+                        <hr>
+                    </div>
+                    <div class="col-sm-6">
+
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Duration *</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+
+                                    <input type="text" formControlName="SlotTime" [(ngModel)]="model.SlotTime" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <small *ngIf="Form1.controls.SlotTime.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row multiSelect">
+                            <div class="col-sm-4 text-right">
+                                <label>Off Day</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+
+                                    <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="WorkingdayList" [texts]="ColumnTexts" [settings]="ColumnSettings" formControlName="DocWorkingDay" [(ngModel)]="model.DocWorkingDay"></ss-multiselect-dropdown>
+                                    <small *ngIf="Form1.controls.DocWorkingDay.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-sm-4 text-right">
+                                <label> IsActive </label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <input type="checkbox" formControlName="IsActivated" [(ngModel)]="model.IsActivated" />
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-sm-4 text-right">
+                                <label> Overlapping </label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+
+                                    <input type="checkbox" formControlName="IsOverLap" [(ngModel)]="model.IsOverLap" />
+                                    <label class="ml-2">
+                                        Allow ?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Start Time</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+
+                                    <input type="time" formControlName="AppStartTime" [(ngModel)]="model.AppStartTime" class="form-control time" value="00:00">
+
+                                    <small *ngIf="Form1.controls.AppStartTime.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>End Time</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+
+                                    <input type="time" formControlName="AppEndTime" [(ngModel)]="model.AppEndTime" class="form-control time">
+
+                                    <small *ngIf="Form1.controls.AppEndTime.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Qualification</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+
+                                    <input type="text" formControlName="Qualification" [(ngModel)]="model.Qualification" class="form-control">
+                                    <small *ngIf="Form1.controls.Qualification.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Designation</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <input type="text" formControlName="Designation" [(ngModel)]="model.Designation" class="form-control">
+                                    <small *ngIf="Form1.controls.Designation.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Specialty</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <select formControlName="SpecialtyId" [(ngModel)]="model.SpecialtyId" class="form-control">
+                                        <option *ngFor="let item of SpecialtyList" [value]="item.id">
+                                            {{item.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+                                <label>Footer</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <input type="text" formControlName="RepotFooter" [(ngModel)]="model.RepotFooter" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-right">
+
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <span class="mr-5 ml-4">
+                                        <input type="radio" class="custom-control-input" name="Type" id="Type" value="R" formControlName="Type" [(ngModel)]="model.Type">
+                                        <label class="custom-control-label" for="Type">Resident </label>
+                                    </span>
+                                    <input type="radio" class="custom-control-input" name="Type" id="Type1" value="V" formControlName="Type" [(ngModel)]="model.Type">
+                                    <label class="custom-control-label" for="Type1">Visiting</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="RxPrintModal TemplateTwo templateView float-right">
+                            <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
+                                <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
+                                    <div class="col-8">
+                                        <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;"> {{model.Name}} </h3>
+                                        <p style="margin:0 0 5px;font-size:14px;line-height: normal;">{{model.Qualification}}{{model.Designation}}</p>
+                                        <strong style="margin:0;font-size:13px;line-height: normal;">
+                                            {{model.Designation}}
+                                        </strong>
+                                        <p style="margin: 0; font-size: 14px; line-height: normal;">Ph: {{model.PhoneNo}}</p>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 70px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body body_Prescription" style="height: 285px;">
+                            </div>
+                            <div class="modal-footer bg-secondary" style="padding: 5px 0 0px;text-align:center;">
+                                <div class="col">
+                                    <p style="font-size: 13px;margin-bottom:0px; border-bottom:1px solid #efefef;">{{model.RepotFooter}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row mt-5 mb-5">
+                    <div class="col-sm-12 text-right">
+                        <button id="saveSchedule" type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-light ml-1" routerLink="/home/setup">Cancel</button>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    
+</div>
+
+
+
+
+
+

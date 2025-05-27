@@ -1,0 +1,144 @@
+<div class="container-fluid body-content mt-bodycontent" id="main-container">
+    <div class="row">
+        <div class="UserAtentWrap col-sm-12 no-padding">
+            <div class="row loginRow">
+
+                <div class="col-sm-6 text-center hidden-xs loginRightContent" id="loginRightContent">
+                   
+                    <div class="SiteImage"> </div>
+                </div>
+                <div class="col-sm-6 shadow-box-t-border loginLeftContent" id="loginLeftContent" *ngIf="!IsSiginSocialShow">
+                    <div class="loginLeftContentWraper">
+
+                        <div class="col-sm-12">
+                            <h2 style="font-weight:bold;">Welcome To <span class="text-primary">
+                                HMS
+                            </span> </h2>
+                        </div>
+
+                        <div class="col-sm-12 text-center">
+                            <h5 id="lblError" style="visibility:hidden;padding:0px; height: 0px;" class="text-danger">Error</h5>
+                        </div>
+                        <div class="col-sm-12 padding-b-10 padding-t-15 text-gray">
+                            <form [formGroup]="Form1" novalidate (ngSubmit)="login(Form1.valid)" action="" class="ng-pristine ng-valid">
+                                <div class="row] no-margin">
+                                    <div class="col-sm-12 no-padding form-group font-14">
+
+                                        <div class="hellouserInput">
+                                            <label>Email Address</label>
+                                            <input class="form-control md-input" formControlName="Email" type="text" maxlength="250" placeholder="user@..." [(ngModel)]="model.Email" tabindex="1">
+                                            <small *ngIf="Form1.controls.Email.hasError('pattern') && !Form1.controls.Email.hasError('required')">
+                                                Please enter valid email.
+                                            </small>
+                                            <small *ngIf="Form1.controls.Email.hasError('required') && submitted">
+                                                This value is required.
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 no-padding form-group font-14 forgotPasswordWraper">
+                                        <label>Password</label>
+                                        <label class="form- pull-right">
+                                            <a class="btn-link" [routerLink]="['/forgotpassword']">Forgot Password</a>
+                                        </label>
+
+                                        <input class="form-control md-input margin-b-10" type="password" formControlName="Pwd" [(ngModel)]="model.Pwd" maxlength="1000" placeholder="******" tabindex="2">
+                                        <small *ngIf="Form1.controls.Pwd.hasError('required') && submitted">
+                                            This value is required.
+                                        </small>
+                                        <small *ngIf="Form1.controls.Pwd.hasError('minlength') && !Form1.controls.Pwd.hasError('required')">
+                                            At least 6 chracters
+                                        </small>
+                                    </div>
+                                    <div class="col-sm-7 no-padding">
+
+                                    </div>
+                                    <div class="col-sm-5 no-padding form-group">
+
+                                        <button class="btn btn-blue margin-t-10 {{LoaderClass}}" tabindex="3"> <span>SIGN IN</span></button>
+
+                                    </div>
+
+                                 
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-6  shadow-box-t-border" id="loginLeftContent" *ngIf="IsSiginSocialShow">
+                    <div class="col-sm-12 text-center">
+                        <h5 id="lblError" style="visibility:hidden" class="text-danger">Error</h5>
+                    </div>
+                    <div class="col-sm-12 text-center">
+                        <span *ngIf="PayrollRegion=='PK'">
+                            <a href="https://www.HMS.com/">
+                                <img class="nav-logo" src="assets\app\media\img\HMS.png" alt="Alternate Text">
+                            </a>
+                        </span>
+                       
+                        <p class="font-12 text-color-lightgray margin-t-10">
+                            <img src="assets\app\media\img\jobee.png" alt="Alternate Text" style="height:25px;margin-top: -5px;"> Sign in with your HMS.com account
+                        </p>
+                    </div>
+                    <form [formGroup]="Form2" novalidate (ngSubmit)="SaveOrUpdate(Form2.valid)" action="" class="ng-pristine ng-valid">
+                        <div class="col-sm-12 margin-b-20 margin-t-20">
+                            <div class="form-group">
+                                <p class="font-14">
+                                    You don't have
+                                    <a href="#">
+                                        <span *ngIf="PayrollRegion=='PK'">
+                                            HMS.com
+                                        </span>
+                                    </a> local account. Please provide given information.
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control md-input" type="text" placeholder="Name" maxlength="100" formControlName="Name" [(ngModel)]="model.Name">
+                                <small *ngIf="Form2.controls.Name.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                                <small *ngIf="!Form2.controls.Name.valid && submitted && !Form2.controls.Name.hasError('required')">
+                                    Only Alphabets Required
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control md-input" type="text" formControlName="PhoneNo" placeholder="Phone No" minlength="10" maxlength="50"
+                                       [(ngModel)]="model.PhoneNo">
+                                <small *ngIf="Form2.controls.PhoneNo.hasError('required') && submitted ">
+                                    This value is required.
+                                </small>
+                                <small *ngIf="Form2.controls.PhoneNo.hasError('pattern') && submitted">
+                                    Please enter only number.
+                                </small>
+                                <small *ngIf="Form2.controls.PhoneNo.hasError('minlength') && !Form2.controls.PhoneNo.hasError('pattern')">
+                                    At least 10 chracters
+                                </small>
+                                <small *ngIf="Form2.controls.PhoneNo.hasError('maxlength') && !Form2.controls.PhoneNo.hasError('pattern')">
+                                    Not more than 20 chracters
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control md-input" formControlName="Email" type="text" maxlength="250" placeholder="Email" [(ngModel)]="model.Email">
+                                <small *ngIf="Form2.controls.Email.hasError('pattern') && !Form2.controls.Email.hasError('required')">
+                                    Please enter valid email.
+                                </small>
+                                <small *ngIf="Form2.controls.Email.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                            <div class="form-group padding-l-100 padding-r-100 margin-t-40 margin-b-40">
+                                <button class="btn btn-danger form-control" type="submit" style="background:#FF4D4D;border-radius:2px;">Continue</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+</div>

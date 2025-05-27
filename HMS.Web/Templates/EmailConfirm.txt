@@ -1,0 +1,44 @@
+﻿<html>
+   <body>
+      <div style="max-width:201px;"><img alt="HMS" src = "https://app.HMS.com/ServiceApi/assets/img/HMS.png" style="width: 120px; max-width: 120px; max-height: 46px;"/></div>
+ <table border="0" cellpadding="0" cellspacing="0" width="100%">
+   <tbody>
+      <tr>
+         <td style="padding:20px 0 0 0; color: #222; font-size:18px;line-height:48px;font-family:Open Sans,Trebuchet MS,sans-serif">
+           <strong>Dear [[UserName]],</strong>
+         </td>
+      </tr>
+	  <tr>
+         <td style='padding:10px 0 0 0;font-size:14px;line-height:24px;font-family:Open Sans,Trebuchet MS,sans-serif'>
+           <p style="font-size:14px;">Thank you for signing up with HMS, to activate your new account, please click on the following link: <br>
+            <a style="background: #1367cd; font-size: 14px; color: #fff; padding: 10px 13px; text-decoration: none; border-radius: 3px; margin: 25px auto 15px; display: block; max-width: 230px; text-align: center;" href="[[tokenLink]]">Verify HMS Account</a>
+           </p>
+         </td>
+      </tr>
+      <tr>
+         <td style="padding:10px 0 0 0;font-size:14px;line-height:24px;font-family:Open Sans,Trebuchet MS,sans-serif">
+           <p style="font-size:14px;">If you are unable to click on the above link, then please copy and paste following URL in your browser:</p>
+           <p><a href="#"  style="text-decoration: none; color:#333;">[[TokenLinkForShowTotalLink]]</a></p>
+         </td>
+      </tr>
+   </tbody>
+</table>
+<div>
+   <p>
+   </p>
+   <p style="padding:0; margin:0px;font-size:14px; font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;">Regards,</p>
+   <p style="padding:0; margin:0px;font-size:14px; font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;">HMS Team</p>
+   <p style="padding:0; margin:0px;font-size:14px;font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;"><a target="_blank" href="https://www.HMS.com/" style="text-decoration: none;color:#2696eb; ">www.HMS.com</a></p>
+   <p></p>
+   <p style="padding:0px 0 0px 0;font-size:14px;line-height:24px;font-family:Open Sans,Trebuchet MS,sans-serif;margin-bottom: 7px;">
+      <a style="color:#2696eb;text-decoration:none" href="mailto:support@HMS.pk" target="_blank">Contact us</a> for any queries.        <span class="mobile-link--footer">Office: <a href="tel:+92-333-3331225" style="font-family:Open Sans,Trebuchet MS,sans-serif; color: #333; text-decoration: none;">+92-333-3331225</a></span>                  
+   </p>
+   <div>
+      <a target="_blank" href="https://www.HMS.com/" style="text-decoration: none;color:#757575; font-size:14px;font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;"><img alt="HMS" style="display: inline-block; max-width: 14px; position: relative; top: 2px;" src="https://hms.com/assets/img/md-images/ic_place_black_24dp.png"> office (PK): 384 E, Johar Town Lahore, Pakistan
+      </a>
+   </div>
+</div>
+<p style="text-align: center;color: #ccc;font-family:Open Sans,Trebuchet MS,sans-serif;">© 2020 HMS, All rights reserved | powered by <a style="color:#ccc;font-size:14px;" href="https://www.HMS.com/">www.HMS.com</a></p>
+      <br/>
+   </body>
+</html>

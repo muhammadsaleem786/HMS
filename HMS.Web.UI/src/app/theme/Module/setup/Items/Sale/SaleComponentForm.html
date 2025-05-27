@@ -1,0 +1,546 @@
+﻿<div class="margin-t-68 col-sm-12" style="margin-bottom:100px;">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block">
+                Sale Register
+                <a routerLink="/home/Sale"><i class="fa fa-arrow-circle-left"></i></a>
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <span class="closeICon" routerLink="/home/Sale">
+            </span>
+        </div>
+    </div>
+    <section>
+        <div class="row pb-2 border-bottom">
+            <div class="col-md-5">
+                <header>
+                    <div class="title">
+                        <h3>Sale Register</h3>
+                    </div>
+                </header>
+            </div>
+            <div class="col-sm-7 text-right">
+                <span><a routerLink="/home/Sale" class="btn btn-light">Invoices</a></span>
+                <span (click)="SaleOnHold()"><a class="btn btn-light" id="holdBtn">Hold</a></span>
+                <span (click)="SaleHoldDelete()"><a class="btn btn-light" id="SaleholdBtn">Sales on hold</a></span>
+                <span><a routerLink="/home/Sale" class="btn btn-light">Sales Return</a></span>
+                <span (click)="Clear()"><a class="btn btn-light">Clear</a></span>
+                <span (click)="CommingSoon()"><a class="btn btn-light">Cash Managment</a></span>
+            </div>
+        </div>
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+            <div class="row">
+                <div class="col-md-7 pt-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg" id="itemSearchBarcode" placeholder="Start scanning" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="itemSearch" formControlName="ItemName" [(ngModel)]="model.ItemName" class="form-control form-control-lg form-control-alternative" (click)="LoadSearchableDropdown()" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" placeholder="Start typing to search" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-4 col-lg-3 col mb-3 category_card_item"
+                             *ngFor="let item of CategoryList"
+                             (click)="(IsRefund == false && model.SaleTypeID != 2) ? null:loadItem(item.ID)">
+                            <div class="card text-center">
+                                <div class="card-body categories" style="cursor:pointer;">{{item.Value}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 pt-3 card_sideBar">
+                    <div>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control form-control-lg ui-autocomplete-input" id="customerSearch" [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName" (click)="LoadPatentSearchableDropdown()" placeholder="Select customer" autocomplete="off">
+                            <span class="input-group-append" data-toggle="modal" data-target="#CustomerModal" id="newCustBtn" (click)="openNewPatient(content)">
+                                <span class="input-group-text"> <i class="fa fa-plus"> </i>Add New</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="table-responsive carttable">
+                        <table class="table table-hover" style="table-layout: fixed; width: 100%;">
+                            <colgroup>
+                                <col style="width: 20%;">
+                                <col style="width: 15%;"> <!-- Qty column -->
+                                <col style="width: 15%;">
+                                <col style="width: 15%;">
+                                <col style="width: 15%;">
+                                <col style="width: 10%;">
+                                <col style="width: 10%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Disc.Type</th>
+                                    <th>Disc.Amt</th>
+                                    <th>Amount</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let dynamic of Sale_itemdynamicArray; let i = index;">
+                                    <td>
+                                        {{dynamic.ItemName}}
+                                        <label>({{dynamic.TypeValue}} {{dynamic.BatchSarialNumber}})</label>
+                                    </td>
+                                    <td style="width:30%">
+                                        <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Quantity" (change)="QuantityChange(i,dynamic.Quantity,dynamic.ItemID)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Rate" (change)="RateChange(i,dynamic.Rate)" readonly="readonly" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-right input-sm text-" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Discount" (change)="DiscountValue(dynamic.Discount,i)" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                        <select class="form-control input-medium-select" (change)="changeDiscountType($event.target.value,i)" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.DiscountType" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true">
+                                            <option *ngFor="let item of DiscountTypeList" [value]="item.id">
+                                                {{item.Name}}
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        {{dynamic.DiscountAmount}}
+                                    </td>
+                                    <td>
+                                        {{dynamic.TotalAmount}}
+                                    </td>
+                                    <td class="relative">
+                                        <a class="btn dropdown-item" (click)="RemoveRow(i)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row mx-0 pb-2">
+                        <div class="col-sm-6">
+                            <span>Subtotal</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <h3 class="float-right">{{SubTotal}}</h3>
+                        </div>
+                    </div>
+                    <div class="row  mx-0 py-2 border-top">
+                        <div class="col-sm-6">
+                            <span>Discount</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control text-right input-sm text-" formControlName="Discount" [(ngModel)]="model.Discount" (change)="OverAllDiscountValue(model.Discount)" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                            <select class="form-control input-medium-select" (change)="changeOverAllDiscountType($event.target.value)" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" formControlName="DiscountType" [(ngModel)]="model.DiscountType">
+                                <option *ngFor="let item of DiscountTypeList" [value]=item.id>
+                                    {{item.Name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row  mx-0 py-2 border-top">
+                        <div class="col-sm-6">
+                            <span>Tax</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <h3 class="float-right">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-3 pay_button">
+                        <button *ngIf="((this.model.SaleTypeID!=2 && this.model.ID==0)||this.IsRefund) && ControlRights.CreateRights" type="button" (click)="PaymentSave()" class="btn btn-lg btn-primary btn-block"><span>Pay </span> <span>{{Total}}</span></button>
+                        <button *ngIf="this.IsRefund==false && this.model.SaleTypeID!=2" type="submit" class="btn btn-lg btn-primary btn-block"><span>Return </span> <span>{{Total}}</span></button>
+                        <div class="btn btn-lg btn-primary btn-block" (click)="PrintRxform(Form1.valid)">
+                            <span>Print And Pay </span> <span>{{Total}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>
+<!--invoice popu-->
+<ng-template #InvoicePopup let-modal class="PatientModal">
+    <div class="modal-header PatientModal">
+        <h4 class="modal-title" id="modal-basic-title">
+            <img src="../assets/app/media/img/icons/addpatient.png" class="img-fluid icon">
+            Invoice
+        </h4>
+        <button type="button" #closeModal class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="row form-group">
+                    <div class="col-4 text-right">
+                        <label class="form-control-label mt-2 pl-0" for="input-username"> Payable Amount </label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" [(ngModel)]="PayableAmount" [ngModelOptions]="{standalone:true}" class="form-control form-control-sm form-control-alternative" readonly="readonly" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-4 text-right">
+                        <label class="form-control-label mt-2 pl-0" for="input-username"> Payment </label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" [(ngModel)]="Payment" [ngModelOptions]="{standalone:true}" (keyup)="calculatePaymentAmount()" class="form-control  form-control-alternative" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-4 text-right">
+                        <label class="form-control-label mt-2 pl-0" for="input-username"> Change  </label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" [(ngModel)]="Change" [ngModelOptions]="{standalone:true}" (keyup)="calculateChangeAmount()" class="form-control  form-control-alternative" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-4 text-right">
+                        <label class="form-control-label mt-2 pl-0" for="input-username"> Received Amount  </label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" [(ngModel)]="ReceivedAmount" [ngModelOptions]="{standalone:true}" readonly="readonly" class="form-control  form-control-alternative" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="SavePopupInvice()">Save</button>
+    </div>
+</ng-template>
+<!--Item category popu-->
+<ng-template #ItemCategory let-modal class="ItemCategoryModal">
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            Item List
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="col">
+        <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
+    </div>
+    <div class="TableView">
+        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+            <div class="uk-overflow-container col-sm-12 p-0">
+                <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                    <thead class="grid-header">
+                        <tr>
+                            <th>Item Name </th>
+                            <th>Batch Number</th>
+                            <th>Expired Date</th>
+                            <th> Stock </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of ItemCategoryList" index as i (click)="SelectBatchAndSerialItem(item.ID,item.BatchSarialNumber)">
+                            <td>
+                                {{item.Name}}
+                            </td>
+                            <td>{{item.BatchSarialNumber}}</td>
+                            <td>{{item.ExpiredWarrantyDate |date: 'dd/MM/yyyy'}}</td>
+                            <td>
+                                {{item.Stock}}
+                            </td>
+                        </tr>
+                        <tr [hidden]="!(ItemCategoryList.length == 0)" style="background:#fff;">
+                            <td [attr.colspan]="10" align="center">
+                                <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                <strong class="nodateFound">No record found</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+            <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                    <a (click)="selectPage(page)">
+                        {{page}}
+                    </a>
+                </li>
+                <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+            </ul>
+        </div>
+    </div>
+</ng-template>
+<!-- Add New Patient Modal  content -->
+<ng-template #content let-modal class="PatientModal">
+    <div class="modal-header PatientModal">
+        <h4 class="modal-title" id="modal-basic-title">
+            <img src="../assets/app/media/img/icons/addpatient.png" class="img-fluid icon">
+            Add New Patient
+        </h4>
+        <button type="button" #closeModal class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form2" novalidate (ngSubmit)="PatientSaveOrUpdate(Form2.valid)">
+        <div class="modal-body">
+
+            <div class="row">
+                <div class="col-sm-7">
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Name</label>
+                        </div>
+                        <div class="col-8 d-flex">
+                            <select class="form-control form-control-sm" style="max-width:100px;" formControlName="PrefixTittleId" [(ngModel)]="Patientmodel.PrefixTittleId">
+                                <option *ngFor="let item of TittleList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <input type="text" id="" formControlName="PatientName" [(ngModel)]="Patientmodel.PatientName" class="form-control form-control-sm form-control-alternative" placeholder="Patient Name">
+                            <small class="text-danger" *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Father/Husband</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="Father_Husband" [(ngModel)]="Patientmodel.Father_Husband" class="form-control  form-control-alternative">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required"> Age</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <input type="text" formControlName="Age" [(ngModel)]="Patientmodel.Age" (change)="AgeChange()" class="form-control  form-control-alternative" placeholder="Age">
+                                    <small class="text-danger" *ngIf="Form2.controls.Age.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                                <div class="col-sm-1 p-0 mt-2 text-center text-danger" style="right:8px;">
+                                    OR
+                                </div>
+
+                                <div class="col-sm-5 p-0">
+                                    <Datetime-Component formControlName="DOB" placeholder="DD/MM/YYYY" (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="Patientmodel.DOB">
+                                    </Datetime-Component>
+
+                                </div>
+
+                                <div class="col-2 text-right">
+                                    <label class="form-control-label mt-2 pl-0" for="input-username"> DOB</label>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Gender</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm form-control-alternative" formControlName="Gender" (change)="GenderChnage(model.Gender)" [(ngModel)]="Patientmodel.Gender">
+                                <option *ngFor="let item of GenderList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+
+                            </select>
+                            <small class="text-danger" *ngIf="Form2.controls.Gender.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> Mobile</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Mobile" [(ngModel)]="Patientmodel.Mobile" appPhoneMask class="form-control form-control-sm form-control-alternative" placeholder="Mobile">
+                            <small class="text-danger" *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Email</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Email" [(ngModel)]="Patientmodel.Email" class="form-control form-control-sm form-control-alternative" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="row form-group" *ngIf="IsCNICMandatory==false">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> CNIC</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="CNIC" [(ngModel)]="Patientmodel.CNIC" class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X">
+
+                        </div>
+                    </div>
+                    <div class="row form-group" *ngIf="IsCNICMandatory==true">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0 required" for="input-username"> CNIC</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="CNIC" [(ngModel)]="Patientmodel.CNIC" class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X">
+                            <small class="text-danger" *ngIf="Form2.controls.CNIC.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                            <small *ngIf="Form2.controls.CNIC.hasError('pattern') && !Form2.controls.CNIC.hasError('required')">
+                                CNIC No must follow the XXXXX-XXXXXXX-X format!"
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> MRNO</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="MRNO" [(ngModel)]="Patientmodel.MRNO" class="form-control form-control-sm form-control-alternative" placeholder="MRNO" readonly="readonly">
+                            <small class="text-danger" *ngIf="Form2.controls.MRNO.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Bill Type</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control  form-control-alternative" formControlName="BillTypeId" [(ngModel)]="Patientmodel.BillTypeId">
+                                <option *ngFor="let item of BillTypeList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <small class="text-danger" *ngIf="Form2.controls.Gender.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Note</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea type="text" class="form-control m-input" formControlName="Notes" [(ngModel)]="Patientmodel.Notes" placeholder="Note"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="form-group img-box">
+                        <div class="col-sm-12" *ngIf="model.Image!=''">
+                            <img [src]="PatientImage" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                        </div>
+                        <File-Component class="UploadActnWrap" [(ngModel)]="Patientmodel.Image" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</ng-template>
+<!-- ============================   Rx Print  Modal ========= -->
+<ng-template #PrintRx let-modal class="RxPrintModal TemplateTwo">
+    <div id="print-RxPrintModal">
+        <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
+            <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
+                <div class="col-6">
+                    <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;">{{PatientName}} </h3>
+
+                    <p style="margin: 0; font-size: 14px; line-height: normal;">{{CompanyInfo.CompanyName}}</p>
+                </div>
+                <div class="col-6 text-right" *ngIf="CompanyInfo.CompanyLogo != '' && CompanyInfo.CompanyLogo != null ">
+                    <img [src]="CompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+                <div class="col-6 text-right" *ngIf="CompanyInfo.CompanyLogo =='' || CompanyInfo.CompanyLogo == null ">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
+                </div>
+            </div>
+        </div>
+        <div class="modal-body body_Prescription" style="height: calc(29.7cm - 200px);">
+            <div class="row" style="border-top: 3px solid #5e72e4;height: 95%;">
+                <div class="col-9" style="border-left: 1px solid #5e72e4">
+                    <table class="table" style="margin-top: 15px;">
+                        <thead>
+                        <th style="border-top:0px; padding: 2px;">
+                            Item Name
+                        </th>
+                        <th style="border-top:0px; padding: 2px;">
+                            Qty
+                        </th>
+                        <th style="border-top:0px; padding: 2px;">
+                            Price
+                        </th>
+                        <th style="border-top:0px; padding: 2px;">
+                            Disc.Amt
+                        </th>
+                        <th style="border-top:0px; padding:0 2px 5px;">
+                            Amount
+                        </th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let m of PrintSale_itemdynamicArray">
+                                <td style="padding:2px;">{{m.ItemName}}<label>({{m.TypeValue}} {{m.BatchSarialNumber}})</label></td>
+                                <td style="padding:2px;">{{m.Quantity}}</td>
+                                <td style="padding:2px;">{{m.Rate}}</td>
+                                <td style="padding:2px;">{{m.Discount}}</td>
+                                <td style="padding:2px;">{{m.TotalAmount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row mx-0 pb-2">
+            <div class="col-sm-6">
+                <span>Subtotal</span>
+            </div>
+            <div class="col-sm-6">
+                <h3 class="float-right">{{PSubTotal}}</h3>
+            </div>
+        </div>
+        <div class="row  mx-0 py-2 border-top">
+            <div class="col-sm-6">
+                <span>Discount</span>
+            </div>
+            <div class="col-sm-6">
+                <h3 class="float-right">{{OverAllDiscountAmount}}</h3>
+            </div>
+        </div>
+
+        <div class="row  mx-0 py-2 border-top">
+            <div class="col-sm-6">
+                <span>Total</span>
+            </div>
+            <div class="col-sm-6">
+                <h3 class="float-right">{{PTotal}}</h3>
+            </div>
+        </div>
+
+    </div>
+    <div style="position:fixed; right: 20px;">
+        <button class="btn btn-primary" useExistingCss="true" printSectionId="print-RxPrintModal" ngxPrint> Print</button>
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+</ng-template>
+
+

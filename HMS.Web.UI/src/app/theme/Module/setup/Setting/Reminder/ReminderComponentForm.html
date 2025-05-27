@@ -1,0 +1,128 @@
+﻿
+<div class="margin-t-68 col-sm-12" style="margin-bottom:100px;">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block">
+                Reminder
+                <a routerLink="/home/reminder"><i class="fa fa-arrow-circle-left"></i></a>
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <span class="closeICon" routerLink="/home/reminder">
+            </span>
+        </div>
+    </div>
+    <div>
+        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+            <div class="AddNewItem margin-t-15">
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label class="required">Name</label>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" formControlName="Name" [(ngModel)]="model.Name" class="form-control input-sm">
+                    </div>
+                </div>
+                <div class="col-sm-12 no-padding">
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username">English </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <input id="IsEnglish" type="checkbox" class="" formControlName="IsEnglish" [(ngModel)]="model.IsEnglish" (click)="CheckValue('english')"  />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username">Urdu </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <input id="IsUrdu" type="checkbox" class="" formControlName="IsUrdu" [(ngModel)]="model.IsUrdu" (click)="CheckValue('urdu')" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <label class="required">Text</label>
+                        </div>
+                        <div class="col-sm-4  small-input">
+                            <textarea formControlName="MessageBody" [(ngModel)]="model.MessageBody"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 margin-top10" style="width:92%;">
+                            <table class="line-table noramal-padding margin-top10">
+                                <thead class="line-item-header">
+                                    <tr>
+                                        <th class="line-item-column" style="width:150px;"></th>
+                                        <th class="line-item-column" style="width:150px;"></th>
+                                        <th class="line-item-column" style="width:150px;"></th>
+                                        <th class="line-item-column" style="width:130px;"></th>
+                                        <th class="line-item-column" style="width:130px;"></th>
+                                    </tr>
+                                </thead>
+                                <thead>
+                                    <tr *ngFor="let dynamic of Reminder_itemdynamicArray; let i = index;">
+                                        <td>
+                                            <select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.SMSTypeId" class="form-control ItemDetail1">
+                                                <option *ngFor="let item of SMSTypeList" [ngValue]="item.ID">{{item.Value}}</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Value" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                        </td>
+                                        <td>
+                                            <select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.TimeTypeId" class="form-control ItemDetail1">
+                                                <option *ngFor="let item of TimeList" [ngValue]="item.ID">{{item.Value}}</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.BeforeAfter" class="form-control ItemDetail1">
+                                                <option *ngFor="let item of BeforeList" [ngValue]="item.id">{{item.Name}}</option>
+                                            </select>
+                                        </td>
+                                        <td class="relative">
+                                            <div class="item-actions">
+                                                <span (click)="RemoveRow(i)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon icon-sm icon-cancel-circled cursor-pointer icon-red">
+                                                        <path d="M256 32c30.3 0 59.6 5.9 87.2 17.6 26.7 11.3 50.6 27.4 71.2 48s36.7 44.5 48 71.2c11.7 27.6 17.6 56.9 17.6 87.2s-5.9 59.6-17.6 87.2c-11.3 26.7-27.4 50.6-48 71.2s-44.5 36.7-71.2 48C315.6 474.1 286.3 480 256 480s-59.6-5.9-87.2-17.6c-26.7-11.3-50.6-27.4-71.2-48s-36.7-44.5-48-71.2C37.9 315.6 32 286.3 32 256s5.9-59.6 17.6-87.2c11.3-26.7 27.4-50.6 48-71.2s44.5-36.7 71.2-48C196.4 37.9 225.7 32 256 32m0-32C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0z"></path>
+                                                        <path d="M284.3 250.3l62.3-62.3c6.2-6.2 6.2-16.2 0-22.4l-.2-.2c-6.2-6.2-16.2-6.2-22.4 0l-62.3 62.3c-3.1 3.1-8.2 3.1-11.3 0L188 165.4c-6.2-6.2-16.2-6.2-22.4 0l-.2.2c-6.2 6.2-6.2 16.2 0 22.4l62.3 62.3c3.1 3.1 3.1 8.2 0 11.3L165.4 324c-6.2 6.2-6.2 16.2 0 22.4l.2.2c6.2 6.2 16.2 6.2 22.4 0l62.3-62.3c3.1-3.1 8.2-3.1 11.3 0l62.3 62.3c6.2 6.2 16.2 6.2 22.4 0l.2-.2c6.2-6.2 6.2-16.2 0-22.4l-62.3-62.3c-3-3.2-3-8.2.1-11.4z"></path>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <button class="btn btn-secondary add-btn btn-xs  margin-top10" style="color:#d64830;" type="button" (click)="Add()">
+
+                                        Add Item
+                                    </button>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="btnArea-footer btnFixed dropup">
+                <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+                <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                <button type="button" class="btn btn-light" routerLink="/home/reminder">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,142 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
+                Update User 
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <span class="closeICon" routerLink="/home/Admin/">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve" class="icon icon-sm"><path d="M455.2 9.2L256 208.4 56.8 9.2C44.5-3.1 24.6-3.1 12.2 9.2l-2.9 2.9C-3 24.4-3 44.4 9.3 56.7L208.4 256 9.2 455.2c-12.3 12.3-12.3 32.3 0 44.6l2.9 2.9c12.3 12.3 32.3 12.3 44.6 0L256 303.6l199.2 199.2c12.3 12.3 32.3 12.3 44.6 0l2.9-2.9c12.3-12.3 12.3-32.3 0-44.6L303.6 256 502.8 56.8c12.3-12.3 12.3-32.3 0-44.6l-2.9-2.9c-12.5-12.4-32.4-12.4-44.7-.1z"></path></svg>
+            </span>
+        </div>
+    </div>
+    <div class="row Cardview padding-20 m-0">
+        <div class="col-sm-12">
+            <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                <div class="row justify-content-between">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Name</label>
+
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" formControlName="Name" [(ngModel)]="model.Name" class="form-control" maxlength="250">
+                                    <small *ngIf="Form1.controls.Name.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Phone No</label>
+
+                            </div>
+                            <div class="col-8">
+                                <input type="text"id="" formControlName="PhoneNo" [(ngModel)]="model.PhoneNo" appPhoneMask class="form-control form-control-alternative" maxlength="50">
+                                <small *ngIf="Form1.controls.PhoneNo.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row margin-t-10">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Email
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" formControlName="Email" [(ngModel)]="model.Email" class="form-control" maxlength="250">
+                                    <small *ngIf="Form1.controls.Email.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                    <small *ngIf="Form1.controls.Email.hasError('pattern') && !Form1.controls.Email.hasError('required')">
+                                        Please enter valid email.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Expiry Date
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <Datetime-Component formControlName="ExpiryDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateChanged($event)" [(ngModel)]="model.ExpiryDate">
+                                    </Datetime-Component>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    IsActivated
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="checkbox" formControlName="IsActivated" [(ngModel)]="model.IsActivated" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="table-">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Amount</th>
+                                <th scope="col" width="15%">Date</th>
+                                <th scope="col" width="70%">Remarks</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let dynamic of user_paymentdynamicArray; let i = index;">
+                                <td>
+                                    <input type="text" class="form-control form-control-sm" name="Amount" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Amount">
+                                </td>
+                                <td>
+                                    <Datetime-Component name="Date" placeholder="DD/MM/YYYY" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Date">
+                                    </Datetime-Component>
+                                </td>
+                                <td>
+                                    <textarea class="form-control form-control-sm" rows="1" name="Remarks" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Remarks"></textarea>
+                                </td>
+                                <td>
+                                    <i class="icon icon-cross pointer" (click)="RemoveRow(i)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <span class="btn btn-light btn-sm text-primary" style="height: 28px;" (click)="AddPayment()">
+                                <i class="icon icon-plus-circle"></i> Add Row
+                            </span>
+                        </div>                       
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary" *ngIf="!IsEdit">Save</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="IsEdit">Update</button>
+                    <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit" (click)="Delete()">Delete</button>
+                    <button type="button" class="btn btn-light" routerLink="/home/Admin">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+

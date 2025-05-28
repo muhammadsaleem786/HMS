@@ -4,15 +4,17 @@ using System.Collections;
 using System.ComponentModel.Design;
 using System.Data;
 using System.Net.Mail;
+using System.Text;
 
 internal class Program
 {
-    private static readonly string LastRunFilePath = "lastrun.txt";
-
+    private static readonly string LogFilePath = "log.txt";
+    private static StringBuilder LogBuffer = new StringBuilder();
     static async Task Main(string[] args)
     {
         try
         {
+            LogMessage("Job started.");
             DateTime? lastRun = ReadLastRunTime();
             if (lastRun.HasValue)
             {
@@ -21,56 +23,76 @@ internal class Program
                 ht.Add("@Date", lastRun);
                 var followUpData = dataAccessManager.GetDataSet("SP_GetFollowUpData", ht);
                 DataTable followUpTable = followUpData.Tables[0];
-
                 foreach (DataRow row in followUpTable.Rows)
                 {
                     var reminderId = Convert.ToDecimal(row["ReminderId"]);
-                    var mobileNo = row["MobileNo"].ToString();
+                    var mobileNo = row["Mobile"].ToString();
                     var email = row["Email"] == DBNull.Value ? null : row["Email"].ToString();
                     var companyId = Convert.ToDecimal(row["CompanyId"]);
                     await SendRemindersAsync(reminderId, mobileNo, email, companyId);
                 }
-                Console.WriteLine($"Last run was at: {lastRun.Value}");
+                LogMessage("Job completed successfully.");
             }
             else
             {
-                Console.WriteLine("This is the first run.");
+                LogMessage("This is the first run.");
             }
-            WriteCurrentRunTime();
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine(ex);
+            LogMessage("Job failed with exception", ex);
+        }
+        finally
+        {
+            WriteLogToFile(); // write everything once
         }
     }
     private static DateTime? ReadLastRunTime()
     {
         try
         {
-            if (File.Exists(LastRunFilePath))
+            if (File.Exists(LogFilePath))
             {
-                string content = File.ReadAllText(LastRunFilePath);
-                if (DateTime.TryParse(content, out DateTime lastRun))
+                var lines = File.ReadAllLines(LogFilePath).Reverse();
+                foreach (var line in lines)
                 {
-                    return lastRun;
+                    if (line.StartsWith("[LAST_RUN_TIME:"))
+                    {
+                        var dateStr = line.Replace("[LAST_RUN_TIME:", "").TrimEnd(']');
+                        if (DateTime.TryParse(dateStr, out DateTime lastRun))
+                            return lastRun;
+                    }
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error reading last run time: {ex.Message}");
+            LogMessage("Error reading last run time", ex);
         }
         return null;
     }
-    private static void WriteCurrentRunTime()
+    private static void LogMessage(string message, Exception ex = null)
+    {
+        LogBuffer.AppendLine("--------------------------------------------------");
+        LogBuffer.AppendLine($"Timestamp: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        LogBuffer.AppendLine($"Message: {message}");
+        if (ex != null)
+        {
+            LogBuffer.AppendLine($"Error: {ex.Message}");
+            LogBuffer.AppendLine($"StackTrace: {ex.StackTrace}");
+        }
+        LogBuffer.AppendLine("--------------------------------------------------");
+    }
+    private static void WriteLogToFile()
     {
         try
         {
-            File.WriteAllText(LastRunFilePath, DateTime.Now.ToString("o")); // ISO 8601 format
+            LogBuffer.AppendLine($"[LAST_RUN_TIME:{DateTime.UtcNow:o}]"); // ISO format
+            File.WriteAllText(LogFilePath, LogBuffer.ToString()); // Overwrite the file
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error writing last run time: {ex.Message}");
+            Console.WriteLine($"Failed to write log: {ex.Message}");
         }
     }
     public static async Task SendRemindersAsync(decimal? ReminderId, string mobileno, string email, decimal CompanyID)

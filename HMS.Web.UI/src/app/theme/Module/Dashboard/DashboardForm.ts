@@ -107,11 +107,11 @@ export class DashboardForm {
         //    email: 'saleem@yahoo.com',
         //    timestamp: new Date().toISOString(),
         //});
-        this.subscription = interval(5000).pipe(switchMap(() => this._DashboardService.getData()))
-            .subscribe({
-                next: (response) => {},
-                error: (err) => console.error('API Error:', err)
-            });
+        //this.subscription = interval(5000).pipe(switchMap(() => this._DashboardService.getData()))
+        //    .subscribe({
+        //        next: (response) => {},
+        //        error: (err) => console.error('API Error:', err)
+        //    });
         var date = new Date();
        var currentdateday = this.datePipe.transform(date, 'dd');
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

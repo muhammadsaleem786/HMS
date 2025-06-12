@@ -97,7 +97,7 @@ export class PrescriptionComponentList {
             .GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
 
                 this.PModel.TotalRecord = m.TotalRecord;
-                this.PrescriptionList = m.OtherDataModel;
+                this.PrescriptionList = m.OtherDataModel || [];
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
                 this.loader.HideLoader();
             });

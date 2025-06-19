@@ -125,6 +125,8 @@
     <Compile Include="Services\Appointment\emr_documentService.cs" />
     <Compile Include="Services\Appointment\emr_patientService.cs" />
     <Compile Include="Services\Employee\adm_company_locationService.cs" />
+    <Compile Include="Services\Employee\pr_time_logService.cs" />
+    <Compile Include="Services\Employee\pr_attendanceService.cs" />
     <Compile Include="Services\Employee\pr_allowanceService.cs" />
     <Compile Include="Services\Employee\pr_deduction_contributionService.cs" />
     <Compile Include="Services\Employee\pr_departmentService.cs" />

@@ -135,6 +135,8 @@ namespace HMS.Web.API
                   .RegisterType<IRepositoryAsync<adm_reminder_dt>, Repository<adm_reminder_dt>>()
                   .RegisterType<IRepositoryAsync<ipd_procedure_expense>, Repository<ipd_procedure_expense>>()
                   .RegisterType<IRepositoryAsync<adm_integration>, Repository<adm_integration>>()
+                  .RegisterType<IRepositoryAsync<pr_attendance>, Repository<pr_attendance>>()
+                  .RegisterType<IRepositoryAsync<pr_time_log>, Repository<pr_time_log>>()
 
 
                         // Add services  
@@ -225,6 +227,8 @@ namespace HMS.Web.API
                 .RegisterType<Iipd_medication_logService, ipd_medication_logService>()
                 .RegisterType<ISmsService, SmsService>()
                 .RegisterType<Iadm_integrationService, adm_integrationService>()
+                .RegisterType<Ipr_attendanceService, pr_attendanceService>()
+                .RegisterType<Ipr_time_logService, pr_time_logService>()
                 .RegisterType<IERPStoredProcedures, HMSContext>(new PerRequestLifetimeManager())
                 .RegisterType<IStoredProcedureService, StoredProcedureService>();
 

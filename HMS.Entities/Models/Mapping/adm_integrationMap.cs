@@ -41,6 +41,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.ID).HasColumnName("ID");
             this.Property(t => t.CompanyId).HasColumnName("CompanyId");
             this.Property(t => t.UserName).HasColumnName("UserName");
+            this.Property(t => t.EmailFrom).HasColumnName("EmailFrom");
             this.Property(t => t.Password).HasColumnName("Password");
             this.Property(t => t.Masking).HasColumnName("Masking");
             this.Property(t => t.SMTP).HasColumnName("SMTP");

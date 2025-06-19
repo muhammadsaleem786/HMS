@@ -224,6 +224,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     return objResponse;
                 }
                 Model.UserName = Model.UserName;
+                Model.EmailFrom = Model.EmailFrom;
                 Model.Password = Model.Password;
                 Model.Masking = Model.Masking;
                 Model.SMTP = Model.SMTP;

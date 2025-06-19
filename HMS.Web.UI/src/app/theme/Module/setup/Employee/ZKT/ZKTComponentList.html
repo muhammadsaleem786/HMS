@@ -1,0 +1,131 @@
+﻿
+
+
+<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Complaint
+                    </h3>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Complaint</a>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="Cardview search_onTop px-2">
+            <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="ComplaintList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #ZKTModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" *ngIf="IsEdit">Update Device</h4>
+        <h4 class="modal-title" *ngIf="IsEdit==false">Add Device</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body bg-secondary">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">IP Address </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="IPAddress" [(ngModel)]="model.IPAddress" class="form-control form-control-sm form-control-alternative" placeholder="IP Address">
+                            <small class="text-danger" *ngIf="Form1.controls.IPAddress.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Port No </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="PortNo" [(ngModel)]="model.PortNo" class="form-control form-control-sm form-control-alternative" placeholder="Port No">
+                            <small class="text-danger" *ngIf="Form1.controls.PortNo.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Last Data Sync </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="LastDataSync" [(ngModel)]="model.LastDataSync" class="form-control form-control-sm form-control-alternative" placeholder="Last Data Sync">
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Password </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Password" [(ngModel)]="model.Password" class="form-control form-control-sm form-control-alternative" placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Location Code </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="LocationCode" [(ngModel)]="model.LocationCode" class="form-control form-control-sm form-control-alternative" placeholder="Location Code">
+                            <small class="text-danger" *ngIf="Form1.controls.LocationCode.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Device Serial No </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="DeviceSerialNo" [(ngModel)]="model.DeviceSerialNo" class="form-control form-control-sm form-control-alternative" placeholder="Device Serial No">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Active </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="checkbox" id="" formControlName="IsActive" [(ngModel)]="model.IsActive" class="form-control form-control-sm form-control-alternative">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+            <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+            <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </form>
+</ng-template>
+
+
+
+
+
+
+
+
+

@@ -35,7 +35,6 @@ export class TimeAttendanceComponentList {
     pageEvent: PageEvent;
 
     setPageSizeOptions(setPageSizeOptionsInput: string) {
-        ;
         this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
     }
     columnNames = [

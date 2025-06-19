@@ -21,6 +21,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
@@ -282,9 +283,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                              isUnicode
                          );
                     }
-                    else if (emailRow != null && !string.IsNullOrEmpty(email))
+                    if (emailRow != null && !string.IsNullOrEmpty(email))
                     {
                         await SendEmailNotify(
+                            emailRow["EmailFrom"].ToString(),
                              emailRow["UserName"].ToString(),
                              emailRow["Password"].ToString(),
                              emailRow["SMTP"].ToString(),
@@ -296,19 +298,20 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
             }
         }
-
-        private async Task SendEmailNotify(string EmailFrom, string EmailPassword, string EmailSMTP, int? EmailPort, string toemail, string message)
+        private async Task SendEmailNotify(string EmailFrom, string UserName, string EmailPassword, string EmailSMTP, int? EmailPort, string toemail, string message)
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             SmtpClient smtpC = new SmtpClient(EmailSMTP);
             smtpC.EnableSsl = true;
             smtpC.Port = Convert.ToInt32(EmailPort);
-            smtpC.Credentials = new System.Net.NetworkCredential(EmailFrom, EmailPassword);
+            if (string.IsNullOrEmpty(EmailFrom))
+                EmailFrom = UserName;
+            smtpC.Credentials = new System.Net.NetworkCredential(UserName, EmailPassword);
             mail.From = new MailAddress(EmailFrom);
             mail.To.Add(toemail);
-            mail.Subject = "";
+            mail.Subject = "Appointment";
             mail.Body = message;
-
             try
             {
                 //Send Email
@@ -420,11 +423,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
 
                     //string path = @"~\Templates\EmailConfirm.txt";
-                    //SendEmailforResetPassword(Model, "PayPeople | Verify your account", path, encrytoken);
+                    //SendEmailforResetPassword(Model, "EasyHMS | Verify your account", path, encrytoken);
 
                     //string path = @"~\Templates\EmailConfirm.txt";
                     //path = HttpContext.Current.Server.MapPath(path);
-                    //Task.Run(() => SendEmailConfirmNotify(_unitOfWorkAsync, userobj, "PayPeople | Verify your account", path, "WelcomeEmail", encrytoken));
+                    //Task.Run(() => SendEmailConfirmNotify(_unitOfWorkAsync, userobj, "EasyHMS | Verify your account", path, "WelcomeEmail", encrytoken));
 
                     try
                     {
@@ -1065,7 +1068,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var StatusList = AllData.Tables[2];
                 var AllStatusList = AllData.Tables[3];
                 var DoctorList = AllData.Tables[4];
-                var DoctorCalander = AllData.Tables[6];
+                var DoctorCalander = AllData.Tables[4];
                 var Reminderlist = AllData.Tables[14];
                 var Followuplist = AllData.Tables[15];
                 decimal[] IdList = null;

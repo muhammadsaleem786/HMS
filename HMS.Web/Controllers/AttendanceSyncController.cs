@@ -77,6 +77,12 @@ namespace HMS.Web.API.Controllers
                     return Unauthorized();
                 foreach (var attendance in attendanceList)
                 {
+                    bool exists = _time_log.Queryable().Any(x =>
+                                    x.CompanyId == CompanyID &&
+                                    x.EmployeeCode == attendance.EmployeeCode &&
+                                    x.AttendanceTime == attendance.AttendanceTime);
+                    if (exists)
+                        continue;
                     pr_time_log obj = new pr_time_log
                     {
                         CompanyId = CompanyID,
@@ -106,7 +112,7 @@ namespace HMS.Web.API.Controllers
 
                     throw;
                 }
-                
+
                 return Ok(new
                 {
                     IsSuccess = true,

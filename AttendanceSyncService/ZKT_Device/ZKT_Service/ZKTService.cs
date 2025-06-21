@@ -57,26 +57,22 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                         IPAddress = dr["IPAddress"].ToString();
                         Password = dr["Password"].ToString();
                         PortNumber = Convert.ToInt32(dr["PortNo"]);
-
                         if (dr["LastDataSync"] == DBNull.Value)
                             LastDataSync = Convert.ToDateTime("01/01/1900");
                         else
                             LastDataSync = Convert.ToDateTime(dr["LastDataSync"]);
                         if (IsAttendanceMachineConnected(CompanyID, LocationCode, DeviceID, Convert.ToString(dr["Password"]), LastDataSync) == false) continue;
-
                         iMachineNumber = 1; idwWorkcode = 0;
                         IsResult = objCZKEM.EnableDevice(iMachineNumber, false);
                         if (IsResult == false) ErrorShow("Device Disable ");
                         IsResult = objCZKEM.ReadAllGLogData(iMachineNumber);
-
-                        if (IsResult)//read all the attendance records to the memory
+                        if (IsResult)
                         {
                             while (objCZKEM.SSR_GetGeneralLogData(iMachineNumber, out idwEmployeeCode, out idwVerifyMode,
                                        out idwInOutMode, out idwYear, out idwMonth, out idwDay, out idwHour, out idwMinute, out idwSecond, ref idwWorkcode))//get records from the memory
                             {
                                 StringDate = idwDay.ToString() + "/" + idwMonth.ToString() + "/" + idwYear.ToString() + " " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond;
                                 TDate = DateTime.ParseExact(StringDate, "d/M/yyyy H:m:s", CultureInfo.InvariantCulture);
-
                                 if (TDate.Date >= LastDataSync.Date && TDate.Date <= AttendanceDate.Date)
                                 {
                                     AttendanceModel obj = new AttendanceModel();
@@ -91,18 +87,13 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                         }
                         else
                             ErrorShow("Read All Log Data ");
-
                         IsResult = objCZKEM.EnableDevice(iMachineNumber, true);
                         if (IsResult == false) ErrorShow("Device Enable ");
-
                         if (AttendanceList.Count() == 0) continue;
                         DTAttendance = ToDataTable<AttendanceModel>(AttendanceList);
-
                         inputJson = (new JavaScriptSerializer()).Serialize(AttendanceList).Replace("\\\"", "");
                         Library.WriteErrorLog("Json Data:" + inputJson);
-
                          url = $"http://localhost:8081/api/AttendanceSync/DatabaseSyncProcess?CompanyID={CompanyID}&DeviceID={DeviceID}&LocationCode={LocationCode}&Tokenkey={Tokenkey}";
-
                         await PostData(url, inputJson);
                         Library.WriteErrorLog("insert sucessfully Machine Data");
                     }
@@ -110,8 +101,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                     {
                         Console.WriteLine(ex.Message);
                     }
-                }
-               
+                }               
             }
             catch (Exception ex)
             {
@@ -132,7 +122,6 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                 using (StreamReader reader = new StreamReader(stream))
                 {
                  obj1 = JsonConvert.DeserializeObject<List<Attendance>>(reader.ReadToEnd());
-
                     html = reader.ReadToEnd();
                 }
                 Library.WriteErrorLog("Sussessfully Get Device Data");
@@ -175,11 +164,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
             bool bIsCommPassword = false;
             if (CommPassword != "")
                 bIsCommPassword = objCZKEM.SetCommPassword(Convert.ToInt32(CommPassword));
-
             bool bIsConnected = objCZKEM.Connect_Net(IPAddress, PortNumber);
-
-            //objCZKEM.Connect_Net(IPAddress, PortNumber);
-            //bool bIsConnected = objCZKEM.SetCommPassword(2370);
             Console.WriteLine("");
             Console.WriteLine("Device Info");
             Console.WriteLine("IP Address : " + IPAddress);
@@ -187,20 +172,15 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
             Console.WriteLine("Sync Date Start : " + LastDataSync.ToString("MMMM dd,yyyy"));
             Console.WriteLine("Comm Password Status : " + (CommPassword == "" ? "Password Ignore" : (bIsCommPassword ? "Correct" : "Not Correct")));
             Console.WriteLine("Connection Status : " + (bIsConnected ? "Ok" : "Error"));
-
             if (bIsConnected == false)
             {
                 Library.WriteErrorLog("Zkt not connected.");
                 ErrorShow("Connection Status ");
-                //DataAccess.DataAccess.DeviceFailureProcess(CompanyID, LocationID, DeviceID);
             }
             if (bIsConnected) return true;
             Library.WriteErrorLog("Zkt connected.");
-            //EventLog.WriteEntry("Attendance Machine is not connected.");
-
             return bIsConnected;
         }
-
         private void RaiseDeviceEvent(object sender, string actionType)
         {
             switch (actionType)
@@ -210,23 +190,19 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                         Console.WriteLine("The device is switched off");
                         break;
                     }
-
                 default:
                     break;
             }
         }
-
         private void ErrorShow(string MSG)
         {
             int ErrorCode = 0;
             objCZKEM.GetLastError(ref ErrorCode);
             Console.WriteLine(MSG + "Error Code = " + ErrorCode.ToString());
         }
-
         private DataTable ToDataTable<T>(List<T> items)
         {
             DataTable dataTable = new DataTable(typeof(T).Name);
-
             //Get all the properties
             PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (PropertyInfo prop in Props)

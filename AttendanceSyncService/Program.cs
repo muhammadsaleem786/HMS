@@ -12,7 +12,7 @@ namespace AttendanceSyncService
             // Run in debug mode as console
             Console.WriteLine("Debug mode: Starting service logic without installation...");
 
-            var service = new PayPeople();
+            var service = new EasyHMS();
             service.StartDebug(); // We'll define this method in the service
 
             Console.WriteLine("Service is running in debug mode. Press Enter to exit.");
@@ -24,7 +24,7 @@ namespace AttendanceSyncService
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new PayPeople()
+                new EasyHMS()
             };
             ServiceBase.Run(ServicesToRun);
 #endif

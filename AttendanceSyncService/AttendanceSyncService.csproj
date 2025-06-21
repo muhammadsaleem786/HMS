@@ -75,11 +75,11 @@
     <Compile Include="ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
-    <Compile Include="PayPeople.cs">
+    <Compile Include="EasyHSM.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PayPeople.Designer.cs">
-      <DependentUpon>PayPeople.cs</DependentUpon>
+    <Compile Include="EasyHSM.Designer.cs">
+      <DependentUpon>EasyHSM.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

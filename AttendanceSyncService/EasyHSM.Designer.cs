@@ -1,6 +1,6 @@
 ﻿namespace AttendanceSyncService
 {
-    partial class PayPeople
+    partial class EasyHMS
     {
         /// <summary> 
         /// Required designer variable.

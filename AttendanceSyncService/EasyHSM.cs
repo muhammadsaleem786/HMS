@@ -11,10 +11,10 @@ using System.Timers;
 
 namespace AttendanceSyncService
 {
-    public partial class PayPeople : ServiceBase
+    public partial class EasyHMS : ServiceBase
     {
         private Timer timer1 = null;
-        public PayPeople()
+        public EasyHMS()
         {
             InitializeComponent();
         }

@@ -22,10 +22,18 @@
             </div>
         </div>
         <div class="col-sm-4 text-right flex-row flex-end">            
-            <a class="btn btn-danger btn-md ml-1"*ngIf="ImportControlRights.CreateRights" routerLink="/home/ImportItem">Import Item</a>
-            <a class="btn btn-danger btn-md" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Item</a>
-            <a class="btn btn-danger btn-md ml-1"*ngIf="RestockControlRights.ViewRights" routerLink="/home/Restock">Restock Item</a>
-            <a class="btn btn-danger btn-md ml-1"*ngIf="ExpireControlRights.ViewRights" routerLink="/home/Expire">Near to Expire</a>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary btn-md dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" *ngIf="ImportControlRights.CreateRights" routerLink="/home/ImportItem">Import Item</a>
+                    <a class="dropdown-item" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Item</a>
+                    <a class="dropdown-item" *ngIf="RestockControlRights.ViewRights" routerLink="/home/Restock">Restock Item</a>
+                    <a class="dropdown-item" *ngIf="ExpireControlRights.ViewRights" routerLink="/home/Expire">Near to Expire</a>
+                </div>
+            </div>
+
         </div>
     </div>
     <div class="Cardview px-3 pb-3">

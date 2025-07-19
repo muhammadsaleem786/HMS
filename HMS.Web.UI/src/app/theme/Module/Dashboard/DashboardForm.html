@@ -45,33 +45,40 @@
     </div>
     <div *ngFor="let d of DeshboardData">
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-6 col-md-4 col-lg-3">
                 <div class="card card-stats mb-4 mb-xl-0">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <img src="../assets/app/media/img/icons/newPatient.png" class="img-fluid radius">
 
                             </div>
-                            <div class="col text-right">
-                                <h2 class="card-title text-uppercase  mb-0"> Appointment</h2>
-                                <span class="text-sm mb-0"> {{d.TotalAppointments}}</span>
-                                <h2 class="card-title text-uppercase  mb-0"> New</h2>
-                                <span class="text-sm mb-0"> {{d.NewPatients}}</span>
-                                <h2 class="card-title text-uppercase  mb-0"> Missed</h2>
-                                <span class="text-sm mb-0"> {{d.MissedAppointments}}</span>
-                                <h2 class="card-title text-uppercase  mb-0"> Visit</h2>
-                                <span class="text-sm mb-0"> {{d.PatientVisits}}</span>
-                            </div>
+                            <div class="col text-right ps-0">
+                                <h2 class="card-title mb-0"> Appointment  <span class="text-sm mb-0"> {{d.TotalAppointments}}</span>
+                               </h2>
+                                <div class="row">
 
+                                    <div class="col-sm-12 text-right ps-0">
+                                        <p class="mb-0">
+                                        <strong class="card-title text-uppercase  mb-0"> New</strong>
+                                        <span class="text-sm mb-0"> {{d.NewPatients}}</span> &nbsp;
+                                        <strong class="card-title text-uppercase  mb-0"> Missed</strong>
+                                        <span class="text-sm mb-0"> {{d.MissedAppointments}}</span> &nbsp;
+                                        <strong class="card-title text-uppercase  mb-0"> Visit</strong>
+                                        <span class="text-sm mb-0"> {{d.PatientVisits}}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                       
                     </div>
                 </div>
 
             </div>
 
 
-            <div class="col-sm-3">
+             <div class="col-sm-6 col-md-4 col-lg-3">
                 <div class="card card-stats mb-4 mb-xl-0">
                     <div class="card-body">
                         <div class="row">
@@ -80,10 +87,14 @@
 
                             </div>
                             <div class="col text-right">
-                                <h2 class="card-title text-uppercase  mb-0"> {{d.PaymentCollection}}</h2>
-                                <span class="text-sm mb-0"> OPD Income</span>
-                                <h2 class="card-title text-uppercase  mb-0"> {{d.ProfessionalFees}}</h2>
-                                <span class="text-sm mb-0"> Professional Fees</span>
+                               <div class="d-flex">
+                                 <h2 class="card-title text-uppercase  mb-0"> {{d.PaymentCollection}}</h2>
+                               &nbsp;  <span class="text-sm mb-0"> OPD Income</span>
+                               </div>
+                               <div class="d-flex">
+                                                                <h2 class="card-title text-uppercase  mb-0"> {{d.ProfessionalFees}}</h2>
+                                 &nbsp; <span class="text-sm mb-0"> Professional Fees</span>
+                               </div>
                             </div>
                         </div>
                     </div>
@@ -91,7 +102,7 @@
 
             </div>
 
-            <div class="col-sm-3">
+            <div class="col-sm-6 col-md-4 col-lg-3">
                 <div class="card card-stats mb-4 mb-xl-0">
                     <div class="card-body">
                         <div class="row">
@@ -108,7 +119,7 @@
                 </div>
 
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-6 col-md-4 col-lg-3">
                 <div class="card card-stats mb-4 mb-xl-0">
                     <div class="card-body">
                         <div class="row">
@@ -125,9 +136,9 @@
                 </div>
 
             </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-sm-3">
+      
+       
+            <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
                 <div class="card card-stats mb-4 mb-xl-0">
                     <div class="card-body">
                         <div class="row">
@@ -146,7 +157,7 @@
             </div>
 
 
-            <div class="col-sm-3">
+            <div class="col-sm-6 col-md-4 col-lg-3  mt-4">
                 <div class="card card-stats mb-4 mb-xl-0">
                     <div class="card-body">
                         <div class="row">
@@ -163,7 +174,7 @@
 
             </div>
 
-            <div class="col-sm-3">
+             <div class="col-sm-6 col-md-4 col-lg-3  mt-4">
                 <div class="card card-stats mb-4 mb-xl-0">
                     <div class="card-body">
                         <div class="row">
@@ -180,7 +191,7 @@
                 </div>
 
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-6 col-md-4 col-lg-3  mt-4">
                 <div class="card card-stats mb-4 mb-xl-0">
                     <div class="card-body">
                         <div class="row">
@@ -205,7 +216,7 @@
     <!-- =========== -->
 
     <div class="row mt-4  customscroll-">
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header -danger">
                     Income & Expense (YTD)
@@ -215,7 +226,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header -danger">
                     Number of Patients
@@ -230,7 +241,7 @@
     </div>
 
     <div class="row mt-4 largecard">
-        <div class="col-sm-4">
+        <div class="col-md-6 col-lg-4">
             <div class="card">
                 <div class="card-header">
                     Appointments for {{TodayDate}}
@@ -271,7 +282,7 @@
             </div>
         </div>
 
-        <div class="col-sm-4">
+        <div class="col-md-6  col-lg-4">
             <div class="card">
                 <div class="card-header">
                     Birthdays for {{TodayDate}}
@@ -318,7 +329,7 @@
             </div>
         </div>
 
-        <div class="col-sm-4">
+        <div class="col-md-6  col-lg-4">
             <div class="card">
                 <div class="card-header">
                     Follow-up due for {{TodayDate}}

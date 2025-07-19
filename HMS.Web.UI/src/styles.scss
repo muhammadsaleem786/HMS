@@ -494,7 +494,7 @@ body {
 
             .dropdown-menu {
                 min-width: 200px;
-                margin-top: -40px;
+                margin-top: -200px;
                 border: 0px;
                 margin-left: 21px;
                 box-shadow: 1px 1px 10px #d9d9d9;
@@ -1029,7 +1029,7 @@ body {
 }
 
 .btn {
-    height: 34px;
+ 
     line-height: normal;
     font-weight: normal;
 }
@@ -1363,7 +1363,6 @@ small {
 
 .btn {
     outline: none;
-    height: 33px;
     line-height: normal;
 
     &:hover, &:focus, &:visited {
@@ -2410,12 +2409,13 @@ ul.uk-pagination li:not(:last-child) a {
     }
 
     .input-group-addon {
-        background: #58b9a8;
-        border: 1px solid #58b9a8;
-        border-radius: 100px;
+        background: #2f3479;
+        border: 1px solid #2f3479;
+        border-radius: 4px;
+        margin-left:4px;
 
         &:hover {
-            background: #58b9a8;
+            background: #2b3074;
 
             span, i {
                 color: #fff;
@@ -2676,6 +2676,7 @@ div#chart4 {
     top: 12px;
     right: 12px;
 }
+
 
 @media (max-width: 575.98px) {
     .toast-top-right {
@@ -3900,7 +3901,7 @@ strong.nodateFound {
         margin-left: 14px;
         box-shadow: 1px 1px 10px #d9d9d9;
         min-width: 300px;
-        height: 250px;
+        height: auto;
     }
 }
 
@@ -4586,4 +4587,16 @@ label.custom-control-label {
 .today-highlight {
     background-color: yellow;
     font-weight: bold;
+}
+
+
+@media (max-width: 768px){
+    .loginRow #loginRightContent{
+        display: none;
+    }
+}
+
+
+.Salereceipt{
+
 }

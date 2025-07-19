@@ -122,84 +122,88 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body Invoice_Template" id="printBill-section">
-        <div class="Invoice_template">
-            <header class="clearfix">
-                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
-                    <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
-                </div>
-                <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
-                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
-                </div>
+    <div class="modal-body" id="printBill-section" style="font-family: Arial, sans-serif; font-size: 14px; color: #555555; background: #FFFFFF;">
+    <div style="width: 100%;">
+        <header style="padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid #AAAAAA; overflow: hidden;">
+            <div style="float: left; margin-top: 8px;" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null">
+                <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px; height: 70px;">
+            </div>
+            <div style="float: left; margin-top: 8px;" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null">
+                <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px; height: 70px;">
+            </div>
 
-                <div id="company">
-                    <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
-                    <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
-                    <div>{{InvoiceCompanyInfo.CompanyPhone}}</div>
-                    <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
-                </div>
+            <div style="float: right; text-align: right;">
+                <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                <div>{{InvoiceCompanyInfo.CompanyPhone}}</div>
+                <div><a href="mailto:company@example.com" style="color: #0087C3; text-decoration: none;">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+            </div>
+        </header>
 
-            </header>
-            <main>
-                <div id="details" class="clearfix">
-                    <div id="client">
-                        <div class="to">INVOICE TO:</div>
-                        <h2 class="name">{{InvoiceCompanyInfo.PatientName}}</h2>
-                        <div class="address">{{InvoiceCompanyInfo.PatientAddress}}</div>
-                        <div class="email"><a href="mailto:john@example.com">{{InvoiceCompanyInfo.PatientEmail}}</a></div>
-                    </div>
-                    <div id="invoice">
-                        <h1>INVOICE-{{InvoiceCompanyInfo.invoiceNo}}</h1>
-                        <div class="date">Date of Invoice: {{InvoiceCompanyInfo.BillDate |date: 'MM/dd/yyyy'}}</div>
-                        <div class="date">Due Date: 30/06/2014</div>
-                    </div>
+        <main>
+            <div style="margin-bottom: 50px; overflow: hidden;">
+                <div style="padding-left: 6px; border-left: 6px solid #0087C3; float: left;">
+                    <div style="color: #777777;">INVOICE TO:</div>
+                    <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{InvoiceCompanyInfo.PatientName}}</h2>
+                    <div>{{InvoiceCompanyInfo.PatientAddress}}</div>
+                    <div><a href="mailto:john@example.com" style="color: #0087C3; text-decoration: none;">{{InvoiceCompanyInfo.PatientEmail}}</a></div>
                 </div>
-                <table cellspacing="0" cellpadding="0">
-                    <thead>
-                        <tr>
-                            <th class="no">#</th>
-                            <th class="desc">Item</th>
-                            <th class="unit text-right">UNIT PRICE</th>
-                            <th class="total text-right">TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let b of InvoiceBillModel">
-                            <td class="no">{{b.ID}}</td>
-                            <td class="desc">{{b.ServiceName}}</td>
-                            <td class="unit"> {{b.Price}}</td>
-                            <td class="total"> {{b.Price}}</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td colspan="1">SUBTOTAL</td>
-                            <td> {{SubTotal}}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td colspan="1">Discount</td>
-                            <td> {{TotalDiscount}}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td colspan="1">GRAND TOTAL</td>
-                            <td> {{Total}}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-                <div id="thanks">Thank you!</div>
-                <div id="notices">
-                    <div>NOTICE:</div>
-                    <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                <div style="float: right; text-align: right;">
+                    <h1 style="color: #0087C3; font-size: 2.4em; line-height: 1em; font-weight: normal; margin: 0 0 10px 0;">INVOICE-{{InvoiceCompanyInfo.invoiceNo}}</h1>
+                    <div style="font-size: 1.1em; color: #777777;">Date of Invoice: {{InvoiceCompanyInfo.BillDate | date: 'MM/dd/yyyy'}}</div>
+                    <div style="font-size: 1.1em; color: #777777;">Due Date: 30/06/2014</div>
                 </div>
-            </main>
-            <footer>
-                {{valueForUser.RepotFooter}}
-            </footer>
-        </div>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr>
+                        <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
+                        <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF; white-space: nowrap;">Item</th>
+                        <th style="padding: 20px; background: #DDDDDD; text-align: right; border-bottom: 1px solid #FFFFFF;">UNIT PRICE</th>
+                        <th style="padding: 20px; background: #2f3479; text-align: right; color: #FFFFFF; border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let b of InvoiceBillModel">
+                        <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">{{b.ID}}</td>
+                        <td style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">{{b.ServiceName}}</td>
+                        <td style="padding: 20px; background: #DDDDDD; text-align: right; border-bottom: 1px solid #FFFFFF; font-size: 1.2em;">{{b.Price}}</td>
+                        <td style="padding: 20px; background: #2f3479; text-align: right; color: #FFFFFF; border-bottom: 1px solid #FFFFFF; font-size: 1.2em;">{{b.Price}}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2" style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA;"></td>
+                        <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA; font-size: 1.2em;">SUBTOTAL</td>
+                        <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA; font-size: 1.2em;">{{SubTotal}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA;"></td>
+                        <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA; font-size: 1.2em;">Discount</td>
+                        <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA; font-size: 1.2em;">{{TotalDiscount}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #2f3479;"></td>
+                        <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #2f3479; color: #2f3479; font-size: 1.4em;">GRAND TOTAL</td>
+                        <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #2f3479; color: #2f3479; font-size: 1.4em;">{{Total}}</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div style="font-size: 2em; margin-bottom: 50px;">Thank you!</div>
+            <div style="padding-left: 6px; border-left: 6px solid #0087C3;">
+                <div>NOTICE:</div>
+                <div style="font-size: 1.2em;">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+            </div>
+        </main>
+
+        <footer style="color: #777777; width: 100%; height: 30px; border-top: 1px solid #AAAAAA; padding: 8px 0; text-align: left;">
+            {{valueForUser.RepotFooter}}
+        </footer>
     </div>
+</div>
+
 
     <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
@@ -303,143 +307,106 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body Invoice_Template simple_format" id="printPayment-section">
-        <header class="clearfix">
-            <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
-                <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
-            </div>
-            <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
-                <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
-            </div>
-            <div id="company">
-                <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
-                <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
-                <div>Phnoe: {{InvoiceCompanyInfo.CompanyPhone}}</div>
-                <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
-            </div>
-        </header>
-        <main>
-            <div class="clearfix text-center margin-t-30">
-                <h3 class="margin-b-5">
-                    Patient Management System
-                </h3>
-                <h5 class="margin-b-5">
-                    Advance Receipt
-                </h5>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <table class="table margin-t-15">
-                        <tbody>
+   <div class="modal-body Invoice_Template simple_format" id="printPayment-section" style="font-family: Arial, sans-serif; padding: 20px; font-size: 14px; color: #000;">
+    <header style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
+        <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+            <img [src]="InvoiceCompanyInfo.CompanyLogo" style="max-width: 100px; border-radius: 5px;">
+        </div>
+        <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+            <img src="../assets/app/media/img/icons/doctor-logo.png" style="max-width: 100px; border-radius: 5px;">
+        </div>
+        <div id="company" style="text-align: right;">
+            <h2 style="margin: 0; font-size: 20px;">{{InvoiceCompanyInfo.CompanyName}}</h2>
+            <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+            <div>Phone: {{InvoiceCompanyInfo.CompanyPhone}}</div>
+            <div><a href="mailto:company@example.com" style="color: #000;">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+        </div>
+    </header>
 
-                            <tr>
-                                <td>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <strong>Date:</strong>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            {{InvoiceCompanyInfo.BillDate|date: 'MM/dd/yyyy'}}
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <strong> Patient Name </strong>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            {{InvoiceCompanyInfo.PatientName}}
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <strong> Mr#</strong>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            {{InvoiceCompanyInfo.MRNo}}
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <strong>Admission Date</strong>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            {{InvoiceCompanyInfo.AdmissionDate|date: 'MM/dd/yyyy'}}
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <strong>Room / Ward #</strong>
-                                        </div>
-                                        <div class="col-sm-6" *ngIf="InvoiceCompanyInfo.Room != null && InvoiceCompanyInfo.Ward != null">
-                                            {{InvoiceCompanyInfo.Room}} /  {{InvoiceCompanyInfo.Ward}}
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <strong>Doctor Name</strong>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            {{InvoiceCompanyInfo.DoctorName}}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+    <main>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h3 style="margin: 5px 0;">Patient Management System</h3>
+            <h5 style="margin: 5px 0;">Advance Receipt</h5>
+        </div>
 
-                        </tbody>
-                    </table>
-                    <table class="table margin-t-15">
-                        <tbody>
+        <div style="width: 100%; margin-bottom: 15px;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 5px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Date:</strong>
+                            <span>{{InvoiceCompanyInfo.BillDate | date: 'MM/dd/yyyy'}}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Patient Name:</strong>
+                            <span>{{InvoiceCompanyInfo.PatientName}}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>MR#:</strong>
+                            <span>{{InvoiceCompanyInfo.MRNo}}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Admission Date:</strong>
+                            <span>{{InvoiceCompanyInfo.AdmissionDate | date: 'MM/dd/yyyy'}}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;" *ngIf="InvoiceCompanyInfo.Room != null && InvoiceCompanyInfo.Ward != null">
+                            <strong>Room / Ward #:</strong>
+                            <span>{{InvoiceCompanyInfo.Room}} / {{InvoiceCompanyInfo.Ward}}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Doctor Name:</strong>
+                            <span>{{InvoiceCompanyInfo.DoctorName}}</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-                            <tr>
-                                <td>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <strong>Receipt No</strong>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            {{InvoiceCompanyInfo.invoiceNo}}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+        <div style="width: 100%; margin-bottom: 15px;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 5px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Receipt No:</strong>
+                            <span>{{InvoiceCompanyInfo.invoiceNo}}</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-                        </tbody>
-                    </table>
-                    <table class="table margin-t-15">
-                        <tbody>
+        <div style="width: 100%; margin-bottom: 15px;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 5px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Amount:</strong>
+                            <span>Rs. {{InvoiceCompanyInfo.Amount}}</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-                            <tr>
-                                <td>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <strong> Amount</strong>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            Rs,  {{InvoiceCompanyInfo.Amount}}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
+        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 40px;">
+            <div style="width: 50%;">
+                <p style="margin: 0 0 10px; display: flex; justify-content: space-between; align-items: center;">
+                    Prepared By:
+                    <span style="border-bottom: 2px dashed #ccc; flex-grow: 1; margin-left: 10px;"></span>
+                </p>
+                <p style="margin: 0; display: flex; justify-content: space-between; align-items: center;">
+                    Collection By:
+                    <span style="border-bottom: 2px dashed #ccc; flex-grow: 1; margin-left: 10px;"></span>
+                </p>
             </div>
-            <div class="row">
-                <div class="col-sm-6 margin-t-20" style="margin-left:auto;">
-                    <p class="margin-b-5 row align-items-center flex-nowrap text-nowrap">
-                        Prepared By : <span style="border-bottom:2px dashed #ccc;width:70%;"></span>
-                    </p>
-                    <p class="margin-b-5 row align-items-center flex-nowrap">
-                        Collection By: <span style="border-bottom: 2px dashed #ccc; width: 70%;"></span>
-                    </p>
-                </div>
-            </div>
-        </main>
-        <footer>
-            {{valueForUser.RepotFooter}}
-        </footer>
-    </div>
+        </div>
+    </main>
+
+    <footer style="border-top: 1px solid #000; margin-top: 30px; padding-top: 10px; text-align: center;">
+        {{valueForUser.RepotFooter}}
+    </footer>
+</div>
+
     <div class="modal-footer">
         <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
         <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printPayment-section" ngxPrint>Print</button>

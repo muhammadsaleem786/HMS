@@ -38,6 +38,9 @@ export class FileUploadComponent implements ControlValueAccessor {
     public size: number;
 
 
+    public showCard:boolean = false; // add this
+
+
     //Placeholders for the callbacks which are later providesd
     //by the Control Value Accessor
     private onTouchedCallback: () => void = noop;
@@ -176,5 +179,17 @@ export class FileUploadComponent implements ControlValueAccessor {
     tempFunction(self: any, value: number) {
         self.percentage = value
     }
+
+
+            
+        triggerFileBrowse() {
+        this.showCard = true;
+        setTimeout(() => {
+            const fileInput: HTMLElement | null = document.getElementById('myFile');
+            if (fileInput) {
+            fileInput.click();
+            }
+        }, 100); // short delay to render card first
+        }
 
 }

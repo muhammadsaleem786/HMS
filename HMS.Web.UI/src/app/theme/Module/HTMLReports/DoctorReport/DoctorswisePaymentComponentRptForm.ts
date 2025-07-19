@@ -106,22 +106,63 @@ export class DoctorswisePaymentComponentRptForm implements OnInit {
                 this.loader.HideLoader();
         });
     }
+
     public DownloadPDF(): void {
-        this.loader.ShowLoader();
-        var data = document.getElementById('RptPDF');
-        html2canvas(data).then(canvas => {
-            var imgWidth = 208;
-            var pageHeight = 295;
-            var imgHeight = canvas.height * imgWidth / canvas.width;
-            var heightLeft = imgHeight;
-            const contentDataURL = canvas.toDataURL('image/png')
-           let pdf = new jsPDF('p', 'mm', 'a4');
-            var position = 0;
-            pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-            pdf.save('PaymentDetail.pdf');
-            this.loader.HideLoader();
-        });
-    }
+    this.loader.ShowLoader();
+    const data = document.getElementById('RptPDF');
+
+    html2canvas(data, {
+        scale: 3,
+        useCORS: true,
+        scrollY: -window.scrollY
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+
+        const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait mode
+        const pageWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+        const margin = 10;
+
+        const imgWidth = pageWidth - margin * 2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        if (imgHeight < pageHeight - margin * 2) {
+            // Fits in one page
+            pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+        } else {
+            // Multi-page logic
+            const pageCanvasHeight = canvas.width * (pageHeight - 2 * margin) / imgWidth;
+            const totalPages = Math.ceil(canvas.height / pageCanvasHeight);
+
+            for (let i = 0; i < totalPages; i++) {
+                const pageCanvas = document.createElement('canvas');
+                pageCanvas.width = canvas.width;
+                pageCanvas.height = pageCanvasHeight;
+
+                const context = pageCanvas.getContext('2d');
+                context!.drawImage(
+                    canvas,
+                    0,
+                    i * pageCanvasHeight,
+                    canvas.width,
+                    pageCanvasHeight,
+                    0,
+                    0,
+                    canvas.width,
+                    pageCanvasHeight
+                );
+
+                const pageData = pageCanvas.toDataURL('image/png');
+                if (i > 0) pdf.addPage();
+                pdf.addImage(pageData, 'PNG', margin, margin, imgWidth, pageHeight - 2 * margin);
+            }
+        }
+
+        pdf.save('PaymentDetail.pdf');
+        this.loader.HideLoader();
+    });
+}
+
     public DownloadExcel() {
         var data_type = 'data:application/vnd.ms-excel';
         var table_div = document.getElementById('RptPDF');

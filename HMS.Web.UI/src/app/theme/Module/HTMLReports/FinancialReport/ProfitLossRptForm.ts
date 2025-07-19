@@ -82,22 +82,41 @@ export class ProfitLossRptForm implements OnInit {
                 this.loader.HideLoader();
         });
     }
-    public DownloadPDF(): void {
-        this.loader.ShowLoader();
-        var data = document.getElementById('RptPDF');
-        html2canvas(data).then(canvas => {
-            var imgWidth = 208;
-            var pageHeight = 295;
-            var imgHeight = canvas.height * imgWidth / canvas.width;
-            var heightLeft = imgHeight;
-            const contentDataURL = canvas.toDataURL('image/png')
-           let pdf = new jsPDF('p', 'mm', 'a4');
-            var position = 0;
-            pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-            pdf.save('ProfitLoss.pdf');
-            this.loader.HideLoader();
-        });
-    }
+
+    
+public DownloadPDF(): void {
+    this.loader.ShowLoader();
+    const data = document.getElementById('RptPDF');
+
+    html2canvas(data, {
+        scale: 3,
+        useCORS: true,
+        scrollY: -window.scrollY
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+
+        // Landscape A4 size
+        const pageWidth = 297;  // A4 landscape width in mm
+        const pageHeight = 210; // A4 landscape height in mm
+        const margin = 10;      // 10mm on all sides
+
+        // Calculate image size
+        const availableWidth = pageWidth - 2 * margin;
+        const imgHeight = (canvas.height * availableWidth) / canvas.width;
+
+        // Ensure it fits within pageHeight - 2*margin
+        const finalImgHeight = Math.min(imgHeight, pageHeight - 2 * margin);
+        const x = margin;
+        const y = margin;
+
+        const pdf = new jsPDF('l', 'mm', 'a4'); // 'l' = landscape
+
+        pdf.addImage(imgData, 'PNG', x, y, availableWidth, finalImgHeight);
+        pdf.save('ProfitLoss.pdf');
+        this.loader.HideLoader();
+    });
+}
+
     public DownloadExcel() {
         var data_type = 'data:application/vnd.ms-excel';
         var table_div = document.getElementById('RptPDF');

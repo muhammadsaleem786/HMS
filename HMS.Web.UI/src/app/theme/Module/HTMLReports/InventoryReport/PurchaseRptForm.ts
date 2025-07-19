@@ -93,15 +93,20 @@ export class PurchaseRptForm implements OnInit {
     public DownloadPDF(): void {
         this.loader.ShowLoader();
         var data = document.getElementById('RptPDF');
-        html2canvas(data).then(canvas => {
-            var imgWidth = 208;
-            var pageHeight = 295;
-            var imgHeight = canvas.height * imgWidth / canvas.width;
-            var heightLeft = imgHeight;
+        html2canvas(data, {
+        scale: 3,
+        useCORS: true,
+        scrollY: -window.scrollY
+    }).then(canvas => {
+             const pageWidth = 210; // A4 width in mm
+        const margin = 10;     // 10mm margin
+        const imgWidth = pageWidth - 2 * margin;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pageHeight = imgHeight + 2 * margin; // auto page height
             const contentDataURL = canvas.toDataURL('image/png')
-           let pdf = new jsPDF('p', 'mm', 'a4');
+          const pdf = new jsPDF('p', 'mm', [pageHeight, pageWidth]); 
             var position = 0;
-            pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
+            pdf.addImage(contentDataURL, 'PNG', margin, margin, imgWidth, imgHeight);
             pdf.save('SaleByPatientRpt.pdf');
             this.loader.HideLoader();
         });

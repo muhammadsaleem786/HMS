@@ -459,84 +459,69 @@
     </form>
 </ng-template>
 <!-- ============================   Rx Print  Modal ========= -->
-<ng-template #PrintRx let-modal class="RxPrintModal TemplateTwo">
-    <div id="print-RxPrintModal">
-        <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
-            <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
-                <div class="col-6">
-                    <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;">{{PatientName}} </h3>
-
-                    <p style="margin: 0; font-size: 14px; line-height: normal;">{{CompanyInfo.CompanyName}}</p>
-                </div>
-                <div class="col-6 text-right" *ngIf="CompanyInfo.CompanyLogo != '' && CompanyInfo.CompanyLogo != null ">
-                    <img [src]="CompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px;">
-                </div>
-                <div class="col-6 text-right" *ngIf="CompanyInfo.CompanyLogo =='' || CompanyInfo.CompanyLogo == null ">
-                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px;">
-                </div>
+ <style>
+    .modal-sm{
+        max-width: 73mm;
+    }
+ </style>
+<ng-template #PrintRx let-modal class="RxPrintModal Salereceipt">
+ <div id="print-RxPrintModal" style="width: 72mm;margin:auto; font-size: 11px; font-family: 'Courier New', monospace; color: #000; padding: 0; margin: 0;">
+    <div class="modal-header" style="padding: 0; border-bottom: none;">
+        <div class="row" style="width: 100%; margin: 0; padding: 5px;">
+            <div class="col-6" style="width: 100%;text-align: left;">
+                <h3 style="font-size: 16px; margin: 0; line-height: normal; font-weight: bold;">{{PatientName}}</h3>
+                <p style="margin: 0; font-size: 11px;">{{CompanyInfo.CompanyName}}</p>
+            </div>
+            <div class="col-6 text-right" *ngIf="CompanyInfo.CompanyLogo != '' && CompanyInfo.CompanyLogo != null" style="text-align: center;">
+                <img [src]="CompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 60px;">
+            </div>
+            <div class="col-6 text-right" *ngIf="CompanyInfo.CompanyLogo =='' || CompanyInfo.CompanyLogo == null" style="text-align: center;">
+                <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 60px;">
             </div>
         </div>
-        <div class="modal-body body_Prescription" style="height: calc(29.7cm - 200px);">
-            <div class="row" style="border-top: 3px solid #5e72e4;height: 95%;">
-                <div class="col-9" style="border-left: 1px solid #5e72e4">
-                    <table class="table" style="margin-top: 15px;">
-                        <thead>
-                        <th style="border-top:0px; padding: 2px;">
-                            Item Name
-                        </th>
-                        <th style="border-top:0px; padding: 2px;">
-                            Qty
-                        </th>
-                        <th style="border-top:0px; padding: 2px;">
-                            Price
-                        </th>
-                        <th style="border-top:0px; padding: 2px;">
-                            Disc.Amt
-                        </th>
-                        <th style="border-top:0px; padding:0 2px 5px;">
-                            Amount
-                        </th>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let m of PrintSale_itemdynamicArray">
-                                <td style="padding:2px;">{{m.ItemName}}<label>({{m.TypeValue}} {{m.BatchSarialNumber}})</label></td>
-                                <td style="padding:2px;">{{m.Quantity}}</td>
-                                <td style="padding:2px;">{{m.Rate}}</td>
-                                <td style="padding:2px;">{{m.Discount}}</td>
-                                <td style="padding:2px;">{{m.TotalAmount}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="row mx-0 pb-2">
-            <div class="col-sm-6">
-                <span>Subtotal</span>
-            </div>
-            <div class="col-sm-6">
-                <h3 class="float-right">{{PSubTotal}}</h3>
-            </div>
-        </div>
-        <div class="row  mx-0 py-2 border-top">
-            <div class="col-sm-6">
-                <span>Discount</span>
-            </div>
-            <div class="col-sm-6">
-                <h3 class="float-right">{{OverAllDiscountAmount}}</h3>
-            </div>
-        </div>
-
-        <div class="row  mx-0 py-2 border-top">
-            <div class="col-sm-6">
-                <span>Total</span>
-            </div>
-            <div class="col-sm-6">
-                <h3 class="float-right">{{PTotal}}</h3>
-            </div>
-        </div>
-
     </div>
+
+    <div class="modal-body body_Prescription" style="height: auto; padding: 0; margin: 0; border-top: 1px dashed #000;">
+        <div class="row" style="height: auto;margin:0;">
+            <div class="col-12" style="width: 100%;">
+                <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 5px;">
+                    <thead>
+                        <tr style="border-bottom: 1px dashed #000;">
+                            <th style="text-align: left; padding: 3px;">Item Name</th>
+                            <th style="text-align: right; padding: 3px;">Qty</th>
+                            <th style="text-align: right; padding: 3px;">Price</th>
+                            <th style="text-align: right; padding: 3px;">Disc.Amt</th>
+                            <th style="text-align: right; padding: 3px;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let m of PrintSale_itemdynamicArray">
+                            <td style="padding:3px; word-break: break-word;">{{m.ItemName}}<br><small>({{m.TypeValue}} {{m.BatchSarialNumber}})</small></td>
+                            <td style="text-align: right; padding:3px;">{{m.Quantity}}</td>
+                            <td style="text-align: right; padding:3px;">{{m.Rate}}</td>
+                            <td style="text-align: right; padding:3px;">{{m.Discount}}</td>
+                            <td style="text-align: right; padding:3px;">{{m.TotalAmount}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mx-0 pb-2" style="border-top: 1px dashed #000; padding-top: 5px;width:100%;margin-top:20px">
+        <div class="col-sm-6" style="width: 48%; font-weight: bold;">Subtotal</div>
+        <div class="col-sm-6" style="width: 50%; text-align: right;float:right;">{{PSubTotal}}</div>
+    </div>
+    <div class="row mx-0 py-2" style="border-top: 1px dashed #000;width:100%;">
+        <div class="col-sm-6" style="width: 48%; font-weight: bold;">Discount</div>
+        <div class="col-sm-6" style="width: 50%; text-align: right;float:right;">{{OverAllDiscountAmount}}</div>
+    </div>
+    <div class="row mx-0 py-2" style="border-top: 1px dashed #000; font-weight: bold;width:100%;">
+        <div class="col-sm-6" style="width: 48%;">Total</div>
+        <div class="col-sm-6" style="width: 50%; text-align: right;float:right;">{{PTotal}}</div>
+    </div>
+</div>
+
     <div style="position:fixed; right: 20px;">
         <button class="btn btn-primary" useExistingCss="true" printSectionId="print-RxPrintModal" ngxPrint> Print</button>
         <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>

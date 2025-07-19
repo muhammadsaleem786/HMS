@@ -102,21 +102,34 @@ export class PaymentSummaryRptForm implements OnInit {
         });
     }
     public DownloadPDF(): void {
-        this.loader.ShowLoader();
-        var data = document.getElementById('RptPDF');
-        html2canvas(data).then(canvas => {
-            var imgWidth = 208;
-            var pageHeight = 295;
-            var imgHeight = canvas.height * imgWidth / canvas.width;
-            var heightLeft = imgHeight;
-            const contentDataURL = canvas.toDataURL('image/png')
-           let pdf = new jsPDF('p', 'mm', 'a4');
-            var position = 0;
-            pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-            pdf.save('PaymentSummary.pdf');
-            this.loader.HideLoader();
-        });
-    }
+    this.loader.ShowLoader();
+    const data = document.getElementById('RptPDF');
+
+    html2canvas(data, {
+        scale: 3,
+        useCORS: true,
+        scrollY: -window.scrollY
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+
+        // Page size: A4 width fixed, height based on content
+        const pageWidth = 210; // A4 width in mm
+        const margin = 10;     // Margin on all sides in mm
+
+        // Final image width and height with margin considered
+        const imgWidth = pageWidth - 2 * margin;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pageHeight = imgHeight + 2 * margin;
+
+        // Create PDF with custom height to fit all content
+        const pdf = new jsPDF('p', 'mm', [pageHeight, pageWidth]); // Portrait with dynamic height
+        pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+        pdf.save('PaymentSummary.pdf');
+
+        this.loader.HideLoader();
+    });
+}
+
     public DownloadExcel() {
         var data_type = 'data:application/vnd.ms-excel';
         var table_div = document.getElementById('RptPDF');

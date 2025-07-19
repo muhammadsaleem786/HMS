@@ -1,11 +1,41 @@
-﻿<div class="margin-t-68">
-    <div class="clearfix backBtnMain">
-        <div class="backBtn">
-            <a routerLink="/home/setup"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+﻿
+
+
+
+    <div class="margin-t-68 removeAction">
+        <div class="row headSection paginationHead">
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col max-content">
+                        <h3 class="page-heading mt-d-inline-block">
+                            Employee
+                        </h3>
+                    </div>
+                
+                </div>
+                
+            </div>
+            <div class="col-sm-4 text-right flex-row flex-end">
+               
+                <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+                <a class="btn btn-danger" >Add New</a>
+            </div>
         </div>
-    </div>    
-    <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="EmployeeList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
-</div>
+    
+    
+        <div>
+            <div class="Cardview search_onTop px-2">
+                 <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="EmployeeList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+
+            
+            </div>
+    
+        </div>
+        
+    </div>
+
+
+
 <div class="modal fade" id="BulkUpdateModal" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-md">
         <form [formGroup]="Form1" novalidate >

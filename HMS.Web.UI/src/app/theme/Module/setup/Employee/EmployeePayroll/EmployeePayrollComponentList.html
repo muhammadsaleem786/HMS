@@ -52,12 +52,13 @@
         </div>
     </div>
 
-    <div class="payroll_Wrap" *ngIf="payrolShow">
-        <div class="clearfix backBtnMain">
-            <div class="backBtn">
-                <a routerLink="/home/setup"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
-            </div>
-        </div>
+    
+ <div class="col-sm-12">
+    <h2 class="grid-heading margin-t-15 mb-2"> Payroll</h2>
+ </div>
+
+    <div class="Cardview payroll_Wrap margin-t-0 ps-2" style="padding-top:10px" *ngIf="payrolShow">
+       
         <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="PayrollList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
 
     </div>

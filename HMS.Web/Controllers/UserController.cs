@@ -21,6 +21,7 @@ using HMS.Service.Services.Appointment;
 using System.Net.Mail;
 using HMS.Service.Services.Employee;
 using System.IO.IsolatedStorage;
+using System.Net;
 
 namespace HMS.Web.API.Controllers
 {
@@ -213,7 +214,6 @@ namespace HMS.Web.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
-        //[ActionName("forgotpassword")]
         [Route("api/User/forgotpassword")]
         public async Task<ResponseInfo> forgotpassword(string Email)
         {
@@ -234,18 +234,11 @@ namespace HMS.Web.API.Controllers
 
                 if (user != null)
                 {
-                    //var Token = JwtManager.GenerateToken(user.ID.ToString(), 4320);
-                    //string token = Token.Split('|')[0];
-                    //token = token + "&type=ForgotToken";
-
                     var guid = Guid.NewGuid().ToString();
                     var token = "GUID=" + guid + "&type=ForgotToken";
                     string encrytoken = Cryptography.Encrypt(token);
                     encrytoken = HttpServerUtility.UrlTokenEncode(Encoding.ASCII.GetBytes(encrytoken));
-
-                    //string encrytoken = guid;
                     user.ForgotToken = guid;
-                    //DateTime ValidTo = Convert.ToDateTime(Token.Split('|')[1]);
                     user.ForgotTokenDate = Request.DateTimes().AddDays(1);
                     user.ObjectState = ObjectState.Modified;
                     _service.Update(user);
@@ -289,7 +282,6 @@ namespace HMS.Web.API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        //[ActionName("resetpassword")]
         [Route("api/User/resetpassword")]
         public async Task<ResponseInfo> resetpassword(adm_user_mf model)
         {
@@ -469,7 +461,6 @@ namespace HMS.Web.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
-        //[ActionName("ResendEmail")]
         [Route("api/User/ResendEmail")]
         public async Task<ResponseInfo> ResendEmail(string Email)
         {
@@ -495,12 +486,6 @@ namespace HMS.Web.API.Controllers
                         }
                         else
                         {
-                            // Generate Token
-                            // 3 days = 4320 minuts   expire after three days
-                            //var Token = JwtManager.GenerateToken(user.ID.ToString(), 4320);
-                            //string token = Token.Split('|')[0];
-                            //user.ActivationToken = Cryptography.Encrypt(token);
-
                             var guid = Guid.NewGuid().ToString();
                             var token = "GUID=" + guid;
                             string encrytoken = Cryptography.Encrypt(token);
@@ -572,7 +557,6 @@ namespace HMS.Web.API.Controllers
                 adm_user_mf user = new adm_user_mf();
                 try
                 {
-                    //var CompanyID = Request.CompanyID();
                     DateTime date = Request.DateTimes();
                     date = date.AddDays(-3);
 
@@ -655,37 +639,22 @@ namespace HMS.Web.API.Controllers
             string webUrl = System.Configuration.ConfigurationManager.AppSettings["WebUrl"];
             string EmailFrom = System.Configuration.ConfigurationManager.AppSettings["EmailFrom"];
             string EmailDisplayName = System.Configuration.ConfigurationManager.AppSettings["EmailDisplayName"];
+            string EmailUserName = System.Configuration.ConfigurationManager.AppSettings["EmailUserName"];
             string EmailPassword = System.Configuration.ConfigurationManager.AppSettings["EmailPassword"];
             string EmailSMTP = System.Configuration.ConfigurationManager.AppSettings["EmailSMTP"];
             int EmailPort = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["EmailPort"]);
-
-            //sys_notification_alert sys_notification = new sys_notification_alert();
-
-            //if (_UOWAsync.Repository<sys_notification_alert>().Queryable().Count() > 0)
-            //    sys_notificationID = _UOWAsync.Repository<sys_notification_alert>().Queryable().Max(e => e.ID) + 1;
-
-            //sys_notification.ID = sys_notificationID;
-            //sys_notification.TypeID = 2;
-            //sys_notification.EmailFrom = EmailFrom;
-            //sys_notification.EmailTo = user.Email;
-            //sys_notification.Subject = subject + ' ' + webUrl;
+         
 
             if (EmailType == "tokenlink")
                 link = webUrl + "/#/confirmed?" + EncryptionToken;
             else if (EmailType == "changepasswordlink")
                 link = webUrl + "/#/resetpassword?" + EncryptionToken;
-
-            //sys_notification.Body = ResolveEmailConfirm(user.Name, path, link);
-            //sys_notification.CreatedBy = Convert.ToInt32(user.ID);
-            //sys_notification.CreatedDate = Request.DateTimes();
-            //sys_notification.ObjectState = ObjectState.Added;
-
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             SmtpClient smtpC = new SmtpClient(EmailSMTP);
             smtpC.EnableSsl = true;
             smtpC.Port = EmailPort;
-            smtpC.Credentials = new System.Net.NetworkCredential(EmailFrom, EmailPassword);
+            smtpC.Credentials = new System.Net.NetworkCredential(EmailUserName, EmailPassword);
             //From address to send email
             if (string.IsNullOrEmpty(EmailDisplayName))
                 mail.From = new MailAddress(EmailFrom);
@@ -1146,7 +1115,6 @@ namespace HMS.Web.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("api/User/saveCompany")]
-        //[ActionName("Save")]
         public async Task<ResponseInfo> saveCompany(adm_company Model)
         {
             var objResponse = new ResponseInfo();

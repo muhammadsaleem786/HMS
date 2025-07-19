@@ -134,6 +134,7 @@ import { TimeAttendanceComponentList } from '../theme/Module/setup/Employee/Time
 import { TimeAttendanceComponentForm } from '../theme/Module/setup/Employee/TimeAttendance/TimeAttendanceComponentForm';
 import { PayrollComponentList } from '../theme/Module/setup/Employee/EmployeePayroll/EmployeePayrollComponentList';
 import { PayrollComponentForm } from '../theme/Module/setup/Employee/EmployeePayroll/EmployeePayrollComponentForm';
+import { ZKTComponentList } from '../theme/Module/setup/Employee/ZKT/ZKTComponentList';
 //end
 const SecureRoutes: Routes = [
     {
@@ -275,7 +276,9 @@ const SecureRoutes: Routes = [
             { path: 'Admin/setting', component: PaymentComponentForm, canActivate: [AuthGuard] },
             { path: 'Admin/Subscriber', component: SubscriberComponentList, canActivate: [AuthGuard] },
             { path: 'Admin/register', component: RegisterComponentForm, canActivate: [AuthGuard] },
-            { path: 'integration', component: IntegrationComponent, canActivate: [AuthGuard] },
+            {
+                path: 'integration', component: IntegrationComponent, canActivate: [AuthGuard]
+            },
             //end
             //employee module
             { path: 'Attendance', component: AttendanceComponentList, canActivate: [AuthGuard] },
@@ -315,7 +318,7 @@ export const SecureComponent: any[] = [
     PageListComponent,
     //employee module
     DepartmentComponentList, PayrollComponentList, PayrollComponentForm, AttendanceComponentList, AttendanceComponentForm, DepartmentComponentForm, designationComponentList,
-    designationComponentForm, LoanComponentList, LoanComponentForm, TimeAttendanceComponentList, TimeAttendanceComponentForm, LeaveApplicationComponentForm, EmployeeComponent, EmployeeComponentList,
+    designationComponentForm, LoanComponentList, LoanComponentForm, TimeAttendanceComponentList, TimeAttendanceComponentForm, LeaveApplicationComponentForm, EmployeeComponent, EmployeeComponentList, ZKTComponentList,
     //end
     //patient module
     AdmitSummeryComponentList, AdmitDetailComponentList, DischargeReportComponent, AdmitPatientComponentList,

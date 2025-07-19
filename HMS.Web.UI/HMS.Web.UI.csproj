@@ -227,6 +227,7 @@
     <Content Include="src\app\theme\Module\setup\Employee\TimeAttendance\TimeAttendanceComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Employee\ZKT\ZKTComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Integration\IntegrationComponent.html" />
     <Content Include="src\app\theme\Module\setup\Items\AddItems\ExpireComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Items\AddItems\ItemComponentForm.html" />
@@ -456,8 +457,6 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Designation\designationComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Designation\designationModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\Designation\designationService.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\employee-routing.module.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\employee.module.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\EmployeePayroll\EmployeePayrollComponentForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\EmployeePayroll\EmployeePayrollComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\EmployeePayroll\EmployeePayrollModel.ts" />
@@ -490,6 +489,9 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\VacationSickLeave\VacationSickLeaveService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\ZKT\ZKTComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\ZKT\ZKTModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Employee\ZKT\ZKTService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Integration\IntegrationComponent.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Integration\IntegrationModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Integration\IntegrationService.ts" />

@@ -37,10 +37,10 @@
                         <button class="btn btn-primary" (click)="openSMSModel(adSMS)">Add</button>
                     </div>
                     <div *ngIf="SMSModel.IsActive==false && SMSModel.ID!=0">
-                        <button class="btn btn-primary" *ngIf="ControlRights.EditRights"(click)="SmsActivate()">Activate</button>
+                        <button class="btn btn-primary" *ngIf="ControlRights.EditRights" (click)="SmsActivate()">Activate</button>
                     </div>
                     <div *ngIf="SMSModel.IsActive==true">
-                        <button class="btn btn-primary"*ngIf="ControlRights.EditRights" (click)="SmsDectivate()">Dectivate</button>
+                        <button class="btn btn-primary" *ngIf="ControlRights.EditRights" (click)="SmsDectivate()">Deactivate</button>
                         <button class="btn btn-primary" (click)="openSMSModel(adSMS)">Update</button>
                     </div>
                 </div>
@@ -57,7 +57,8 @@
                         </div>
                     </div>
                     <ul class="list-unstyled mb-4">
-                        <li><strong>Email:</strong> {{ EmailModel.UserName }}</li>
+                        <li><strong>Email From:</strong> {{ EmailModel.EmailFrom }}</li>
+                        <li><strong>User Name:</strong> {{ EmailModel.UserName }}</li>
                         <li>
                             <strong>Password:</strong>  {{ '*'.repeat(EmailModel.Password?.length || 0) }}
                         </li>
@@ -71,9 +72,71 @@
                         <button class="btn btn-primary" *ngIf="ControlRights.EditRights" (click)="EmailActivate()">Activate</button>
                     </div>
                     <div *ngIf="EmailModel.IsActive==true">
-                        <button class="btn btn-primary"*ngIf="ControlRights.EditRights" (click)="EmailDectivate()">Dectivate</button>
+                        <button class="btn btn-primary" *ngIf="ControlRights.EditRights" (click)="EmailDectivate()">Deactivate</button>
                         <button class="btn btn-primary" (click)="openEmailModel(adEmail)">Update</button>
                     </div>
+                </div>
+            </div>
+
+        </div>
+        <a class="btn btn-danger btn-md" *ngIf="ControlRights.CreateRights" (click)="AddZKTRecord('0')">New Device</a>
+
+        <div class="Cardview px-3 pb-3">
+            <div class="TableView">
+                <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                    <div class="uk-overflow-container col-sm-12 p-0">
+                        <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                            <thead class="grid-header">
+                                <tr>
+                                    <th>IP Address </th>
+                                    <th> Port No </th>
+                                    <th>Last Data Sync</th>
+                                    <th> Location Code</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of ZKTList" index as i>
+                                    <td (click)="AddZKTRecord(item.ID)">
+                                        {{item.IPAddress}}
+                                    </td>
+                                    <td (click)="AddZKTRecord(item.ID)">
+                                        {{item.PortNo}}
+                                    </td>
+                                    <td (click)="AddZKTRecord(item.ID)">
+                                        {{item.LastDataSync}}
+                                    </td>
+                                    <td (click)="AddZKTRecord(item.ID)">
+                                        {{item.LocationCode}}
+                                    </td>
+                                    <td (click)="AddZKTRecord(item.ID)">
+                                        <span *ngIf="item.IsActive==true">
+                                            Active
+                                        </span>
+                                        <span *ngIf="item.IsActive==false">
+                                            Deactive
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr [hidden]="!(ZKTList.length == 0)" style="background:#fff;">
+                                    <td [attr.colspan]="10" align="center">
+                                        <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                        <strong class="nodateFound">No record found</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                    <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                        <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                        <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                            <a (click)="selectPage(page)">
+                                {{page}}
+                            </a>
+                        </li>
+                        <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -141,7 +204,16 @@
     <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
         <div class="modal-body">
             <div class="mb-3">
-                <label for="Email" class="form-label text-danger">Email</label>
+                <label for="Email" class="form-label text-danger">Email From</label>
+                <input type="text"
+                       id="Email"
+                       class="form-control form-control-sm"
+                       formControlName="EmailFrom"
+                       [(ngModel)]="model.EmailFrom"
+                       placeholder="Enter email from" />
+            </div>
+            <div class="mb-3">
+                <label for="Email" class="form-label text-danger">User Name</label>
                 <input type="text"
                        id="Email"
                        class="form-control form-control-sm"
@@ -149,6 +221,7 @@
                        [(ngModel)]="model.UserName"
                        placeholder="Enter email" />
             </div>
+
             <div class="mb-3">
                 <label for="Password" class="form-label text-danger">Password</label>
                 <input type="text"
@@ -197,3 +270,93 @@
 
 </ng-template>
 
+<ng-template #ZKTModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" *ngIf="IsEdit">Update Device</h4>
+        <h4 class="modal-title" *ngIf="IsEdit==false">Add Device</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form2" novalidate (ngSubmit)="SaveOrUpdateZKT(Form2.valid)">
+        <div class="modal-body bg-secondary">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">IP Address </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="IPAddress" [(ngModel)]="AttendanceModel.IPAddress" class="form-control form-control-sm form-control-alternative" placeholder="IP Address">
+                            <small class="text-danger" *ngIf="Form2.controls.IPAddress.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Port No </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="PortNo" [(ngModel)]="AttendanceModel.PortNo" class="form-control form-control-sm form-control-alternative" placeholder="Port No">
+                            <small class="text-danger" *ngIf="Form2.controls.PortNo.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Last Data Sync </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="LastDataSync" [(ngModel)]="AttendanceModel.LastDataSync" class="form-control form-control-sm form-control-alternative" placeholder="Last Data Sync">
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Password </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Password" [(ngModel)]="AttendanceModel.Password" class="form-control form-control-sm form-control-alternative" placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Location Code </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="LocationCode" [(ngModel)]="AttendanceModel.LocationCode" class="form-control form-control-sm form-control-alternative" placeholder="Location Code">
+                            <small class="text-danger" *ngIf="Form2.controls.LocationCode.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Device Serial No </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="DeviceSerialNo" [(ngModel)]="AttendanceModel.DeviceSerialNo" class="form-control form-control-sm form-control-alternative" placeholder="Device Serial No">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Active </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="checkbox" id="" formControlName="IsActive" [(ngModel)]="AttendanceModel.IsActive" class="form-control form-control-sm form-control-alternative">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+            <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+            <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </form>
+</ng-template>

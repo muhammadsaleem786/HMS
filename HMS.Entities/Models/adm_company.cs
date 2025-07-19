@@ -71,6 +71,7 @@ namespace HMS.Entities.Models
             this.pur_sale_hold_mf = new List<pur_sale_hold_mf>();
             this.pur_sale_hold_dt = new List<pur_sale_hold_dt>();
             this.adm_integration = new List<adm_integration>();
+            this.pr_attendance = new List<pr_attendance>();
         }
         public decimal ID { get; set; }
         public string CompanyName { get; set; }
@@ -180,6 +181,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<adm_reminder_mf> adm_reminder_mf { get; set; }
         public virtual ICollection<ipd_procedure_expense> ipd_procedure_expense { get; set; }
         public virtual ICollection<adm_integration> adm_integration { get; set; }
+        public virtual ICollection<pr_attendance> pr_attendance { get; set; }
 
     }
 }

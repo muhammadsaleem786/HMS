@@ -402,7 +402,6 @@ namespace HMS.Web.API.Areas.Employee
                     s.JoiningDate,
                     //TimeAttendanceListdt = datalist.Where(d => d.EmployeeID == s.EmployeeID).SelectMany(x=>x.pr_time).Count() == 0 ? (new List<object>()) : datalist.Where(d => d.EmployeeID == s.EmployeeID).SelectMany(t => t.pr_time).ToList<object>()
                     TimeAttendanceListdt = datalist.Where(d => d.EmployeeID == s.EmployeeID).SelectMany(t => t.pr_time).ToList<object>()
-
                 }).ToList<object>();
 
                 //var TimeAttList2 = datalist2.Select(z => new
@@ -428,7 +427,6 @@ namespace HMS.Web.API.Areas.Employee
 
                 var result = GetWorkingDaysAndHolidays();
                 objResponse.ResultSet = new { TimeAttList = TimeAttList, result = result };
-
             }
             catch (Exception ex)
             {

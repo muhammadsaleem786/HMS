@@ -135,6 +135,19 @@ import { TimeAttendanceComponentForm } from '../theme/Module/setup/Employee/Time
 import { PayrollComponentList } from '../theme/Module/setup/Employee/EmployeePayroll/EmployeePayrollComponentList';
 import { PayrollComponentForm } from '../theme/Module/setup/Employee/EmployeePayroll/EmployeePayrollComponentForm';
 import { ZKTComponentList } from '../theme/Module/setup/Employee/ZKT/ZKTComponentList';
+import { AllowanceComponentList } from '../theme/Module/setup/Employee/Allowance/AllowanceComponentList';
+import { AllowanceComponentForm } from '../theme/Module/setup/Employee/Allowance/AllowanceComponentForm';
+import { DeductionContributionComponentList } from '../theme/Module/setup/Employee/DeductionContribution/DeductionContributionComponentList';
+import { DeductionContributionComponentForm } from '../theme/Module/setup/Employee/DeductionContribution/DeductionContributionComponentForm';
+import { holidayComponentList } from '../theme/Module/setup/Employee/Holidays/holidayComponentList';
+import { holidayComponentForm } from '../theme/Module/setup/Employee/Holidays/holidayComponentForm';
+import { LocationsComponentList } from '../theme/Module/setup/Employee/Locations/LocationsComponentList';
+import { LocationsComponentForm } from '../theme/Module/setup/Employee/Locations/LocationsComponentForm';
+import { PayScheduleComponentList } from '../theme/Module/setup/Employee/Payschedule/PayScheduleComponentList';
+import { PayScheduleComponentForm } from '../theme/Module/setup/Employee/Payschedule/PayScheduleComponentForm';
+import { VacationSickLeaveComponentList } from '../theme/Module/setup/Employee/VacationSickLeave/VacationSickLeaveComponentList';
+import { VacationSickLeaveComponentForm } from '../theme/Module/setup/Employee/VacationSickLeave/VacationSickLeaveComponentForm';
+
 //end
 const SecureRoutes: Routes = [
     {
@@ -297,6 +310,14 @@ const SecureRoutes: Routes = [
             { path: 'Designation', component: designationComponentList, canActivate: [AuthGuard] },
             { path: 'Payroll', component: PayrollComponentList, canActivate: [AuthGuard] },
 
+            { path: 'Allowance', component: AllowanceComponentList, canActivate: [AuthGuard] },
+            { path: 'Deduction', component: DeductionContributionComponentList, canActivate: [AuthGuard] },
+            { path: 'holiday', component: holidayComponentList, canActivate: [AuthGuard] },
+            { path: 'holiday/saveholiday', component: holidayComponentForm, canActivate: [AuthGuard] },
+            { path: 'holiday/saveholiday:id', component: holidayComponentForm, canActivate: [AuthGuard] },
+            { path: 'locations', component: LocationsComponentList },
+            { path: 'Schedule', component: PayScheduleComponentList, canActivate: [AuthGuard] },
+            { path: 'vacationsickleave', component: VacationSickLeaveComponentList },
             //end
         ],
     },
@@ -317,8 +338,16 @@ export const SecureComponent: any[] = [
     DashboardForm,
     PageListComponent,
     //employee module
-    DepartmentComponentList, PayrollComponentList, PayrollComponentForm, AttendanceComponentList, AttendanceComponentForm, DepartmentComponentForm, designationComponentList,
-    designationComponentForm, LoanComponentList, LoanComponentForm, TimeAttendanceComponentList, TimeAttendanceComponentForm, LeaveApplicationComponentForm, EmployeeComponent, EmployeeComponentList, ZKTComponentList,
+    DepartmentComponentList, PayrollComponentList, PayrollComponentForm,
+    AttendanceComponentList, AttendanceComponentForm,
+    DepartmentComponentForm, designationComponentList,
+    designationComponentForm, LoanComponentList, LoanComponentForm,
+    TimeAttendanceComponentList, TimeAttendanceComponentForm, LeaveApplicationComponentForm,
+    EmployeeComponent, EmployeeComponentList, ZKTComponentList,
+    VacationSickLeaveComponentList, VacationSickLeaveComponentForm, AllowanceComponentList,
+    AllowanceComponentForm, DeductionContributionComponentList, DeductionContributionComponentForm,
+    PayScheduleComponentList, PayScheduleComponentForm,
+    LocationsComponentList, LocationsComponentForm, holidayComponentList, holidayComponentForm,
     //end
     //patient module
     AdmitSummeryComponentList, AdmitDetailComponentList, DischargeReportComponent, AdmitPatientComponentList,

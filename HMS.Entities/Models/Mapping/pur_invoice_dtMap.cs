@@ -36,6 +36,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.ItemDescription).HasColumnName("ItemDescription");
             this.Property(t => t.Quantity).HasColumnName("Quantity");
             this.Property(t => t.Rate).HasColumnName("Rate");
+            this.Property(t => t.SalePrice).HasColumnName("SalePrice");
             this.Property(t => t.Amount).HasColumnName("Amount");
             this.Property(t => t.Discount).HasColumnName("Discount");
             this.Property(t => t.DiscountAmount).HasColumnName("DiscountAmount");

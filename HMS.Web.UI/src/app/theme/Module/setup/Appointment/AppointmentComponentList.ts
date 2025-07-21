@@ -101,7 +101,7 @@ export class AppointmentComponentList implements OnInit {
     public IsNewImage: boolean = true;
     public IsNewPatientImage: boolean = true;
     public IsVital: boolean = false;
-    public PatientList: any[] = [];
+    //public PatientList: any[] = [];
     public ClinicList: any[] = [];
     public PatientNameList: any[] = [];
     public StatusList: any[] = [];
@@ -222,11 +222,9 @@ export class AppointmentComponentList implements OnInit {
             if (this.PrescriptionModel.PatientId != null && this.PrescriptionModel.PatientId != undefined) {
                 this.AppointmentModel.PatientId = this.PrescriptionModel.PatientId;
                 this.AppointmentModel.PatientName = this.PrescriptionModel.PatientName;
-                var patientList = this.PatientList.filter(a => a.PatientName == this.AppointmentModel.PatientName);
-                if (patientList != null) {
-                    this.AppointmentModel.CNIC = patientList[0].CNIC;
-                    this.AppointmentModel.Mobile = patientList[0].Mobile;
-                }
+                 this.AppointmentModel.CNIC = this.model.CNIC;
+                this.AppointmentModel.Mobile = this.model.Mobile;
+           
                 this.AppointmentModel.DoctorId = this.PrescriptionModel.DoctorId;
             }
             this.LoadSearchableDropdown();
@@ -333,6 +331,8 @@ export class AppointmentComponentList implements OnInit {
         $('#PatientNameSearch').autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
+                $("#PatientNameSearch").val("");
+                this.SearhPatientId = 0;
                 this._AppointmentService.searchByName(request.term).then(m => {
                     response(m.ResultSet.PatientInfo);
                     this.loader.HideLoader();
@@ -566,7 +566,7 @@ export class AppointmentComponentList implements OnInit {
                 this.AllStatusList = m.AllStatusList;
                 this.ReminderList = m.Reminderlist;
                 this.Followuplist = m.Followuplist;
-                this.PatientList = m.PatientInfo;
+                //this.PatientList = m.PatientInfo;
                 this.IsShowDoctorIds = m.IsShowDoctorIds;
                 this.ClinicList = m.ClinicList;
                 this.MedicineList = m.MedicineList;
@@ -624,7 +624,7 @@ export class AppointmentComponentList implements OnInit {
                 this.AllStatusList = m.AllStatusList;
                 this.ReminderList = m.Reminderlist;
                 this.Followuplist = m.Followuplist;
-                this.PatientList = m.PatientInfo;
+                //this.PatientList = m.PatientInfo;
                 this.IsShowDoctorIds = m.IsShowDoctorIds;
                 this.ClinicList = m.ClinicList;
                 this.MedicineList = m.MedicineList;
@@ -646,71 +646,72 @@ export class AppointmentComponentList implements OnInit {
     }
     onFocusOutEvent(event: any, Id: any) {
         if (event != null && event != undefined) {
-            var patientList = this.PatientList.filter(a => a.ID == Id);
-            if (patientList.length == 0 || patientList.length == null) {
-                swal({
-                    title: "Are you sure?",
-                    text: "Are you sure to add new patient.",
-                    icon: "warning",
-                    buttons: ['Cancel', 'Yes'],
-                    dangerMode: true,
-                })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            this.loader.ShowLoader();
-                            this.model.PatientName = event;
-                            this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(new Date());
-                            this.PrescriptionModel.ClinicId = this.CompanyObj.CompanyID;
-                            //this.PatientDetailInfo = true;
-                            this.modalService.open(this.PatientContent, { size: 'lg', backdrop: 'static' });
-                            this.Addtreatment();
-                            this.loader.HideLoader();
-                        }
-                    });
-
-            }
+            this.loader.ShowLoader();
+            this._PatientService.GetById(Id).then(m => {
+                if (m.IsSuccess) {
+                    this.loader.HideLoader();
+                    if (m.ResultSet == null) {
+                        swal({
+                            title: "Are you sure?",
+                            text: "Are you sure to add new patient.",
+                            icon: "warning",
+                            buttons: ['Cancel', 'Yes'],
+                            dangerMode: true,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    this.loader.ShowLoader();
+                                    this.model.PatientName = event;
+                                    this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(new Date());
+                                    this.PrescriptionModel.ClinicId = this.CompanyObj.CompanyID;
+                                    //this.PatientDetailInfo = true;
+                                    this.modalService.open(this.PatientContent, { size: 'lg', backdrop: 'static' });
+                                    this.Addtreatment();
+                                    this.loader.HideLoader();
+                                }
+                            });
+                    }
+                } else
+                    this.loader.HideLoader();
+            });
         }
     }
     onPatientNameEvent(event: any, id: any) {
         if (event != null && event != undefined && event != "") {
-            var patientList = this.PatientList.filter(a => a.ID == id);
-            if (patientList.length == 0 || patientList.length == null) {
-                swal({
-                    title: "Are you sure?",
-                    text: "Are you sure to add new patient.",
-                    icon: "warning",
-                    buttons: ['Cancel', 'Yes'],
-                    dangerMode: true,
-                })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            this.loader.ShowLoader();
-                            this._AppointmentService.GetEMRNO().then(m => {
-                                this.model.MRNO = m.ResultSet.MRNO;
-                                this.model.PatientName = event;
+            this.loader.ShowLoader();
+            this._PatientService.GetById(id).then(m => {
+                if (m.IsSuccess) {
+                    this.loader.HideLoader();
+                    if (m.ResultSet == null) {
+                        swal({
+                            title: "Are you sure?",
+                            text: "Are you sure to add new patient.",
+                            icon: "warning",
+                            buttons: ['Cancel', 'Yes'],
+                            dangerMode: true,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    this.loader.ShowLoader();
+                                    this._AppointmentService.GetEMRNO().then(m => {
+                                        this.model.MRNO = m.ResultSet.MRNO;
+                                        this.model.PatientName = event;
 
-                                this.BillTypeList = m.ResultSet.BillTypeList;
-                                this.TittleList = m.ResultSet.TittleList;
+                                        this.BillTypeList = m.ResultSet.BillTypeList;
+                                        this.TittleList = m.ResultSet.TittleList;
 
-                                this.model.BillTypeId = 1;
-                                this.model.PrefixTittleId = 1;
+                                        this.model.BillTypeId = 1;
+                                        this.model.PrefixTittleId = 1;
 
-                                this.modalService.open(this.PatientContent, { size: 'lg', backdrop: 'static' });
-                                this.loader.HideLoader();
+                                        this.modalService.open(this.PatientContent, { size: 'lg', backdrop: 'static' });
+                                        this.loader.HideLoader();
+                                    });
+                                }
                             });
-                        }
-                    });
-                //if (confirm("Are you sure to add patient")) {
-                //    this.loader.ShowLoader();
-                //    this._AppointmentService.GetEMRNO().then(m => {
-                //        this.model.MRNO = m.ResultSet.MRNO;
-                //        this.model.PatientName = event;
-                //        this.modalService.open(this.PatientContent, { size: 'lg' });
-                //        this.loader.HideLoader();
-                //    });
-                //}
-            }
-
+                    }
+                } else
+                    this.loader.HideLoader();
+            });
         }
     }
     LoadDoctor() {
@@ -943,7 +944,7 @@ export class AppointmentComponentList implements OnInit {
                     }],
                 });
             });
-        }
+        } 
         this.AppointmentList.forEach(x => {
             this.Events.push({
                 'id': x.ID,
@@ -954,6 +955,7 @@ export class AppointmentComponentList implements OnInit {
                 'color': x.Color,
             });
         });
+
     }
     LoadCalendar(Date) {
         $('#calendar').fullCalendar('destroy');
@@ -1671,7 +1673,7 @@ export class AppointmentComponentList implements OnInit {
                 this.AllStatusList = m.AllStatusList;
                 this.ReminderList = m.Reminderlist;
                 this.Followuplist = m.Followuplist;
-                this.PatientList = m.PatientInfo;
+                //this.PatientList = m.PatientInfo;
                 this.IsShowDoctorIds = m.IsShowDoctorIds;
                 this.ClinicList = m.ClinicList;
                 this.MedicineList = m.MedicineList;
@@ -1707,29 +1709,30 @@ export class AppointmentComponentList implements OnInit {
             Curntdate.setDate(Curntdate.getDate() - 1);
         let date = this._CommonService.GetFormatDate(Curntdate);
         this.AppointmentDate = new Date(date);
-        this._AppointmentService.DropdownFilterData(date.toString(), StatusID.toString()).then(m => {
-            if (this.GenderIds != null) {
-                this.GenderList = m.ResultSet.GenderList.filter(x => this.GenderIds.includes(x.ID));
-                //if (this.GenderList.length == 1)
-                //    this.model.Gender = this.GenderList[0].ID;
-            }
-            else
-                this.GenderList = m.ResultSet.GenderList;
-            this.AllStatusList = m.ResultSet.AllStatusList;
-            this.DoctorList = m.ResultSet.DoctorList.DoctList;
-            this.DoctorClanderList = m.ResultSet.DoctorCalander;
-            this.AppointmentList = m.ResultSet.AppointmentList;
-            if (this.AppointmentList != null) {
-                this.AppointmentList.forEach(x => {
-                    if (x.Image != null && x.Image != undefined && x.Image != "") {
-                        x.Image = GlobalVariable.BASE_Temp_File_URL + '' + x.Image;
-                    }
-                });
-            }
-            this.BindEvent();
-            this.LoadCalendar(date);
-            this.loader.HideLoader();
-        });
+        this._AppointmentService
+            .GetAppointFilterData(date.toString(), StatusID.toString(), this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+                this.PModel.TotalRecord = m.TotalRecord;
+                
+                if (this.GenderIds != null) {
+                    this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
+                }
+                else
+                    this.GenderList = m.GenderList;
+                this.AllStatusList = m.AllStatusList;
+                this.DoctorList = m.DoctorList;
+                this.DoctorClanderList = m.DoctorCalander;
+                this.AppointmentList = m.AppointmentList;
+                if (this.AppointmentList != null) {
+                    this.AppointmentList.forEach(x => {
+                        if (x.Image != null && x.Image != undefined && x.Image != "") {
+                            x.Image = GlobalVariable.BASE_Temp_File_URL + '' + x.Image;
+                        }
+                    });
+                }
+                this.BindEvent();
+                this.LoadCalendar(date);
+                this.loader.HideLoader();
+            });
 
     }
     CheckBoxStatusChange() {
@@ -1782,8 +1785,8 @@ export class AppointmentComponentList implements OnInit {
             if (result.IsSuccess) {
                 this.toastr.Success(result.Message);
                 $('.PatientModal').closest('.modal').removeClass('d-block show').prev('.modal-backdrop').removeClass('show').hide();
-                this.PatientList = [];
-                this.PatientList = result.ResultSet.Model;
+                //this.PatientList = [];
+                //this.PatientList = result.ResultSet.Model;
                 this.AppointmentModel.PatientId = result.ResultSet.CurrentModel.ID;
                 this.AppointmentModel.CNIC = result.ResultSet.CurrentModel.CNIC;
                 this.AppointmentModel.Mobile = result.ResultSet.CurrentModel.Mobile;
@@ -2036,7 +2039,6 @@ export class AppointmentComponentList implements OnInit {
     showPatientDetail(id: any, date: any, AppId: any) {
         if (id != undefined && AppId != undefined) {
             $("#PatientNameSearch").val("");
-            this.SearhPatientId = 0;
             this.IsLoadDocument = false;
             this.IsLoadBill = false;
             this.IsPrevious = false;
@@ -2224,7 +2226,6 @@ export class AppointmentComponentList implements OnInit {
                     }
                 });
                 m.ResultSet.prescription_treatment.forEach((item, index) => {
-
                     var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
                     if (medicineName != null && medicineName != undefined)
                         item.MedicineName = medicineName.Medicine;
@@ -2693,6 +2694,16 @@ export class AppointmentComponentList implements OnInit {
             this.PrescriptionModel.emr_prescription_observation = this.emr_prescription_observation_dynamicArray.filter(a => a.IsSelected == true);
             if (this.PrescriptionModel.FollowUpTime != undefined)
                 this.PrescriptionModel.FollowUpTime = this.Convert12TO24(this.PrescriptionModel.FollowUpTime);
+
+            const hasInvalidMedicine = this.emr_prescription_treatment_dynamicArray.some(
+                item => !item.MedicineName || item.MedicineName.trim() === ''
+            );
+
+            if (hasInvalidMedicine) {
+                this.toastr.Error('Error', 'Medicine Name cannot be empty or null.');
+                this.loader.HideLoader();
+                return;
+            }
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray.filter(a => a.MedicineName != null);
             this.PrescriptionModel.AppointmentId = this.AppointId;
             this._AppointmentService.PrescriptionSave(this.PrescriptionModel).then(m => {
@@ -2924,6 +2935,15 @@ export class AppointmentComponentList implements OnInit {
             this.toastr.Error("Error", "Please select at leatest one medicine.");
             return;
         }
+        const hasInvalidMedicine = this.emr_prescription_treatment_dynamicArray.some(
+            item => !item.MedicineName || item.MedicineName.trim() === ''
+        );
+
+        if (hasInvalidMedicine) {
+            this.toastr.Error('Error', 'Medicine Name cannot be empty or null.');
+            this.loader.HideLoader();
+            return;
+        }
         this.loader.ShowLoader();
 
         this.PrescriptionModel.emr_prescription_complaint = [];
@@ -3088,13 +3108,14 @@ export class AppointmentComponentList implements OnInit {
                 if (this.PrescriptionModel.emr_prescription_treatment != null) {
                     this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
                         var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
-                        if (medicineName != null && medicineName != undefined)
+                        if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
+                            item.MedicineType = medicineName.Type;
+                            item.TypeId = medicineName.TypeId;
+                        }
                         else
                             item.MedicineName = item.MedicineName;
 
-                        item.MedicineType = medicineName.Type;
-                        item.TypeId = medicineName.TypeId;
                         this.emr_prescription_treatment_dynamicArray.push(item);
                     });
                 }

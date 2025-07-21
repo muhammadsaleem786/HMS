@@ -78,7 +78,8 @@
                                     <tr>
                                         <th class="line-item-column" style="width:150px;">Item</th>
                                         <th class="line-item-column" style="width:150px;">Quantity</th>
-                                        <th class="line-item-column" style="width:150px;">Rate</th>
+                                        <th class="line-item-column" style="width:150px;">Cost Price</th>
+                                        <th class="line-item-column" style="width:150px;">Sale Price</th>
                                         <th class="line-item-column" style="width:130px;">Amount</th>
                                         <th class="line-item-column" style="width:130px;"></th>
                                     </tr>
@@ -96,6 +97,9 @@
                                         </td>
                                         <td>
                                             <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Rate" (change)="RateChange(i,dynamic.Rate)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.SalePrice" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                         </td>
                                         <td class="relative">
                                             {{dynamic.Amount}}
@@ -172,7 +176,7 @@
             <div class="btnArea-footer btnFixed dropup">
                 <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save as Draft</button>
                 <button type="submit" class="btn btn-primary" *ngIf="IsEdit && model.SaveStatus==1 && ControlRights.EditRights" (click)="model.action = 'Update'">Update</button>
-                <button type="submit" class="btn btn-primary" *ngIf="IsEdit && model.SaveStatus==1 && ControlRights.CreateRights"(click)="model.action = 'Publish'">Publish</button>
+                <button type="submit" class="btn btn-primary" *ngIf="IsEdit && model.SaveStatus==1 && ControlRights.CreateRights" (click)="model.action = 'Publish'">Publish</button>
                 <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && model.SaveStatus==1 && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
                 <button type="button" class="btn btn-light" routerLink="/home/Invoice">Cancel</button>
             </div>

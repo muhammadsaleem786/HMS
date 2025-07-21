@@ -320,7 +320,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         public ResponseInfo UpdateStatus(string Id, string Statusid)
         {
             var objResponse = new ResponseInfo();
-            
+
             return objResponse;
         }
 
@@ -473,9 +473,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     foreach (pur_invoice_dt item in purorderitem)
                     {
                         var findItem = itemList.Where(a => a.ID == item.ItemID).FirstOrDefault();
+                        adm_item_log adm_item_log_obj = new adm_item_log();
                         if (findItem.TrackInventory)
                         {
-                            adm_item_log adm_item_log_obj = new adm_item_log();
 
                             inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID && (e.BatchSarialNumber == null && item.BatchSarialNumber == null || e.BatchSarialNumber.ToString() == item.BatchSarialNumber.ToString()) && e.CompanyId == CompanyID).FirstOrDefault();
                             if (inv_stockModel != null)
@@ -528,6 +528,25 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                 _adm_item_logService.Insert(adm_item_log_obj);
                                 LogID++;
                             }
+                        }
+                        if (findItem != null)
+                        {
+                            findItem.CostPrice = Convert.ToDecimal(item.Rate);
+                            findItem.SalePrice = Convert.ToDecimal(item.SalePrice);
+                            _adm_itemService.Update(findItem);
+                            //log maintain                               
+                            adm_item_log_obj.ID = LogID;
+                            adm_item_log_obj.CompanyId = CompanyID;
+                            adm_item_log_obj.ItemId = item.ItemID;
+                            adm_item_log_obj.Quantity = "+" + item.Quantity;
+                            adm_item_log_obj.Type = "Sale Rate Change";
+                            adm_item_log_obj.CreatedBy = Request.LoginID();
+                            adm_item_log_obj.CreatedDate = Request.DateTimes();
+                            adm_item_log_obj.ModifiedBy = Request.LoginID();
+                            adm_item_log_obj.ModifiedDate = Request.DateTimes();
+                            adm_item_log_obj.ObjectState = ObjectState.Added;
+                            _adm_item_logService.Insert(adm_item_log_obj);
+                            LogID++;
                         }
                     }
                 }

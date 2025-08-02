@@ -39,10 +39,10 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-payday-cancel" routerLink="/home/holiday">Cancel</button>
+            <button type="button" class="btn btn-default btn -light" routerLink="/home/holiday">Cancel</button>
             <button type="submit" class="btn btn-primary" *ngIf="!IsEdit">Save</button>
             <button type="submit" class="btn btn-primary" *ngIf="IsEdit">Update</button>
-            <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="IsEdit" (click)="Delete()">Delete</button>
+            <button type="button" class="btn btn-primary btnDel pull-left" *ngIf="IsEdit" (click)="Delete()">Delete</button>
 
         </div>
     </div>

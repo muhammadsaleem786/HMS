@@ -138,8 +138,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal">Cancel</button>
-                        <!--<button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>-->
+                        <button type="button" class="btn btn-default btn -light" data-dismiss="modal">Cancel</button>
+                        <!--<button id="saveSchedule" type="submit" class="btn btn-primary">Save</button>-->
                     </div>
                 </div>
             </form>
@@ -199,8 +199,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowHideModal('HideAP')" data-dismiss="modal">Cancel</button>
-                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                        <button type="button" class="btn btn-default btn -light" (click)="ShowHideModal('HideAP')" data-dismiss="modal">Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </form>
@@ -275,9 +275,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="AdjustmentModel.AdjustmentBy > 0" (click)="DeleteAdjustmentModel()">Delete</button>
-                        <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowHideModal('HideAd')" data-dismiss="modal" id="closeAdjustmentModal">Cancel</button>
-                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                        <button type="button" class="btn btn-primary btnDel pull-left" *ngIf="AdjustmentModel.AdjustmentBy > 0" (click)="DeleteAdjustmentModel()">Delete</button>
+                        <button type="button" class="btn btn-default btn -light" (click)="ShowHideModal('HideAd')" data-dismiss="modal" id="closeAdjustmentModal">Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </form>

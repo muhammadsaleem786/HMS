@@ -1,169 +1,330 @@
-
+<style>
+    .card{
+        box-shadow: 1px 1px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 1px -1px rgba(0, 0, 0, 0.06);
+        border: 0px;
+        border-radius: 6px;
+    }
+    .formfooter{
+        position: fixed;
+        bottom: 0;
+        padding: 20px;
+        right: 0;
+        gap: 5px;
+        z-index: 11;
+        width: 100%;
+        background: #fff;
+    }
+</style>
  <div class="col-sm-12">
     <h2 class="grid-heading margin-t-15 margin-b-0">Employee Information</h2>
  </div>
 <div>
-    <div class="m-content EmpInfoStepForm">
-        <div class="m-portlet Cardview">
+  
+    <div class="m-content">
+        <div class="m-portlet">
             <div clas="card-body">
                   <div class="m-form mt-wizardForm">
                 <mat-horizontal-stepper linear #stepper (selectionChange)="onStepChange($event)">
-                    <mat-step [stepControl]="firstFormGroup" class="wizardHeadingFirst" wizardHeadingFirst>
-                        <form [formGroup]="firstFormGroup" class="m-form m-form--label-align-left- m-form--state-">
-                            <ng-template matStepLabel>
-                                <span class="mt-wizardLabel">Employee Info</span>
-                                <span class="mt-wizardCircles"><span class="mt-wizardCheck" [style.visibility]="firstFormGroup.valid ? 'visible' : 'hidden'"></span></span>
-                                <div class="progress">
-                                    <div class="progress-bar"></div>
+                   <mat-step [stepControl]="firstFormGroup" class="wizardHeadingFirst" wizardHeadingFirst>
+                    <form [formGroup]="firstFormGroup" class="m-form m-form--label-align-left- m-form--state-">
+                        <ng-template matStepLabel>
+                          <div [ngClass]="firstFormGroup.valid ? 'active' : ''">
+                        <span class="mt-wizardLabel">Basic Info</span>
+                        <span class="mt-wizardCircles">
+                            <span
+                            class="mt-wizardCheck"
+                            [style.visibility]="firstFormGroup.valid ? 'visible' : 'hidden'"
+                            ></span>
+                        </span>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
+                        </div></div>
+                        </ng-template>
+
+                        <div class="row gy-4">
+                        <!-- Employee Info Section -->
+                        <div class="col-12">
+                            <div class="card p-4 rounded-3 shadow-sm bg-light-subtle mb-4">
+                            <h4 class="fw-bold mb-3">
+                                Employee Info <span class="small text-muted">[ * Required Fields ]</span>
+                            </h4>
+
+                            <div class="row g-4 align-items-start">
+                                <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="mt-upload-img">
+                                    <div *ngIf="model.EmployeePic=='' || model.EmployeePic==null || model.EmployeePic==undefined">
+                                        <img
+                                        src="../../../../../assets/app/media/img/no_image.png"
+                                        style="width: 80px; height: 80px; border-radius: 50%; display: block;"
+                                        />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        [value]="model.EmployeePic"
+                                        [(ngModel)]="model.EmployeePic"
+                                        [ngModelOptions]="{standalone:true}"
+                                        class="form-control d-none"
+                                    />
+                                    <div *ngIf="model.EmployeePic!=''">
+                                        <img
+                                        [src]="Image"
+                                        style="width: 80px; height: 80px; border-radius: 50%; display: block;"
+                                        />
+                                    </div>
+                                    <File-Component
+                                        class="UploadActnWrap"
+                                        [(ngModel)]="model.EmployeePic"
+                                        (ClearModel)="ClearImageUrl()"
+                                        (FileNameEvent)="getImageUrlName($event)"
+                                        (IsNewFileEvent)="IsNewImageEvent($event)"
+                                        [ImageWithAddress]="true"
+                                        [ngModelOptions]="{standalone:true}"
+                                    ></File-Component>
+                                    </div>
                                 </div>
-                            </ng-template>
-
-                            <div class="row">
-
-                                <div class="col-md-4 col-sm-6">
-                                    <h4 class="m-form__heading-title">
-                                        Employee Info <span class="small text-muted">[ * Required Fields].</span>
-                                    </h4>
-                                    <div class="row ImageBlockWrap">
-                                        <div class="col-xs-7 col-md-8">
-                                            <div class="form-group" *ngIf="StepperSelectedIndex != 4">
-                                                <div class="mt-upload-img">
-                                                    <div class="" *ngIf="model.EmployeePic=='' ||  model.EmployeePic==null || model.EmployeePic==undefined">
-                                                        <img src="../../../../../assets/app/media/img/no_image.png" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
-                                                    </div>
-                                                    <input type="text" [value]="model.EmployeePic" [(ngModel)]="model.EmployeePic" [ngModelOptions]="{standalone:true}" class="form-control hidden" />
-                                                    <div class="" *ngIf="model.EmployeePic!=''">
-                                                        <img [src]="Image" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
-                                                    </div>
-                                                    <File-Component class="UploadActnWrap" [(ngModel)]="model.EmployeePic" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvent)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
-                                                </div>
-                                            </div>
+                                </div>
+                                <div class="col-md-6">
+                                      <label class="form-label">Gender</label>
+                                        <div class="d-flex" style="gap:15px">
+                                            
+                                <div class="form-check">
+                                    <input
+                                    class="form-check-input"
+                                    name="Gender"
+                                    formControlName="Gender"
+                                    [(ngModel)]="model.Gender"
+                                    type="radio"
+                                    value="M"
+                                    />
+                                    <label class="form-check-label">Male</label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                    class="form-check-input"
+                                    name="Gender"
+                                    formControlName="Gender"
+                                    [(ngModel)]="model.Gender"
+                                    type="radio"
+                                    value="F"
+                                    />
+                                    <label class="form-check-label">Female</label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                    class="form-check-input"
+                                    name="Gender"
+                                    formControlName="Gender"
+                                    [(ngModel)]="model.Gender"
+                                    type="radio"
+                                    value="O"
+                                    />
+                                    <label class="form-check-label">Other</label>
+                                </div>
                                         </div>
-                                        <div class="col-xs-5 col-md-4 no-padding">
-                                            <div class="form-group InputGender" style="min-height: 59px;">
-                                                <div>
-                                                    <label>Gender</label>
-                                                </div>
-                                                <!--radio-inline-->
-                                                <label class="">
-                                                    <input class="mt-Scale-1_8" name="Gender" formControlName="Gender" [(ngModel)]="model.Gender" type="radio" value="M">&nbsp; Male
-                                                </label>
-                                                <label class="">
-                                                    <input class="mt-Scale-1_8" name="Gender" formControlName="Gender" [(ngModel)]="model.Gender" value="F" type="radio">&nbsp; Female
-                                                </label>
-                                                <label class="">
-                                                    <input class="mt-Scale-1_8" name="Gender" formControlName="Gender" [(ngModel)]="model.Gender" value="O" type="radio">&nbsp; Other
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="usr">First Name*</label>
-                                        <input type="text" formControlName="FirstName" [(ngModel)]="model.FirstName" class="form-control m-input" maxlength="250" placeholder="First Name" (keypress)="OnKeyPress($event)">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Last Name*</label>
-                                        <input type="text" formControlName="LastName" [(ngModel)]="model.LastName" class="form-control m-input" maxlength="250" placeholder="Last Name" (keypress)="OnKeyPress($event)">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>DOB</label>
-                                        <Datetime-Component formControlName="DOB" placeholder="DD/MM/YYYY" (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="model.DOB">
-                                        </Datetime-Component>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Marital Status</label>
-                                        <select formControlName="MaritalStatusTypeID" [(ngModel)]="model.MaritalStatusTypeID" class="form-control m-input">
-                                            <option *ngFor="let item of MaritalStatusList" [value]="item.ID">
-                                                {{item.Value}}
-                                            </option>
-                                        </select>
-                                    </div>
-
                                 </div>
-
-                                <div class="col-md-4 col-sm-6">
-                                    <h4 class="m-form__heading-title">
-                                        Address
-                                    </h4>
-                                    <div class="form-group">
-                                        <label for="usr">Country*</label>
-                                        <select formControlName="CountryID" [(ngModel)]="model.CountryID" (change)="CountrySelectionChange()" class="form-control m-input">
-                                            <option *ngFor="let item of Countries" [value]="item.ID">
-                                                {{item.Value}}
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="usr">City*</label>
-                                        <select formControlName="CityID" [(ngModel)]="model.CityID" class="form-control m-input">
-                                            <option *ngFor="let item of FilterCities" [value]="item.ID">
-                                                {{item.Value}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Zip/Postal Code</label>
-                                        <input type="text" formControlName="ZipCode" [(ngModel)]="model.ZipCode" class="form-control m-input" maxlength="150" placeholder="ZipCode">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Nationality</label>
-                                        <select formControlName="NationalityID" [(ngModel)]="model.NationalityID" class="form-control m-input">
-                                            <option *ngFor="let item of Nationalities" [value]="item.ID">
-                                                {{item.Value}}
-                                            </option>
-                                        </select>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label for="usr">Street Address*</label>
-                                        <textarea type="text" class="form-control m-input" formControlName="StreetAddress" [(ngModel)]="model.StreetAddress" maxlength="500" placeholder="Address"></textarea>
-                                    </div>
-
-                                </div>
-                                <div class="col-md-4 col-sm-6">
-                                    <h4 class="m-form__heading-title">
-                                        Contact
-                                    </h4>
-                                    <div class="form-group">
-                                        <label for="usr">Email</label>
-                                        <input type="email" formControlName="Email" [attr.disabled]="(IsEdit && IsAdm_UserExist) ? true : null" [(ngModel)]="model.Email" class="form-control m-input" maxlength="250" placeholder="Email">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Home Phone</label>
-                                        <input type="text" formControlName="HomePhone" [attr.disabled]="(IsEdit && IsAdm_UserExist) ? true : null" [(ngModel)]="model.HomePhone" class="form-control m-input" maxlength="150" (change)="IsvalidPhone('HP')" placeholder="Home Phone (+XXXXXXX)">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Work Phone/Mobile</label>
-                                        <input type="text" formControlName="Mobile" [(ngModel)]="model.Mobile" class="form-control m-input" maxlength="150" placeholder="Work Phone (+XXXXXXX)" (change)="IsvalidPhone('WP')">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Emergency Contact Name</label>
-                                        <input type="text" formControlName="EmergencyContactPerson" [(ngModel)]="model.EmergencyContactPerson" class="form-control m-input" maxlength="250" style="margin-bottom: 10px;" placeholder="Emergency Contact Person">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="usr">Emergency Contact No</label>
-                                        <input type="text" formControlName="EmergencyContactNo" [(ngModel)]="model.EmergencyContactNo" class="form-control m-input" maxlength="150" placeholder="Emergency Contact No" (change)="IsvalidPhone('EP')">
-                                    </div>
-
-                                </div>
-
-
-
                             </div>
-                            <div class="btnArea-footer">
-                                <a class="btn btn-blue btn-payday-cancel" routerLink="/home/Employee">Cancel</a>
-                                <button mat-button matStepperNext class="btn btn-blue" [disabled]="firstFormGroup.invalid">Next</button>
+
+                            <div class="row g-4 mt-3">
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">First Name*</label>
+                                <input
+                                    type="text"
+                                    formControlName="FirstName"
+                                    [(ngModel)]="model.FirstName"
+                                    class="form-control"
+                                    maxlength="250"
+                                    placeholder="First Name"
+                                    (keypress)="OnKeyPress($event)"
+                                />
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Last Name*</label>
+                                <input
+                                    type="text"
+                                    formControlName="LastName"
+                                    [(ngModel)]="model.LastName"
+                                    class="form-control"
+                                    maxlength="250"
+                                    placeholder="Last Name"
+                                    (keypress)="OnKeyPress($event)"
+                                />
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">DOB</label>
+                                <Datetime-Component
+                                    formControlName="DOB"
+                                    placeholder="DD/MM/YYYY"
+                                    (DateChangeValue)="onDOBChanged($event)"
+                                    [(ngModel)]="model.DOB"
+                                ></Datetime-Component>
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Marital Status</label>
+                                <select
+                                    formControlName="MaritalStatusTypeID"
+                                    [(ngModel)]="model.MaritalStatusTypeID"
+                                    class="form-control"
+                                >
+                                    <option *ngFor="let item of MaritalStatusList" [value]="item.ID">{{ item.Value }}</option>
+                                </select>
+                                
+                                </div>
                             </div>
-                        </form>
+                            </div>
+                        </div>
+
+                        <!-- Address Section -->
+                        <div class="col-12">
+                            <div class="card p-4 rounded-3 shadow-sm bg-light-subtle mb-4">
+                            <h4 class="fw-bold mb-3">Address</h4>
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Country*</label>
+                                <select
+                                    formControlName="CountryID"
+                                    [(ngModel)]="model.CountryID"
+                                    (change)="CountrySelectionChange()"
+                                    class="form-control"
+                                >
+                                    <option *ngFor="let item of Countries" [value]="item.ID">{{ item.Value }}</option>
+                                </select>
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">City*</label>
+                                <select
+                                    formControlName="CityID"
+                                    [(ngModel)]="model.CityID"
+                                    class="form-control"
+                                >
+                                    <option *ngFor="let item of FilterCities" [value]="item.ID">{{ item.Value }}</option>
+                                </select>
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">ZIP/Postal Code</label>
+                                <input
+                                    type="text"
+                                    formControlName="ZipCode"
+                                    [(ngModel)]="model.ZipCode"
+                                    class="form-control"
+                                    maxlength="150"
+                                    placeholder="Enter ZIP/Postal Code"
+                                />
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Street Address*</label>
+                                <input
+                                    type="text"
+                                    formControlName="StreetAddress"
+                                    [(ngModel)]="model.StreetAddress"
+                                    maxlength="500"
+                                    class="form-control"
+                                    placeholder="Enter street address"
+                                />
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nationality</label>
+                                <select
+                                    formControlName="NationalityID"
+                                    [(ngModel)]="model.NationalityID"
+                                    class="form-control"
+                                >
+                                    <option *ngFor="let item of Nationalities" [value]="item.ID">{{ item.Value }}</option>
+                                </select>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Section -->
+                        <div class="col-12">
+                            <div class="card p-4 rounded-3 shadow-sm bg-light-subtle mb-4">
+                            <h4 class="fw-bold mb-3">Contact</h4>
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input
+                                    type="email"
+                                    formControlName="Email"
+                                    [attr.disabled]="(IsEdit && IsAdm_UserExist) ? true : null"
+                                    [(ngModel)]="model.Email"
+                                    class="form-control"
+                                    maxlength="250"
+                                    placeholder="Email"
+                                />
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Home Phone</label>
+                                <input
+                                    type="text"
+                                    formControlName="HomePhone"
+                                    [attr.disabled]="(IsEdit && IsAdm_UserExist) ? true : null"
+                                    [(ngModel)]="model.HomePhone"
+                                    class="form-control"
+                                    maxlength="150"
+                                    placeholder="Home Phone (+XXXXXXX)"
+                                    (change)="IsvalidPhone('HP')"
+                                />
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Work Phone/Mobile</label>
+                                <input
+                                    type="text"
+                                    formControlName="Mobile"
+                                    [(ngModel)]="model.Mobile"
+                                    class="form-control"
+                                    maxlength="150"
+                                    placeholder="Work Phone (+XXXXXXX)"
+                                    (change)="IsvalidPhone('WP')"
+                                />
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Emergency Contact Name</label>
+                                <input
+                                    type="text"
+                                    formControlName="EmergencyContactPerson"
+                                    [(ngModel)]="model.EmergencyContactPerson"
+                                    class="form-control"
+                                    maxlength="250"
+                                    placeholder="Emergency Contact Person"
+                                />
+                                </div>
+                                <div class="col-md-6">
+                                <label class="form-label fw-semibold">Emergency Contact No</label>
+                                <input
+                                    type="text"
+                                    formControlName="EmergencyContactNo"
+                                    [(ngModel)]="model.EmergencyContactNo"
+                                    class="form-control"
+                                    maxlength="150"
+                                    placeholder="Emergency Contact No"
+                                    (change)="IsvalidPhone('EP')"
+                                />
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 formfooter">
+                        <a class="btn btn-outline-secondary  mt-0" routerLink="/home/Employee">Cancel</a>
+                        <button
+                            mat-button
+                            matStepperNext
+                            class="btn btn-primary"
+                            [disabled]="firstFormGroup.invalid"
+                         style="margin-top:0 !important">
+                            Next
+                        </button>
+                        </div>
+                    </form>
                     </mat-step>
                     <mat-step [stepControl]="secondFormGroup">
                         <form [formGroup]="secondFormGroup" class="m-form m-form--label-align-left- m-form--state-">
                             <ng-template matStepLabel>
+                                  <div [ngClass]="secondFormGroup.valid ? 'active' : ''">
                                 <span class="mt-wizardLabel">Employment</span>
                                 <span class="mt-wizardCircles">
                                     <span class="mt-wizardCheck" [style.visibility]="secondFormGroup.valid ? 'visible' : 'hidden'"></span>
@@ -171,528 +332,550 @@
                                 <div class="progress">
                                     <div class="progress-bar"></div>
                                 </div>
+                                </div>
                             </ng-template>
                             <h4 class="m-form__heading-title">
                                 {{model.FirstName +' '+ model.LastName}}'s Employment Info
                             </h4>
                             <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Hire Date*</label>
-                                                <Datetime-Component formControlName="HireDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onHireDateChanged($event)" [(ngModel)]="model.HireDate">
-                                                </Datetime-Component>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
+                              <div class="card p-4 rounded-3 shadow-sm bg-light-subtle mb-4 w-100">
+  <div class="row">
+    <!-- Hire Date -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Hire Date*</label>
+        <Datetime-Component formControlName="HireDate" placeholder="DD/MM/YYYY"
+          (DateChangeValue)="onHireDateChanged($event)" [(ngModel)]="model.HireDate">
+        </Datetime-Component>
+      </div>
+    </div>
+    <!-- Joining Date -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Joining Date*</label>
+        <Datetime-Component formControlName="JoiningDate" placeholder="DD/MM/YYYY"
+          (DateChangeValue)="onDateJoiningChanged($event)" [(ngModel)]="model.JoiningDate">
+        </Datetime-Component>
+      </div>
+    </div>
 
-                                                <label>Joining Date*</label>
-                                                <Datetime-Component formControlName="JoiningDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateJoiningChanged($event)" [(ngModel)]="model.JoiningDate">
-                                                </Datetime-Component>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Status</label>
-                                        <select class="form-control m-input" [attr.disabled]="IsAdmin ? true : null" formControlName="StatusID" (change)="StatusSelCahnge()" [(ngModel)]="model.StatusID">
-                                            <option *ngFor="let item of Statuses" [value]="item.ID">
-                                                {{item.Value}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Employee Type</label>
-                                        <select formControlName="EmployeeTypeID" [(ngModel)]="model.EmployeeTypeID" (change)="EmpSelectionChange()" class="form-control m-input">
-                                            <option *ngFor="let item of EmployeeTypes" [value]="item.ID" [hidden]="IsShowTerminatedAndFinalDate ? (item.ID ==1 || item.ID ==2 || item.ID ==3 || item.ID ==4 || item.ID ==5) : (item.ID ==6 || item.ID ==7 || item.ID ==8 )">
-                                                {{item.Value}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="row" [style.display]="IsShowTerminatedAndFinalDate ? 'block' : 'none'">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>{{GetInActiveLeavingDateTitle()}} Date*</label>
-                                                <Datetime-Component formControlName="TerminatedDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.TerminatedDate">
-                                                </Datetime-Component>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Final Settlement Date*</label>
-                                                <Datetime-Component formControlName="FinalSettlementDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.FinalSettlementDate">
-                                                </Datetime-Component>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--model.StatusID => Active = 1 -->
-                                    <div [style.display]="model.StatusID == 1  ? 'block' : 'none'">
-                                        <div class="form-group" [style.display]="PayrollRegion == 'SA' ? 'block' : 'none'">
-                                            <label for="usr">Contract Type*</label>
-                                            <select formControlName="ContractTypeID" [(ngModel)]="model.ContractTypeID" (change)="ContractTypeSelChange()" class="form-control m-input">
-                                                <option *ngFor="let item of ContractTypeList" [value]="item.ID">
-                                                    {{item.Value}}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group" [style.display]="model.ContractTypeID == 2 ? 'block' : 'none'">
-                                            <label>Sub-Contract Company Name*</label>
-                                            <input type="text" formControlName="SubContractCompanyName" [(ngModel)]="model.SubContractCompanyName" class="form-control m-input" maxlength="250">
-                                        </div>
-                                        <div class="row" [style.display]="(model.StatusID == 1 && model.EmployeeTypeID != 1) ? 'block' : 'none'">
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label>Start Date*</label>
-                                                    <Datetime-Component formControlName="TypeStartDate" (DateChangeValue)="onTypeStartDateChanged($event)" placeholder="DD/MM/YYYY" [(ngModel)]="model.TypeStartDate">
-                                                    </Datetime-Component>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label>End Date*</label>
-                                                    <Datetime-Component formControlName="TypeEndDate" (DateChangeValue)="onTypeEndDateChanged($event)" placeholder="DD/MM/YYYY" [(ngModel)]="model.TypeEndDate">
-                                                    </Datetime-Component>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+    <!-- Status -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="usr">Status</label>
+        <select class="form-control m-input" [attr.disabled]="IsAdmin ? true : null"
+          formControlName="StatusID" (change)="StatusSelCahnge()" [(ngModel)]="model.StatusID">
+          <option *ngFor="let item of Statuses" [value]="item.ID">{{item.Value}}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Employee Type -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="usr">Employee Type</label>
+        <select formControlName="EmployeeTypeID" [(ngModel)]="model.EmployeeTypeID"
+          (change)="EmpSelectionChange()" class="form-control m-input">
+          <option *ngFor="let item of EmployeeTypes" [value]="item.ID"
+            [hidden]="IsShowTerminatedAndFinalDate ? (item.ID ==1 || item.ID ==2 || item.ID ==3 || item.ID ==4 || item.ID ==5) : (item.ID ==6 || item.ID ==7 || item.ID ==8 )">
+            {{item.Value}}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Terminated & Final Settlement Dates (conditional) -->
+  <div class="row" [style.display]="IsShowTerminatedAndFinalDate ? 'block' : 'none'">
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>{{GetInActiveLeavingDateTitle()}} Date*</label>
+        <Datetime-Component formControlName="TerminatedDate" placeholder="DD/MM/YYYY"
+          [(ngModel)]="model.TerminatedDate"></Datetime-Component>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Final Settlement Date*</label>
+        <Datetime-Component formControlName="FinalSettlementDate" placeholder="DD/MM/YYYY"
+          [(ngModel)]="model.FinalSettlementDate"></Datetime-Component>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contract Section (conditional) -->
+  <div [style.display]="model.StatusID == 1  ? 'block' : 'none'">
+    <div class="row">
+      <div class="col-sm-6" [style.display]="PayrollRegion == 'SA' ? 'block' : 'none'">
+        <div class="form-group">
+          <label for="usr">Contract Type*</label>
+          <select formControlName="ContractTypeID" [(ngModel)]="model.ContractTypeID"
+            (change)="ContractTypeSelChange()" class="form-control m-input">
+            <option *ngFor="let item of ContractTypeList" [value]="item.ID">
+              {{item.Value}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-sm-6" [style.display]="model.ContractTypeID == 2 ? 'block' : 'none'">
+        <div class="form-group">
+          <label>Sub-Contract Company Name*</label>
+          <input type="text" formControlName="SubContractCompanyName"
+            [(ngModel)]="model.SubContractCompanyName" class="form-control m-input" maxlength="250">
+        </div>
+      </div>
+    </div>
+
+    <!-- Start/End Date (conditional) -->
+    <div class="row" [style.display]="(model.StatusID == 1 && model.EmployeeTypeID != 1) ? 'block' : 'none'">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Start Date*</label>
+          <Datetime-Component formControlName="TypeStartDate" (DateChangeValue)="onTypeStartDateChanged($event)"
+            placeholder="DD/MM/YYYY" [(ngModel)]="model.TypeStartDate"></Datetime-Component>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>End Date*</label>
+          <Datetime-Component formControlName="TypeEndDate" (DateChangeValue)="onTypeEndDateChanged($event)"
+            placeholder="DD/MM/YYYY" [(ngModel)]="model.TypeEndDate"></Datetime-Component>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Designation -->
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="usr">Designation</label>
+        <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#DesignationModal"
+          (click)="IntializeModels()"></i>
+        <select formControlName="DesignationID" [(ngModel)]="model.DesignationID" class="form-control m-input">
+          <option value="">Select an option </option>
+          <option *ngFor="let item of Designations" [value]="item.ID">{{item.DesignationName}}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Specialty -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Specialty</label>
+        <select formControlName="SpecialtyTypeID" [(ngModel)]="model.SpecialtyTypeID" class="form-control m-input">
+          <option value="">Select an option </option>
+          <option *ngFor="let item of SpecialtyTypeList" [value]="item.ID">{{item.Value}}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Classification -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Classification</label>
+        <select formControlName="ClassificationTypeID" [(ngModel)]="model.ClassificationTypeID"
+          class="form-control m-input">
+          <option value="">Select an option </option>
+          <option *ngFor="let item of ClassificationTypeList" [value]="item.ID">{{item.Value}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+                             
+<div class="card p-4 rounded-3 shadow-sm bg-light-subtle mb-4">
+  <div class="row">
+    <!-- Department -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="usr">Department</label>
+        <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#DepartmentModal" (click)="IntializeModels()"></i>
+        <select formControlName="DepartmentID" [(ngModel)]="model.DepartmentID" class="form-control m-input">
+          <option value="">Select an option</option>
+          <option *ngFor="let item of Departments" [value]="item.ID">{{item.DepartmentName}}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- National ID -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>National ID<span *ngIf="PayrollRegion == 'SA'">/Iqama</span></label>
+        <input type="button" class="btn btn-xs btn-Input pull-right cursor-pointer" data-toggle="modal"
+          data-target="#ExpiryDateModal" (click)="AddExpiryClick('N')" value="Add Expiry" />
+        <input type="text" formControlName="NICNo" [(ngModel)]="model.NICNo" class="form-control m-input"
+          maxlength="150" placeholder="National ID">
+      </div>
+    </div>
+
+    <!-- Passport No -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="usr">Passport No.</label>
+        <input type="button" class="btn btn-xs btn-Input pull-right cursor-pointer" data-toggle="modal"
+          data-target="#ExpiryDateModal" (click)="AddExpiryClick('P')" value="Add Expiry" />
+        <input type="text" formControlName="PassportNumber" [(ngModel)]="model.PassportNumber"
+          class="form-control m-input" maxlength="250" placeholder="Passport Number">
+      </div>
+    </div>
+
+    <!-- SCHS No (SA only) -->
+    <div class="col-sm-6" [hidden]="PayrollRegion != 'SA'">
+      <div class="form-group">
+        <label for="usr">SCHS No.</label>
+        <input type="button" class="btn btn-xs btn-Input pull-right cursor-pointer" data-toggle="modal"
+          data-target="#ExpiryDateModal" (click)="AddExpiryClick('S')" value="Add Expiry" />
+        <input type="text" formControlName="SCHSNO" [(ngModel)]="model.SCHSNO" class="form-control m-input"
+          maxlength="150" placeholder="SCHS No">
+      </div>
+    </div>
+
+    <!-- Employee Code -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Employee Code</label>
+        <input type="text" formControlName="EmployeeCode" [(ngModel)]="model.EmployeeCode"
+          class="form-control m-input" maxlength="50">
+      </div>
+    </div>
+  </div>
+
+  <!-- Medical Insurance -->
+  <div class="row">
+    <div class="col-sm-10">
+      <div class="form-group" style="min-height: 59px;">
+        <label>Medical Insurance</label>
+        <label class="radio-inline">
+          <input class="mt-Scale-1_8" name="MedicalInsuranceProvided" formControlName="MedicalInsuranceProvided"
+            [(ngModel)]="model.MedicalInsuranceProvided" type="radio" (change)="MedInsuranceRadioChange()"
+            value="Y"> Eligible
+        </label>
+        <label class="radio-inline">
+          <input class="mt-Scale-1_8" name="MedicalInsuranceProvided" formControlName="MedicalInsuranceProvided"
+            [(ngModel)]="model.MedicalInsuranceProvided" type="radio" (change)="MedInsuranceRadioChange()"
+            value="N"> Non-Eligible
+        </label>
+      </div>
+    </div>
+
+    <div class="col-sm-2" *ngIf="model.MedicalInsuranceProvided == 'Y'">
+      <button id="saveSchedule" class="btn pull-left" data-toggle="modal" data-target="#MedicalInsurnceModal">
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Air Ticket (if applicable) -->
+  <div class="row">
+    <div class="col-sm-2" *ngIf="model.AirTicketProvided == 'Y'">
+      <button id="saveSchedule" class="btn pull-left" data-toggle="modal" data-target="#AirTicketModal">
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+  </div>
+</div>
 
 
-                                    <div class="form-group">
-                                        <label for="usr">Designation</label>
-                                        <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#DesignationModal" (click)="IntializeModels()"></i>
-                                        <select formControlName="DesignationID" [(ngModel)]="model.DesignationID" class="form-control m-input">
-                                            <option value="">Select an option </option>
-                                            <option *ngFor="let item of Designations" [value]="item.ID">
-                                                {{item.DesignationName}}
-                                            </option>
-                                        </select>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label>Specialty</label>
-                                        <select formControlName="SpecialtyTypeID" [(ngModel)]="model.SpecialtyTypeID" class="form-control m-input">
-                                            <option value="">Select an option </option>
-                                            <option *ngFor="let item of SpecialtyTypeList" [value]="item.ID">
-                                                {{item.Value}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Classification</label>
-                                        <select formControlName="ClassificationTypeID" [(ngModel)]="model.ClassificationTypeID" class="form-control m-input">
-                                            <option value="">Select an option </option>
-                                            <option *ngFor="let item of ClassificationTypeList" [value]="item.ID">
-                                                {{item.Value}}
-                                            </option>
-                                        </select>
-                                    </div>
+                             <div class="card p-4 rounded-3 shadow-sm bg-light-subtle mb-4">
+  <div class="row">
+    <!-- Pay Type -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Pay Type</label>
+        <select formControlName="PayTypeID" [(ngModel)]="model.PayTypeID" class="form-control m-input">
+          <option *ngFor="let item of Paytypes" [value]="item.ID">{{item.Value}}</option>
+        </select>
+      </div>
+    </div>
 
-                                </div>
+    <!-- Base Salary -->
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Base Salary*</label>
+        <div class="input-group">
+          <span class="input-group-addon" id="basic-addon1">{{this.Currency}}</span>
+          <input type="number" min="0" formControlName="BasicSalary" [(ngModel)]="model.BasicSalary"
+            pattern=".{0,8}" (change)="CalculateSalary()"
+            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+            class="form-control" />
+        </div>
+      </div>
+    </div>
 
-                                <div class="col-sm-4">
+    <!-- Payment Method -->
+    <div class="col-sm-12">
+      <div class="form-group">
+        <label for="usr">Salary Payment Method</label>
+        <select formControlName="PaymentMethodID" [(ngModel)]="model.PaymentMethodID"
+          (change)="PaymentSelectionchange()" class="form-control m-input">
+          <option *ngFor="let item of PaymentMethodTypes" [value]="item.ID">{{item.Value}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-                                    <div class="form-group">
-                                        <label for="usr">Department</label>
-                                        <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#DepartmentModal" (click)="IntializeModels()"></i>
-                                        <select formControlName="DepartmentID" [(ngModel)]="model.DepartmentID" class="form-control m-input">
-                                            <option value="">Select an option </option>
-                                            <option *ngFor="let item of Departments" [value]="item.ID">
-                                                {{item.DepartmentName}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>National ID<span *ngIf="PayrollRegion == 'SA'">/Iqama</span></label>
-                                        <input type="button" class="btn btn-xs btn-Input pull-right cursor-pointer" data-toggle="modal" data-target="#ExpiryDateModal" (click)="AddExpiryClick('N')" value="Add Expiry" />
-                                        <input type="text" formControlName="NICNo" [(ngModel)]="model.NICNo" class="form-control m-input" maxlength="150" placeholder="National ID">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Passport No.</label>
-                                        <input type="button" class="btn btn-xs btn-Input pull-right cursor-pointer" data-toggle="modal" data-target="#ExpiryDateModal" (click)="AddExpiryClick('P')" value="Add Expiry" />
-                                        <input type="text" formControlName="PassportNumber" [(ngModel)]="model.PassportNumber" class="form-control m-input" maxlength="250" placeholder="Passport Number">
-                                    </div>
-                                    <div [hidden]="PayrollRegion != 'SA'">
-                                        <div class="form-group">
-                                            <label for="usr">SCHS No.</label>
-                                            <input type="button" class="btn btn-xs btn-Input pull-right cursor-pointer" data-toggle="modal" data-target="#ExpiryDateModal" (click)="AddExpiryClick('S')" value="Add Expiry" />
-                                            <input type="text" formControlName="SCHSNO" [(ngModel)]="model.SCHSNO" class="form-control m-input" maxlength="150" placeholder="SCHS No">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Employee Code</label>
-                                        <input type="text" formControlName="EmployeeCode" [(ngModel)]="model.EmployeeCode" class="form-control m-input" maxlength="50">
-                                    </div>
+  <!-- Conditional Bank Transfer Info -->
+  <div *ngIf="IsSalBnkTransfr">
+    <div class="row">
+      <!-- Bank Name -->
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Bank Name</label>
+          <input type="text" class="form-control m-input" formControlName="BankName"
+            [(ngModel)]="model.BankName" maxlength="250">
+        </div>
+      </div>
 
-                                    <div class="row">
-                                        <div class="col-sm-10">
-                                            <div class="form-group" style="min-height: 59px;">
-                                                <div>
-                                                    <label>Medical Insurance </label>
-                                                </div>
-                                                <label class="radio-inline">
-                                                    <input class="mt-Scale-1_8" name="MedicalInsuranceProvided" formControlName="MedicalInsuranceProvided" [(ngModel)]="model.MedicalInsuranceProvided" type="radio" (change)="MedInsuranceRadioChange()" value="Y"> Eligible
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input class="mt-Scale-1_8" name="MedicalInsuranceProvided" formControlName="MedicalInsuranceProvided" [(ngModel)]="model.MedicalInsuranceProvided" type="radio" (change)="MedInsuranceRadioChange()" value="N"> Non-Eligible
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2" *ngIf="model.MedicalInsuranceProvided == 'Y'">
-                                            <button id="saveSchedule" class="btn pull-left" data-toggle="modal" data-target="#MedicalInsurnceModal">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-2" *ngIf="model.AirTicketProvided == 'Y'">
-                                            <button id="saveSchedule" class="btn pull-left" data-toggle="modal" data-target="#AirTicketModal">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+      <!-- Branch -->
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Branch</label>
+          <input type="text" class="form-control m-input" formControlName="BranchName"
+            [(ngModel)]="model.BranchName" maxlength="250">
+        </div>
+      </div>
 
-                                </div>
+      <!-- Branch Code -->
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Branch Code</label>
+          <input type="text" class="form-control m-input" formControlName="BranchCode"
+            [(ngModel)]="model.BranchCode" maxlength="150">
+        </div>
+      </div>
 
-                                <div class="col-sm-4">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Pay Type</label>
-                                                <select formControlName="PayTypeID" [(ngModel)]="model.PayTypeID" class="form-control m-input">
-                                                    <option *ngFor="let item of Paytypes" [value]="item.ID">
-                                                        {{item.Value}}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Base Salary*</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">{{this.Currency}}</span>
-                                                    <input type="number" min="0" formControlName="BasicSalary" [(ngModel)]="model.BasicSalary" pattern=".{0,8}" (change)="CalculateSalary()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usr">Salary Payment Method</label>
-                                        <select formControlName="PaymentMethodID" [(ngModel)]="model.PaymentMethodID" (change)="PaymentSelectionchange()" class="form-control m-input">
-                                            <option *ngFor="let item of PaymentMethodTypes" [value]="item.ID">
-                                                {{item.Value}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div *ngIf="IsSalBnkTransfr">
-                                        <div class="form-group">
-                                            <label>Bank Name</label>
-                                            <input type="text" class="form-control m-input" formControlName="BankName" [(ngModel)]="model.BankName" maxlength="250">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Branch</label>
-                                            <input type="text" class="form-control m-input" formControlName="BranchName" [(ngModel)]="model.BranchName" maxlength="250">
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label>Branch Code</label>
-                                                    <input type="text" class="form-control m-input" formControlName="BranchCode" [(ngModel)]="model.BranchCode" maxlength="150">
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label>Account No</label>
-                                                    <input type="text" class="form-control m-input" formControlName="AccountNo" [(ngModel)]="model.AccountNo" maxlength="250">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Swift Code</label>
-                                            <input type="text" class="form-control m-input" formControlName="SwiftCode" [(ngModel)]="model.SwiftCode" maxlength="150">
-                                        </div>
-                                    </div>
+      <!-- Account No -->
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Account No</label>
+          <input type="text" class="form-control m-input" formControlName="AccountNo"
+            [(ngModel)]="model.AccountNo" maxlength="250">
+        </div>
+      </div>
 
-                                </div>
+      <!-- Swift Code -->
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label>Swift Code</label>
+          <input type="text" class="form-control m-input" formControlName="SwiftCode"
+            [(ngModel)]="model.SwiftCode" maxlength="150">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
                             </div>
-                            <div class="btnArea-footer">
+                            <div class="d-flex justify-content-end gap-2 formfooter">
                                 <button mat-button matStepperPrevious class="btn btn-gray">Back</button>
-                                <button mat-button matStepperNext class="btn btn-blue" [disabled]="secondFormGroup.invalid" (click)="PayWizardViewed()">Next</button>
+                                <button mat-button matStepperNext class="btn  btn-primary" [disabled]="secondFormGroup.invalid" (click)="PayWizardViewed()">Next</button>
                             </div>
                         </form>
                     </mat-step>
                     <mat-step [stepControl]="thirdFormGroup">
-                        <form [formGroup]="thirdFormGroup" class="m-form m-form--label-align-left- m-form--state-">
-                            <ng-template matStepLabel>
-                                <span class="mt-wizardLabel">Pay</span><span class="mt-wizardCircles">
-                                    <span class="mt-wizardCheck" [style.visibility]="(thirdFormGroup.valid && IsPayWizardViewed) ? 'visible' : 'hidden'"></span>
-                                </span>
-                                <div class="progress">
-                                    <div class="progress-bar"></div>
-                                </div>
-                            </ng-template>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h4 class="m-form__heading-title">
-                                        {{model.FirstName +' '+ model.LastName}}'s Pay Details
-                                    </h4>
-                                </div>
+                       <form [formGroup]="thirdFormGroup" class="m-form m-form--label-align-left- m-form--state-">
+  <ng-template matStepLabel>
+        <div [ngClass]="thirdFormGroup.valid ? 'active' : ''">
+    <span class="mt-wizardLabel">Pay</span><span class="mt-wizardCircles">
+      <span class="mt-wizardCheck" [style.visibility]="(thirdFormGroup.valid && IsPayWizardViewed) ? 'visible' : 'hidden'"></span>
+    </span>
+    <div class="progress">
+      <div class="progress-bar"></div>
+    </div></div>
+  </ng-template>
 
-                                <div class="col-sm-6">
-                                    <div class="mt-d-flex" style="float:right">
-                                        <div>
-                                            <h4 class="m-form__heading-title whiteSpaceNowrap mt-m-r-10">Base Salary</h4>
-                                        </div>
-                                        <div>
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
-                                                <input type="number" min="0" pattern=".{0,8}" (change)="PayScreenBaseSalaryChangeCalculation()" [(ngModel)]="model.BasicSalary" [ngModelOptions]="{standalone: true}" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br /><br /><br />
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="usr">Pay Schedule</label>
-                                        <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#PayScheduleModal" (click)="IntializeModels()"></i>
-                                        <select class="form-control m-input" formControlName="PayScheduleID" [(ngModel)]="this.model.PayScheduleID">
-                                            <option *ngFor="let item of PaySchedules" [value]="item.ID">
-                                                {{item.ScheduleName}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
+  <!-- Header -->
+  <div class="row">
+    <div class="col-sm-6">
+      <h4 class="m-form__heading-title">
+        {{model.FirstName + ' ' + model.LastName}}'s Pay Details
+      </h4>
+    </div>
+   
+  </div>
 
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Starting*</label>
-                                        <Datetime-Component formControlName="EffectiveFrom" placeholder="DD/MM/YYYY" [(ngModel)]="EffectiveFrom">
-                                        </Datetime-Component>
-                                    </div>
-                                </div>
-                            </div>
-                            <h4 class="font-20 pull-left Inner_heading-title">Allowances</h4>
-                            <div class="Wizrd-StepsTable">
-                                <i class="fa fa-plus-square pull-right" data-toggle="modal" (click)="ShowListModal('')" data-target="#AllowancesListModal" style="margin-top: 15px;"></i>
-                                <table class="table mt-coloredTable">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                Name
-                                            </th>
-                                            <th style="width:200px;">
-                                                Percentage
-                                            </th>
-                                            <th style="width:200px;">
-                                                Amount
-                                            </th>
-                                            <!--<th>
-                                                <span *ngIf="PayrollRegion != 'SA'">
-                                                    Taxable
-                                                </span>
-                                            </th>
-                                            <th>
-                                                Own
-                                            </th>-->
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let item of model.pr_employee_allowance; let i=index">
-                                            <td>
-                                                <label>
-                                                    {{GetAllowanceTitle(item.AllowanceID)}}
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">%</span>
-                                                    <input type="number" readonly="readonly" min="0" pattern=".{0,8}" class="form-control" [(ngModel)]="item.Percentage" [ngModelOptions]="{standalone: true}" />
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
-                                                    <input type="number" min="0" pattern=".{0,8}" class="form-control" (blur)="CalAllowPercentage(item.AllowanceID)" [(ngModel)]="item.Amount" [ngModelOptions]="{standalone: true}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                                                </div>
-                                            </td>
-                                            <!--<td>
-                                                <div class="checkbox-inline checkboxDefault" *ngIf="PayrollRegion != 'SA'">
-                                                    <input type="checkbox" [(ngModel)]="item.Taxable" [ngModelOptions]="{standalone: true}">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span *ngIf="IsHouseOrTranportAllow(item.AllowanceID)" class="checkbox-inline checkboxDefault">
-                                                    <input type="checkbox" [(ngModel)]="item.IsHouseOrTransAllow" [ngModelOptions]="{standalone: true}">
-                                                </span>
-                                            </td>-->
-                                            <td>
-                                                <i class="fa fa-times" (click)="RemoveAllowanceFromSelList(item.AllowanceID)"></i>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!--<h4 class="font-20 pull-left Inner_heading-title">Contributions</h4>
-                            <div class="Wizrd-StepsTable">
-                                <i class="fa fa-plus-square pull-right" data-toggle="modal" (click)="ShowListModal('C')" data-target="#ContributionAndDeductionListModal" style="margin-top: 15px;"></i>
-                                <table class="table mt-coloredTable">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                Name
-                                            </th>
-                                            <th style="width:200px;">
-                                                Percentage
-                                            </th>
-                                            <th style="width:200px;">
-                                                Amount
-                                            </th>
-                                            <th>
-                                                Starting Balance
-                                            </th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let item of model.pr_employee_ded_contribution; let i = index" [hidden]="item.Category == 'D'">
-                                            <td>
-                                                <label>
-                                                    {{GetContributionDeductionTitle(item.DeductionContributionID,item.Category)}}
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">%</span>
-                                                    <input type="number" min="0" pattern=".{0,8}" readonly="readonly" class="form-control" [(ngModel)]="item.Percentage" [ngModelOptions]="{standalone: true}" />
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
-                                                    <input type="number" min="0" pattern=".{0,8}" class="form-control" [(ngModel)]="item.Amount" (blur)="CalDedContPercentage(item.DeductionContributionID,item.Category)" [ngModelOptions]="{standalone: true}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <input type="number" min="0" pattern=".{0,8}" class="form-control" *ngIf="GetContributionDeductionTitle(item.DeductionContributionID) =='Provident Fund'" [(ngModel)]="item.StartingBalance" [ngModelOptions]="{standalone: true}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                                            </td>
-                                            <td>
-                                                <i class="fa fa-times" (click)="RemoveContributionFromSelList(item.DeductionContributionID)"></i>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>-->
-                            <h4 class="font-20 pull-left Inner_heading-title">Deductions</h4>
-                            <div class="Wizrd-StepsTable">
-                                <i class="fa fa-plus-square pull-right" data-toggle="modal" (click)="ShowListModal('D')" data-target="#ContributionAndDeductionListModal" style="margin-top: 15px;"></i>
-                                <table class="table mt-coloredTable">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                Name
-                                            </th>
-                                            <th style="width:200px;">
-                                                Percentage
-                                            </th>
-                                            <th style="width:200px;">
-                                                Amount
-                                            </th>
-                                            <th>
-                                                Starting Balance
-                                            </th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let item of model.pr_employee_ded_contribution; let i = index" [hidden]="item.Category == 'C'">
-                                            <td>
-                                                <label>
-                                                    {{GetContributionDeductionTitle(item.DeductionContributionID,item.Category)}}
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">%</span>
-                                                    <input type="number" min="0" pattern=".{0,8}" readonly="readonly" class="form-control" [(ngModel)]="item.Percentage" [ngModelOptions]="{standalone: true}" />
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
-                                                    <input type="number" min="0" pattern=".{0,8}" class="form-control" [(ngModel)]="item.Amount" (change)="CalDedContPercentage(item.DeductionContributionID,item.Category)" [ngModelOptions]="{standalone: true}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <input type="number" min="0" pattern=".{0,8}"  class="form-control" *ngIf="GetContributionDeductionTitle(item.DeductionContributionID,item.Category) =='Provident Fund'" [(ngModel)]="item.StartingBalance" [ngModelOptions]="{standalone: true}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                                            </td>
-                                           
-                                            <td>
-                                                <i class="fa fa-times" (click)="RemoveDeductionFromSelList(item.DeductionContributionID)"></i>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div style="">
-                                <!--<div class="clearfix">
-                                    <span (click)="ReCalculateSalary()" class="reCalc pull-right"><i class="fa fa-refresh"></i> Re-Calculate</span>
-                                </div>-->
-                                <div class="row salarCalc">
-                                    <div class="col-sm-3" style="background:#ebeff4;">
-                                        <span class="AmountType">Basic salary</span>
-                                        <p class="salryNo">
-                                            {{model.BasicSalary | number: '1.0-0'}}
-                                        </p>
-                                    </div>
-                                    <div class="col-sm-3" style="background: #ebeff4;">
-                                        <span class="AmountType">Gross salary</span>
-                                        <p class="salryNo">
-                                            {{SalaryModel.GrossSalary | number: '1.0-0'}}
-                                        </p>
-                                    </div>
-                                    <div class="col-sm-3" style="background:#ebeff4; " *ngIf="PayrollRegion != 'SA'">
-                                        <span class="AmountType">Deductions</span>
-                                        <p class="salryNo">
-                                            {{SalaryModel.DeductionTotal | number: '1.0-0'}}
-                                        </p>
-                                    </div>
-                                    <div class="col-sm-3" style="background:#ebeff4;">
-                                        <span class="AmountType" style="color:#3dab70;font-weight:bold;">Net salary</span>
-                                        <p class="salryNo" style="color:#3dab70;font-weight:bold;">
-                                            {{SalaryModel.NetSalary | number: '1.0-0'}}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="btnArea-footer">
-                                <button mat-button matStepperPrevious class="btn btn-gray">Back</button>
-                                <button mat-button matStepperNext class="btn btn-blue" [disabled]="thirdFormGroup.invalid" (click)="GotoLeaveWizard()">Next</button>
-                            </div>
-                            <!--<div style="border-top: 1px solid #ddd; margin-top: 25px;">
-                                <button mat-button matStepperNext class="btn btn-blue pull-right" [disabled]="thirdFormGroup.invalid" (click)="GoToLeaveWizard()">Next</button>
-                                <button mat-button matStepperPrevious class="btn btn-blue pull-right">Back</button>
-                            </div>-->
-                        </form>
+  <!-- Card: Base Salary, Schedule, Start -->
+  <div class="card mt-3">
+    <div class="card-body">
+      <div class="row">
+
+         <div class="col-sm-4">
+          <div class="form-group">
+            <label for="usr">Base Salary</label>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                <input type="number" min="0" pattern=".{0,8}" (change)="PayScreenBaseSalaryChangeCalculation()" [(ngModel)]="model.BasicSalary" [ngModelOptions]="{standalone: true}" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="usr">Pay Schedule</label>
+            <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#PayScheduleModal" (click)="IntializeModels()"></i>
+            <select class="form-control m-input" formControlName="PayScheduleID" [(ngModel)]="this.model.PayScheduleID">
+              <option *ngFor="let item of PaySchedules" [value]="item.ID">
+                {{item.ScheduleName}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label>Starting*</label>
+            <Datetime-Component formControlName="EffectiveFrom" placeholder="DD/MM/YYYY" [(ngModel)]="EffectiveFrom"></Datetime-Component>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card: Allowances + Deductions + Summary -->
+  <div class="row mt-4">
+    <!-- Left: Allowances + Deductions -->
+    <div class="col-sm-8">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h4 class="font-20 pull-left Inner_heading-title">Allowances</h4>
+          <i class="fa fa-plus-square pull-right" data-toggle="modal" (click)="ShowListModal('')" data-target="#AllowancesListModal" style="margin-top: 15px;"></i>
+          <table class="table mt-coloredTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th style="width:100px;">Percentage</th>
+                <th style="width:250px;">Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of model.pr_employee_allowance; let i=index">
+                <td>
+                  <label>{{GetAllowanceTitle(item.AllowanceID)}}</label>
+                </td>
+                <td>
+                  <div class="input-group">
+                   
+                    <input type="number" readonly min="0" class="form-control" [(ngModel)]="item.Percentage" [ngModelOptions]="{standalone: true}" />
+                  </div>
+                </td>
+                <td>
+                  <div class="input-group">
+                  
+                    <input type="number" min="0" class="form-control" [(ngModel)]="item.Amount" (blur)="CalAllowPercentage(item.AllowanceID)" [ngModelOptions]="{standalone: true}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                  </div>
+                </td>
+                <td><i class="fa fa-times" (click)="RemoveAllowanceFromSelList(item.AllowanceID)"></i></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 class="font-20 pull-left Inner_heading-title">Deductions</h4>
+          <i class="fa fa-plus-square pull-right" data-toggle="modal" (click)="ShowListModal('D')" data-target="#ContributionAndDeductionListModal" style="margin-top: 15px;"></i>
+          <table class="table mt-coloredTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th style="width:100px;">Percentage</th>
+                <th style="width:250px;">Amount</th>
+                <th>Starting Balance</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of model.pr_employee_ded_contribution; let i = index" [hidden]="item.Category == 'C'">
+                <td>
+                  <label>{{GetContributionDeductionTitle(item.DeductionContributionID, item.Category)}}</label>
+                </td>
+                <td>
+                  <div class="input-group">
+                 
+                    <input type="number" readonly min="0" class="form-control" [(ngModel)]="item.Percentage" [ngModelOptions]="{standalone: true}" />
+                  </div>
+                </td>
+                <td>
+                  <div class="input-group">
+                   
+                    <input type="number" min="0" class="form-control" [(ngModel)]="item.Amount" (change)="CalDedContPercentage(item.DeductionContributionID, item.Category)" [ngModelOptions]="{standalone: true}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                  </div>
+                </td>
+                <td>
+                  <input type="number" min="0" class="form-control" *ngIf="GetContributionDeductionTitle(item.DeductionContributionID) == 'Provident Fund'" [(ngModel)]="item.StartingBalance" [ngModelOptions]="{standalone: true}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                </td>
+                <td><i class="fa fa-times" (click)="RemoveDeductionFromSelList(item.DeductionContributionID)"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Salary Summary -->
+   <div class="col-sm-4">
+  <div class="card h-100">
+    <div class="card-body">
+      <h5 class="font-weight-bold mb-3">Salary Summary</h5>
+      <div class="salary-summary">
+        <div class="salary-item clearfix" style="padding: 8px 0; border-bottom: 1px solid #e2e2e2;">
+          <span class="pull-left">Basic Salary</span>
+          <strong class="pull-right text-right" style="font-size: 16px;">
+            {{model.BasicSalary | number: '1.0-0'}}
+          </strong>
+        </div>
+        <div class="salary-item clearfix" style="padding: 8px 0; border-bottom: 1px solid #e2e2e2;">
+          <span class="pull-left">Gross Salary</span>
+          <strong class="pull-right text-right" style="font-size: 16px;">
+            {{SalaryModel.GrossSalary | number: '1.0-0'}}
+          </strong>
+        </div>
+        <div class="salary-item clearfix" *ngIf="PayrollRegion != 'SA'" style="padding: 8px 0; border-bottom: 1px solid #e2e2e2;">
+          <span class="pull-left">Deductions</span>
+          <strong class="pull-right text-right" style="font-size: 16px;">
+            {{SalaryModel.DeductionTotal | number: '1.0-0'}}
+          </strong>
+        </div>
+        <div class="salary-item clearfix" style="padding: 8px 0;">
+          <span class="pull-left" style="color: #3dab70; font-weight: bold;">Net Salary</span>
+          <strong class="pull-right text-right" style="font-size: 18px; color: #3dab70;">
+            {{SalaryModel.NetSalary | number: '1.0-0'}}
+          </strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="d-flex justify-content-end gap-2 formfooter">
+    <button mat-button matStepperPrevious class="btn btn-gray">Back</button>
+    <button mat-button matStepperNext class="btn  btn-primary" [disabled]="thirdFormGroup.invalid" (click)="GotoLeaveWizard()">Next</button>
+  </div>
+</form>
+
                     </mat-step>
                     <mat-step [stepControl]="fourthFormGroup">
                         <form [formGroup]="fourthFormGroup" class="m-form m-form--label-align-left- m-form--state-">
                             <ng-template matStepLabel>
+                                     <div [ngClass]="fourthFormGroup.valid && IsLeaveWizardViewed ? 'active' : ''">
                                 <span class="mt-wizardLabel">Vacation & Sick Leave</span>
                                 <span class="mt-wizardCircles">
                                     <span class="mt-wizardCheck" [style.visibility]="(fourthFormGroup.valid && IsLeaveWizardViewed) ? 'visible' : 'hidden'"></span>
                                 </span>
                                 <div class="progress">
                                     <div class="progress-bar"></div>
-                                </div>
+                                </div></div>
                             </ng-template>
                             <h4 class="m-form__heading-title">
                                 {{model.FirstName + " " + model.LastName}}'s Vacation & Sick Pay
                             </h4>
                             <br />
-                            <div class="row">
+                            <div class="card p-4">
+                                  <div class="row">
                                 <div class="col-sm-6">
                                     <div class="row">
                                         <div class="col-md-8">
@@ -767,28 +950,32 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            </div>
                         </form>
-                        <div class="btnArea-footer">
+                        <div class="d-flex justify-content-end gap-2  formfooter">
                             <button mat-button matStepperPrevious class="btn btn-gray">Back</button>
-                            <button mat-button matStepperNext class="btn btn-blue" (click)="GoToDocsWizard()">Next</button>
+                            <button mat-button matStepperNext class="btn  btn-primary" (click)="GoToDocsWizard()">Next</button>
                         </div>
                     </mat-step>
                     <mat-step [stepControl]="fifthFormGroup">
                         <form [formGroup]="fifthFormGroup" novalidate (ngSubmit)="AddDocumentToList()" class="m-form m-form--label-align-left- m-form--state-">
                             <ng-template matStepLabel>
+                                       <div [ngClass]="IsDocsWizardViewed ? 'active' : ''">
                                 <span class="mt-wizardLabel">Docs</span>
                                 <span class="mt-wizardCircles">
                                     <span class="mt-wizardCheck" [style.visibility]="(IsDocsWizardViewed) ? 'visible' : 'hidden'"></span>
                                 </span>
                                 <div class="progress">
                                     <div class="progress-bar"></div>
-                                </div>
+                                </div></div>
                             </ng-template>
                             <h4 class="m-form__heading-title">
                                 {{model.FirstName + " " + model.LastName}}'s Documents
                             </h4>
                             <br />
-                            <div class="row">
+                            <div class="card p-4">
+                                  <div class="row">
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -833,6 +1020,7 @@
                                                 <!--<div *ngIf="documentModel.AttachmentPath!=''">
                                                     <img [src]="documentModel.AttachmentPath" style="max-width: 300px; width: 100%; padding: 10px 0 5px;" />
                                                 </div>-->
+                                                <br />
                                                 <File-Component [(ngModel)]="documentModel.AttachmentPath" (ClearModel)="ClearValue()" (FileNameEvent)="getFileName($event)" (IsNewFileEvent)="IsNewFileEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
                                                 <small *ngIf="fifthFormGroup.controls.AttachmentPath.hasError('required') && submitted">
                                                     please select a file to import
@@ -909,343 +1097,181 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            </div>
+
                         </form>
-                        <div class="btnArea-footer">
+                        <div class="d-flex justify-content-end gap-2 formfooter ng-star-inserted">
                             <button mat-button matStepperPrevious class="btn btn-gray">Back</button>
-                            <button mat-button matStepperNext class="btn btn-blue" (click)="GoToDependentWizard()">Next</button>
+                            <button mat-button matStepperNext class="btn  btn-primary" (click)="GoToDependentWizard()">Next</button>
                         </div>
                     </mat-step>
                     <mat-step [stepControl]="sixthFormGroup">
-                        <form novalidate (ngSubmit)="SaveEmployee()" class="m-form m-form--label-align-left- m-form--state-">
+                        <form novalidate (ngSubmit)="SaveEmployee()" class="m-form m-form--label-align-left- m-form--state-" style="max-width: 1000px;">
                             <ng-template matStepLabel>
+                                    <div [ngClass]="IsReviewedWizard ? 'active' : ''">
                                 <span class="mt-wizardLabel">Review</span>
                                 <span class="mt-wizardCircles">
                                     <span class="mt-wizardCheck" [style.visibility]="IsReviewedWizard ? 'visible' : 'hidden'"></span>
                                 </span>
                                 <div class="progress">
                                     <div class="progress-bar"></div>
-                                </div>
+                                </div></div>
                             </ng-template>
 
-                            <div class="clearfix row" style="padding: 0px 20px 0 0;">
-                                <div class="col-sm-12 paginationSearchBox">
-                                    <div>
-                                        <div class="pull-left" style="padding-right: 15px;">
-                                            <div *ngIf="model.EmployeePic=='' ||  model.EmployeePic==null || model.EmployeePic==undefined">
-                                                <img src="../../../../../assets/app/media/img/no_image.png" class="profilePic no-m-t" />
-                                            </div>
-                                            <div *ngIf="model.EmployeePic !='' &&  model.EmployeePic!=null && model.EmployeePic!=undefined">
-                                                <img [src]="Image" class="profilePic" />
-                                            </div>
-                                        </div>
-                                        <h2 class="grid-heading margin-t-15 no-padding pull-left">{{model.FirstName + ' '+ model.LastName}}</h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <br />
-                            <div class="employeeBoxMain">
-                                <div class="employeeBox">
-                                    <header class="clearfix">
-                                        <span class="pull-left"> Basic Salary</span>
-                                        <i class="icon-pencil5 pull-right" (click)="gotostepper(stepper,0)"></i>
-                                    </header>
-                                    <section class="clearfix">
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Name</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.FirstName +" "+ model.LastName}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Gender</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr" *ngIf="model.Gender=='M'">Male</label>
-                                                <label for="usr" *ngIf="model.Gender=='F'">Female</label>
-                                                <label for="usr" *ngIf="model.Gender=='O'">Others</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Birth Date</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.DOB | date: "dd/MM/yyyy"}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Email</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.Email}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">City</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{CityName}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Country</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{CountryName}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Postel Code</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.ZipCode}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Address</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.StreetAddress}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Home Phone</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.HomePhone}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Work Phone</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.Mobile}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Emergency Phone</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.EmergencyContactNo}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Emergency Contact</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.EmergencyContactPerson}}</label>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                                <div class="employeeBox">
-                                    <header class="clearfix">
-                                        <span class="pull-left"> Employment</span>
-                                        <i class="icon-pencil5 pull-right" (click)="gotostepper(stepper,1)"></i>
-                                    </header>
-                                    <section class="clearfix">
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Employment</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{EmployeeTypeName}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Status</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{StatusName}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Base Salary</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr"> {{Currency +' ' + (model.BasicSalary  | number: '1.0-0')}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Pay Type</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{PayTypeName}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Payment Method</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{PaymentMethodName}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Designation</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{DesignModel.DesignationName}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Department</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{DepartModel.DepartmentName}}</label>
-                                            </div>
-                                        </div>
+                         <div class="container-fluid px-4">
+  <!-- Profile Header -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+    <div class="d-flex align-items-center">
+      <div class="me-4">
+        <img *ngIf="!model.EmployeePic" src="../../../../../assets/app/media/img/no_image.png" class="rounded-circle" style="width: 64px; height: 64px; object-fit: cover;" />
+        <img *ngIf="model.EmployeePic" [src]="Image" class="rounded-circle" style="width: 64px; height: 64px; object-fit: cover;" />
+      </div>
+      <div>
+        <h5 class="mb-1 fw-semibold text-dark">{{ model.FirstName + ' ' + model.LastName }}</h5>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-success text-white px-3 py-1">Active</span>
+          <span class="text-muted small"><i class="fa fa-id-badge me-1"></i> EMP-{{ model.ID }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Joining Date</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{model.JoiningDate | date: "dd/MM/yyyy"}}</label>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                                <div class="employeeBox">
-                                    <header class="clearfix">
-                                        <span class="pull-left"> Pay</span>
-                                        <i class="icon-pencil5 pull-right" (click)="gotostepper(stepper,2)"></i>
-                                    </header>
-                                    <section class="clearfix">
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Pay Schedule</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{ScheduleName}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Start Date</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{EffectiveFrom | date: "dd/MM/yyyy"}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Base Salary</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{Currency +' ' + (model.BasicSalary  | number: '1.0-0')}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Allowances</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{Currency +' ' + (SalaryModel.AllowanceTotal  | number: '1.0-0')}}</label>
-                                            </div>
-                                        </div>
-                                       
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Deductions</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{Currency +' '+ (SalaryModel.DeductionTotal  | number: '1.0-0')}}</label>
-                                            </div>
-                                        </div>
-                                       
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Net Salary</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label for="usr">{{Currency +' '+ (SalaryModel.NetSalary  | number: '1.0-0')}}</label>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                                <div class="employeeBox">
-                                    <header class="clearfix">
-                                        <span class="pull-left"> Vacation & Sick Leave Policy</span>
-                                        <i class="icon-pencil5 pull-right" (click)="gotostepper(stepper,3)"></i>
-                                    </header>
-                                    <section class="clearfix">
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Vacation</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <div *ngIf="VacationHours">
-                                                    <label for="usr">{{VacationHours}} Hrs</label>
-                                                </div>
-                                                <div *ngIf="!VacationHours">
-                                                    <label for="usr">No Vacation Policy</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <label for="usr" class="lblTittle">Sick Leave</label>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <div *ngIf="SickLeaveHours">
-                                                    <label for="usr">{{SickLeaveHours}} Hrs</label>
-                                                </div>
-                                                <div *ngIf="!SickLeaveHours">
-                                                    <label for="usr">No Sick Policy</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                                <div class="employeeBox">
-                                    <header class="clearfix">
-                                        <span class="pull-left"> Docs</span>
-                                        <i class="icon-pencil5 pull-right" (click)="gotostepper(stepper,4)"></i>
-                                    </header>
-                                    <section class="clearfix">
-                                        <div *ngIf="model.pr_employee_document.length > 0">
-                                            <div *ngFor="let item of model.pr_employee_document">
-                                                <div class="row">
-                                                    <div class="col-sm-4">
-                                                        <label for="usr" class="lblTittle">{{GetDocumentType(item.DocumentTypeID)}}</label>
-                                                    </div>
-                                                    <div class="col-sm-8">
-                                                        <label for="usr" class="text-limit"><a (click)="OpenDocument(item.AttachmentPath)" class="cursor-pointer">{{item.AttachmentPath}} </a></label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div *ngIf="!(model.pr_employee_document.length > 0)">
-                                            <div class="row col-sm-12">
-                                                <label for="usr">No document provided.</label>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
+  <!-- Info Cards Grid -->
+  <div class="row g-4">
+    <!-- Basic Info -->
+    <div class="col-md-6">
+      <div class="card border-0 rounded-4 shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <h6 class="fw-bold text-dark">Basic Information</h6>
+          <i class="fa fa-cog text-teal cursor-pointer"></i>
+        </div>
+        <div class="row g-3 small text-muted">
+          <div class="col-6"><i class="fa fa-user mr-2"></i><strong class="text-dark">Name</strong><br>{{ model.FirstName + ' ' + model.LastName }}</div>
+          <div class="col-6"><i class="fa fa-venus-mars mr-2"></i><strong class="text-dark">Gender</strong><br>
+            <span *ngIf="model.Gender == 'M'">Male</span>
+            <span *ngIf="model.Gender == 'F'">Female</span>
+            <span *ngIf="model.Gender == 'O'">Others</span>
+          </div>
+          <div class="col-6"><i class="fa fa-envelope mr-2"></i><strong class="text-dark">Email</strong><br>{{ model.Email }}</div>
+          
+          <div class="col-6"><i class="fa fa-phone mr-2"></i><strong class="text-dark">Birth Date</strong><br>{{model.DOB | date: "dd/MM/yyyy"}}</div>
+          <div class="col-6"><i class="fa fa-phone mr-2"></i><strong class="text-dark">Phone</strong><br>{{ model.Mobile }}</div>
+          <div class="col-6"><i class="fa fa-city mr-2"></i><strong class="text-dark">City</strong><br>{{ CityName }}</div>
+          <div class="col-6"><i class="fa fa-building mr-2"></i><strong class="text-dark">Country</strong><br>{{ CountryName }}</div>
+          <div class="col-12"><i class="fa fa-map-marker-alt mr-2"></i><strong class="text-dark">Address</strong><br>{{ model.StreetAddress }}</div>
+          
+          <div class="col-12"><i class="fa fa-map-marker-alt mr-2"></i><strong class="text-dark">Home Phone</strong><br>{{ model.HomePhone }}</div>
+          
+          <div class="col-12"><i class="fa fa-map-marker-alt mr-2"></i><strong class="text-dark">Work Phone</strong><br>{{ model.Mobile }}</div>
+          
+          <div class="col-12"><i class="fa fa-map-marker-alt mr-2"></i><strong class="text-dark">Emergency Phone</strong><br>{{ model.EmergencyContactNo }}</div>
+        </div>
+      </div>
+    </div>
 
-                            </div>
-                            <div class="btnArea-footer">
+    <!-- Employment Info -->
+    <div class="col-md-6">
+      <div class="card border-0 rounded-4 shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <h6 class="fw-bold text-dark">Employment Details</h6>
+          <i class="fa fa-cog text-teal cursor-pointer"></i>
+        </div>
+        <div class="row g-3 small text-muted">
+          <div class="col-6"><i class="fa fa-briefcase mr-2"></i><strong class="text-dark">Employment Type</strong><br>{{ EmployeeTypeName }}</div>
+          <div class="col-6"><i class="fa fa-clock mr-2"></i><strong class="text-dark">Status</strong><br>{{ StatusName }}</div>
+          <div class="col-6"><i class="fa fa-money-bill mr-2"></i><strong class="text-dark">Base Salary</strong><br>{{ Currency + ' ' + (model.BasicSalary | number: '1.0-0') }}</div>
+          <div class="col-6"><i class="fa fa-credit-card mr-2"></i><strong class="text-dark">Pay Type</strong><br>{{ PayTypeName }}</div>
+          <div class="col-6"><i class="fa fa-university mr-2"></i><strong class="text-dark">Payment Method</strong><br>{{ PaymentMethodName }}</div>
+          
+          <div class="col-6"><i class="fa fa-university mr-2"></i><strong class="text-dark">Designation</strong><br>{{DesignModel.DesignationName}}</div>
+          
+          <div class="col-6"><i class="fa fa-university mr-2"></i><strong class="text-dark">Department</strong><br>{{DepartModel.DepartmentName}}</div>
+
+          <div class="col-6"><i class="fa fa-calendar-alt mr-2"></i><strong class="text-dark">Joining Date</strong><br>{{ model.JoiningDate | date: 'dd/MM/yyyy' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pay Details -->
+    <div class="col-md-6">
+      <div class="card border-0 rounded-4 shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <h6 class="fw-bold text-dark">Pay Details</h6>
+          <i class="fa fa-cog text-teal cursor-pointer"></i>
+        </div>
+        <div class="bg-light rounded-3 p-3 mb-3">
+          <div class="row small text-muted">
+            <div class="col-6">
+              <strong class="text-dark">Base Salary</strong><br>Rs {{ model.BasicSalary }}
+            </div>
+            <div class="col-6">
+              <strong class="text-dark">Allowances</strong><br>Rs {{ SalaryModel.AllowanceTotal }}
+            </div>
+            <div class="col-6 mt-3">
+              <strong class="text-dark">Deductions</strong><br>Rs {{ SalaryModel.DeductionTotal }}
+            </div>
+            <div class="col-6 mt-3">
+              <strong class="text-dark">Net Salary</strong><br><span class="text-success fw-semibold">Rs {{ SalaryModel.NetSalary }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="small text-muted">
+          <p><i class="fa fa-calendar mr-2"></i><strong class="text-dark">Pay Schedule</strong>: {{ ScheduleName }}</p>
+          <p><i class="fa fa-calendar-day mr-2"></i><strong class="text-dark">Start Date</strong>: {{ EffectiveFrom | date: 'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leave Policy -->
+    <div class="col-md-6">
+      <div class="card border-0 rounded-4 shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <h6 class="fw-bold text-dark">Leave Policy</h6>
+          <i class="fa fa-cog text-teal cursor-pointer"></i>
+        </div>
+        <div class="small text-muted">
+          <p><i class="fa fa-info-circle mr-2"></i><strong class="text-dark">Vacation</strong><br>
+            <span *ngIf="VacationHours">{{ VacationHours }} Hrs</span>
+            <span *ngIf="!VacationHours">No Vacation Policy</span>
+          </p>
+          <p><i class="fa fa-info-circle mr-2"></i><strong class="text-dark">Sick Leave</strong><br>
+            <span *ngIf="SickLeaveHours">{{ SickLeaveHours }} Hrs</span>
+            <span *ngIf="!SickLeaveHours">No Sick Policy</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="col-md-12">
+      <div class="card border-0 rounded-4 shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <h6 class="fw-bold text-dark">Documents</h6>
+          
+              <i class="icon-pencil5 pull-right" (click)="gotostepper(stepper,4)"></i>
+                                  
+        </div>
+        <div *ngIf="model.pr_employee_document.length > 0">
+          <ul class="list-unstyled small">
+            <li *ngFor="let item of model.pr_employee_document">
+              <strong>{{ GetDocumentType(item.DocumentTypeID) }}:</strong>
+              <a (click)="OpenDocument(item.AttachmentPath)" class="ms-2 text-decoration-underline cursor-pointer">{{ item.AttachmentPath }}</a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="!(model.pr_employee_document.length > 0)" class="text-center text-muted small">
+          <i class="fa fa-file-alt fa-2x mb-2"></i>
+          <p>No document provided.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+                            <div class="d-flex justify-content-end gap-2 formfooter">
                                 <button mat-button matStepperPrevious class="btn btn-gray">Back</button>
-                                <button mat-button matStepperNext class="btn btn-blue" type="submit" *ngIf="!IsEdit && ControlRights.CreateRights">Done</button>
-                                <button mat-button matStepperNext class="btn btn-blue" type="submit" *ngIf="IsEdit && ControlRights.EditRights">Done</button>
+                                <button mat-button matStepperNext class="btn  btn-primary" type="submit" *ngIf="!IsEdit && ControlRights.CreateRights">Done</button>
+                                <button mat-button matStepperNext class="btn  btn-primary" type="submit" *ngIf="IsEdit && ControlRights.EditRights">Done</button>
                             </div>
                         </form>
                     </mat-step>
@@ -1315,8 +1341,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeLocationModal>Cancel</button>
-                    <button type="submit" class="btn btn-blue">Save</button>
+                    <button type="button" class="btn btn-default btn-light" data-dismiss="modal" #closeLocationModal>Cancel</button>
+                    <button type="submit" class="btn  btn-primary">Save</button>
                 </div>
             </div>
         </form>
@@ -1340,8 +1366,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeDesignationModal>Cancel</button>
-                    <button type="submit" class="btn btn-blue">Save</button>
+                    <button type="button" class="btn btn-default btn-light" data-dismiss="modal" #closeDesignationModal>Cancel</button>
+                    <button type="submit" class="btn  btn-primary">Save</button>
                 </div>
             </div>
         </form>
@@ -1365,8 +1391,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeDepartmentModal>Cancel</button>
-                    <button type="submit" class="btn btn-blue">Save</button>
+                    <button type="button" class="btn btn-default btn-light" data-dismiss="modal" #closeDepartmentModal>Cancel</button>
+                    <button type="submit" class="btn  btn-primary">Save</button>
                 </div>
             </div>
         </form>
@@ -1452,8 +1478,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-payday-cancel" #closePayScheduleModal data-dismiss="modal">Cancel</button>
-                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    <button type="button" class="btn btn-default btn-light" #closePayScheduleModal data-dismiss="modal">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn  btn-primary">Save</button>
                 </div>
             </div>
         </form>
@@ -1558,8 +1584,8 @@
                     </div>
                 </div>
                 <div class="modal-footer" *ngIf="!IsShowListModal">
-                    <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowListModal('')" data-dismiss="modal" #closeAllowanceModal>Cancel</button>
-                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    <button type="button" class="btn btn-default btn-light" (click)="ShowListModal('')" data-dismiss="modal" #closeAllowanceModal>Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn  btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -1606,8 +1632,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeLeaveTypeModal>Cancel</button>
-                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    <button type="button" class="btn btn-default btn-light" data-dismiss="modal" #closeLeaveTypeModal>Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn  btn-primary">Save</button>
                 </div>
             </div>
         </form>
@@ -1618,7 +1644,7 @@
         <div class="modal-content" (click)="IsModalClick()">
             <div class="modal-header">
                 <h3 class="grid-heading font-weight-400 no-padding pull-left mt-m-r-20">Add Contribution / Deduction</h3>
-                <i class="fa fa-plus-square font-25 color-green cursor-pointer" data-toggle="modal" *ngIf="IsShowListModal" (click)="ShowModal()" data-target="#ContributionDeductionModal"></i>
+                <!-- <i class="fa fa-plus-square font-25 color-green cursor-pointer" data-toggle="modal" *ngIf="IsShowListModal" (click)="ShowModal()" data-target="#ContributionDeductionModal"></i> -->
                 <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
             </div>
             <form [formGroup]="ConributionDeductionForm" novalidate (ngSubmit)="SaveContributionDeduction(ConributionDeductionForm.valid)">
@@ -1712,8 +1738,8 @@
 
                 </div>
                 <div class="modal-footer" *ngIf="!IsShowListModal">
-                    <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowListModal()" data-dismiss="modal" #closeDedContrModal>Cancel</button>
-                    <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                    <button type="button" class="btn btn-default btn-light" (click)="ShowListModal()" data-dismiss="modal" #closeDedContrModal>Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn  btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -1812,8 +1838,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-blue">Save</button>
-                    <button type="button" class="btn btn-default btn-payday-cancel" (click)="ResetAirTicketModal()">Reset</button>
+                    <button type="submit" class="btn  btn-primary">Save</button>
+                    <button type="button" class="btn btn-default btn-light" (click)="ResetAirTicketModal()">Reset</button>
                 </div>
             </div>
         </form>
@@ -1863,8 +1889,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-blue">Save</button>
-                    <button type="button" class="btn btn-default btn-payday-cancel" (click)="ResetMedInsuranceModal()">Reset</button>
+                    <button type="submit" class="btn  btn-primary">Save</button>
+                    <button type="button" class="btn btn-default btn-light" (click)="ResetMedInsuranceModal()">Reset</button>
                 </div>
             </div>
         </form>
@@ -1901,7 +1927,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-payday-cancel" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -2352,7 +2378,7 @@
 <!--</div>
     <br />
     <div class="btnArea-footer">
-        <button type="button" class="btn btn-blue btnDel" *ngIf="model.ID && IsEdit && !IsAdmin" (click)="DeleteEmployee()">Delete</button>
+        <button type="button" class="btn  btn-primary btnDel" *ngIf="model.ID && IsEdit && !IsAdmin" (click)="DeleteEmployee()">Delete</button>
     </div>
 </div>
 <div *ngIf="IsEditBasicEmployeeInfo">
@@ -2494,8 +2520,8 @@
             </div>
         </div>
         <div class="btnArea-footer">
-            <button type="submit" class="btn btn-blue" [disabled]="firstFormGroup.invalid">Save</button>
-            <button type="button" class="btn btn-blue btn-payday-cancel" (click)="EditEmployeeInfo('cancel')">Cancel</button>
+            <button type="submit" class="btn  btn-primary" [disabled]="firstFormGroup.invalid">Save</button>
+            <button type="button" class="btn  btn-primary btn-light" (click)="EditEmployeeInfo('cancel')">Cancel</button>
         </div>
     </form>
 </div>
@@ -2777,8 +2803,8 @@
             </div>
         </div>
         <div class="btnArea-footer">
-            <button type="submit" class="btn btn-blue" [disabled]="secondFormGroup.invalid">Save</button>
-            <button type="button" class="btn btn-blue btn-payday-cancel" (click)="EditEmployeeInfo('cancel')">Cancel</button>
+            <button type="submit" class="btn  btn-primary" [disabled]="secondFormGroup.invalid">Save</button>
+            <button type="button" class="btn  btn-primary btn-light" (click)="EditEmployeeInfo('cancel')">Cancel</button>
         </div>
     </form>
 </div>
@@ -3265,8 +3291,8 @@
 </div>-->
 <!--</div>
         <div class="btnArea-footer">
-            <button type="submit" class="btn btn-blue" [disabled]="thirdFormGroup.invalid">Save</button>
-            <button type="button" class="btn btn-blue btn-payday-cancel" (click)="EditEmployeeInfo('cancel')">Cancel</button>
+            <button type="submit" class="btn  btn-primary" [disabled]="thirdFormGroup.invalid">Save</button>
+            <button type="button" class="btn  btn-primary btn-light" (click)="EditEmployeeInfo('cancel')">Cancel</button>
         </div>
     </form>
 </div>
@@ -3342,8 +3368,8 @@
             </tbody>
         </table>
         <div class="btnArea-footer">
-            <button type="submit" class="btn btn-blue" >Save</button>
-            <button type="button" class="btn btn-blue btn-payday-cancel" (click)="EditEmployeeInfo('cancel')">Cancel</button>
+            <button type="submit" class="btn  btn-primary" >Save</button>
+            <button type="button" class="btn  btn-primary btn-light" (click)="EditEmployeeInfo('cancel')">Cancel</button>
         </div>
     </form>
 </div>
@@ -3451,8 +3477,8 @@
                                 </tbody>
                             </table>
                             <div class="btnArea-footer">
-                                <button type="submit" class="btn btn-blue">Save</button>
-                                <button type="button" class="btn btn-blue btn-payday-cancel" (click)="EditEmployeeInfo('cancel')">Cancel</button>
+                                <button type="submit" class="btn  btn-primary">Save</button>
+                                <button type="button" class="btn  btn-primary btn-light" (click)="EditEmployeeInfo('cancel')">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -3643,8 +3669,8 @@
                                 </tbody>
                             </table>
                             <div class="btnArea-footer">
-                                <button type="submit" class="btn btn-blue">Save</button>
-                                <button type="button" class="btn btn-blue btn-payday-cancel" (click)="EditEmployeeInfo('cancel')">Cancel</button>
+                                <button type="submit" class="btn  btn-primary">Save</button>
+                                <button type="button" class="btn  btn-primary btn-light" (click)="EditEmployeeInfo('cancel')">Cancel</button>
                             </div>
                         </form>
                     </div>

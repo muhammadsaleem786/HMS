@@ -73,7 +73,7 @@
                 <a (click)="GoBack('/setup')" class="cursor-pointer"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
             </div>
             <!--<div style="padding: 20px 40px 10px 40px; display: inline-block; float: right;">
-                <button class="btn btn-blue">Reports</button>
+                <button class="btn btn-primary">Reports</button>
             </div>-->
         </div>
         <div class="row" style="padding: 0 40px 0 40px;">
@@ -83,7 +83,7 @@
                 <strong>Status:</strong> {{Status}}
             </div>
         </div>
-        <i id="SearchButton" style="display:none" class="btn btn-blue" data-toggle="modal" data-target="#FilterModal"></i>
+        <i id="SearchButton" style="display:none" class="btn btn-primary" data-toggle="modal" data-target="#FilterModal"></i>
         <app-pagination [PModel]="PDetModel" [PConfig]="PDetConfig" [PData]="PayrollDetList" (pageChange)="GetDetList()" (AddOrEditEvent)="AddDetRecord($event)" (GoBackEvent)="GoBack($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)">
         </app-pagination>
         <div style="padding: 0 40px 0 40px;" *ngIf="PayrollDetList?.length > 0">
@@ -98,8 +98,8 @@
                 </tr>
             </table>
             <div class="btnArea-footer" *ngIf="PayrollDetList[0]?.Status == 'O'">
-                <button id="saveSchedule" type="button" class="btn btn-blue" (click)="PublishPayroll()">Publish</button>
-                <button type="button" class="btn btn-blue btnDel pull-left" (click)="DeletePayroll()">Delete</button>
+                <button id="saveSchedule" type="button" class="btn btn-primary" (click)="PublishPayroll()">Publish</button>
+                <button type="button" class="btn btn-primary btnDel pull-left" (click)="DeletePayroll()">Delete</button>
             </div>
         </div>
         <div class="modal fade" id="FilterModal" data-backdrop="static" data-keyboard="false" role="dialog">
@@ -144,9 +144,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-blue btnDel pull-left" (click)="ResetPrDtFilter()">Reset</button>
-                        <button type="button" class="btn btn-default btn-payday-cancel" id="CloseFilterModal" data-dismiss="modal">Cancel</button>
-                        <button id="saveSchedule" type="button" class="btn btn-blue" (click)="FilterPrEmpDt()">Apply</button>
+                        <button type="button" class="btn btn-primary btnDel pull-left" (click)="ResetPrDtFilter()">Reset</button>
+                        <button type="button" class="btn btn-default btn -light" id="CloseFilterModal" data-dismiss="modal">Cancel</button>
+                        <button id="saveSchedule" type="button" class="btn btn-primary" (click)="FilterPrEmpDt()">Apply</button>
                     </div>
                 </div>
             </div>
@@ -175,7 +175,7 @@
                                 </div>
                             </div>
                             <div class="col-xs-2">
-                                <button id="saveSchedule" *ngIf="!IsStatusPublished" type="button" class="btn btn-blue pull-right" (click)="ShowListModal('prorate')" data-toggle="modal" data-target="#ProrateModal">Prorate</button>
+                                <button id="saveSchedule" *ngIf="!IsStatusPublished" type="button" class="btn btn-primary pull-right" (click)="ShowListModal('prorate')" data-toggle="modal" data-target="#ProrateModal">Prorate</button>
                             </div>
                         </div>
                         <button type="button" class="close mt-modal-close" id="ClosePayStubModalId" data-dismiss="modal"><i class="fa fa-times"></i></button>
@@ -386,9 +386,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="saveSchedule" type="submit" class="btn btn-blue" *ngIf="!IsStatusPublished">Save</button>
-                        <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal>Close</button>
-                        <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="!IsStatusPublished" (click)="DeletePayStubOfSingleEmp()">Delete</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-primary" *ngIf="!IsStatusPublished">Save</button>
+                        <button type="button" class="btn btn-default btn -light" data-dismiss="modal" #closeModal>Close</button>
+                        <button type="button" class="btn btn-primary btnDel pull-left" *ngIf="!IsStatusPublished" (click)="DeletePayStubOfSingleEmp()">Delete</button>
                     </div>
                 </div>
             </form>
@@ -434,7 +434,7 @@
                                 </tbody>
                             </table>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="ShowListModal('cancel')">Cancel</button>
+                                <button type="button" class="btn btn-default btn -light" data-dismiss="modal" #closeModal (click)="ShowListModal('cancel')">Cancel</button>
                             </div>
                         </div>
                         <div *ngIf="!IsShowListPopModal">
@@ -496,8 +496,8 @@
                         </div>
                     </div>
                     <div class="modal-footer" *ngIf="!IsShowListPopModal">
-                        <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowListModal('A')" data-dismiss="modal" #closeAllowanceModal>Cancel</button>
-                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                        <button type="button" class="btn btn-default btn -light" (click)="ShowListModal('A')" data-dismiss="modal" #closeAllowanceModal>Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -549,7 +549,7 @@
                                 </tbody>
                             </table>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="ShowListModal('cancel')">Cancel</button>
+                                <button type="button" class="btn btn-default btn -light" data-dismiss="modal" #closeModal (click)="ShowListModal('cancel')">Cancel</button>
                             </div>
                         </div>
                         <div *ngIf="!IsShowListPopModal">
@@ -610,8 +610,8 @@
 
                     </div>
                     <div class="modal-footer" *ngIf="!IsShowListPopModal">
-                        <button type="button" class="btn btn-default btn-payday-cancel" (click)="ShowListModal(DedContModel.Category)" data-dismiss="modal" #closeDedContrModal>Cancel</button>
-                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                        <button type="button" class="btn btn-default btn -light" (click)="ShowListModal(DedContModel.Category)" data-dismiss="modal" #closeDedContrModal>Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -648,8 +648,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" (click)="ShowListModal('CProrate')">Cancel</button>
-                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                        <button type="button" class="btn btn-default btn -light" data-dismiss="modal" (click)="ShowListModal('CProrate')">Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </form>
@@ -730,9 +730,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="IsStatusPublished && IsSavedAdjustmentModel" (click)="DeleteAdjustmentModel(AdjustmentValueClickIndex)">Delete</button>
-                        <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" id="closeAdjustmentModal" (click)="ShowListModal('cancel')">Cancel</button>
-                        <button id="saveSchedule" type="submit" class="btn btn-blue">Save</button>
+                        <button type="button" class="btn btn-primary btnDel pull-left" *ngIf="IsStatusPublished && IsSavedAdjustmentModel" (click)="DeleteAdjustmentModel(AdjustmentValueClickIndex)">Delete</button>
+                        <button type="button" class="btn btn-default btn -light" data-dismiss="modal" id="closeAdjustmentModal" (click)="ShowListModal('cancel')">Cancel</button>
+                        <button id="saveSchedule" type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </form>

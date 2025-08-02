@@ -16,9 +16,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-payday-cancel" data-dismiss="modal" #closeModal (click)="Close()">Cancel</button>
-                    <button id="saveSchedule" type="submit" class="btn btn-blue" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
-                    <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="model.ID && !model.Employees && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                    <button type="button" class="btn btn-default btn -light" data-dismiss="modal" #closeModal (click)="Close()">Cancel</button>
+                    <button id="saveSchedule" type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                    <button type="button" class="btn btn-primary btnDel pull-left" *ngIf="model.ID && !model.Employees && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
                 </div>
             </div>
         </form>

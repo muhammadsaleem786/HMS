@@ -6341,7 +6341,7 @@ h3.grid-heading{
 .grid-row-even:hover,.grid-row-odd:hover{
     background-color:#d8d8d8
 }
-.btn-blue{
+.btn-primary{
     -moz-transition:all .5s ease;
     -o-transition:all .5s ease;
     -webkit-transition:all .5s ease;
@@ -6349,15 +6349,15 @@ h3.grid-heading{
     color:#fff;
     min-width:100px
 }
-.btn-blue.btn-sm,.btn-blue.btn-xs{
+.btn-primary.btn-sm,.btn-primary.btn-xs{
     min-width:initial
 }
-.btn-blue:hover{
+.btn-primary:hover{
     outline:none;
     color:#fff;
     outline:none!important
 }
-.btn-blue:focus{
+.btn-primary:focus{
     outline:none;
     color:#fff;
     outline:none!important
@@ -7154,7 +7154,7 @@ h5{
     border:1px solid #ac2925!important;
     box-shadow:none!important
 }
-.btn-payday-cancel{
+.btn -light{
     border-radius:50px!important;
     color:#9fa5ad;
     border:1px solid transparent;
@@ -7166,18 +7166,18 @@ h5{
     -webkit-transition:all .3s ease;
     transition:all .3s ease
 }
-.btn-payday-cancel:hover{
+.btn -light:hover{
     background-color:#fff;
     border:1px solid transparent;
     color:#9fa5ad
 }
-.btn-payday-cancel:active{
+.btn -light:active{
     background-color:#fff!important;
     border:1px solid transparent;
     color:#9fa5ad!important;
     outline:none!important
 }
-.btn-payday-cancel:focus{
+.btn -light:focus{
     background-color:#fff!important;
     border:1px solid transparent!important;
     color:#9fa5ad!important;

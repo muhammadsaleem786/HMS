@@ -15,37 +15,84 @@
     .image-upload  input {
         display: none;
     }
+
+    .upload-box {
+  border: 2px dashed #cbd5e0;
+  padding: 20px;
+  border-radius: 10px;
+  display: inline-block;
+  width: 100%;
+  max-width: 350px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.upload-box:hover {
+  background: #f5faff;
+}
+
+.upload-label {
+  display: block;
+  cursor: pointer;
+  color: #4147d5;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.upload-text {
+  margin: 10px;
+  font-weight: 500;
+  color: #7086b1;
+  font-size: 14px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
 </style>
 
 
 
 
 
-<div class="uk-clearfix UplaodBtnWrap">
-    <ul class="list-inline col-sm-12" style="display: block; text-align: center;">
-        <li>
-            <div class="image-upload">
-                <label for="myFile">
-                    File Uplaod &nbsp; <i class="icon-upload"></i>
-                </label>
-                <P class="text-muted" *ngIf="!showbar">
-                    No File Choose
-                </P>
-                    <input type="file" id="myFile" (change)="fileChangeEvent($event)" />
-               
-            </div>
-        </li>
-    </ul>
+<div class="uk-clearfix UplaodBtnWrap mt-3">
+   <ul class="list-inline" style="display: block; text-align: center;">
+  <li>
+    <div class="upload-box">
+      <label for="myFile" class="upload-label mb-0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 14 14">
+          <g fill="none">
+            <path fill="#d7e0ff" d="M12.5 12.5a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1H9L12.5 4z"/>
+            <path stroke="#4147d5" stroke-linecap="round" stroke-linejoin="round" d="M12.5 12.5a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1H9L12.5 4z" stroke-width="1"/>
+            <path stroke="#4147d5" stroke-linecap="round" stroke-linejoin="round" d="m9 6.5l-2-2l-2 2m2-2V10" stroke-width="1"/>
+          </g>
+        </svg>
+        <p class="upload-text mb-0">Browse file to upload</p>
+      </label>
+
+      <p class="text-muted m-0" *ngIf="!showbar">No File Chosen</p>
+      <input type="file" id="myFile" (change)="fileChangeEvent($event)" />
+    </div>
+  </li>
+</ul>
+
 
     <div *ngIf="showbar" class="uk-clearfix showbarWrap col-sm-12 p-0">
-        <div class="d-flex uploadbar_row">
+        <div class="d-flex uploadbar_row align-items-center justify-content-between">
             
-            <div class="uploadBar text-muted">{{imagedata}}</div>
-            
+            <div class="d-flex flex-gorw-1 align-items-center w-100">
+                
+            <span style="height: 40px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><g fill="currentColor"><path d="M6.5 12a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1z"/><path fill-rule="evenodd" d="M11.185 1H4.5A1.5 1.5 0 0 0 3 2.5v15A1.5 1.5 0 0 0 4.5 19h11a1.5 1.5 0 0 0 1.5-1.5V7.202a1.5 1.5 0 0 0-.395-1.014l-4.314-4.702A1.5 1.5 0 0 0 11.185 1M4 2.5a.5.5 0 0 1 .5-.5h6.685a.5.5 0 0 1 .369.162l4.314 4.702a.5.5 0 0 1 .132.338V17.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5z" clip-rule="evenodd"/><path d="M11 7h5.5a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5v-6a.5.5 0 0 1 1 0z"/></g></svg>
+            </span>
             <div style="width: 198px;margin: 10px;">
+              <div class="uploadBar text-muted">{{imagedata}}</div>
                 <progress value="{{percentage}}" max="{{max}}" style="width:100%;height:5px;" >
                     {{percentage}}
                 </progress>
+            </div>
             </div>
 
             <div class="image-clear">

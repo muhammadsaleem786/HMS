@@ -79,10 +79,10 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-payday-cancel" routerLink="/home/Leaveentry">Cancel</button>
+            <button type="button" class="btn btn-default btn -light" routerLink="/home/Leaveentry">Cancel</button>
             <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
             <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
-            <button type="button" class="btn btn-blue btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+            <button type="button" class="btn btn-primary btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
         </div>
     </div>
 </form>

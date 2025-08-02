@@ -36,7 +36,7 @@
                                     <a routerLink="/home/changepassword" class="left-margin link-Company link-color">Change Password</a>
 
                                 </li>
-                                <li class="list-group-item">
+                                <li class="list-group-item"*ngIf="Rights.indexOf(66)>-1">
                                     <a routerLink="/home/Vendor" class="left-margin link-color">Vendor</a>
                                 </li>
                             </ul>
@@ -127,35 +127,7 @@
                         </div>
                     </div>
                 </div>
-                <!--<div class="col-md-4 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(11)>-1">
-                    <div class="col-md-12 no-padding-lr">
-                        <div class="col-md-12 margin-b-20">
-                            <div class="headTittle">
-                                <span class="Blockicon">
-                                    <img src="../assets/app/media/img/icons/setting3.png" class="img-fluid radius">
-                                </span><span class="left-margin blue-text">Employee</span>
-                            </div>
-                            <ul class="list-group">
-                              
-
-                                <li class="list-group-item" *ngIf="Rights.indexOf(51)>-1">
-                                    <a routerLink="/home/Allowance" class="left-margin link-color">Allowance</a>
-                                </li>
-                                <li class="list-group-item" *ngIf="Rights.indexOf(52)>-1">
-                                    <a routerLink="/home/Deduction" class="left-margin link-color">Deduction</a>
-                                </li>
-                               
-                                <li class="list-group-item" *ngIf="Rights.indexOf(58)>-1">
-                                    <a routerLink="/home/Timeattendancelist" class="left-margin link-color">Attendance List</a>
-                                </li>
-                                <li class="list-group-item" *ngIf="Rights.indexOf(59)>-1">
-                                    <a routerLink="/home/holiday" class="left-margin link-color">Holiday List</a>
-                                </li>
-                               
-                            </ul>
-                        </div>
-                    </div>
-                </div>-->
+                
             </div>
         </div>
 

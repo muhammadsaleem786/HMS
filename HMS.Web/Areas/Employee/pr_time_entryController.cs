@@ -56,8 +56,8 @@ namespace HMS.Web.API.Areas.Employee
                 int TimeOutmm = Convert.ToInt16(Model.TimOuttxt.Split(':')[1]);
                 TimeSpan tis = new TimeSpan(TimeInhh, TimeInmm, 0);
                 TimeSpan tos = new TimeSpan(TimeOuthh, TimeOutmm, 0);
-                Model.TimeIn = Model.TimeIn.Date + tis;
-                Model.TimeOut = Model.TimeOut.Date + tos;
+                Model.TimeIn = Model.TimeIn?.Date + tis;
+                Model.TimeOut = Model.TimeOut?.Date + tos;
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
                     ID = _service.Queryable().Max(e => e.ID) + 1;
@@ -70,7 +70,7 @@ namespace HMS.Web.API.Areas.Employee
                 Model.ModifiedDate = Request.DateTimes();
                 Model.StatusDropDownID = (int)sys_dropdown_mfEnum.TimeStatus;
                 Model.ObjectState = ObjectState.Added;
-                _service.Insert(Model); 
+                _service.Insert(Model);
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
@@ -253,8 +253,8 @@ namespace HMS.Web.API.Areas.Employee
 
                 TimeSpan tis = new TimeSpan(TimeInhh, TimeInmm, 0);
                 TimeSpan tos = new TimeSpan(TimeOuthh, TimeOutmm, 0);
-                Model.TimeIn = Model.TimeIn.Date + tis;
-                Model.TimeOut = Model.TimeOut.Date + tos;
+                Model.TimeIn = Model.TimeIn?.Date + tis;
+                Model.TimeOut = Model.TimeOut?.Date + tos;
 
 
                 decimal CompanyID = Request.CompanyID();
@@ -442,7 +442,7 @@ namespace HMS.Web.API.Areas.Employee
             var objResponse = new ResponseInfo();
             decimal CompanyID = Request.CompanyID();
             var CompanyWorkingDays = _adm_companyService.Queryable().Where(x => x.ID == CompanyID).FirstOrDefault();
-            
+
             var PublicHolidays = 0;
             //_sys_holidaysService.Queryable().Where(x => x.CompanyID == CompanyID)
             //   .Select(t => new
@@ -491,9 +491,9 @@ namespace HMS.Web.API.Areas.Employee
                        s.Employee,
                        s.Designation,
                        InTime = s.TimeIn,
-                       Date = s.TimeIn.ToString("dd/MM/yyyy"),
-                       TimeIn = s.TimeIn.ToString("hh:mm tt"),
-                       TimeOut = s.TimeOut.ToString("hh:mm tt"),
+                       Date = s.TimeIn?.ToString("dd/MM/yyyy") ?? "",
+                       TimeIn = s.TimeIn?.ToString("hh:mm tt") ?? "",
+                       TimeOut = s.TimeOut?.ToString("hh:mm tt") ?? "",
                        WorkingHours = WorkingHours("W", s.TimeIn, s.TimeOut),
                        DelayTime = WorkingHours("D", s.TimeIn, s.TimeOut),
                        ExcusedTime = WorkingHours("E", s.TimeIn, s.TimeOut),
@@ -519,18 +519,18 @@ namespace HMS.Web.API.Areas.Employee
                     z.EmployeeID,
                     z.Employee,
                     z.Designation,
-                    TotalWorkingHours = datalist.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + nextMyObject.WorkingHours).ToString(@"hh\:mm"),
-                    TotalDelayHours = datalist.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + nextMyObject.DelayTime).ToString(@"hh\:mm"),
-                    TotalExcusedHours = datalist.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + nextMyObject.ExcusedTime).ToString(@"hh\:mm"),
+                    TotalWorkingHours = datalist.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + nextMyObject.WorkingHours ?? TimeSpan.Zero).ToString(@"hh\:mm"),
+                    TotalDelayHours = datalist.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + nextMyObject.DelayTime ?? TimeSpan.Zero).ToString(@"hh\:mm"),
+                    TotalExcusedHours = datalist.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + nextMyObject.ExcusedTime ?? TimeSpan.Zero).ToString(@"hh\:mm"),
                     AtttimeListDet = datalist.Select(t => new
                     {
                         t.ID,
                         t.Date,
                         t.TimeIn,
                         t.TimeOut,
-                        WorkingHours = t.WorkingHours.ToString(@"hh\:mm"),
-                        DelayTime = t.DelayTime.ToString(@"hh\:mm"),
-                        ExcusedTime = t.ExcusedTime.ToString(@"hh\:mm"),
+                        WorkingHours = t.WorkingHours?.ToString(@"hh\:mm") ?? "0",
+                        DelayTime = t.DelayTime?.ToString(@"hh\:mm") ?? "0",
+                        ExcusedTime = t.ExcusedTime?.ToString(@"hh\:mm") ?? "0",
                         t.StatusID,
                         t.Status,
                     }).ToList(),
@@ -554,19 +554,32 @@ namespace HMS.Web.API.Areas.Employee
 
 
 
-        public TimeSpan WorkingHours(string HoursType, DateTime TimeIn, DateTime TimeOut)
+        public TimeSpan? WorkingHours(string HoursType, DateTime? TimeIn, DateTime? TimeOut)
         {
-            TimeSpan TimIn = new TimeSpan(TimeIn.Hour, TimeIn.Minute, 0);
-            TimeSpan TimOut = new TimeSpan(TimeOut.Hour, TimeOut.Minute, 0);
             TimeSpan CompanyWorkingHours = new TimeSpan(9, 0, 0);
             TimeSpan CompanyStartingTime = new TimeSpan(9, 0, 0);
             TimeSpan CompanyEndingTime = new TimeSpan(18, 0, 0);
             if (HoursType == "W")
-                return TimeOut.Subtract(TimeIn);
+                if (TimeIn.HasValue && TimeOut.HasValue)
+                    return TimeOut.Value - TimeIn.Value;
+                else
+                    return null;
             else if (HoursType == "D")
-                return TimIn.Subtract(CompanyWorkingHours);
+                if (TimeIn.HasValue)
+                {
+                    TimeSpan TimCheckIn = new TimeSpan(TimeIn.Value.Hour, TimeIn.Value.Minute, 0);
+                    return TimCheckIn - CompanyWorkingHours;
+                }
+                else
+                    return null;
             else
-                return CompanyEndingTime.Subtract(TimOut);
+                 if (TimeOut.HasValue)
+            {
+                TimeSpan TimCheckout = new TimeSpan(TimeOut.Value.Hour, TimeOut.Value.Minute, 0);
+                return CompanyEndingTime - TimCheckout;
+            }
+            else
+                return null;
 
         }
 

@@ -108,7 +108,6 @@ export class AppointmentComponentReportForm implements OnInit {
                 this.loader.HideLoader();
         });
     }
-
           public DownloadPDF(): void {
     this.loader.ShowLoader();
     const data = document.getElementById('RptPDF');
@@ -119,18 +118,15 @@ export class AppointmentComponentReportForm implements OnInit {
         scrollY: -window.scrollY
     }).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
-
         const pageWidth = 210; // A4 width in mm
         const margin = 10;     // 10mm margin
         const imgWidth = pageWidth - 2 * margin;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         const pageHeight = imgHeight + 2 * margin; // auto page height based on content
-
         // Create custom height PDF
         const pdf = new jsPDF('p', 'mm', [pageHeight, pageWidth]); // tall page
         pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
         pdf.save('Appointment.pdf');
-
         this.loader.HideLoader();
     });
 }
@@ -139,7 +135,6 @@ export class AppointmentComponentReportForm implements OnInit {
         var data_type = 'data:application/vnd.ms-excel';
         var table_div = document.getElementById('RptPDF');
         var table_html = table_div.outerHTML.replace(/ /g, '%20');
-
         var a = document.createElement('a');
         a.href = data_type + ', ' + table_html;
         a.download = 'Appointment.xls';

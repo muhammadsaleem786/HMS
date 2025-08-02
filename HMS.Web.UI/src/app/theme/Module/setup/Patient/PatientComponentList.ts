@@ -35,7 +35,6 @@ export class PatientComponentList {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("11");
-        //this.Keywords = this._CommonService.GetKeywords("Patient");
     }
     ngOnInit() {
 

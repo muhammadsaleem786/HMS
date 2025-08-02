@@ -807,12 +807,16 @@ export class SaleComponentForm {
         return Math.ceil(Math.max(totalRecord, 1) / Math.max(recordPerPage, 1));
     }
     PrintRxform(isValid: boolean): void {
+        debugger
         this.PrintSale_itemdynamicArray = [];
         this.loader.ShowLoader();
         if (this.DisType == 2)
             this.model.Discount = null;
         this.model.Total = this.Total;
         this.model.SubTotal = this.SubTotal;
+        this.PTotal = this.Total;
+        this.PSubTotal = this.SubTotal;
+        this.PDiscountAmount = this.DiscountAmount;
         this.model.TaxAmount = 0;
         this.model.DiscountAmount = this.OverAllDiscountAmount;
         this.model.pur_sale_dt = this.Sale_itemdynamicArray;

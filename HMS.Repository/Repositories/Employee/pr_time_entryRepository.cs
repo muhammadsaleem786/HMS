@@ -37,7 +37,7 @@ namespace HMS.Repository.Repositories.Employee
                          {
                              s.ID,
                              Employee = s.pr_employee_mf.FirstName + " " + s.pr_employee_mf.LastName,
-                             Date = s.TimeIn,
+                             Date = s.AttendanceDate,
                              s.TimeOut,
                              s.TimeIn,
                              Status = s.sys_drop_down_value.Value,
@@ -46,8 +46,8 @@ namespace HMS.Repository.Repositories.Employee
                              ID = z.ID,
                              Employee = z.Employee,
                              Date = z.Date.ToString("dd/MM/yyyy"),
-                             TimeOut = z.TimeOut.ToString("hh:mm tt"),
-                             TimeIn = z.TimeIn.ToString("hh:mm tt"),
+                             TimeOut = z.TimeOut?.ToString("hh:mm tt") ?? "",
+                             TimeIn = z.TimeIn?.ToString("hh:mm tt") ?? "",
                              Status = z.Status
                          }).OrderBy(x => x.Date).ToList();
                 }
@@ -60,7 +60,7 @@ namespace HMS.Repository.Repositories.Employee
                         {
                             s.ID,
                             Employee = s.pr_employee_mf.FirstName + " " + s.pr_employee_mf.LastName,
-                            Date = s.TimeIn,
+                            Date = s.AttendanceDate,
                             s.TimeOut,
                             s.TimeIn,
                             Status = s.sys_drop_down_value.Value,
@@ -69,29 +69,14 @@ namespace HMS.Repository.Repositories.Employee
                             ID = z.ID,
                             Employee = z.Employee,
                             Date = z.Date.ToString("dd/MM/yyyy"),
-                            TimeOut = z.TimeOut.ToString("hh:mm tt"),
-                            TimeIn = z.TimeIn.ToString("hh:mm tt"),
+                            TimeOut = z.TimeOut?.ToString("hh:mm tt") ?? "",
+                            TimeIn = z.TimeIn?.ToString("hh:mm tt") ?? "",
                             Status = z.Status
                         }).OrderBy(x => x.Date).ToList();
                 }
 
 
-                if (!string.IsNullOrEmpty(PFilter.SearchText))
-                {
-                    DisplayEmployee = PFilter.VisibleColumnInfoList.IndexOf("Employee") > -1;
-                    DisplayDate = PFilter.VisibleColumnInfoList.IndexOf("Date") > -1;
-                    DisplayTimeIn = PFilter.VisibleColumnInfoList.IndexOf("TimeIn") > -1;
-                    DisplayTimeOut = PFilter.VisibleColumnInfoList.IndexOf("TimeOut") > -1;
-                    DisplayStatus = PFilter.VisibleColumnInfoList.IndexOf("Status") > -1;
-
-                    list = list.Where(c =>
-                     (DisplayEmployee && c.Employee.ToLower().Replace("  ", " ").Contains(PFilter.SearchText.ToLower())
-                     || (DisplayDate && c.Date.ToLower().Contains(PFilter.SearchText.ToLower())
-                      || (DisplayTimeIn && c.TimeIn.ToString().ToLower().Contains(PFilter.SearchText.ToLower())
-                       || (DisplayTimeOut && c.TimeOut.ToString().ToLower().Contains(PFilter.SearchText.ToLower())
-                        || (DisplayStatus && c.Status.ToLower().Contains(PFilter.SearchText.ToLower())
-                     )))))).ToList();
-                }
+               
 
                 OrderByEmployee = PFilter.OrderBy.IndexOf("Employee") > -1;
                 OrderByDate = PFilter.OrderBy.IndexOf("Date") > -1;
@@ -114,7 +99,6 @@ namespace HMS.Repository.Repositories.Employee
                 else
                     prList = prList.OrderByDescending(orderingFunction);
 
-                objResult.TotalRecord = prList.Count();
                 objResult.DataList = prList.ToList<Object>();
 
             }
@@ -150,7 +134,7 @@ namespace HMS.Repository.Repositories.Employee
                          {
                              s.ID,
                              Employee = s.pr_employee_mf.FirstName + " " + s.pr_employee_mf.LastName,
-                             Date = s.TimeIn,
+                             Date = s.AttendanceDate,
                              s.TimeOut,
                              s.TimeIn,
                              Status = s.sys_drop_down_value.Value,
@@ -158,9 +142,9 @@ namespace HMS.Repository.Repositories.Employee
                          {
                              ID = z.ID,
                              Employee = z.Employee,
-                             Date = z.Date.ToString("dd/MM/yyyy"),
-                             TimeOut = z.TimeOut.ToString("hh:mm tt"),
-                             TimeIn = z.TimeIn.ToString("hh:mm tt"),
+                             Date = z.Date.ToString("dd/MM/yyyy"),    
+                             TimeOut = z.TimeOut?.ToString("hh:mm tt") ?? "",
+                             TimeIn = z.TimeIn?.ToString("hh:mm tt") ?? "",
                              Status = z.Status
                          }).OrderBy(x => x.Date).ToList();
                 }

@@ -184,11 +184,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     }
 
                     //string path = @"~\Templates\EmailConfirm.txt";
-                    //SendEmailforResetPassword(Model, "PayPeople | Verify your account", path, encrytoken);
+                    //SendEmailforResetPassword(Model, "EasyHMS | Verify your account", path, encrytoken);
 
                     //string path = @"~\Templates\EmailConfirm.txt";
                     //path = HttpContext.Current.Server.MapPath(path);
-                    //Task.Run(() => SendEmailConfirmNotify(_unitOfWorkAsync, userobj, "PayPeople | Verify your account", path, "WelcomeEmail", encrytoken));
+                    //Task.Run(() => SendEmailConfirmNotify(_unitOfWorkAsync, userobj, "EasyHMS | Verify your account", path, "WelcomeEmail", encrytoken));
 
                     try
                     {

@@ -302,7 +302,7 @@ export class TimeAttendanceComponentList {
         var id = this.AttendanceList[index].EmployeeID;
         this.Id = id;
         this.IsList = false;
-        this._router.navigate(['/timeattendance'], { queryParams: { id: this.Id, date: this.MonthFilterDate } });
+        this._router.navigate(['home/Timeattendance'], { queryParams: { id: this.Id, date: this.MonthFilterDate } });
     }
 
     Close(idpar) {

@@ -14,6 +14,12 @@
         width: 100%;
         background: #fff;
     }
+    .form-control {
+        border-radius: 4px;
+        border: 2px solid #dde1e5;
+        box-shadow: none;
+        height: 40px;
+    }
 </style>
  <div class="col-sm-12">
     <h2 class="grid-heading margin-t-15 margin-b-0">Employee Information</h2>
@@ -26,7 +32,7 @@
                   <div class="m-form mt-wizardForm">
                 <mat-horizontal-stepper linear #stepper (selectionChange)="onStepChange($event)">
                    <mat-step [stepControl]="firstFormGroup" class="wizardHeadingFirst" wizardHeadingFirst>
-                    <form [formGroup]="firstFormGroup" class="m-form m-form--label-align-left- m-form--state-">
+                    <form [formGroup]="firstFormGroup" class="m-form m-form--label-align-left- m-form--state-" [ngClass]="firstFormGroup.valid ? 'active' : ''">
                         <ng-template matStepLabel>
                           <div [ngClass]="firstFormGroup.valid ? 'active' : ''">
                         <span class="mt-wizardLabel">Basic Info</span>
@@ -132,7 +138,7 @@
                                     type="text"
                                     formControlName="FirstName"
                                     [(ngModel)]="model.FirstName"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                     maxlength="250"
                                     placeholder="First Name"
                                     (keypress)="OnKeyPress($event)"
@@ -144,7 +150,7 @@
                                     type="text"
                                     formControlName="LastName"
                                     [(ngModel)]="model.LastName"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                     maxlength="250"
                                     placeholder="Last Name"
                                     (keypress)="OnKeyPress($event)"
@@ -164,7 +170,7 @@
                                 <select
                                     formControlName="MaritalStatusTypeID"
                                     [(ngModel)]="model.MaritalStatusTypeID"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                 >
                                     <option *ngFor="let item of MaritalStatusList" [value]="item.ID">{{ item.Value }}</option>
                                 </select>
@@ -186,7 +192,7 @@
                                     formControlName="CountryID"
                                     [(ngModel)]="model.CountryID"
                                     (change)="CountrySelectionChange()"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                 >
                                     <option *ngFor="let item of Countries" [value]="item.ID">{{ item.Value }}</option>
                                 </select>
@@ -196,7 +202,7 @@
                                 <select
                                     formControlName="CityID"
                                     [(ngModel)]="model.CityID"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                 >
                                     <option *ngFor="let item of FilterCities" [value]="item.ID">{{ item.Value }}</option>
                                 </select>
@@ -207,7 +213,7 @@
                                     type="text"
                                     formControlName="ZipCode"
                                     [(ngModel)]="model.ZipCode"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                     maxlength="150"
                                     placeholder="Enter ZIP/Postal Code"
                                 />
@@ -219,7 +225,7 @@
                                     formControlName="StreetAddress"
                                     [(ngModel)]="model.StreetAddress"
                                     maxlength="500"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                     placeholder="Enter street address"
                                 />
                                 </div>
@@ -228,7 +234,7 @@
                                 <select
                                     formControlName="NationalityID"
                                     [(ngModel)]="model.NationalityID"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                 >
                                     <option *ngFor="let item of Nationalities" [value]="item.ID">{{ item.Value }}</option>
                                 </select>
@@ -250,7 +256,7 @@
                                     formControlName="Email"
                                     [attr.disabled]="(IsEdit && IsAdm_UserExist) ? true : null"
                                     [(ngModel)]="model.Email"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                     maxlength="250"
                                     placeholder="Email"
                                 />
@@ -262,7 +268,7 @@
                                     formControlName="HomePhone"
                                     [attr.disabled]="(IsEdit && IsAdm_UserExist) ? true : null"
                                     [(ngModel)]="model.HomePhone"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                     maxlength="150"
                                     placeholder="Home Phone (+XXXXXXX)"
                                     (change)="IsvalidPhone('HP')"
@@ -274,7 +280,7 @@
                                     type="text"
                                     formControlName="Mobile"
                                     [(ngModel)]="model.Mobile"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                     maxlength="150"
                                     placeholder="Work Phone (+XXXXXXX)"
                                     (change)="IsvalidPhone('WP')"
@@ -286,7 +292,7 @@
                                     type="text"
                                     formControlName="EmergencyContactPerson"
                                     [(ngModel)]="model.EmergencyContactPerson"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                     maxlength="250"
                                     placeholder="Emergency Contact Person"
                                 />
@@ -297,7 +303,7 @@
                                     type="text"
                                     formControlName="EmergencyContactNo"
                                     [(ngModel)]="model.EmergencyContactNo"
-                                    class="form-control"
+                                    class="form-control mb-4"
                                     maxlength="150"
                                     placeholder="Emergency Contact No"
                                     (change)="IsvalidPhone('EP')"

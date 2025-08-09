@@ -301,7 +301,7 @@ const SecureRoutes: Routes = [
             { path: 'Leaveentry/saveleave', component: LeaveApplicationComponentForm, canActivate: [AuthGuard] },
             { path: 'Leaveentry/saveleave:id', component: LeaveApplicationComponentForm, canActivate: [AuthGuard] },
             { path: 'Timeattendance', component: TimeAttendanceComponentForm, canActivate: [AuthGuard] },
-            { path: 'Timeattendancelist', component: TimeAttendanceComponentList, canActivate: [AuthGuard] },
+            { path: 'Timelist', component: TimeAttendanceComponentList, canActivate: [AuthGuard] },
             { path: 'Loan', component: LoanComponentList, canActivate: [AuthGuard] },
             { path: 'Employee/saveemployee:id', component: EmployeeComponent },
             { path: 'Employee/saveemployee', component: EmployeeComponent },

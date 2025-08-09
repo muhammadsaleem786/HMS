@@ -44,7 +44,7 @@ namespace HMS.Repository.Repositories.Employee
                 IQueryable<pr_employee_mf> filteredData = repository.Queryable().Where(predicate);
 
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
-                    PFilter.OrderBy = "ModifiedDate";
+                    PFilter.OrderBy = "ID";
 
                 OrderByName = PFilter.OrderBy.IndexOf("Name") > -1;
                 OrderByDesignation = PFilter.OrderBy.IndexOf("Designation") > -1;
@@ -68,9 +68,9 @@ namespace HMS.Repository.Repositories.Employee
                                                               // OrderByStatus ? c.StatusList.Value.ToString() : ""
                                                               );
 
-                if (PFilter.OrderBy == "ModifiedDate")
+                if (PFilter.OrderBy == "ID")
                 {
-                    filteredData = filteredData.OrderByDescending(d => (d.ModifiedDate == null ? d.ModifiedDate : d.CreatedDate)).AsQueryable();
+                    filteredData = filteredData.OrderByDescending(d => (d.ID)).AsQueryable();
                     objResult.TotalRecord = filteredData.Count();
                 }
                 else

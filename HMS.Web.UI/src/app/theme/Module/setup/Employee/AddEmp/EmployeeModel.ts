@@ -53,7 +53,7 @@
     EmployeeTypeID: number;
     TypeStartDate: Date = new Date();
     TypeEndDate: Date = new Date();
-
+    EffectiveDate: Date = new Date();
     LocationID: number;
     DesignationID: number;
     DepartmentID: number;

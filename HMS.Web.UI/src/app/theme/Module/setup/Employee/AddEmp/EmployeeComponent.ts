@@ -274,14 +274,14 @@ export class EmployeeComponent implements OnInit, OnDestroy {
             MaritalStatusTypeID: [''],
         });
         this.secondFormGroup = this._fb.group({
-            HireDate: ['', [<any>Validators.required]],
+            HireDate: [''],
             JoiningDate: ['', [<any>Validators.required]],
             StatusID: [''],
             EmployeeTypeID: [''],
             LocationID: [''],
             DesignationID: [''],
             DepartmentID: [''],
-            NICNo: [''],
+            NICNo: ['', [Validators.required]],
             PassportNumber: [''],
             SCHSNO: [''],
             EmployeeCode: [''],
@@ -293,20 +293,20 @@ export class EmployeeComponent implements OnInit, OnDestroy {
             BranchCode: [''],
             AccountNo: [''],
             SwiftCode: [''],
-            TypeStartDate: ['', [<any>Validators.required]],
-            TypeEndDate: ['', [<any>Validators.required]],
-            TerminatedDate: ['', [<any>Validators.required]],
-            FinalSettlementDate: ['', [<any>Validators.required]],
+            TypeStartDate: [''],
+            TypeEndDate: [''],
+            TerminatedDate: [''],
+            FinalSettlementDate: [''],
             MedicalInsuranceProvided: [''],
             AirTicketProvided: [''],
-            ContractTypeID: ['', [<any>Validators.required]],
-            SubContractCompanyName: ['', [<any>Validators.required]],
+            ContractTypeID: [''],
+            SubContractCompanyName: [''],
             SpecialtyTypeID: [''],
             ClassificationTypeID: [''],
         });
         this.thirdFormGroup = this._fb.group({
             PayScheduleID: ['', [Validators.required]],
-            EffectiveFrom: ['', [Validators.required]],
+            EffectiveDate: ['', [Validators.required]],
         });
         this.fourthFormGroup = this._fb.group({
             Category: [''],
@@ -413,7 +413,6 @@ export class EmployeeComponent implements OnInit, OnDestroy {
             this.HouseRentIDForSA = 5;
         else
             this.HouseRentIDForSA = 0;
-        //loading all dropdowns
         if (!this.IsEdit)
             this.LoadForm();
     }
@@ -422,21 +421,6 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         this._employeeService.FormLoad().then(m => {
             var result = m.ResultSet;
             if (m.IsSuccess) {
-                //if (this.IsEdit) {
-                //    this.model = result.Employee;
-                //    this.NeartoExpireDocs = result.NeartoExpireDocs;
-                //    var user_company = this.model.adm_user_company;
-                //    if (user_company.length > 0) {
-                //        if (user_company[0].UserID == user_company[0].AdminID)
-                //            this.IsAdmin = true;
-                //        else
-                //            this.IsAdmin = false;
-
-                //        this.IsAdm_UserExist = true;
-                //    } else
-                //        this.IsAdm_UserExist = false;
-                //}
-                //this.NeartoExpireDocs = result.NeartoExpireDocs;
                 this.Paytypes = result.Paytypes;
                 this.EmployeeTypes = result.EmployeeTypes;
                 this.Statuses = result.Statuses;
@@ -446,26 +430,21 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                     this.DefaultFallInHoliday = this.PayDayFallOnHolidayTypes[0].ID;
                     this.payScheduleModel.FallInHolidayID = this.DefaultFallInHoliday;
                 }
-
-
                 this.AllowanceCategoryTypes = result.AllowanceCategoryTypes;
                 var FilterAllowCat = this.AllowanceCategoryTypes.filter(x => { return x.ID == 7 });
                 if (FilterAllowCat.length > 0)
                     this.OtherID = FilterAllowCat[0].ID;
                 else this.AllowanceModel.AllowanceName = 'a';
-
                 var FilterPaytype = this.Paytypes.filter(x => x.ID == 1);
                 if (FilterPaytype.length > 0) {
                     this.DefaultPayTypeID = FilterPaytype[0].ID;
                     this.payScheduleModel.PayTypeID = this.DefaultPayTypeID;
                 }
-
                 this.AccrualFrequencies = result.AccrualFrequencies;
                 var AccFerq = this.AccrualFrequencies.filter(x => x.ID == 2)
                 if (AccFerq.length > 0) {
                     this.VacSickLeaveModel.AccrualFrequencyID = AccFerq[0].ID;
                 }
-
                 this.DefaulAllowanceCategoryID = this.AllowanceCategoryTypes[0].ID;
                 this.AllowanceModel.CategoryID = this.DefaulAllowanceCategoryID;
                 this.PaySchedules = result.PaySchedules;
@@ -478,23 +457,18 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                 this.Allowanceslist = JSON.parse(JSON.stringify(result.DefaultAllowancesList));
                 this.ContributionList = result.ContributionList;
                 this.DeductionList = result.DeductionList;
-
                 this.VacationAndSickLeaves = result.VacationAndSickLeaves;
                 this.Nationalities = result.Nationalities;
                 this.MaritalStatusList = result.MaritalStatusList;
                 this.SpecialtyTypeList = result.SpecialtyTypeList;
                 this.ClassificationTypeList = result.ClassificationTypeList;
                 this.ContractTypeList = result.ContractTypeList;
-
-
                 this.RelationshipTypeList = result.RelationshipTypeList;
                 this.AirTicketClassTypeList = result.AirTicketClassTypeList;
                 this.AirTicketFrequencyList = result.AirTicketFrequencyList;
                 this.InsuranceClassTypeList = result.InsuranceClassTypeList;
                 this.EmpDependentModel.MaritalStatusTypeID = result.MaritalStatusList.length > 0 ? result.MaritalStatusList[0].ID : 0;
                 this.EmpDependentModel.RelationshipTypeID = result.RelationshipTypeList.length > 0 ? result.RelationshipTypeList[0].ID : 0;
-
-
                 if (!this.IsEdit) {
                     this.UnSelectedAllowancesList = JSON.parse(JSON.stringify(result.DefaultAllowancesList));
                     this.UnSelectedContributionList = JSON.parse(JSON.stringify(result.ContributionList));
@@ -503,11 +477,9 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                     this.SelectedContributionList = this.ContributionList.filter(x => x.Default == true);
                     this.SelectedDeductionList = this.DeductionList.filter(x => x.Default == true);
                 }
-
                 this.IsDrpdownDataCompletelyLoaded = true;
                 if (this.IsDrpdownDataCompletelyLoaded && (this.IsEmpCompletelyLoaded || !this.IsEdit))
                     this.LoadDataOnPageLoad();
-
             }
             else {
                 this.toastr.Error('Error', result.ErrorMessage);
@@ -526,14 +498,11 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         } else
             return 0;
     }
-
     LoadDataOnPageLoad() {
         if (!this.IsEdit)
             this.model.ContractTypeID = this.ContractTypeList.length > 0 ? this.ContractTypeList[0].ID : 0;
         else
             this.IsEmployeeEditSumary = true;
-
-
         this.model.MaritalStatusTypeID = this.MaritalStatusList.length > 0 ? this.MaritalStatusList[0].ID : 0;
         if (!this.IsEdit) {
             this.model.AirTicketClassTypeID = this.AirTicketClassTypeList.length > 0 ? this.AirTicketClassTypeList[0].ID : 0;
@@ -934,7 +903,23 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     * @param {number} index The index of the step
     */
     onStepChange(event: any) {
-
+        if (event.selectedIndex == 1) {
+            const start = this.secondFormGroup.get('TypeStartDate');
+            const end = this.secondFormGroup.get('TypeEndDate');
+            if (this.model.StatusID === 1 && this.model.EmployeeTypeID !== 1) {
+                start.setValidators([Validators.required])
+                end.setValidators([Validators.required])
+                this.secondFormGroup.patchValue({
+                    TypeStartDate: this.model.TypeStartDate,
+                    TypeEndDate: this.model.TypeEndDate
+                });
+            } else {
+                start.clearValidators()
+                end.clearValidators()
+            }
+            start.updateValueAndValidity()
+            end.updateValueAndValidity()
+        }
         if (event.selectedIndex == 2) {
             //if Pay Wizard Selected Index = 2 then 
             if (!this.IsEdit && !this.IsPayWizardViewed)
@@ -2049,7 +2034,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         else return false;
     }
 
-    IsNewImageEvent() {
+    IsNewImageEvent(FName) {
         this.IsNewImage = true;
     }
     IsNewFileEvent(FName) {

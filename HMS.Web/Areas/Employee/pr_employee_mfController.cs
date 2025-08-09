@@ -81,7 +81,7 @@ namespace HMS.Web.API.Areas.Employee
                 decimal CompanyID = Request.CompanyID();
                 decimal LoginID = Request.LoginID();
 
-                pr_employee_mf emp = _service.Queryable().Where(x => x.CompanyID == CompanyID && (x.FirstName + " " + x.LastName).ToLower() == (Model.FirstName + " " + Model.LastName).ToLower()).FirstOrDefault();
+                pr_employee_mf emp = _service.Queryable().Where(x => x.CompanyID == CompanyID && x.NICNo == Model.NICNo).FirstOrDefault();
                 if (emp == null)
                 {
                     List<pr_employee_allowance> employee_allowance = new List<pr_employee_allowance>();
@@ -124,7 +124,7 @@ namespace HMS.Web.API.Areas.Employee
                     Model.MaritalStatusTypeDropdownID = (int)sys_dropdown_mfEnum.MaritalType;
 
                     Model.ContractTypeDropDownID = (int)sys_dropdown_mfEnum.ContractType;
-
+                    Model.HireDate = Model.JoiningDate;
 
                     Model.CreatedBy = LoginID;
                     Model.CreatedDate = Request.DateTimes();
@@ -250,7 +250,7 @@ namespace HMS.Web.API.Areas.Employee
                 else
                 {
                     objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = Model.FirstName + " already exist. Please enter a different name and try again.";
+                    objResponse.ErrorMessage = Model.NationalityID + " already exist. Please enter a different national id and try again.";
                 }
             }
             catch (Exception ex)
@@ -952,7 +952,7 @@ namespace HMS.Web.API.Areas.Employee
                 }
 
                 decimal CompanyID = Request.CompanyID();
-                pr_employee_mf emp = _service.Queryable().Where(x => x.CompanyID == CompanyID && x.ID != Model.ID && (x.FirstName + " " + x.LastName).ToLower() == (Model.FirstName + " " + Model.LastName).ToLower()).FirstOrDefault();
+                pr_employee_mf emp = _service.Queryable().Where(x => x.CompanyID == CompanyID && x.ID != Model.ID && (x.NICNo == Model.NICNo)).FirstOrDefault();
                 if (emp == null)
                 {
                     List<pr_employee_allowance> employee_allowanceList = new List<pr_employee_allowance>();
@@ -986,7 +986,6 @@ namespace HMS.Web.API.Areas.Employee
                     Model.OriginCountryDropdownTypeID = (int)sys_dropdown_mfEnum.Country;
                     Model.DestinationCityDropdownTypeID = (int)sys_dropdown_mfEnum.City;
                     Model.DestinationCountryDropdownTypeID = (int)sys_dropdown_mfEnum.Country;
-
                     Model.ModifiedBy = Request.LoginID();
                     Model.ModifiedDate = Request.DateTimes();
                     Model.ObjectState = ObjectState.Modified;

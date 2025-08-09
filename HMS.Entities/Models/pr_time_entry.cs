@@ -13,10 +13,10 @@ namespace HMS.Entities.Models
         public decimal ID { get; set; }
         public decimal CompanyID { get; set; }
         public decimal EmployeeID { get; set; }
-        public DateTime AttendanceDate {  get; set; }
+        public DateTime AttendanceDate { get; set; }
         public Nullable<decimal> LocationID { get; set; }
-        public System.DateTime TimeIn { get; set; }
-        public System.DateTime TimeOut { get; set; }
+        public Nullable<System.DateTime> TimeIn { get; set; }
+        public Nullable<System.DateTime> TimeOut { get; set; }
         [NotMapped]
         public string TimIntxt { get; set; }
         [NotMapped]

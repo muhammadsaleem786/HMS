@@ -312,19 +312,6 @@ export class InvoiceComponentForm {
             this.Invoice_itemdynamicArray[this.RowCount].BatchSarialNumber = this.batchModel.BatchSarialNumber;
             this.Invoice_itemdynamicArray[this.RowCount].ExpiredWarrantyDate = this.batchModel.ExpiredWarrantyDate;
             this.closeBatchModal.nativeElement.click();
-            //let obj = this.Invoice_itemdynamicArray[this.RowCount];
-            //this.batchModel.ItemID = obj.ItemID;
-            //this._InvoiceService.UpdateBatch(this.batchModel).then(m => {
-            //    this.loader.HideLoader();
-            //    var result = JSON.parse(m._body);
-            //    if (result.IsSuccess) {
-            //        this.closeBatchModal.nativeElement.click();
-            //    }
-            //    else {
-            //        this.loader.HideLoader();
-            //        this.toastr.Error('Error', result.ErrorMessage);
-            //    }
-            //});
         }
     }
     SaveOrUpdate(isValid: boolean): void {
@@ -422,6 +409,7 @@ export class InvoiceComponentForm {
                 this.Invoice_itemdynamicArray[indx].MenualItemDescription = true;
                 this.Invoice_itemdynamicArray[indx].Quantity = 1;
                 this.Invoice_itemdynamicArray[indx].Rate = ui.item.PurchasePrice;
+                this.Invoice_itemdynamicArray[indx].SalePrice = ui.item.SalePrice;
                 this.Invoice_itemdynamicArray[indx].Amount = (1 * ui.item.PurchasePrice);
                 this.Invoice_itemdynamicArray[indx].PriceID = 0;
                 this.Invoice_itemdynamicArray[indx].ItemType = ui.item.TypeValue;

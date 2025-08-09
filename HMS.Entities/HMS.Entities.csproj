@@ -115,6 +115,9 @@
     <Compile Include="Enum\sys_dropdown_mfEnum.cs" />
     <Compile Include="Models\adm_company.cs" />
     <Compile Include="Models\adm_company_location.cs" />
+    <Compile Include="Models\Mapping\pr_time_logMap.cs" />
+    <Compile Include="Models\pr_time_log.cs" />
+    <Compile Include="Models\pr_attendance.cs" />
     <Compile Include="Models\adm_integration.cs" />
     <Compile Include="Models\adm_item.cs" />
     <Compile Include="Models\adm_item_log.cs" />
@@ -172,6 +175,7 @@
     <Compile Include="Models\ipd_procedure_mf.cs" />
     <Compile Include="Models\Mapping\adm_companyMap.cs" />
     <Compile Include="Models\Mapping\adm_company_locationMap.cs" />
+    <Compile Include="Models\Mapping\pr_attendanceMap.cs" />
     <Compile Include="Models\Mapping\adm_integrationMap.cs" />
     <Compile Include="Models\Mapping\adm_item_logMap.cs" />
     <Compile Include="Models\Mapping\adm_reminder_dtMap.cs" />

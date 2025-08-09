@@ -14,6 +14,7 @@ namespace HMS.Entities.Models
         public decimal ID { get; set; }
         public decimal CompanyId { get; set; }
         public string UserName { get; set; }
+        public string EmailFrom { get; set; }
         public string Password { get; set; }
         public string Masking { get; set; }
         public string SMTP { get; set; }

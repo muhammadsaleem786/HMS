@@ -27,6 +27,7 @@ export class pur_invoice_dt {
     ItemDescription: string;
     Quantity: number;
     Rate: number;
+    SalePrice: number;
     Amount: number;
     Discount: number;
     DiscountAmount: number = 0;   

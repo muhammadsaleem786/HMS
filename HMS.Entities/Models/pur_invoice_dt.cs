@@ -17,6 +17,7 @@ namespace HMS.Entities.Models
         public string ItemDescription { get; set; }
         public Nullable<decimal> Quantity { get; set; }
         public Nullable<decimal> Rate { get; set; }
+        public Nullable<decimal> SalePrice { get; set; }
         public Nullable<decimal> Amount { get; set; }
         public Nullable<decimal> Discount { get; set; }
         public Nullable<decimal> DiscountAmount { get; set; }

@@ -22,6 +22,10 @@ export class AppointmentService {
         var data = { 'date': date, 'StatusId': StatusId, 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': false };
         return this.http.Get(this.urlToApiAp + '/AppointList', data).then(e => e);
     }
+    GetAppointFilterData(date: string, StatusId: string, CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string): Promise<any> {
+        var data = { 'date': date, 'StatusId': StatusId, 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': false };
+        return this.http.Get(this.urlToApi + '/AppointFilterData', data).then(e => e);
+    }
     GetUpdatePatientList(date: string, StatusId: string, CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string): Promise<any> {
         var data = { 'date': date, 'StatusId': StatusId, 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': false };
         return this.http.Get(this.urlToApiAp + '/UpdateAppointList', data).then(e => e);

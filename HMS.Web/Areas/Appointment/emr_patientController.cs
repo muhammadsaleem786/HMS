@@ -6,11 +6,13 @@ using HMS.Service.Services.Appointment;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
+using iTextSharp.text;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -107,7 +109,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         objResponse.ResultSet = new
                         {
                             CurrentModel = Model,
-                            Model = _service.Queryable().Where(a => a.CompanyId == CompanyID).ToList(),
                         };
                     }
                     catch (DbUpdateException)
@@ -168,7 +169,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     objResponse.ResultSet = new
                     {
                         CurrentModel = Model,
-                        Model = _service.Queryable().Where(a => a.CompanyId == CompanyID).ToList(),
                     };
                 }
                 catch (DbUpdateException)
@@ -616,15 +616,12 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 {
                     DoctorCalander = DoctorList.DoctList.ToList();
                 }
-
-                var PatientInfo = _service.Queryable().Where(a => a.CompanyId == CompanyID).ToList();
                 objResponse.ResultSet = new
                 {
                     GenderList = GenderType,
                     DoctorList = DoctorList,
                     AppointmentList = LIST,
                     AllStatusList = AllStatusList,
-                    PatientInfo = PatientInfo,
                     DoctorCalander = DoctorCalander,
                 };
             }
@@ -636,6 +633,80 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResponse;
         }
+        [HttpGet]
+        [ActionName("AppointFilterData")]
+        public PaginationResult AppointFilterData(string date, string StatusId, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, bool IgnorePaging = false)
+        {
+            var objResult = new PaginationResult();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                int? stid = Convert.ToInt32(StatusId);
+                int userid = Convert.ToInt32(Request.LoginID());
+                DateTime todayDate = Convert.ToDateTime(date);
+                string TotalRecord = "0";
+                if (SearchText == null)
+                    SearchText = "";
+                DataAccessManager dataAccessManager = new DataAccessManager();
+                var ht = new Hashtable();
+                ht.Add("@CompanyID", CompanyID);
+                ht.Add("@UserId", userid);
+                ht.Add("@StatusId", "0");
+                ht.Add("@CurrentDate", todayDate);
+                ht.Add("@CurrentPageNo", CurrentPageNo);
+                ht.Add("@RecordPerPage", RecordPerPage);
+                ht.Add("@SearchText", SearchText.ToString());
+
+                var AllData = dataAccessManager.GetDataSet("SP_CalendarData", ht);
+
+                var LIST = AllData.Tables[0].AsEnumerable().Where(row => row["gender"]?.ToString() == StatusId);
+
+                DataTable filteredTable = LIST.Any() ? LIST.CopyToDataTable() : AllData.Tables[0].Clone();
+                if (filteredTable!=null && filteredTable.Rows.Count > 0)
+                    TotalRecord = filteredTable.Rows[0]["TotalRecord"].ToString();
+                var GenderType = AllData.Tables[1];
+                var StatusList = AllData.Tables[2];
+                var AllStatusList = AllData.Tables[3];
+                var DoctorList = AllData.Tables[4];
+                var DoctorCalander = AllData.Tables[4];
+                var Reminderlist = AllData.Tables[12];
+                var Followuplist = AllData.Tables[13];
+                decimal[] IdList = null;
+                var isShowIds = AllData.Tables[5].Rows[0]["IsShowDoctorIds"].ToString();
+                if (isShowIds != "")
+                    IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
+                var MedicineList = AllData.Tables[6];
+                var ClinicList = AllData.Tables[7];
+                var BloodList = AllData.Tables[8];
+                var ServiceType = AllData.Tables[9];
+                var token = AllData.Tables[10].Rows[0]["TokenNo"].ToString();
+                decimal TokenNo = Convert.ToDecimal(token);
+                var IsBackDated = AllData.Tables[11].Rows[0]["IsBackDatedAppointment"].ToString();
+                bool IsBackDatedAppointment = Convert.ToBoolean(IsBackDated);
+
+                objResult.GenderList = GenderType;
+                objResult.DoctorList = DoctorList;
+                objResult.AppointmentList = filteredTable;
+                objResult.AllStatusList = AllStatusList;
+                objResult.DoctorCalander = DoctorCalander;
+                objResult.IsShowDoctorIds = IdList;
+                objResult.ClinicList = ClinicList;
+                objResult.BloodList = BloodList;
+                objResult.MedicineList = MedicineList;
+                objResult.ServiceType = ServiceType;
+                objResult.TokenNo = TokenNo.ToString();
+                objResult.IsBackDatedAppointment = IsBackDatedAppointment;
+                objResult.TotalRecord = Convert.ToInt32(TotalRecord);
+                objResult.Reminderlist = Reminderlist;
+                objResult.Followuplist = Followuplist;
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace.Error(ex);
+            }
+            return objResult;
+        }
+
         [HttpGet]
         [ActionName("MonthLoadData")]
         public ResponseInfo MonthLoadData(string fdate, string tdate, string StatusId)

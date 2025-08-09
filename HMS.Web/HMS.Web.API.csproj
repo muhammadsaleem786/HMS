@@ -397,6 +397,7 @@
     <Compile Include="Areas\Appointment\emr_documentController.cs" />
     <Compile Include="Areas\Appointment\emr_patientController.cs" />
     <Compile Include="Areas\Employee\pr_allowanceController.cs" />
+    <Compile Include="Areas\Employee\pr_attendanceController.cs" />
     <Compile Include="Areas\Employee\pr_deduction_contributionController.cs" />
     <Compile Include="Areas\Employee\pr_departmentController.cs" />
     <Compile Include="Areas\Employee\pr_designationController.cs" />
@@ -454,6 +455,7 @@
     <Compile Include="Common\Utility.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\AttendanceSyncController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Filters\AddChallengeOnUnauthorizedResult.cs" />

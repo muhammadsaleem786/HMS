@@ -1173,12 +1173,25 @@ h4 {
 .modal-backdrop {
     background-color: rgba(0, 0, 0 ,0.5);
 }
-.mat-step-icon-content {
-    display: none;
+// .mat-step-icon-content {
+//     display: none;
+// }
+// .mat-step-icon-state-edit.mat-step-icon{
+//     display: none;
+// }
+
+.mat-step-icon .mat-icon { color: transparent; position: relative; }
+.mat-step-icon .mat-icon::before {
+ content: "✔"; 
+  font-weight: 900;
+  color: green; /* change color as needed */
+  font-size: 24px;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-45%);
 }
-.mat-step-icon-state-edit.mat-step-icon{
-    display: none;
-}
+.mat-step-icon .mat-icon
 button.mt-modal-close {
     width: 35px !important;
     height: 35px !important;
@@ -1599,10 +1612,23 @@ small {
     max-width: 800px;
     margin: 20px auto;
 }
+.mat-horizontal-stepper-header-container{
+    padding: 0 20px;
+}
+.mat-horizontal-stepper-header .mat-step-icon {
+    width: 40px;
+    height: 40px;
+    background: #efefef;
+}
+.mat-horizontal-stepper-header{
+    flex-direction: column;
+}
 .mt-wizardForm .active .progress {
     background: #59a9ff;
 }
-
+.mt-wizardForm .progress {
+    display: none;
+}
 .EmpEditWraper {
     margin-bottom: 6em;
 }

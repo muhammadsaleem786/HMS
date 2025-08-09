@@ -57,7 +57,7 @@
     <h2 class="grid-heading margin-t-15 mb-2"> Payroll</h2>
  </div>
 
-    <div class="Cardview payroll_Wrap margin-t-0 ps-2" style="padding-top:10px" *ngIf="payrolShow">
+    <div class="Cardview payroll_Wrap p-3" *ngIf="payrolShow">
        
         <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="PayrollList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
 
@@ -68,26 +68,26 @@
         <!--<div class="col-sm-12">
             <a routerLink="/payroll"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
         </div>-->
-        <div class="clearfix backBtnMain">
-            <div class="backBtn">
-                <a (click)="GoBack('/setup')" class="cursor-pointer"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+      
+        <div class="row mt-2 mx-0">
+            <div class="col-sm-1" style="max-width:30px;">
+                <a (click)="GoBack('/setup')" class="cursor-pointer mt-1 d-block"><i class="fa fa-chevron-left" style="color: #4e607a;"></i></a>
             </div>
-            <!--<div style="padding: 20px 40px 10px 40px; display: inline-block; float: right;">
-                <button class="btn btn-primary">Reports</button>
-            </div>-->
-        </div>
-        <div class="row" style="padding: 0 40px 0 40px;">
-            <div class="col-md-6">
+            <div class="col-md-10 d-flex align-items-center" style="gap:5px;">
                 <h3>Payroll</h3>
-                <p>({{PayPeriod}})</p>
-                <strong>Status:</strong> {{Status}}
+                <p class="mb-0">of <strong>({{PayPeriod}})</strong></p>
+                <strong class="ml-3">Status:</strong> <span class="badge badge-primary">{{Status}}</span>
             </div>
         </div>
+        
         <i id="SearchButton" style="display:none" class="btn btn-primary" data-toggle="modal" data-target="#FilterModal"></i>
-        <app-pagination [PModel]="PDetModel" [PConfig]="PDetConfig" [PData]="PayrollDetList" (pageChange)="GetDetList()" (AddOrEditEvent)="AddDetRecord($event)" (GoBackEvent)="GoBack($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)">
+       
+       <div class="Cardview payroll_Wrap p-3">
+              <app-pagination [PModel]="PDetModel" [PConfig]="PDetConfig" [PData]="PayrollDetList" (pageChange)="GetDetList()" (AddOrEditEvent)="AddDetRecord($event)" (GoBackEvent)="GoBack($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)">
         </app-pagination>
-        <div style="padding: 0 40px 0 40px;" *ngIf="PayrollDetList?.length > 0">
-            <table class="table" style="margin-top:0px;">
+
+         <div  *ngIf="PayrollDetList?.length > 0">
+            <table class="table" style="margin-top:0px;background: #efefef;">
                 <tr>
                     <td><strong>Total</strong></td>
                     <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalBaseSalary | number: '1.0-0') }}</strong></td>
@@ -102,6 +102,10 @@
                 <button type="button" class="btn btn-primary btnDel pull-left" (click)="DeletePayroll()">Delete</button>
             </div>
         </div>
+
+       </div>
+      
+       
         <div class="modal fade" id="FilterModal" data-backdrop="static" data-keyboard="false" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">

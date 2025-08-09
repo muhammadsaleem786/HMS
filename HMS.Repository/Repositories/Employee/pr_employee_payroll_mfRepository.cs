@@ -323,7 +323,7 @@ namespace HMS.Repository.Repositories.Employee
 
 
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
-                    PFilter.OrderBy = "EmployeeName";
+                    PFilter.OrderBy = "PayDate";
 
                 OrderByEmpName = PFilter.OrderBy.IndexOf("EmployeeName") > -1;
                 OrderByBaseSalary = PFilter.OrderBy.IndexOf("BaseSalary") > -1;

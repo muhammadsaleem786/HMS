@@ -1,13 +1,13 @@
 ﻿
-<form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+<form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)" style="margin: 100px auto; max-width:700px">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">{{model.ID ? 'Edit' : 'Add New'}} Attendance</h3>
-            <button type="button" class="close mt-modal-close" (click)="Close()" data-dismiss="modal"><i class="fa fa-times"></i></button>
+            <h3 class="grid-heading font-weight-400 no-padding">{{model.ID ? 'Edit' : 'Add New'}} Attendance</h3>
+            <button type="button" class="close mt-modal-close" routerLink="/home/Attendance" data-dismiss="modal"><i class="fa fa-times"></i></button>
         </div>
         <div class="modal-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Employee*</label>
                         <input type="text" [(ngModel)]="model.EmployeeID" formControlName="EmployeeID" [hidden]="true" />
@@ -34,7 +34,7 @@
                         </small>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Status*</label>
                         <select formControlName="StatusID" [(ngModel)]="model.StatusID" class="form-control">
@@ -54,7 +54,7 @@
                         </small>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Attendance Date*</label>
                         <Datetime-Component formControlName="AttendDate" [(ngModel)]="AttendDate">

@@ -52,7 +52,7 @@
                 <div class="tab-content" *ngIf="IsPatient">
                     <div class="tab-pane active" id="History">
                         <div class="row mt-2">
-                            <div class="col-sm-5">
+                            <div class="col-sm-5 mb-5">
                                 <div class="card">
                                     <div class="card-header gray">
                                         Primary Diagnosis
@@ -117,7 +117,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mt-5">
+                                <div class="mt-5 mt-5">
                                     <div class="card">
                                         <div class="card-header gray">Medical History</div>
                                         <div class="card-body">
@@ -132,23 +132,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-7">
-                                <div class="card">
-                                    <div class="card-header gray">
-                                        Vitals
-                                        <span class="pull-right" *ngIf="model.DischargeDate==null">
-                                            <i class="icon icon-plus-circle text-primary pointer" (click)="OpenVitalModal(VitalModal)"></i>
-                                        </span>
-                                        <span class="">
-                                            <i class="text-primary pointer" (click)="OpenVitalList(VitalList)"> Vital List</i>
-                                        </span>
-                                    </div>
-                                    <div echarts [options]="chartOptions" class="echart-container"></div>
-                                </div>
-                            </div>
-                            <div class="col-sm-7">
-                                <div class="card">
+
+                                    <div class="card mt-5">
                                     <div class="card-header gray">
                                         Intake/Output
                                         <span class="pull-right" *ngIf="model.DischargeDate==null">
@@ -186,9 +171,24 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                
                             </div>
                             <div class="col-sm-7">
                                 <div class="card">
+                                    <div class="card-header gray">
+                                        Vitals
+                                        <span class="pull-right" *ngIf="model.DischargeDate==null">
+                                            <i class="icon icon-plus-circle text-primary pointer" (click)="OpenVitalModal(VitalModal)"></i>
+                                        </span>
+                                        <span class="">
+                                            <i class="text-primary pointer" (click)="OpenVitalList(VitalList)"> Vital List</i>
+                                        </span>
+                                    </div>
+                                    <div echarts [options]="chartOptions" class="echart-container"></div>
+                                </div>
+
+                                    <div class="card mt-5">
                                     <div class="card-header gray">
                                         Medication
                                         <span class="pull-right" *ngIf="model.DischargeDate==null">
@@ -220,9 +220,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-7">
-                                <div class="card">
+
+
+                                     <div class="card mt-5">
                                     <div class="card-header gray">
                                         Document
                                         <span class="pull-right" *ngIf="model.DischargeDate==null">
@@ -270,8 +270,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-7">
+
+                                <div class="card mt-5 mb-5">
                                 <div class="card-header gray">
                                     Nursing Notes
                                     <span class="pull-right" *ngIf="model.DischargeDate==null">
@@ -279,7 +279,7 @@
                                     </span>
                                 </div>
                                 <div class="TableView">
-                                    <div class="row" *ngFor="let S of NotesList">
+                                    <div class="row m-0" *ngFor="let S of NotesList">
                                         <div class="col-sm-3">
                                             <label>
                                                 {{S.CreatedDate}}
@@ -293,6 +293,9 @@
                                     </div>
                                 </div>
                             </div>
+                            </div>
+                            
+                            
                         </div>
                     </div>
                 </div>

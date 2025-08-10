@@ -314,6 +314,18 @@
                                                     </select>
                                                 </div>
                                             </div>
+ 
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="usr">Designation</label>
+                                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#DesignationModal"
+                                                       (click)="IntializeModels()"></i>
+                                                    <select formControlName="DesignationID" [(ngModel)]="model.DesignationID" class="form-control m-input">
+                                                        <option value="">Select an option </option>
+                                                        <option *ngFor="let item of Designations" [value]="item.ID">{{item.DesignationName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
 
                                             <!-- Employee Type -->
                                             <div class="col-sm-6">
@@ -371,7 +383,7 @@
                                             </div>
 
                                             <!-- Start/End Date (conditional) -->
-                                            <div class="row" [style.display]="(model.StatusID == 1 && model.EmployeeTypeID != 1) ? 'block' : 'none'">
+                                            <div class="row" [style.display]="(model.StatusID == 1 && model.EmployeeTypeID != 1) ? 'flex' : 'none'">
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label>Start Date*</label>
@@ -389,19 +401,7 @@
                                             </div>
                                         </div>
                                         <!-- Designation -->
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label for="usr">Designation</label>
-                                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#DesignationModal"
-                                                       (click)="IntializeModels()"></i>
-                                                    <select formControlName="DesignationID" [(ngModel)]="model.DesignationID" class="form-control m-input">
-                                                        <option value="">Select an option </option>
-                                                        <option *ngFor="let item of Designations" [value]="item.ID">{{item.DesignationName}}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
+                                      
                                     </div>
                                     <div class="card p-4 rounded-3 shadow-sm bg-light-subtle mb-4">
                                         <div class="row">
@@ -1326,8 +1326,8 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8">
-                            <div class="row">
-                                <div class="col-xs-6">
+                            <div class="row m-0">
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Pay Period</label>
                                         <select formControlName="PayTypeID" [(ngModel)]="payScheduleModel.PayTypeID" class="form-control">
@@ -1354,11 +1354,11 @@
                                     <div class="form-group">
                                         <div class="checkbox checkboxDefault">
                                             <input type="checkbox" id="DefaultCheck" formControlName="Active" [(ngModel)]="payScheduleModel.Active">
-                                            <label for="DefaultCheck">Default</label>
+                                            <label for="DefaultCheck">&nbsp; Default</label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-6">
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Pay Period Start Date*</label>
                                         <Datetime-Component formControlName="PeriodStartDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onPayScheduleDateChanged($event)" [(ngModel)]="payScheduleModel.PeriodStartDate">
@@ -1384,7 +1384,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="clearfix box-shadow text-left padding-b-15 padding-t-15" style="background-color:#F7F8FA; padding-left:15px; padding-right: 15px;">
+                            <div class="clearfix text-left padding-b-15 padding-t-15" style="background-color:#e5edff; padding-left:15px; padding-right: 15px;min-height: 238px; border-radius: 6px;">
                                 <h4 class="heading">Pay Batch</h4>
                                 <div *ngIf="payScheduleModel.PayDate">
                                     <p>{{payScheduleModel.PeriodStartDate | date: "dd/MM/yyyy"}} - {{payScheduleModel.PeriodEndDate | date: "dd/MM/yyyy"}}</p>
@@ -1561,8 +1561,8 @@
         <div class="modal-content" (click)="IsModalClick()">
             <div class="modal-header">
                 <h3 class="grid-heading font-weight-400 no-padding pull-left mt-m-r-20">Add Contribution / Deduction</h3>
-                <!-- <i class="fa fa-plus-square font-25 color-green cursor-pointer" data-toggle="modal" *ngIf="IsShowListModal" (click)="ShowModal()" data-target="#ContributionDeductionModal"></i> -->
-                <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                <i class="fa fa-plus-square font-25 color-green cursor-pointer" data-toggle="modal" *ngIf="IsShowListModal" (click)="ShowModal()" data-target="#ContributionDeductionModal"></i>
+                <!-- <button type="button" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button> -->
             </div>
             <form [formGroup]="ConributionDeductionForm" novalidate (ngSubmit)="SaveContributionDeduction(ConributionDeductionForm.valid)">
                 <div class="modal-body">

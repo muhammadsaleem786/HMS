@@ -157,11 +157,17 @@
                         <div class="col-4 text-right">
                             <label>Date/Time</label>
                         </div>
-                        <div class="col-4">
+                        <div class="col-8">
                             <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="model.Date">
                             </Datetime-Component>
                         </div>
-                        <div class="col-4">
+                    </div>
+
+                     <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label>Time</label>
+                        </div>
+                        <div class="col-8">
                             <input type="time" class="form-control" formControlName="Time" [(ngModel)]="model.Time" />
                         </div>
                     </div>

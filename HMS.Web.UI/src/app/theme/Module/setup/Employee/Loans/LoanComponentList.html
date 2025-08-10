@@ -26,10 +26,10 @@
         <div>
             <div class="Cardview search_onTop px-2">
                <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="LoanList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
-                <div style="padding: 0 40px 0 40px;" *ngIf="LoanList?.length > 0">
+                <div style="padding: 0 20px;" *ngIf="LoanList?.length > 0">
                     <table class="table tblTotal" style="margin-top:0px;">
                         <tr>
-                            <td width="56%"><strong>Total</strong></td>
+                            <td width="62%"><strong>Total</strong></td>
                             <td><strong>{{Currency}} {{PagSumModel.LoanSum | number: '1.0-0' }}</strong></td>
                             <td><strong>{{Currency}} {{PagSumModel.PaymentSum | number: '1.0-0' }}</strong></td>
                             <td><strong>{{Currency}} {{PagSumModel.BalanceSum | number: '1.0-0'}}</strong></td>
@@ -56,10 +56,11 @@
                             <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Loan Detail - {{PRDModel?.Description}}</h3>
                             <h4><strong>{{PRDModel?.EmpName}}</strong></h4>
                         </div>
-                        <button class="salaryCal cursor-pointer" id="ShowAddPaymentModalId" (click)="ShowHideModal('ShowAP')" data-toggle="modal" [style.cursor]="(PRDModel.TotalBalance <= 0) ? 'not-allowed' : 'pointer' " [attr.disabled]="(PRDModel.TotalBalance <= 0) ? true : null" data-target="#AddPaymentModal">Add Payment</button>
                         <button type="button" id="CloseLoanDetailModal" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
                     </div>
                     <div class="modal-body">
+                        
+                        <button class="btn btn-primary cursor-pointer" id="ShowAddPaymentModalId" (click)="ShowHideModal('ShowAP')" data-toggle="modal" [style.cursor]="(PRDModel.TotalBalance <= 0) ? 'not-allowed' : 'pointer' " [attr.disabled]="(PRDModel.TotalBalance <= 0) ? true : null" data-target="#AddPaymentModal">Add Payment</button>
                         <div class="mat-elevation-z8">
                             <mat-table class="mt-custom-table" #table [dataSource]="dataSource" matSort>
 
@@ -154,16 +155,17 @@
                             <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Loan Payment - {{PRDModel?.Description}}</h3>
                             <h4><strong>{{PRDModel?.EmpName}}</strong></h4>
                         </div>
-                        <div class="salaryCal">
-                            <strong>Loan Balance</strong><br />
-                            <strong>
-                                {{Currency}} {{PRDModel.TotalBalance | number: '1.0-0'}}
-                            </strong>
-                        </div>
+                       
                         <button type="button" id="CloseAddPaymentModal" (click)="ShowHideModal('HideAP')" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
+                            <div class="col-sm-12">
+                                   <strong>Loan Balance</strong>&nbsp;
+                            <strong>
+                                {{Currency}} {{PRDModel.TotalBalance | number: '1.0-0'}}
+                            </strong>
+                            </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>Payment Date*</label>

@@ -13,10 +13,10 @@
             <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
         </div>
     </div>
-    <div class="Cardview px-3 pb-3">
+    <div class="Cardview p-4">
         <div class="row">
             <div class="col-md-6 mb-4">
-                <div class="card shadow p-4 h-100">
+                <div class=" bg-secondary p-4 h-100 border-radius">
                     <div class="d-flex align-items-center mb-3">
                         <img src="../../../../../assets/app/media/img/telenor-logo.png" alt="Cloudpital" style="height: 40px;" class="me-3" />
                         <div>
@@ -26,7 +26,7 @@
                             </p>
                         </div>
                     </div>
-                    <ul class="list-unstyled mb-4">
+                    <ul class="list-unstyled mb-4" style="height:100px;">
                         <li><strong>User Name:</strong> {{ SMSModel.UserName }}</li>
                         <li>
                             <strong>Password:</strong> {{ '*'.repeat(SMSModel.Password?.length || 0) }}
@@ -41,12 +41,12 @@
                     </div>
                     <div *ngIf="SMSModel.IsActive==true">
                         <button class="btn btn-primary" *ngIf="ControlRights.EditRights" (click)="SmsDectivate()">Deactivate</button>
-                        <button class="btn btn-primary" (click)="openSMSModel(adSMS)">Update</button>
+                        <button class="btn btn-primary ml-2" (click)="openSMSModel(adSMS)">Update</button>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 mb-4">
-                <div class="card shadow p-4 h-100">
+                <div class=" bg-secondary p-4 h-100 border-radius">
                     <div class="d-flex align-items-center mb-3">
                         <img src="../../../../../assets/app/media/img/gmail_logo.png" alt="Cloudpital" style="height: 40px;" class="me-3" />
                         <div>
@@ -56,7 +56,7 @@
                             </p>
                         </div>
                     </div>
-                    <ul class="list-unstyled mb-4">
+                    <ul class="list-unstyled mb-4" style="height:100px;">
                         <li><strong>Email From:</strong> {{ EmailModel.EmailFrom }}</li>
                         <li><strong>User Name:</strong> {{ EmailModel.UserName }}</li>
                         <li>
@@ -73,14 +73,14 @@
                     </div>
                     <div *ngIf="EmailModel.IsActive==true">
                         <button class="btn btn-primary" *ngIf="ControlRights.EditRights" (click)="EmailDectivate()">Deactivate</button>
-                        <button class="btn btn-primary" (click)="openEmailModel(adEmail)">Update</button>
+                        <button class="btn btn-primary ml-2" (click)="openEmailModel(adEmail)">Update</button>
                     </div>
                 </div>
             </div>
 
         </div>
-        <a class="btn btn-danger btn-md" *ngIf="ControlRights.CreateRights" (click)="AddZKTRecord('0')">New Device</a>
-
+        <a class="btn btn-danger btn-md pull-right" *ngIf="ControlRights.CreateRights" (click)="AddZKTRecord('0')">New Device</a>
+        <div class="clearfix"></div>
         <div class="Cardview px-3 pb-3">
             <div class="TableView">
                 <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
@@ -343,10 +343,10 @@
                     </div>
                     <div class="row form-group">
                         <div class="col-4 text-right">
-                            <label class="form-control-label mt-2" for="input-username">Active </label>
+                            <label class="form-control-label" for="input-username">Active </label>
                         </div>
                         <div class="col-8">
-                            <input type="checkbox" id="" formControlName="IsActive" [(ngModel)]="AttendanceModel.IsActive" class="form-control form-control-sm form-control-alternative">
+                            <input type="checkbox" id="" formControlName="IsActive" [(ngModel)]="AttendanceModel.IsActive" class="">
                         </div>
                     </div>
                 </div>

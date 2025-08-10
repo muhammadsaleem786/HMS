@@ -107,12 +107,12 @@ export class IntegrationComponent {
     openSMSModel(adSMS: any) {
         this.model = {} as IntegrationModel;
         this.model = this.SMSModel;
-        this.modalService.open(adSMS, { size: 'lg' });
+        this.modalService.open(adSMS, { size: 'md' });
     }
     openEmailModel(adEmail: any) {
         this.model = {} as IntegrationModel;
         this.model = this.EmailModel;
-        this.modalService.open(adEmail, { size: 'lg' });
+        this.modalService.open(adEmail, { size: 'md' });
     }
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true;

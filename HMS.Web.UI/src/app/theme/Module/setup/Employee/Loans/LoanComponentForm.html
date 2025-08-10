@@ -5,13 +5,16 @@
                 <div class="modal-header">
                     <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding mt-d-inline-block">New Loan</h3>
                     <button type="button" class="close mt-modal-close" (click)="Close()" data-dismiss="modal"><i class="fa fa-times"></i></button>
-                    <p class="salaryCal">
-                        <strong>Salary</strong><br />
-                        <span><strong> {{Currency}} {{BasicSalary | number: '1.0-0'}}</strong> </span>
-                    </p>
+                    
                 </div>
                 <div class="modal-body">
                     <div class="row">
+                        <div class="col-sm-12">
+                            <p class="salaryCal">
+                        <strong>Salary</strong> &nbsp;
+                        <span><strong> {{Currency}} {{BasicSalary | number: '1.0-0'}}</strong> </span>
+                    </p>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Employee*</label>
@@ -46,16 +49,7 @@
                                     This value is required.
                                 </small>
                             </div>
-                            <div class="form-group">
-                                <label>Loan Amount*</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
-                                    <input type="number" formControlName="LoanAmount" min="0" [(ngModel)]="model.LoanAmount" pattern=".{0,8}" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                                </div>
-                                <small *ngIf="Form1.controls.LoanAmount.hasError('required') && submitted">
-                                    This value is required.
-                                </small>
-                            </div>
+                           
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
@@ -72,9 +66,21 @@
                                     <input type="text" formControlName="LoanCode" [(ngModel)]="model.LoanCode"  class="form-control">
                                 </div>
                             </div>
+
+                            
+                             <div class="form-group">
+                                <label>Loan Amount*</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
+                                    <input type="number" formControlName="LoanAmount" min="0" [(ngModel)]="model.LoanAmount" pattern=".{0,8}" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                </div>
+                                <small *ngIf="Form1.controls.LoanAmount.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="form-group">
+                             <div class="form-group">
                                 <label>Payment Method*</label>
                                 <select formControlName="PaymentMethodID" [(ngModel)]="model.PaymentMethodID" class="form-control">
                                     <option *ngFor="let item of PaymentMethodList" [value]="item.ID">
@@ -82,7 +88,12 @@
                                     </option>
                                 </select>
                             </div>
-                            <div class="form-group">
+
+
+                        </div>
+
+                         <div class="col-sm-6">
+  <div class="form-group">
                                 <label>Payment Start Date*</label>
                                 <Datetime-Component formControlName="PaymentStartDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.PaymentStartDate">
                                 </Datetime-Component>
@@ -90,7 +101,10 @@
                                     This value is required.
                                 </small>
                             </div>
-                            <div class="form-group">
+                        </div>
+
+                         <div class="col-sm-6">
+         <div class="form-group">
                                 <div class="margin-b-8">
                                     <label>Payment Installment Amount</label><br />
                                 </div>
@@ -101,6 +115,12 @@
                                     <input type="radio" formControlName="DeductionType" (change)="IsLoanValid()" name="DeductionType" [(ngModel)]="model.DeductionType" value="P"> % of Salary
                                 </label>
                             </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                           
+                          
+                   
                             <div class="form-group">
                                 <label>Deduction Value</label>
                                 <div class="input-group">
@@ -114,6 +134,9 @@
                                     % value should be equal or less than 100%.
                                 </small>
                             </div>
+                        </div>
+                        <div class="col-sm-12">
+                            
                             <div class="form-group" *ngIf="model.DeductionType == 'P' && model.DeductionValue > 0">
                                 <label>Installment By Base Salary</label>
                                 <input type="number" formControlName="InstallmentByBaseSalary" min="0" [attr.disabled]="true" [(ngModel)]="model.InstallmentByBaseSalary" pattern=".{0,8}" class="form-control" />

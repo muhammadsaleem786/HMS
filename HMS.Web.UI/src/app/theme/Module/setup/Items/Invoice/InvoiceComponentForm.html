@@ -1,5 +1,5 @@
 ﻿
-<div class="margin-t-68 col-sm-12" style="margin-bottom:100px;">
+<div class="margin-t-68 col-sm-12" style="margin-bottom:20px;">
     <div class="row headSection paginationHead">
         <div class="col-sm-8 no-padding">
             <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
@@ -19,7 +19,7 @@
             </span>
         </div>
     </div>
-    <div>
+    <div class="Cardview p-4">
         <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
             <div class="AddNewItem margin-t-15">
                 <div class="row form-group">
@@ -73,7 +73,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12 margin-top10" style="width:92%;">
-                            <table class="line-table noramal-padding margin-top10">
+                            <table class="Reports_table noramal-padding margin-top10">
                                 <thead class="line-item-header">
                                     <tr>
                                         <th class="line-item-column" style="width:150px;">Item</th>
@@ -81,7 +81,6 @@
                                         <th class="line-item-column" style="width:150px;">Cost Price</th>
                                         <th class="line-item-column" style="width:150px;">Sale Price</th>
                                         <th class="line-item-column" style="width:130px;">Amount</th>
-                                        <th class="line-item-column" style="width:130px;"></th>
                                     </tr>
                                 </thead>
                                 <thead>
@@ -103,15 +102,15 @@
                                         </td>
                                         <td class="relative">
                                             {{dynamic.Amount}}
-                                            <div class="item-actions">
+                                            <div class="item-actions pl-2">
                                                 <span (click)="RemoveRow(i)">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon icon-sm icon-cancel-circled cursor-pointer icon-red">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:22px; color:red;" viewBox="0 0 512 512" class="icon icon-sm icon-cancel-circled cursor-pointer icon-red">
                                                         <path d="M256 32c30.3 0 59.6 5.9 87.2 17.6 26.7 11.3 50.6 27.4 71.2 48s36.7 44.5 48 71.2c11.7 27.6 17.6 56.9 17.6 87.2s-5.9 59.6-17.6 87.2c-11.3 26.7-27.4 50.6-48 71.2s-44.5 36.7-71.2 48C315.6 474.1 286.3 480 256 480s-59.6-5.9-87.2-17.6c-26.7-11.3-50.6-27.4-71.2-48s-36.7-44.5-48-71.2C37.9 315.6 32 286.3 32 256s5.9-59.6 17.6-87.2c11.3-26.7 27.4-50.6 48-71.2s44.5-36.7 71.2-48C196.4 37.9 225.7 32 256 32m0-32C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0z"></path>
                                                         <path d="M284.3 250.3l62.3-62.3c6.2-6.2 6.2-16.2 0-22.4l-.2-.2c-6.2-6.2-16.2-6.2-22.4 0l-62.3 62.3c-3.1 3.1-8.2 3.1-11.3 0L188 165.4c-6.2-6.2-16.2-6.2-22.4 0l-.2.2c-6.2 6.2-6.2 16.2 0 22.4l62.3 62.3c3.1 3.1 3.1 8.2 0 11.3L165.4 324c-6.2 6.2-6.2 16.2 0 22.4l.2.2c6.2 6.2 16.2 6.2 22.4 0l62.3-62.3c3.1-3.1 8.2-3.1 11.3 0l62.3 62.3c6.2 6.2 16.2 6.2 22.4 0l.2-.2c6.2-6.2 6.2-16.2 0-22.4l-62.3-62.3c-3-3.2-3-8.2.1-11.4z"></path>
                                                     </svg>
                                                 </span>
                                                 <span *ngIf="dynamic.IsBatch">
-                                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#BatchModal" (click)="IntializeModels(i)"></i>
+                                                    <i class="fa fa-plus-square fa-2s ml-2" data-toggle="modal" data-target="#BatchModal" (click)="IntializeModels(i)"></i>
                                                 </span>
                                             </div>
                                         </td>
@@ -119,14 +118,14 @@
                                 </thead>
                             </table>
                             <div class="col-sm-5">
-                                <div class="row">
-                                    <button class="btn btn-secondary add-btn btn-xs  margin-top10" style="color:#d64830;" type="button" (click)="Add()">
+                                <div class="row my-3">
+                                    <button class="btn btn-light add-btn btn-xs  margin-top10" style="color:#d64830;" type="button" (click)="Add()">
 
                                         Add Item
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-sm-offset-1 col-sm-6 no-padding">
+                            <div class="col-sm-offset-1 col-sm-6 no-padding ">
                                 <div class="row grey-bg rounded-xlg SummaryWrap colum3">
                                     <div class="col-sm-8">
                                         <label class="margin-b-0 lh-normal">Sub Total</label>
@@ -138,12 +137,12 @@
                                     </div>
                                     <div class="clearfix"></div>
 
-
+                                    <hr>
                                     <div class="col-sm-4">
                                         <label>Discount</label>
                                     </div>
                                     <div class="col-sm-4 text-right pull-right">
-                                        <div class="flex-row">
+                                        <div class="d-flex">
                                             <input type="text" class="form-control text-right input-sm text-" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.Discount" (change)="DiscountValue(model.Discount)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                             <select class="form-control input-medium-select" (change)="changeDiscountType($event.target.value)" [ngModelOptions]="{standalone:true}" [(ngModel)]="DisType">
                                                 <option *ngFor="let item of DiscountTypeList" [value]="item.id">
@@ -159,13 +158,15 @@
                                     </div>
                                     <div class="clearfix"></div>
                                     <div class="clearfix"></div>
-
+                                    <div class="col-sm-12">
+                                        <hr />
+                                    </div>
                                     <div class="clearfix"></div>
                                     <div class="col-sm-8">
-                                        <strong><label>Total</label></strong>
+                                       <h2>Total</h2>
                                     </div>
                                     <div class="col-sm-4 text-right pull-right">
-                                        <strong>  {{Total}}</strong>
+                                        <h2>  {{Total}}</h2>
                                     </div>
                                 </div>
                             </div>

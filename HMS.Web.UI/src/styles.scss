@@ -1808,7 +1808,6 @@ small {
     color: white;
     text-align: center;
     padding: 10px;
-    margin: 2px;
     width: calc(25% - 4px);
 
     .AmountType {
@@ -4513,4 +4512,26 @@ label.custom-control-label {
 
 .Salereceipt{
 
+}
+
+.designationWrap .searchAddEmployee,
+.attendanceWrap .searchAddEmployee{
+    left: 260px;
+}
+.designationWrap .input-group-addon,
+.attendanceWrap .input-group-addon,
+.noAddBtn .input-group-addon{
+    display: none;
+}
+
+.input-group-text{
+    background: transparent;
+    border:0px;
+    padding: 0;
+}
+
+.dropdown-item.active, .dropdown-item:active ,
+.dropdown-item.active:hover{
+    background-color: #2f3479;
+    color: #fff !important;
 }

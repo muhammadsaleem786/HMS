@@ -165,18 +165,19 @@
     <span style="display:none" id="ShowPayStubId" data-toggle="modal" data-target="#PayStubModal"></span>
     <span style="display:none" id="ShowPublishPayrollConfirmationModal" data-toggle="modal" data-target="#PublishPayrollConfirmationModal"></span>
     <div class="modal" id="PayStubModal" role="dialog">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="max-width: 600px;">
             <form novalidate (ngSubmit)="SavePayStubOfSingleEmp()">
                 <div class="modal-content">
                     <div class="modal-header">
                         <div class="row">
                             <div class="col-xs-10">
-                                <div style="margin-top: 10px;">
+                                <div style="margin: 10px 0 0 10px;">
                                     <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding" style="display: inline-block;">
                                         {{EmployeeModel.FirstName + ' ' +EmployeeModel.LastName+"'s"}} Pay Details -
                                     </h3>
-                                    <strong>({{model.FromDate | date: "dd/MM/yyyy"}} - {{model.ToDate | date: "dd/MM/yyyy"}})</strong>
-                                </div>
+                                   </div>
+                                     <strong style="margin-left: 10px;">({{model.FromDate | date: "dd/MM/yyyy"}} - {{model.ToDate | date: "dd/MM/yyyy"}})</strong>
+                               
                             </div>
                             <!--<div class="col-xs-2">
                                 <button id="saveSchedule" *ngIf="!IsStatusPublished" type="button" class="btn btn-primary pull-right" (click)="ShowListModal('prorate')" data-toggle="modal" data-target="#ProrateModal">Prorate</button>
@@ -354,32 +355,32 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div style="display: table; margin: 0 auto; width: 80%;">
+                            <div style="display: table; margin: 0 auto; width: 100%;">
                                 <!--<div class="clearfix">
                                     <span (click)="ReCalculateSalary()" *ngIf="!IsStatusPublished" class="reCalc pull-right"><i class="fa fa-refresh"></i> Re-Calculate</span>
                                 </div>-->
-                                <div class="row salarCalc">
-                                    <div class="col-sm-3" style="background: #00d399">
+                                <div class="row salarCalc m-0">
+                                    <div class="col-sm-3" style="background: #06e0a6">
                                         <span class="font-14">Basic salary</span>
                                         <p [ngStyle]="model.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''">
                                             {{SalaryModel.BasicSalary | number: '1.0-0'}}
                                             <i class="fa fa-pencil cursor-pointer" *ngIf="IsStatusPublished" data-toggle="modal" (click)="AdjustmentEditClick(model.ID,'B',0)" data-target="#AdjustmentModal"></i>
                                         </p>
                                     </div>
-                                    <div class="col-sm-3" style="background: #f05675">
+                                    <div class="col-sm-3" style="background: #10923b">
                                         <span class="font-14">Gross salary</span>
                                         <p>
                                             {{SalaryModel.GrossSalary | number: '1.0-0'}}
                                         </p>
                                     </div>
-                                    <div class="col-sm-3" style="background: #00a4d3" *ngIf="PayrollRegion != 'SA'">
+                                    <div class="col-sm-3" style="background: #c72902" *ngIf="PayrollRegion != 'SA'">
                                         <span class="font-14">Deductions</span>
                                         <p>
                                             {{SalaryModel.DeductionTotal | number: '1.0-0'}}
                                             <!--<i class="fa fa-pencil pull-right" *ngIf="IsStatusPublished" data-toggle="modal" (click)="AdjustmentEditClick(model.ID,'T')" data-target="#AdjustmentModal"></i>-->
                                         </p>
                                     </div>
-                                    <div class="col-sm-3" style="background: #674390">
+                                    <div class="col-sm-3" style="background: #2f3479">
                                         <span class="font-14">Net salary</span>
                                         <p>
                                             {{SalaryModel.NetSalary | number: '1.0-0'}}
@@ -390,9 +391,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="saveSchedule" type="submit" class="btn btn-primary" *ngIf="!IsStatusPublished">Save</button>
                         <button type="button" class="btn btn-default btn -light" data-dismiss="modal" #closeModal>Close</button>
                         <button type="button" class="btn btn-primary btnDel pull-left" *ngIf="!IsStatusPublished" (click)="DeletePayStubOfSingleEmp()">Delete</button>
+                        
+                        <button id="saveSchedule" type="submit" class="btn btn-primary" *ngIf="!IsStatusPublished">Save</button>
                     </div>
                 </div>
             </form>

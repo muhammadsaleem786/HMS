@@ -264,9 +264,9 @@
                                             <tr>
                                                 <th scope="col" style="width:150px;">Medicine</th>
                                                 <th style="width:90px;">-</th>
-                                                <th scope="col">Dosage</th>
+                                                <th scope="col" style="width:220px;">Dosage</th>
                                                 <th scope="col" style="width:70px;">Duration</th>
-                                                <th scope="col" style="width:90px;"></th>
+                                                <th scope="col" style="width:170px;"></th>
                                                 <th scope="col">Instruction</th>
                                                 <th>-</th>
                                             </tr>
@@ -285,7 +285,7 @@
                                                 <td>
                                                     <div class="row">
                                                         <div class="col d-flex flex-checkbox smallbox">
-                                                            <div class="custom-control">
+                                                            <div class="custom-control pl-0">
                                                                 <label class="" for="Morning_{{i}}">M</label>
                                                                 <input type="text" class="form-control form-control-sm" id="Morning_{{i}}" name="Morning" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Morning">
                                                             </div>
@@ -308,7 +308,7 @@
                                                     <input class="form-control form-control-sm form-control-alternative" placeholder="Days" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Duration" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                                                 </td>
                                                 <td>
-                                                    <select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.DurationValue" class="form-control">
+                                                    <select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.DurationValue" class="form-control ps-1">
                                                         <option *ngFor="let item of DurationList" [ngValue]="item.Name">{{item.Name}}</option>
                                                     </select>
                                                 </td>

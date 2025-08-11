@@ -5,10 +5,10 @@ export const GlobalVariable = {
     BASE_File_URL: "https://localhost:44371/files/attachmentfiles/",
     BASE_Temp_File_URL: "https://localhost:44371/files/temp/",
     //Live
-    //BASE_Api_URL: "http://40.172.150.18/api",
-    //BASE_Web_URL: "http://localhost:4200",
-    //BASE_File_URL: "http://40.172.150.18/api/files/attachmentfiles/",
-    //BASE_Temp_File_URL: "http://40.172.150.18/api/files/temp/",
+    //BASE_Api_URL: "https://easyhms.pk/api",
+    //BASE_Web_URL: "https://easyhms.pk",
+    //BASE_File_URL: "https://easyhms.pk/api/files/attachmentfiles/",
+    //BASE_Temp_File_URL: "https://easyhms.pk/api/files/temp/",
 
     IsUseS3: "No",    // Yes or No for S3 Storage
     Release_Version: "6.0",

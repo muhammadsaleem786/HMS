@@ -41,7 +41,7 @@ export class AllowanceComponentList {
         // this.PConfig.Action.View = this.Rights.Allow('View');
         // this.PConfig.Action.Delete = this.Rights.Allow('Delete');
         // this.PConfig.Action.Print = this.Rights.Allow('Print');
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             { Name: "AllowanceName", Title: "Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "AllowanceValue", Title: "Amount / Percentage", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },

@@ -41,7 +41,7 @@ export class DeductionContributionComponentList {
         // this.PConfig.Action.View = this.Rights.Allow('View');
         // this.PConfig.Action.Delete = this.Rights.Allow('Delete');
         // this.PConfig.Action.Print = this.Rights.Allow('Print');
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             { Name: "DeductionContributionName", Title: "Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "Category", Title: "Category", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },

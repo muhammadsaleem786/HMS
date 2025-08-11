@@ -130,7 +130,7 @@ export class EmployeeComponentList {
         this.displayedColumns = this.columnNames.map(x => x.id);
         this.PConfig.PrimaryColumn = "ID";
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Action.AddTextType = "T";
         this.PConfig.Action.AddText = "Add";
         this.PConfig.Fields = [

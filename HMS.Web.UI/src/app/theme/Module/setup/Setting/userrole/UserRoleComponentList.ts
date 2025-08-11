@@ -34,7 +34,7 @@ export class UserRoleComponentList {
         this.PConfig.PrimaryColumn = "ID";
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PConfig.Action.ScreenName = "Role";
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Action.AddText = "Add";
         this.PConfig.Fields = [
             { Name: "RoleName", Title: "Role Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },

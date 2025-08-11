@@ -1,46 +1,36 @@
-﻿
-
-
-    <div class="margin-t-68 removeAction">
-        <div class="row headSection paginationHead">
-            <div class="col-sm-8">
-                <div class="row">
-                    <div class="col max-content">
-                        <h3 class="page-heading mt-d-inline-block">
-                            Loan
-                        </h3>
-                    </div>
-                
-                </div>
-                
-            </div>
-            <div class="col-sm-4 text-right flex-row flex-end">
-               
-                <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
-                   <a class="btn btn-danger"*ngIf="ControlRights.CreateRights" (click)="AddRecord('0')" data-toggle="modal" data-target="#myModal">Add Loan</a>
-   
-            </div>
-        </div>
-    
-    
-        <div>
-            <div class="Cardview search_onTop px-2">
-               <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="LoanList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
-                <div style="padding: 0 20px;" *ngIf="LoanList?.length > 0">
-                    <table class="table tblTotal" style="margin-top:0px;">
-                        <tr>
-                            <td width="62%"><strong>Total</strong></td>
-                            <td><strong>{{Currency}} {{PagSumModel.LoanSum | number: '1.0-0' }}</strong></td>
-                            <td><strong>{{Currency}} {{PagSumModel.PaymentSum | number: '1.0-0' }}</strong></td>
-                            <td><strong>{{Currency}} {{PagSumModel.BalanceSum | number: '1.0-0'}}</strong></td>
-                        </tr>
-                    </table>
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Loan
+                    </h3>
                 </div>
             </div>
-    
         </div>
-        
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+        </div>
     </div>
+    <div>
+        <div class="Cardview search_onTop px-2">
+            <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="LoanList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+            <div style="padding: 0 20px;" *ngIf="LoanList?.length > 0">
+                <table class="table tblTotal" style="margin-top:0px;">
+                    <tr>
+                        <td width="62%"><strong>Total</strong></td>
+                        <td><strong>{{Currency}} {{PagSumModel.LoanSum | number: '1.0-0' }}</strong></td>
+                        <td><strong>{{Currency}} {{PagSumModel.PaymentSum | number: '1.0-0' }}</strong></td>
+                        <td><strong>{{Currency}} {{PagSumModel.BalanceSum | number: '1.0-0'}}</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
 
 <LoanComponentForm *ngIf="!IsShowLoanDetailModal" [hidden]="IsList" [id]="Id" (pageClose)="Close($event)"></LoanComponentForm>
@@ -59,7 +49,7 @@
                         <button type="button" id="CloseLoanDetailModal" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
                     </div>
                     <div class="modal-body">
-                        
+
                         <button class="btn btn-primary cursor-pointer" id="ShowAddPaymentModalId" (click)="ShowHideModal('ShowAP')" data-toggle="modal" [style.cursor]="(PRDModel.TotalBalance <= 0) ? 'not-allowed' : 'pointer' " [attr.disabled]="(PRDModel.TotalBalance <= 0) ? true : null" data-target="#AddPaymentModal">Add Payment</button>
                         <div class="mat-elevation-z8">
                             <mat-table class="mt-custom-table" #table [dataSource]="dataSource" matSort>
@@ -155,16 +145,16 @@
                             <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Loan Payment - {{PRDModel?.Description}}</h3>
                             <h4><strong>{{PRDModel?.EmpName}}</strong></h4>
                         </div>
-                       
+
                         <button type="button" id="CloseAddPaymentModal" (click)="ShowHideModal('HideAP')" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-sm-12">
-                                   <strong>Loan Balance</strong>&nbsp;
-                            <strong>
-                                {{Currency}} {{PRDModel.TotalBalance | number: '1.0-0'}}
-                            </strong>
+                                <strong>Loan Balance</strong>&nbsp;
+                                <strong>
+                                    {{Currency}} {{PRDModel.TotalBalance | number: '1.0-0'}}
+                                </strong>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">

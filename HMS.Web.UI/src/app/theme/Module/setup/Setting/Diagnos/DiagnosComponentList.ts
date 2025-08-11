@@ -43,7 +43,7 @@ export class DiagnosComponentList {
         this.PConfig.PrimaryColumn = "ID";
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PConfig.Action.ScreenName = 'Diagnos';
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             { Name: "Diagnos", Title: "Diagnos", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
         ];

@@ -33,7 +33,7 @@ export class ApplicationUserComponentList {
         this.PConfig.PrimaryColumn = "ID";
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PConfig.Action.ScreenName = this.Keywords['Key_ApplicationUser_User'];
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             { Name: "UserName", Title: "Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "RoleName", Title: "Role", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },

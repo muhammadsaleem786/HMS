@@ -37,7 +37,7 @@ export class AttendanceComponentList {
         this.PConfig.PrimaryColumn = "ID";
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PConfig.Action.ScreenName = "Employee Attendance Entry";
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Action.AddTextType = "T";
         this.PConfig.Action.AddText = "Add";
         this.PConfig.Fields = [

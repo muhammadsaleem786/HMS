@@ -147,7 +147,7 @@ export class PayrollComponentList {
         this.PDetConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PDetConfig.Action.ScreenName = "Payroll";
 
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Action.AddTextType = 'T';
         this.PConfig.Action.AddText = "Run Payroll";
         this.PConfig.Fields = [
@@ -296,14 +296,6 @@ export class PayrollComponentList {
                         this.PrEmpDtSalaryTotalModel.TotalTax += x.Tax;
                         this.PrEmpDtSalaryTotalModel.TotalNetSalary += x.NetSalary;
                     });
-                    //x.GrossSalary = this._CommonService.GetThousandCommaSepFormatDate(Math.round(x.GrossSalary));
-                    //this.PrEmpDtSalaryTotalModel.TotalBaseSalary = this._CommonService.GetThousandCommaSepFormatDate(Math.round(this.PrEmpDtSalaryTotalModel.TotalBaseSalary));
-                    //this.PrEmpDtSalaryTotalModel.TotalAllowance = this._CommonService.GetThousandCommaSepFormatDate(Math.round(this.PrEmpDtSalaryTotalModel.TotalAllowance));
-                    //this.PrEmpDtSalaryTotalModel.TotalDeduction = this._CommonService.GetThousandCommaSepFormatDate(Math.round(Deduction;
-                    //this.PrEmpDtSalaryTotalModel.TotalGrossSalary = this._CommonService.GetThousandCommaSepFormatDate(Math.round(GrossSalary;
-                    //this.PrEmpDtSalaryTotalModel.TotalTax = this._CommonService.GetThousandCommaSepFormatDate(Math.round(Tax;
-                    //this.PrEmpDtSalaryTotalModel.TotalNetSalary = this._CommonService.GetThousandCommaSepFormatDate(Math.round(NetSalary;
-
                     this.PrEmpDtSalaryTotalModel.TotalBaseSalary = Math.round(this.PrEmpDtSalaryTotalModel.TotalBaseSalary);
                     this.PrEmpDtSalaryTotalModel.TotalAllowance = Math.round(this.PrEmpDtSalaryTotalModel.TotalAllowance);
                     this.PrEmpDtSalaryTotalModel.TotalDeduction = Math.round(this.PrEmpDtSalaryTotalModel.TotalDeduction);
@@ -327,7 +319,6 @@ export class PayrollComponentList {
     }
     PublishPayroll() {
         if (this.PayrollDetList.length > 0) {
-            //document.getElementById('ShowPublishPayrollConfirmationModal').click();
             var res = confirm("Are you sure? Please note you can’t make changes to payroll once you’ve published it.Would you like to proceed with publishing the " + this.PayPeriod + " payroll?");
             if (res) {
                 this.loader.ShowLoader();
@@ -345,22 +336,9 @@ export class PayrollComponentList {
         var dd = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
         return yyyy + '/' + mm + '/' + dd;
     };
-    //CalculateGrossSalary(BasicSalary, Allowances, TaxableAllowances, Deduction, TaxableDeduction): number {
-    //    return (BasicSalary - Deduction + TaxableAllowances + TaxableDeduction);
-    //    //if (TaxableAllowances > 0) {
-    //    //    GrossSalary = GrossSalary + TaxableAllowances;
-    //    //}
-    //    //if (TaxableDeduction > 0) {
-    //    //    GrossSalary = GrossSalary + TaxableDeduction;
-    //    //}
-    //    //return GrossSalary
-    //}
     AddRecord(id: string) {
         if (id != "0") {
-            // this.loader.ShowLoader();
-            //this.loader.HideLoader();
             this.IsShowPayrollMasterList = false;
-            //this.IsShowRunPayrollModal = false;
             var item = this.PayrollList.filter(x => x.UniqueID == id);
             if (item.length > 0) {
                 this.Status = item[0].Status;
@@ -369,18 +347,13 @@ export class PayrollComponentList {
             this.Id = id;
             this.IsList = true;
             this.PayrollUniqueID = id;
-            //this.Refresh();
         } else {
-            //this.loader.ShowLoader();
             this.IsShowPayrollMasterList = true;
             this.IsShowRunPayrollModal = true;
             this.IsList = false;
             id = Math.random().toString();
         }
-
         this.Id = id;
-        //this.IsList = false;
-        //this.loader.HideLoader();
     }
     AddDetRecord(id: string) {
         if (id != "0") {

@@ -45,7 +45,7 @@ export class DropDownComponentList {
         this.PConfig.PrimaryColumn = "ID";
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PConfig.Action.ScreenName = "DropDowns";
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             { Name: "Value", Title: "Value", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "SystemGenerated", Title: "System Generated", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },

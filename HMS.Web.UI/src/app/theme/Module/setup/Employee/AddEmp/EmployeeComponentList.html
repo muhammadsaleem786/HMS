@@ -2,43 +2,44 @@
 
 
 
-    <div class="margin-t-68 removeAction">
-        <div class="row headSection paginationHead">
-            <div class="col-sm-8">
-                <div class="row">
-                    <div class="col max-content">
-                        <h3 class="page-heading mt-d-inline-block">
-                            Employee
-                        </h3>
-                    </div>
-                
+<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Employee
+                    </h3>
                 </div>
-                
-            </div>
-            <div class="col-sm-4 text-right flex-row flex-end">
-               
-                <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
-                <a class="btn btn-danger" >Add New</a>
-            </div>
-        </div>
-    
-    
-        <div>
-            <div class="Cardview search_onTop px-2">
-                 <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="EmployeeList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
 
-            
             </div>
-    
+
         </div>
-        
+        <div class="col-sm-4 text-right flex-row flex-end">
+
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">Add New</a>
+
+        </div>
     </div>
+
+
+    <div>
+        <div class="Cardview search_onTop px-2">
+            <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="EmployeeList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+
+
+        </div>
+
+    </div>
+
+</div>
 
 
 
 <div class="modal fade" id="BulkUpdateModal" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-md">
-        <form [formGroup]="Form1" novalidate >
+        <form [formGroup]="Form1" novalidate>
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">Bulk Update</h3>
@@ -64,7 +65,7 @@
                                 <input class="mt-Scale-1_8" name="BulkCategoryType" [ngModelOptions]="{standalone: true}" [(ngModel)]="BulkModel.BulkUpdateCategoryType" value="C" type="radio"> Contributions
                             </label>
                         </li>
-                       
+
                         <li>
                             <label class="radio-inline">
                                 <input class="mt-Scale-1_8" name="BulkCategoryType" [ngModelOptions]="{standalone: true}" [(ngModel)]="BulkModel.BulkUpdateCategoryType" value="B" type="radio"> Basic Salary
@@ -132,7 +133,7 @@
 
                                 </div>
                                 <div class="form-group" *ngIf="BulkModel.BulkUpdateCategoryType != 'C' && PayrollRegion!='SA'">
-                                    <div class="checkbox checkboxDefault" >
+                                    <div class="checkbox checkboxDefault">
                                         <input type="checkbox" id="checkTexable" formControlName="Taxable" [(ngModel)]="BulkModel.Taxable">
                                         <label for="checkTexable">Taxable</label>
                                     </div>
@@ -159,32 +160,32 @@
                                 <div class="row no-padding-lr">
                                     <div class="col-xs-12">
                                         <strong class="grid-heading text-color-skyblue font-weight-400 no-padding">Select Employees</strong>
-                                     </div>
-                                         <br />
-                                        <br />
-                                        <div class="col-xs-12 no-padding-lr">
-                                            <div class="col-md-12 form-group">
-                                                <label>Location</label>
-                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="LocationsIds" [options]="BulkLocationsList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.LocationsIds"></ss-multiselect-dropdown>
-                                            </div>
-                                            <div class="col-md-12 form-group">
-                                                <label>Department</label>
-                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="DepartmentsIds" [options]="BulkDepartmentsList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.DepartmentsIds"></ss-multiselect-dropdown>
-                                            </div>
-                                            <div class="col-md-12 form-group">
-                                                <label>Designation</label>
-                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="DesignationsIds" [options]="BulkDesignationsList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.DesignationsIds"></ss-multiselect-dropdown>
-                                            </div>
-                                            <div class="col-md-12 form-group">
-                                                <label>Employee Type</label>
-                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="EmployeeTypeIds" [options]="BulkEmployeeTypeList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.EmployeeTypeIds"></ss-multiselect-dropdown>
-                                            </div>
-                                            <div class="col-md-12 form-group">
-                                                <label>Employees</label>
-                                                <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="EmployeeIds" [options]="BulkEmployeeList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.EmployeeIds"></ss-multiselect-dropdown>
-                                            </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    <div class="col-xs-12 no-padding-lr">
+                                        <div class="col-md-12 form-group">
+                                            <label>Location</label>
+                                            <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="LocationsIds" [options]="BulkLocationsList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.LocationsIds"></ss-multiselect-dropdown>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <label>Department</label>
+                                            <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="DepartmentsIds" [options]="BulkDepartmentsList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.DepartmentsIds"></ss-multiselect-dropdown>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <label>Designation</label>
+                                            <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="DesignationsIds" [options]="BulkDesignationsList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.DesignationsIds"></ss-multiselect-dropdown>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <label>Employee Type</label>
+                                            <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="EmployeeTypeIds" [options]="BulkEmployeeTypeList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.EmployeeTypeIds"></ss-multiselect-dropdown>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <label>Employees</label>
+                                            <ss-multiselect-dropdown class="pull-right howmanychecked" formControlName="EmployeeIds" [options]="BulkEmployeeList" [texts]="ColumnTexts" [settings]="ColumnSettings" [(ngModel)]="BulkModel.EmployeeIds"></ss-multiselect-dropdown>
                                         </div>
                                     </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -204,14 +205,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding mt-d-inline-block">
-                    {{BulkModel.BulkUpdateCategoryType == 'A'? ('Update Allowance - ' + BulkModel.Name) : (BulkModel.BulkUpdateCategoryType == 'C' ? ('Update Contribution - ' + BulkModel.Name) : (BulkModel.BulkUpdateCategoryType == 'D' ? ('Update Deduction - ' + BulkModel.Name) : 'Update Base Salary'))}} 
+                    {{BulkModel.BulkUpdateCategoryType == 'A'? ('Update Allowance - ' + BulkModel.Name) : (BulkModel.BulkUpdateCategoryType == 'C' ? ('Update Contribution - ' + BulkModel.Name) : (BulkModel.BulkUpdateCategoryType == 'D' ? ('Update Deduction - ' + BulkModel.Name) : 'Update Base Salary'))}}
                 </h3>
                 <input (keyup)="applyFilter($event.target.value)" class="form-control max-width-250 pull-right" placeholder="Search....">
                 <button type="button" id="CloseBFiltEmplyeeModaId" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
             </div>
             <!--<mat-form-field>-->
             <!--<div class="form-group">
-                
+
             </div>-->
             <div class="">
                 <div class="mat-elevation-z8">
@@ -267,10 +268,10 @@
 
 
                         <!--<ng-container matColumnDef="Category">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Category </mat-header-cell>
-                    <mat-cell mat-cell *matCellDef="let element" *ngIf="!row.Remove"> {{element.Category}} </mat-cell>
-                    <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
-                </ng-container>-->
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Category </mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element" *ngIf="!row.Remove"> {{element.Category}} </mat-cell>
+                            <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
+                        </ng-container>-->
                         <div>
                             <ng-container matColumnDef="Taxable">
                                 <mat-header-cell *matHeaderCellDef>
@@ -322,7 +323,7 @@
                     <table class="table" style="margin-top:0px;">
                         <thead>
                             <tr>
-                                <td ><strong>Total</strong></td>
+                                <td><strong>Total</strong></td>
                                 <td><strong>{{Currency}} {{BulkEmpSumAmountModel.TotalExistingAmount | number: '1.0-0'}}</strong></td>
                                 <td></td>
                                 <td><strong>{{Currency}} {{BulkEmpSumAmountModel.TotalAmount | number: '1.0-0'}}</strong></td>
@@ -331,9 +332,9 @@
                     </table>
 
                     <!--<div class="btnArea-footer">
-                <button id="saveSchedule" type="button" class="btn btn-primary">Publish</button>
-                <button type="button" class="btn btn-primary btnDel pull-left">Delete</button>
-            </div>-->
+                        <button id="saveSchedule" type="button" class="btn btn-primary">Publish</button>
+                        <button type="button" class="btn btn-primary btnDel pull-left">Delete</button>
+                    </div>-->
                 </div>
             </div>
             <div class="modal-footer">

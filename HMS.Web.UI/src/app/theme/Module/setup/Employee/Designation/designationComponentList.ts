@@ -43,7 +43,7 @@ export class designationComponentList {
         // this.PConfig.Action.Print = this.Rights.Allow('Print');
         this.PConfig.Action.AddTextType = "T";
         this.PConfig.Action.AddText = "Add";
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             //{ Name: "ID", Title: "ID", OrderNo: 1, SortingAllow: true, Visible:false, isDate: false, DateFormat: "" },
             { Name: "DesignationName", Title: "Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },

@@ -41,7 +41,7 @@ export class LocationsComponentList {
         // this.PConfig.Action.View = this.Rights.Allow('View');
         // this.PConfig.Action.Delete = this.Rights.Allow('Delete');
         // this.PConfig.Action.Print = this.Rights.Allow('Print');
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             //{ Name: "ID", Title: "ID", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "LocationName", Title: "Locations Name", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },

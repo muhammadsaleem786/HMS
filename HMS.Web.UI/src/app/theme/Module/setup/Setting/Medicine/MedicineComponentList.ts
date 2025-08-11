@@ -34,7 +34,7 @@ export class MedicineComponentList {
         this.PConfig.PrimaryColumn = "ID";
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PConfig.Action.ScreenName = 'Medicine';
-        this.PConfig.Action.Add = true;
+        this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             { Name: "Medicine", Title: "Medicine", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "Price", Title: "Price", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },

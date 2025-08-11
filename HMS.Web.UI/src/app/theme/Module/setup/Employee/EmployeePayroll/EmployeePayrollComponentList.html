@@ -1,64 +1,19 @@
 ﻿<!--<div *ngIf="IsShowPayrollMasterList && payrolShow == false">-->
 <div *ngIf="IsShowPayrollMasterList">
-    <div class="paypalWrap" *ngIf="!payrolShow">
-        <div class="MainTittleWrap">
-            <img src="../../../../assets/app/media/img/payrollMain.svg" />
-            <h1 class="font-32">
-                Payroll by Wave is only available<br />
-                to U.S. and Canadian businesses.
-            </h1>
-        </div>
-        <hr />
-        <div class="row">
-            <h4 class="text-center font-18">In order to use Payroll by Wave, please ensure the following:</h4>
-            <div class="col-sm-4">
-                <div class="payroll_Sect">
-                    <img src="../../../../assets/app/media/img/payroll1.png" />
 
-                    <p>
-                        Your business is registered in the U.S. or Canada. This enables us to follow the tax laws that apply to you.
 
-                    </p>
-                </div>
-            </div>
 
-            <div class="col-sm-4">
-                <div class="payroll_Sect">
-                    <img src="../../../../assets/app/media/img/payroll2.png" />
-
-                    <p>
-                        Your employees live and work in the country where your business is located. This allows us to calculate the proper payroll deductions and contributions
-
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-sm-4">
-                <div class="payroll_Sect">
-                    <img src="../../../../assets/app/media/img/payrolll3.png" />
-
-                    <p>
-                        Your currency matches the country where your business is set up. This ensures that your bookkeeping is correct.
-
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12 text-center margin-b-20">
-                <button (click)="showpayrollWrap()" class="btn btn-lightgreen btn-default" type="button">Payroll List</button>
-            </div>
-        </div>
+    <div class="col-sm-12">
+        <h2 class="grid-heading margin-t-15 mb-2"> Payroll</h2>
     </div>
+    <div class="col-sm-4 text-right flex-row flex-end">
 
-    
- <div class="col-sm-12">
-    <h2 class="grid-heading margin-t-15 mb-2"> Payroll</h2>
- </div>
+        <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+        <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">Run Payroll</a>
 
+    </div>
     <div class="Cardview payroll_Wrap p-3" *ngIf="payrolShow">
-       
+
         <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="PayrollList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
 
     </div>

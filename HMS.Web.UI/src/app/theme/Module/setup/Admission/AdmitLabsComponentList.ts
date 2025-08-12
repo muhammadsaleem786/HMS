@@ -71,7 +71,7 @@ export class AdmitLabsComponentList implements OnInit {
         this.Form1 = this._fb.group({
             AdmissionId: [''],
             AppointmentId: [''],
-            LabTypeId: [''],
+            LabTypeId: ['', [Validators.required]],
             LabTypeDropdownId: [''],
             Notes: [''],
             CollectDate: [''],
@@ -85,8 +85,8 @@ export class AdmitLabsComponentList implements OnInit {
             Comment: [''],
             TestPerformedAt: [''],
             TestDescription: [''],
-            StatusId: [''],
-            ResultId: [''],
+            StatusId: ['', [Validators.required]],
+            ResultId: ['', [Validators.required]],
         });
     }
     selectPage(page: number) {

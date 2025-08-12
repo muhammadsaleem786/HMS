@@ -95,7 +95,7 @@
                 <div class="col-sm-12">
                     <div class="row form-group">
                         <div class="col-4 text-right">
-                            <label>Date*</label>
+                            <label class="required">Date*</label>
                         </div>
                         <div class="col-8">
                             <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" (DateChangeValue)="onDocDateChanged($event)" [(ngModel)]="Docmodel.Date">
@@ -106,7 +106,7 @@
                     <div class="row form-group">
                         <div class="col-4 text-right">
 
-                            <label>DocumentType*</label>
+                            <label class="required">DocumentType*</label>
                         </div>
                         <div class="col-8">
                             <select class="form-control form-control-sm form-control-alternative" formControlName="DocumentTypeId" [(ngModel)]="Docmodel.DocumentTypeId">

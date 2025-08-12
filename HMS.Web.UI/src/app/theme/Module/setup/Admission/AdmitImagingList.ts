@@ -70,11 +70,11 @@ export class AdmitImagingList implements OnInit {
         this.Form1 = this._fb.group({  
             AdmissionId: [''],
             AppointmentId: [''],
-            ImagingTypeId: [''],
+            ImagingTypeId: ['', [Validators.required]],
             ImagingTypeDropdownId: [''],
             Notes: [''],
-            StatusId: [''],
-            ResultId: [''],
+            StatusId: ['', [Validators.required]],
+            ResultId: ['', [Validators.required]],
             Image:[''],
         });
     }

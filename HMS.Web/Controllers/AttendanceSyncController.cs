@@ -24,6 +24,7 @@ using System.IO.IsolatedStorage;
 using System.Net;
 using System.Web.Http.Results;
 using static iTextSharp.text.pdf.AcroFields;
+using System.Globalization;
 
 namespace HMS.Web.API.Controllers
 {
@@ -96,11 +97,11 @@ namespace HMS.Web.API.Controllers
                     };
                     _time_log.Insert(obj);
                 }
-
+                var lastAttendanceTime = attendanceList.Max(a => a.AttendanceTime);
                 var deviceUpdate = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.LocationCode == LocationCode && e.IsActive).FirstOrDefault();
                 if (deviceUpdate != null)
                 {
-                    deviceUpdate.LastDataSync = DateTime.Now.ToString();
+                    deviceUpdate.LastDataSync = lastAttendanceTime.ToString("dd-MMM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                     _service.Update(deviceUpdate);
                 }
                 try

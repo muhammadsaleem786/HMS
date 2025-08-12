@@ -67,28 +67,6 @@ export class TimeAttendanceComponentList {
     }
 
     ngOnInit() {
-        //this.displayedColumns = this.columnNames.map(x => x.id);
-
-
-        //this.PConfig.PrimaryColumn = "ID";
-        //this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
-        //this.PConfig.Action.ScreenName = "Employee Attendance Entry";
-        //// this.PConfig.Action.ScreenName = this.Rights['ScreenName'];
-        //// this.PConfig.Action.Add = this.Rights.Allow('Add');
-        //// this.PConfig.Action.Edit = this.Rights.Allow('Update');
-        //// this.PConfig.Action.View = this.Rights.Allow('View');
-        //// this.PConfig.Action.Delete = this.Rights.Allow('Delete');
-        //// this.PConfig.Action.Print = this.Rights.Allow('Print');
-        //this.PConfig.Action.Add = false;
-        //this.PConfig.Fields = [
-        //    { Name: "Employee", Title: "Employee", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-        //    { Name: "Date", Title: "Date", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-        //    { Name: "TimeIn", Title: "Time-In", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-        //    { Name: "TimeOut", Title: "Time-Out", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-        //    { Name: "Status", Title: "Status", OrderNo: 5, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-        //];
-
-
         this.Refresh();
     }
 
@@ -100,7 +78,7 @@ export class TimeAttendanceComponentList {
             .GetTimeAttendanceList().then(m => {
                 this.AttendanceList = m.ResultSet.TimeAttList;
                 this.CompanyWorkingDays = m.ResultSet.result.CompanyWorkingDays;
-                
+
 
                 this.PublicHolidays = m.ResultSet.result.PublicHolidays;
                 this.createTable(this.AttendanceList);
@@ -156,7 +134,7 @@ export class TimeAttendanceComponentList {
         }
     }
 
-    AddAttendance(id: string) {        
+    AddAttendance(id: string) {
         this.Id = id;
         this.IsList = false;
         this._router.navigate(['home/Attendance/saveAttend'], { queryParams: { id: this.Id } });
@@ -227,10 +205,16 @@ export class TimeAttendanceComponentList {
     }
 
     GetAttStatus(item): string {
-        if (item.Status == 'Present')
+        if (item.Status == 'On Time')
             return 'P';
         else if (item.Status == 'Absent')
             return 'A';
+        else if (item.Status == 'Missing In')
+            return 'MI';
+        else if (item.Status == 'Early Out')
+            return 'EO';
+        else if (item.Status == 'Missing Out')
+            return 'MO';
         else if (item.Status == 'Leave')
             return 'L';
         else return '';

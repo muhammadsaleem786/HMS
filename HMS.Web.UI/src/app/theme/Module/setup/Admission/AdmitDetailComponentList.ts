@@ -84,7 +84,7 @@ export class AdmitDetailComponentList implements OnInit {
             AppointmentDate: ['', [Validators.required]],
             AppointmentTime: [''],
             StatusId: [''],
-            VisitId: [''],
+            VisitId: ['', [Validators.required]],
             Location: [''],
             //bill field
             AppointmentId: [''],
@@ -147,6 +147,7 @@ export class AdmitDetailComponentList implements OnInit {
         return hour + ':' + minute + ' ' + ampm;
     }
     AppointmentSaveOrUpdate(isValid: boolean): void {
+        debugger
         this.model.PatientId = parseInt(localStorage.getItem('PatientId'));
         this.model.AdmissionId = this.AdmitId;
         this.model.IsAdmission = true;
@@ -165,25 +166,31 @@ export class AdmitDetailComponentList implements OnInit {
             this.toastr.Error("Error", "Please select time.");
             return;
         }
+        if (this.model.DoctorId == undefined || this.model.DoctorId == null) {
+            this.toastr.Error("Error", "Please examiner.");
+            return;
+        }
         this.submitted = false;
         this.loader.ShowLoader();
         if (this.model.AppointmentTime == undefined)
             this.model.AppointmentTime = $('#basicExample').val().toString();
         this.model.AppointmentTime = this.Convert12TO24(this.model.AppointmentTime);
-        this._AppointmentService.AppSaveOrUpdate(this.model).then(m => {
-            var result = JSON.parse(m._body);
-            if (result.IsSuccess) {
-                this.toastr.Success(result.Message);
-                this.modalService.dismissAll(this.NewVisit);
-                this.GetPatientList();
-                this.model = new emr_Appointment();
-                this.loader.HideLoader();
-            }
-            else {
-                this.toastr.Error('Error', result.ErrorMessage);
-                this.loader.HideLoader();
-            }
-        });
+
+            this._AppointmentService.AppSaveOrUpdate(this.model).then(m => {
+                var result = JSON.parse(m._body);
+                if (result.IsSuccess) {
+                    this.toastr.Success(result.Message);
+                    this.modalService.dismissAll(this.NewVisit);
+                    this.GetPatientList();
+                    this.model = new emr_Appointment();
+                    this.loader.HideLoader();
+                }
+                else {
+                    this.toastr.Error('Error', result.ErrorMessage);
+                    this.loader.HideLoader();
+                }
+            });
+       
     }
     Convert12TO24(time12h: any) {
         var hours = Number(time12h.match(/^(\d+)/)[1]);

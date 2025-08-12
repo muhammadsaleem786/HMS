@@ -108,7 +108,7 @@ export class TimeAttendanceComponentForm implements OnInit {
     public EmpID: string = '0';
     public txtSearch: string = '';
 
-    @HostListener('click', ['$event'], )
+    @HostListener('click', ['$event'],)
     Clickoutdocument(event) {
         if (!this.WasInside)
             this.Close();
@@ -185,8 +185,7 @@ export class TimeAttendanceComponentForm implements OnInit {
         var date = new Date(year, month, 1);
         this.MonthDays = [];
 
-        if (this.EmployeeTimeList.AtttimeListDet.length > 0)
-        {
+        if (this.EmployeeTimeList.AtttimeListDet.length > 0) {
             var i = 0;
             while (date.getMonth() === month) {
                 //this.MonthDays.push(new Date(date));
@@ -251,7 +250,7 @@ export class TimeAttendanceComponentForm implements OnInit {
     GetAttStatus(date): string {
         var itm = this.EmployeeTimeList.AtttimeListDet.filter(x => +this.GetDate(this.GetFormatDate(x.Date)) === +this.GetDate(date));
         if (itm.length > 0) {
-            if (itm[0].Status == 'Present') {
+            if (itm[0].Status == 'On Time') {
                 this.EmployeeTimeList.TotalPresents++;
                 return 'P';
             }
@@ -259,37 +258,47 @@ export class TimeAttendanceComponentForm implements OnInit {
                 this.EmployeeTimeList.TotalAbsents++;
                 return 'A';
             }
+            else if (itm[0].Status == 'Missing In') {
+                this.EmployeeTimeList.TotalAbsents++;
+                return 'MI';
+            }
+            else if (itm[0].Status == 'Early Out') {
+                this.EmployeeTimeList.TotalAbsents++;
+                return 'EO';
+            }
+            else if (itm[0].Status == 'Missing Out') {
+                this.EmployeeTimeList.TotalAbsents++;
+                return 'MO';
+            }
             else if (itm[0].Status == 'Leave') {
                 this.EmployeeTimeList.TotalLeaves++;
                 return 'L';
             }
         }
-
-        var holiday = this.PublicHolidays.filter(x => (new Date(x.FromDate)) <= (new Date(date.toDateString())) && (new Date(x.ToDate)) >= (new Date(date.toDateString())));
-        if (holiday.length > 0)
-        {
-            this.EmployeeTimeList.TotalHolidays++;
-            return 'H';
-        }
-           
-        if (this.IsWeekend(date))
-        {
-            this.EmployeeTimeList.TotalWeekends++;
-            return 'W';  
-        }
-        else {
-            var TodayDate = new Date();
-            var dt = new Date(date);
-            if (dt <= TodayDate) {
-                this.EmployeeTimeList.TotalAbsents++;
-                return 'A';
+        if (this.PublicHolidays.length > 0) {
+            var holiday = this.PublicHolidays.filter(x => (new Date(x.FromDate)) <= (new Date(date.toDateString())) && (new Date(x.ToDate)) >= (new Date(date.toDateString())));
+            if (holiday.length > 0) {
+                this.EmployeeTimeList.TotalHolidays++;
+                return 'H';
             }
+
+            if (this.IsWeekend(date)) {
+                this.EmployeeTimeList.TotalWeekends++;
+                return 'W';
+            }
+            else {
+                var TodayDate = new Date();
+                var dt = new Date(date);
+                if (dt <= TodayDate) {
+                    this.EmployeeTimeList.TotalAbsents++;
+                    return 'A';
+                }
+            }
+            return '';
         }
-
-        return '';
+        else
+            return '';
     }
-
-
     GetFormatDate(dat: string) {
         var d = parseInt(dat.toString().split('/')[0]);
         var m = parseInt(dat.toString().split('/')[1]);
@@ -321,20 +330,24 @@ export class TimeAttendanceComponentForm implements OnInit {
                 return itm[0].ExcusedTime;
         }
 
-        var holiday = this.PublicHolidays.filter(x => (new Date(x.FromDate)) <= (new Date(date.toDateString())) && ((new Date(x.ToDate)) >= new Date(date.toDateString())));
-        if (holiday.length > 0 && CellName == 'TI')
-            return 'Holiday';
+        if (this.PublicHolidays.length > 0) {
+            var holiday = this.PublicHolidays.filter(x => (new Date(x.FromDate)) <= (new Date(date.toDateString())) && ((new Date(x.ToDate)) >= new Date(date.toDateString())));
+            if (holiday.length > 0 && CellName == 'TI')
+                return 'Holiday';
 
-        if (this.IsWeekend(date) && CellName == 'TI')
-            return 'Weekend';
-        else if (CellName == 'TI') {
-            var TodayDate = new Date();
-            ;
-            if (date <= TodayDate)
-                return 'Absent';
-        }
+            if (this.IsWeekend(date) && CellName == 'TI')
+                return 'Weekend';
+            else if (CellName == 'TI') {
+                var TodayDate = new Date();
+                ;
+                if (date <= TodayDate)
+                    return 'Absent';
+            }
 
-        return '';
+            return '';
+        } else
+            return '';
+
     }
 
     GetDate(dat): Date {

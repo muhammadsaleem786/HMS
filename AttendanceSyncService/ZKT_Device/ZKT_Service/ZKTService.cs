@@ -18,7 +18,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
     {
         public static decimal CompID = Convert.ToInt64(ConfigurationManager.AppSettings["CompanyID"]);
         public static string LoctID = ConfigurationManager.AppSettings["LocationCode"];
-        public static string Tokenkey = ConfigurationManager.AppSettings["Tokenkey"];       
+        public static string Tokenkey = ConfigurationManager.AppSettings["Tokenkey"];
 
         public ZkemClient objCZKEM;
         private int PortNumber;
@@ -31,9 +31,9 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
         {
             try
             {
-                 var geturl = "http://localhost:8081/api/AttendanceSync/GetAllAttendanceMachine?CompanyID=" + CompID + "&tokenKey=" + Tokenkey + "&LocationCode=" + LoctID +"";
-              
-                List<Attendance> obj2 =GetDeviceData(geturl).Select(z=>z).ToList();                
+                var geturl = "http://192.168.10.13/api/api/AttendanceSync/GetAllAttendanceMachine?CompanyID=" + CompID + "&tokenKey=" + Tokenkey + "&LocationCode=" + LoctID + "";
+
+                List<Attendance> obj2 = GetDeviceData(geturl).Select(z => z).ToList();
                 AttMachine = ToDataTable<Attendance>(obj2);
                 if (AttMachine == null) return;
                 Console.WriteLine("Found No# Of device is " + AttMachine.Rows.Count);
@@ -57,7 +57,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                         IPAddress = dr["IPAddress"].ToString();
                         Password = dr["Password"].ToString();
                         PortNumber = Convert.ToInt32(dr["PortNo"]);
-                        if (dr["LastDataSync"] == DBNull.Value)
+                        if (dr["LastDataSync"] == DBNull.Value || string.IsNullOrWhiteSpace(dr["LastDataSync"].ToString()))
                             LastDataSync = Convert.ToDateTime("01/01/1900");
                         else
                             LastDataSync = Convert.ToDateTime(dr["LastDataSync"]);
@@ -73,7 +73,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                             {
                                 StringDate = idwDay.ToString() + "/" + idwMonth.ToString() + "/" + idwYear.ToString() + " " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond;
                                 TDate = DateTime.ParseExact(StringDate, "d/M/yyyy H:m:s", CultureInfo.InvariantCulture);
-                                if (TDate.Date >= LastDataSync.Date && TDate.Date <= AttendanceDate.Date)
+                                if (LastDataSync > AttendanceDate)
                                 {
                                     AttendanceModel obj = new AttendanceModel();
                                     obj.CompanyID = CompanyID;
@@ -93,7 +93,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                         DTAttendance = ToDataTable<AttendanceModel>(AttendanceList);
                         inputJson = (new JavaScriptSerializer()).Serialize(AttendanceList).Replace("\\\"", "");
                         Library.WriteErrorLog("Json Data:" + inputJson);
-                         url = $"http://localhost:8081/api/AttendanceSync/DatabaseSyncProcess?CompanyID={CompanyID}&DeviceID={DeviceID}&LocationCode={LocationCode}&Tokenkey={Tokenkey}";
+                        url = $"http://192.168.10.13/api/api/AttendanceSync/DatabaseSyncProcess?CompanyID={CompanyID}&DeviceID={DeviceID}&LocationCode={LocationCode}&Tokenkey={Tokenkey}";
                         await PostData(url, inputJson);
                         Library.WriteErrorLog("insert sucessfully Machine Data");
                     }
@@ -101,7 +101,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                     {
                         Console.WriteLine(ex.Message);
                     }
-                }               
+                }
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                 using (Stream stream = response.GetResponseStream())
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                 obj1 = JsonConvert.DeserializeObject<List<Attendance>>(reader.ReadToEnd());
+                    obj1 = JsonConvert.DeserializeObject<List<Attendance>>(reader.ReadToEnd());
                     html = reader.ReadToEnd();
                 }
                 Library.WriteErrorLog("Sussessfully Get Device Data");
@@ -149,7 +149,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     var resultt = streamReader.ReadToEnd();
-                }               
+                }
                 return "";
             }
             catch (Exception ex)

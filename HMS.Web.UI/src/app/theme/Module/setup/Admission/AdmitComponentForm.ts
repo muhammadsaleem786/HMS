@@ -125,9 +125,9 @@ export class AdmitComponentForm implements OnInit {
             AppointmentId: [''],
             AdmissionNo: [''],
             PatientId: [''],
-            AdmissionTypeId: [''],
+            AdmissionTypeId: ['', [Validators.required]],
             AdmissionTypeDropdownId: [''],
-            DoctorId: [''],
+            DoctorId: ['', [Validators.required]],
             AdmissionDate: [''],
             AdmissionTime: [''],
             Location: [''],
@@ -274,13 +274,13 @@ export class AdmitComponentForm implements OnInit {
         return strTime;
     }
     SaveOrUpdate(isValid: boolean): void {
+        if (this.modelAdmission.AdmissionTime == undefined || this.modelAdmission.AdmissionTime == null) {
+            this.toastr.Error("Error", "Please select time.");
+            return;
+        }
         this.submitted = true; // set form submit to true
         if (isValid) {
-            this.submitted = false;
-            if (this.modelAdmission.AdmissionTime == undefined || this.modelAdmission.AdmissionTime == null) {
-                this.toastr.Error("Error", "Please select time.");
-                return;
-            }
+            this.submitted = false;           
             this.loader.ShowLoader();
             if (this.modelAdmission.AdmissionTime == undefined)
                 this.modelAdmission.AdmissionTime = $('#basicExample').val().toString();

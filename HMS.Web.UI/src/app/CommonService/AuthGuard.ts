@@ -14,7 +14,6 @@ export class AuthGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         let company: any = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
         if (localStorage.getItem('IsLogin') == "true" && this._commonService.Tokenvalidate() == true) {
-            var CurrentCompName = state.url.split('/')[1].toString();
             var routeName = state.url.toString();
             if (company.CompanyID == null || company.CompanyID == 'undefined' || company.CompanyID == '0') {
                 if (routeName == "/home/setup")

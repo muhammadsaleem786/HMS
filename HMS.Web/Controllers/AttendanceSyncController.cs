@@ -101,7 +101,7 @@ namespace HMS.Web.API.Controllers
                 var deviceUpdate = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.LocationCode == LocationCode && e.IsActive).FirstOrDefault();
                 if (deviceUpdate != null)
                 {
-                    deviceUpdate.LastDataSync = lastAttendanceTime.ToString("dd-MMM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                    deviceUpdate.LastDataSync = lastAttendanceTime;
                     _service.Update(deviceUpdate);
                 }
                 try
@@ -141,7 +141,7 @@ namespace HMS.Web.API.Controllers
             public string IPAddress { get; set; }
             public string Password { get; set; }
             public int PortNo { get; set; }
-            public string LastDataSync { get; set; }
+            public Nullable<DateTime> LastDataSync { get; set; }
         }
     }
 }

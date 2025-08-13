@@ -68,6 +68,9 @@ namespace HMS.Web.API.Areas.Employee.Controllers
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
                     ID = _service.Queryable().Max(e => e.ID) + 1;
+
+                if (Model.LastDataSync == DateTime.MinValue)
+                    Model.LastDataSync = null;
                 Model.ID = ID;
                 Model.CompanyId = Request.CompanyID();
                 Model.CreatedBy = Request.LoginID();
@@ -120,6 +123,8 @@ namespace HMS.Web.API.Areas.Employee.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
+                if (Model.LastDataSync == DateTime.MinValue)
+                    Model.LastDataSync = null;
                 Model.ModifiedBy = Request.LoginID();
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Modified;

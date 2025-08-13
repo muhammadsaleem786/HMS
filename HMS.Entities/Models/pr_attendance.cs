@@ -15,7 +15,7 @@ namespace HMS.Entities.Models
         public decimal CompanyId { get; set; }
         public string IPAddress { get; set; }
         public int PortNo { get; set; }
-        public string LastDataSync { get; set; }
+        public Nullable<DateTime> LastDataSync { get; set; }
         public string Password { get; set; }
         public string LocationCode { get; set; }
         public string DeviceSerialNo { get; set; }

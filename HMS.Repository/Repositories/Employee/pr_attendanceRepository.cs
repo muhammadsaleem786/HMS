@@ -31,7 +31,7 @@ namespace HMS.Repository.Repositories.Employee
                     DisplayEmployees = PFilter.VisibleColumnInfoList.IndexOf("Employees") > -1;
                     predicate = (c => c.CompanyId == CompanyID &&
                     (DisplayName && c.IPAddress.ToLower().Contains(PFilter.SearchText.ToLower())
-                     || (DisplayEmployees && c.LastDataSync.ToLower().Contains(PFilter.SearchText.ToLower())
+                     || (DisplayEmployees && c.LastDataSync.ToString().Contains(PFilter.SearchText.ToLower())
                     )));
                 }
 
@@ -45,7 +45,7 @@ namespace HMS.Repository.Repositories.Employee
 
                 Expression<Func<pr_attendance, string>> orderingFunction = (c =>
                                                               OrderByName ? c.IPAddress :
-                                                                OrderByEmployees ? c.LastDataSync : ""
+                                                                OrderByEmployees ? c.LastDataSync.ToString() : ""
                                                              );
 
                 if (PFilter.IsOrderAsc)

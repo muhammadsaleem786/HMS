@@ -22,12 +22,39 @@ namespace HMS.Repository.Repositories.Employee
 
                 bool DisplayEmployee, DisplayDate, DisplayTimeIn, DisplayTimeOut, DisplayStatus;
                 bool OrderByEmployee, OrderByDate, OrderByTimeIn, OrderByTimeOut, OrderByStatus;
+                if (!string.IsNullOrEmpty(PFilter.SearchText))
+                {
+                    DisplayEmployee = PFilter.VisibleColumnInfoList.IndexOf("Employee") > -1;
+                    DisplayDate = PFilter.VisibleColumnInfoList.IndexOf("Date") > -1;
+                    DisplayTimeIn = PFilter.VisibleColumnInfoList.IndexOf("TimeIn") > -1;
+                    DisplayTimeOut = PFilter.VisibleColumnInfoList.IndexOf("TimeOut") > -1;
+                    DisplayStatus = PFilter.VisibleColumnInfoList.IndexOf("Status") > -1;
+                    predicate = (c => c.CompanyID == CompanyID &&
+                    (DisplayEmployee && (c.pr_employee_mf.FirstName + "" + c.pr_employee_mf.LastName).Contains(PFilter.SearchText.ToLower()) ||
+                    (DisplayDate && (c.AttendanceDate).ToString().ToLower().Contains(PFilter.SearchText.ToLower()) ||
+                    (DisplayTimeIn && (c.TimeIn).ToString().ToLower().Contains(PFilter.SearchText.ToLower()) ||
+                    (DisplayTimeOut && (c.TimeOut).ToString().ToLower().Contains(PFilter.SearchText.ToLower()) ||
+                    (DisplayStatus && (c.sys_drop_down_value.Value).ToString().ToLower().Contains(PFilter.SearchText.ToLower())
+                  ))))));
+                }
 
                 IQueryable<pr_time_entry> filteredData = repository.Queryable().Where(predicate);
 
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
                     PFilter.OrderBy = "ID";
+                OrderByEmployee = PFilter.OrderBy.IndexOf("Employee") > -1;
+                OrderByDate = PFilter.OrderBy.IndexOf("Date") > -1;
+                OrderByTimeIn = PFilter.OrderBy.IndexOf("TimeIn") > -1;
+                OrderByTimeOut = PFilter.OrderBy.IndexOf("TimeOut") > -1;
+                OrderByStatus = PFilter.OrderBy.IndexOf("Status") > -1;
 
+                Expression<Func<pr_time_entryModel, string>> orderingFunction = (c =>
+                                                              OrderByEmployee ? c.Employee :
+                                                              OrderByDate ? c.Date :
+                                                              OrderByTimeIn ? c.TimeIn.ToString() :
+                                                              OrderByTimeOut ? c.TimeOut.ToString() :
+                                                              OrderByStatus ? c.Status : ""
+                                                              );
                 objResult.TotalRecord = filteredData.Count();
                 List<pr_time_entryModel> list = new List<pr_time_entryModel>();
                 if (IgnorePaging)
@@ -74,25 +101,6 @@ namespace HMS.Repository.Repositories.Employee
                             Status = z.Status
                         }).OrderBy(x => x.Date).ToList();
                 }
-
-
-               
-
-                OrderByEmployee = PFilter.OrderBy.IndexOf("Employee") > -1;
-                OrderByDate = PFilter.OrderBy.IndexOf("Date") > -1;
-                OrderByTimeIn = PFilter.OrderBy.IndexOf("TimeIn") > -1;
-                OrderByTimeOut = PFilter.OrderBy.IndexOf("TimeOut") > -1;
-                OrderByStatus = PFilter.OrderBy.IndexOf("Status") > -1;
-
-                Expression<Func<pr_time_entryModel, string>> orderingFunction = (c =>
-                                                              OrderByEmployee ? c.Employee :
-                                                              OrderByDate ? c.Date :
-                                                              OrderByTimeIn ? c.TimeIn.ToString() :
-                                                              OrderByTimeOut ? c.TimeOut.ToString() :
-                                                              OrderByStatus ? c.Status : ""
-                                                              );
-
-
                 IQueryable<pr_time_entryModel> prList = list.AsQueryable();
                 if (PFilter.IsOrderAsc)
                     prList = prList.OrderBy(orderingFunction);
@@ -142,7 +150,7 @@ namespace HMS.Repository.Repositories.Employee
                          {
                              ID = z.ID,
                              Employee = z.Employee,
-                             Date = z.Date.ToString("dd/MM/yyyy"),    
+                             Date = z.Date.ToString("dd/MM/yyyy"),
                              TimeOut = z.TimeOut?.ToString("hh:mm tt") ?? "",
                              TimeIn = z.TimeIn?.ToString("hh:mm tt") ?? "",
                              Status = z.Status

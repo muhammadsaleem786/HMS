@@ -19,10 +19,12 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace HMS.Web.API.Areas.Appointment.Controllers
 {
@@ -70,7 +72,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                       Iemr_prescription_treatmentService emr_prescription_treatmentService, Iemr_prescription_treatment_templateService emr_prescription_treatment_templateService,
             Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
-            Isys_notification_alertService sys_notification_alertService, IStoredProcedureService procedureService,Iadm_itemService adm_itemService)
+            Isys_notification_alertService sys_notification_alertService, IStoredProcedureService procedureService, Iadm_itemService adm_itemService)
 
         {
             _unitOfWorkAsync = unitOfWorkAsync;
@@ -1052,7 +1054,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                
+
                 string TotalRecord = "0";
                 if (SearchText == null)
                     SearchText = "";
@@ -1251,6 +1253,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var token = AllData.Tables[8].Rows[0]["TokenNo"].ToString();
                 decimal TokenNo = Convert.ToDecimal(token);
                 var StatusList = AllData.Tables[10];
+                var Followuplist = AllData.Tables[24];
+
                 objResponse.ResultSet = new
                 {
                     GenderList = GenderType,
@@ -1263,6 +1267,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     ServiceType = ServiceType,
                     TokenNo = TokenNo,
                     StatusList = StatusList,
+                    Followuplist = Followuplist,
                 };
             }
             catch (Exception ex)
@@ -1359,6 +1364,40 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     DiagnosisList = DiagnosisList,
                     IsBackDatedAppointment = IsBackDatedAppointment,
                 };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [HttpGet]
+        [ActionName("PrescriptionDataLoad")]
+        public ResponseInfo PrescriptionDataLoad(string PatientId, string DocId)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal Doctorid = Convert.ToDecimal(DocId);
+                decimal CompanyID = Request.CompanyID();
+                decimal patientid = Convert.ToDecimal(PatientId);
+                int userid = Convert.ToInt32(Request.LoginID());
+                var CurntPrevDate = _emr_appointment_mfService.Queryable().Where(a => a.CompanyId == CompanyID && a.PatientId == patientid && a.DoctorId == Doctorid)
+                .GroupBy(a => new { a.PatientId, DateOnly = DbFunctions.TruncateTime(a.AppointmentDate) })
+                .Select(z => new
+                {
+                    z.Key.PatientId,
+                    AppointmentDate = z.Key.DateOnly.Value
+                }).OrderByDescending(x => x.AppointmentDate).ToList();
+
+                objResponse.ResultSet = CurntPrevDate.Select(z => new
+                {
+                    z.PatientId,
+                    AppointmentDate=z.AppointmentDate.ToString("yyyy-MM-dd")
+                });
+
             }
             catch (Exception ex)
             {

@@ -288,6 +288,7 @@
     <Content Include="src\assets\app\css\bootstrap.min.css" />
     <Content Include="src\assets\app\css\font-awesome-5.1.1.css" />
     <Content Include="src\assets\app\css\font-awesome.min.css" />
+    <Content Include="src\assets\app\css\googleapis.css" />
     <Content Include="src\assets\app\css\print.css" />
     <Content Include="src\assets\app\css\fonts.css" />
     <Content Include="src\assets\app\css\fullcalendar.css" />
@@ -523,6 +524,8 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\ApplicationUser\ProfileUserComponentForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\AppointmentComponentList.ts" />
     <Content Include="src\assets\app\ExcelFile\Item.xlsx" />
+    <Content Include="src\assets\app\css\bootstrap4.5.2" />
+    <Content Include="src\assets\app\js\table2excel.min.js" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

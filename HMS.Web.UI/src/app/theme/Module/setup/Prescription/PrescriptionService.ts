@@ -13,7 +13,7 @@ export class PrescriptionService {
         return this.http.Get(this.urlToApi + '/Pagination', data).then(e => e);
     }
 
- 
+
     ExportData(ExportType: number, CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string): Promise<any> {
         var data = { 'ExportType': ExportType, 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': true };
         return this.http.Get(this.urlToApi + '/ExportData', data).then(e => {
@@ -42,11 +42,14 @@ export class PrescriptionService {
     LoadDropdown(): Promise<any> {
         return this.http.Get(this.urlToApi + '/LoadDropdown', {}).then(e => e);
     }
-    PrescriptionLoad(id: string, DocId:string, Date: any): Promise<any> {
+    PrescriptionLoad(id: string, DocId: string, Date: any): Promise<any> {
         var data = { 'id': id, 'DocId': DocId, 'Date': Date }
         return this.http.Get(this.urlToApi + '/PrescriptionLoad', data).then(e => e);
     }
-    
+    PrePrescriptionDataLoad(PatientId: string, DocId: string): Promise<any> {
+        var data = { 'PatientId': PatientId, 'DocId': DocId }
+        return this.http.Get(this.urlToApi + '/PrescriptionDataLoad', data).then(e => e);
+    }
     GetAllScreens(): Promise<any> {
         return this.http.Get(this.urlToApi + '/GetAllScreens', {}).then(e => e);
     }

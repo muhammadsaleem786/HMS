@@ -699,8 +699,12 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-light" useExistingCss="true" printSectionId="print-section" ngxPrint><i class="icon icon-printer"></i> Print Coupn</button>
-                            <button type="submit" class="btn btn-primary" *ngIf="ControlRights.CreateRights">Save</button>
+                            <button class="btn btn-light"
+                                    type="button"
+                                    (click)="handlePrint('P')">
+                                <i class="icon icon-printer"></i> Print Coupon
+                            </button>
+                            <button type="button" (click)="handlePrint('S')" class="btn btn-primary">Save</button>
                         </div>
                     </form>
                 </ng-template>

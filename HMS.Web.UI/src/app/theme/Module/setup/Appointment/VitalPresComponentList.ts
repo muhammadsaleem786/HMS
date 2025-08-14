@@ -93,7 +93,7 @@ export class VitalPresComponentList implements OnInit {
         this.emr_vital_dynamicArray = [];
         this.loader.ShowLoader();
         this.IsVital = true;
-        this._AppointmentService.GetAllVital().then(m => {
+        this._AppointmentService.GetAllVital(this.PatientId).then(m => {
             this.VitalList = m.ResultSet.VitalList;
             if (m.ResultSet.vitalObj.length > 0) {
                 m.ResultSet.vitalObj.forEach((item, index) => {

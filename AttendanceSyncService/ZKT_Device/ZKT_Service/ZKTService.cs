@@ -73,7 +73,7 @@ namespace AttendanceSyncService.ZKT_Device.ZKT_Service
                             {
                                 StringDate = idwDay.ToString() + "/" + idwMonth.ToString() + "/" + idwYear.ToString() + " " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond;
                                 TDate = DateTime.ParseExact(StringDate, "d/M/yyyy H:m:s", CultureInfo.InvariantCulture);
-                                if (LastDataSync > AttendanceDate)
+                                if (TDate > LastDataSync)
                                 {
                                     AttendanceModel obj = new AttendanceModel();
                                     obj.CompanyID = CompanyID;

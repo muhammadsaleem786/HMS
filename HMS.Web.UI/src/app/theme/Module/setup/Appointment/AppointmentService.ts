@@ -267,8 +267,9 @@ export class AppointmentService {
         return this.http.Get(this.PresurlToApiAp + '/PrintRXById', data).then(e => e);
     }
 
-    GetAllVital(): Promise<any> {
-        return this.http.Get(this.VitalToApiAp + '/Load', {}).then(e => e);
+    GetAllVital(PatientId: string): Promise<any> {
+        var data = { 'PatientId': PatientId };
+        return this.http.Get(this.VitalToApiAp + '/Load', data).then(e => e);
     }
 
     VitalSave(entity: emr_vital): Promise<any> {

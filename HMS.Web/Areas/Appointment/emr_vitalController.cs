@@ -344,12 +344,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         }
         [HttpGet]
         [ActionName("Load")]
-        public ResponseInfo Load()
+        public ResponseInfo Load(string PatientId)
         {
             var objResponse = new ResponseInfo();
             try
             {
                 decimal CompanyID = Request.CompanyID();
+                decimal PatId = Convert.ToDecimal(PatientId);
                 var VitalList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 21 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(z => new
                 {
 
@@ -357,7 +358,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     z.Value,
                     z.Unit
                 }).ToList();
-                var vitalObj = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.VitalId == 67).Select(z => new
+                var vitalObj = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId== PatId && a.VitalId == 67).Select(z => new
                 {
                     z.ID,
                     z.Date,
@@ -371,6 +372,22 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     vitalObj = vitalObj,
                     VitalList = VitalList
                 };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [HttpGet]
+        [ActionName("Load")]
+        public ResponseInfo Load()
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
             }
             catch (Exception ex)
             {

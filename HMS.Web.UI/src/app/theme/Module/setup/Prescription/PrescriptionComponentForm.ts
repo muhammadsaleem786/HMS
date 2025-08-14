@@ -71,6 +71,7 @@ export class PrescriptionComponentForm implements OnInit {
     public emr_prescription_observation_dynamicArray = [];
     public emr_prescription_treatment_dynamicArray = [];
     public DoctorList: any[] = [];
+    public Followuplist: any[] = [];
     public BloodList: any[] = [];
     public Rights: any; public StatusList: any[] = [];
     public PatientVitalList: any[] = [];
@@ -252,7 +253,7 @@ export class PrescriptionComponentForm implements OnInit {
             SelectedObservation: [''],
             SelectedDiagnos: [''],
             Day: [''],
-            FollowUpNotes:['']
+            FollowUpNotes: ['']
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -293,7 +294,7 @@ export class PrescriptionComponentForm implements OnInit {
             .pipe(filter(params => params.id))
             .subscribe(params => {
                 this.PrescriptionModel.ID = params.id;
-                
+
                 if (this.PrescriptionModel.ID > 0) {
                     this.loader.ShowLoader();
                     this.IsEdit = true;
@@ -763,6 +764,7 @@ export class PrescriptionComponentForm implements OnInit {
             this.MadicineTypeList = m.ResultSet.MadicineTypeList;
             this.ServiceType = m.ResultSet.ServiceType;
             this.TokenNo = m.ResultSet.TokenNo;
+            this.Followuplist = m.ResultSet.Followuplist;
             this.CurntPrevDateList.push({ "AppointmentDate": this._CommonService.GetFormatDate(new Date()) });
 
             if (m.ResultSet.ServiceType != null) {
@@ -785,6 +787,200 @@ export class PrescriptionComponentForm implements OnInit {
         }
         return hours + ':' + minutes + ':00';
     }
+    handlePrint(val: any) {
+        let selectedDate = new Date(this.AppointmentModel.AppointmentDate);
+        let currentDate = new Date();
+        selectedDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(0, 0, 0, 0);
+        if (this.IsBackDatedAppointment == false && selectedDate < currentDate) {
+            this.toastr.Error("You can not add Appointment in previous date and time.");
+            return;
+        }
+        if (this.AppointmentModel.Discount > this.AppointmentModel.Price) {
+            this.toastr.Error("discount not greater price amount.");
+            return;
+        }
+        this.submitted = true;
+        if (this.AppointmentModel.PatientId == undefined || this.AppointmentModel.PatientId == null) {
+            this.toastr.Error("Error", "Please select patient.");
+            return;
+        }
+        if (this.AppointmentModel.AppointmentDate == undefined || this.AppointmentModel.AppointmentDate == null) {
+            this.toastr.Error("Error", "Please select appointment date.");
+            return;
+        }
+        if (this.AppointmentModel.AppointmentTime == undefined || this.AppointmentModel.AppointmentTime == null) {
+            this.toastr.Error("Error", "Please select time.");
+            return;
+        }
+        if (this.AppointmentModel.ServiceId == undefined || this.AppointmentModel.ServiceId == null) {
+            this.toastr.Error("Error", "Please select service.");
+            return;
+        }
+        if (this.AppointmentModel.BillDate == undefined || this.AppointmentModel.BillDate == null) {
+            this.toastr.Error("Error", "Please select bill date.");
+            return;
+        }
+        if (this.AppointmentModel.Price == undefined || this.AppointmentModel.Price == null) {
+            this.toastr.Error("Error", "Please select price.");
+            return;
+        }
+        let IsExistFollowUp = Array.isArray(this.Followuplist)
+            ? this.Followuplist.filter(a =>
+                a.PatientId === this.AppointmentModel.PatientId &&
+                a.Mobile === this.AppointmentModel.Mobile
+            )
+            : [];
+        if (IsExistFollowUp.length > 0) {
+            swal({
+                title: "Are you sure?",
+                text: "Are you sure you want to update the existing follow-up?",
+                icon: "warning",
+                buttons: ['Cancel', 'Yes'],
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete && val == "P") {
+                        this.AppointmentModel.IsExistFollowUp = true;
+                        this.AppointmentPrint(val);
+                    }
+                    else if (val == "P") {
+                        this.AppointmentModel.IsExistFollowUp = false;
+                        this.AppointmentPrint(val);
+                    }
+                    else {
+                        this.AppointmentModel.IsExistFollowUp = false;
+                        this.AppointmentSaveOrUpdate(true);
+                    }
+                });
+            return;
+        } else {
+            if (val == "P") {
+                this.AppointmentModel.IsExistFollowUp = false;
+                this.PrintContent();
+                this.AppointmentSaveOrUpdate(true);
+            } else {
+                this.AppointmentModel.IsExistFollowUp = false;
+                this.AppointmentSaveOrUpdate(true);
+            }
+        }
+    }
+    AppointmentPrint(val: any) {
+        this.submitted = false;
+        this.loader.ShowLoader();
+        if (this.AppointmentModel.AppointmentTime == undefined)
+            this.AppointmentModel.AppointmentTime = $('#basicExample').val();
+        this.AppointmentModel.AppointmentTime = this.Convert12TO24(this.AppointmentModel.AppointmentTime);
+        if (this.AppointmentModel.StatusId == undefined || this.AppointmentModel.StatusId == null)
+            this.AppointmentModel.StatusId = 25;
+        this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
+            var result = JSON.parse(m._body);
+            if (result.IsSuccess) {
+                this.toastr.Success(result.Message);
+                this.modalService.dismissAll(this.ModelContent);
+                this.CurntPrevDateList = result.ResultSet.CurntPrevDateList;
+
+                this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(this.AppointmentModel.AppointmentDate);
+                this.PrescriptionModel.AppointDate = this._CommonService.GetFormatDate(this.AppointmentModel.AppointmentDate);
+                this.AppointmentModel = new emr_Appointment();
+                this.loader.HideLoader();
+            }
+            else {
+                this.toastr.Error('Error', result.ErrorMessage);
+                this.loader.HideLoader();
+            }
+        });
+
+    }
+    PrintContent() {
+        const printSection = document.getElementById('print-section');
+        const printContents = printSection ? printSection.innerHTML : '';
+        if (printContents) {
+            const popupWin = window.open('', '_blank', 'width=800,height=600');
+            if (popupWin) {
+                popupWin.document.open();
+                popupWin.document.write(`
+  <html>
+    <head>
+      <title>Print</title>
+    </head>
+    <body onload="window.print();window.close()">${printContents}</body>
+  </html>
+`);
+                popupWin.document.close();
+            }
+        }
+    }
+    AppointmentSaveOrUpdate(isValid: boolean): void {
+        let selectedDate = new Date(this.AppointmentModel.AppointmentDate);
+        let currentDate = new Date();
+        selectedDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(0, 0, 0, 0);
+        if (this.IsBackDatedAppointment == false && selectedDate < currentDate) {
+            this.toastr.Error("You can not add Appointment in previous date and time.");
+            return;
+        }
+        if (this.AppointmentModel.Discount > this.AppointmentModel.Price) {
+            this.toastr.Error("discount not greater price amount.");
+            return;
+        }
+        this.submitted = true;
+        if (this.AppointmentModel.PatientId == undefined || this.AppointmentModel.PatientId == null) {
+            this.toastr.Error("Error", "Please select patient.");
+            return;
+        }
+        if (this.AppointmentModel.AppointmentDate == undefined || this.AppointmentModel.AppointmentDate == null) {
+            this.toastr.Error("Error", "Please select appointment date.");
+            return;
+        }
+        if (this.AppointmentModel.AppointmentTime == undefined || this.AppointmentModel.AppointmentTime == null) {
+            this.toastr.Error("Error", "Please select time.");
+            return;
+        }
+        if (this.AppointmentModel.ServiceId == undefined || this.AppointmentModel.ServiceId == null) {
+            this.toastr.Error("Error", "Please select service.");
+            return;
+        }
+        if (this.Rights.indexOf(12) > -1) {
+            if (this.AppointmentModel.ServiceId == undefined || this.AppointmentModel.ServiceId == null) {
+                this.toastr.Error("Error", "Please select service.");
+                return;
+            }
+            if (this.AppointmentModel.BillDate == undefined || this.AppointmentModel.BillDate == null) {
+                this.toastr.Error("Error", "Please select bill date.");
+                return;
+            }
+            if (this.AppointmentModel.Price == undefined || this.AppointmentModel.Price == null) {
+                this.toastr.Error("Error", "Please select price.");
+                return;
+            }
+        }
+        this.submitted = false;
+        this.loader.ShowLoader();
+        if (this.AppointmentModel.AppointmentTime == undefined)
+            this.AppointmentModel.AppointmentTime = $('#basicExample').val();
+        this.AppointmentModel.AppointmentTime = this.Convert12TO24(this.AppointmentModel.AppointmentTime);
+        if (this.AppointmentModel.StatusId == undefined || this.AppointmentModel.StatusId == null)
+            this.AppointmentModel.StatusId = 25;
+        this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
+            var result = JSON.parse(m._body);
+            if (result.IsSuccess) {
+                this.toastr.Success(result.Message);
+                this.modalService.dismissAll(this.ModelContent);
+                this.CurntPrevDateList = result.ResultSet.CurntPrevDateList;
+
+                this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(this.AppointmentModel.AppointmentDate);
+                this.PrescriptionModel.AppointDate = this._CommonService.GetFormatDate(this.AppointmentModel.AppointmentDate);
+                this.AppointmentModel = new emr_Appointment();
+                this.loader.HideLoader();
+            }
+            else {
+                this.toastr.Error('Error', result.ErrorMessage);
+                this.loader.HideLoader();
+            }
+        });
+    }
+
     LoadAppPatient() {
         //Search By Name
         $('#AppPatientSearchByName').autocomplete({
@@ -818,6 +1014,21 @@ export class PrescriptionComponentForm implements OnInit {
             select: (event, ui) => {
                 this.PrescriptionModel.PatientName = ui.item.label;
                 this.PrescriptionModel.PatientId = ui.item.value;
+                if (this.PrescriptionModel.PatientId != null && this.PrescriptionModel.DoctorId != null) {
+                    this._PrescriptionService.PrePrescriptionDataLoad(this.PrescriptionModel.PatientId.toString(), this.PrescriptionModel.DoctorId.toString()).then(m => {
+                        this.CurntPrevDateList = m.ResultSet;
+                        this.PrescriptionModel.AppointmentDate = m.ResultSet[0].AppointmentDate;
+                        this.PrescriptionExist = true;
+                        if (m.ResultSet.length == 0) {
+                            this.CurntPrevDateList.push({ "AppointmentDate": this._CommonService.GetFormatDate(new Date()) });
+                            this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(new Date());
+                            this.PrescriptionExist = false;
+                        }
+                        this.loader.HideLoader();
+                    });
+                } else {
+                    this.loader.HideLoader();
+                }
             }
         });
     }
@@ -929,7 +1140,7 @@ export class PrescriptionComponentForm implements OnInit {
             source: (request, response) => {
                 this.loader.ShowLoader();
                 this._SaleService.searchByNamePrescription(request.term).then(m => {
-                    
+
                     if (m.ResultSet.ItemInfo.length == 0) {
                         this.emr_prescription_treatment_dynamicArray[indx].MedicineId = null;
                         this.emr_prescription_treatment_dynamicArray[indx].Measure = null;
@@ -969,7 +1180,7 @@ export class PrescriptionComponentForm implements OnInit {
             this.toastr.Error("You can not add appointment previous date.");
             return;
         }
-        
+
         if (this.PrescriptionModel.PatientId != null && this.PrescriptionModel.PatientId != undefined) {
             var dob = new Date(this.AppointmentModel.AppointmentDate)
             this.PrescriptionModel.AppointDate = this._CommonService.GetFormatDate(dob);
@@ -1162,68 +1373,6 @@ export class PrescriptionComponentForm implements OnInit {
                 this.modalService.open(MedicineTemplate, { size: 'md' });
             } else
                 this.loader.HideLoader();
-        });
-    }
-    AppointmentSaveOrUpdate(isValid: boolean): void {
-        if (this.IsBackDatedAppointment == false) {
-            this.toastr.Error("You can not add Appointment in previous date and time.");
-            return;
-        }
-        //let CurrentDate = this._CommonService.GetFormatDate(new Date());
-        //let Appdate = this._CommonService.GetFormatDate(this.AppointmentModel.AppointmentDate);
-        //if (Appdate < CurrentDate) {
-        //    this.toastr.Error("You can not add appointment previous date.");
-        //    return;
-        //}
-        this.submitted = true; // set form submit to true
-        //if (isValid) {
-        if (this.AppointmentModel.PatientId == undefined || this.AppointmentModel.PatientId == null) {
-            this.toastr.Error("Error", "Please select patient.");
-            return;
-        }
-        if (this.AppointmentModel.AppointmentDate == undefined || this.AppointmentModel.AppointmentDate == null) {
-            this.toastr.Error("Error", "Please select appointment date.");
-            return;
-        }
-        if (this.Rights.indexOf(12) > -1) {
-            if (this.AppointmentModel.ServiceId == undefined || this.AppointmentModel.ServiceId == null) {
-                this.toastr.Error("Error", "Please select service.");
-                return;
-            }
-            if (this.AppointmentModel.BillDate == undefined || this.AppointmentModel.BillDate == null) {
-                this.toastr.Error("Error", "Please select bill date.");
-                return;
-            }
-            if (this.AppointmentModel.Price == undefined || this.AppointmentModel.Price == null) {
-                this.toastr.Error("Error", "Please select price.");
-                return;
-            }
-            if (this.AppointmentModel.AppointmentTime == undefined || this.AppointmentModel.AppointmentTime == null) {
-                this.toastr.Error("Error", "Please select time.");
-                return;
-            }
-        }
-        this.submitted = false;
-        this.loader.ShowLoader();
-        if (this.AppointmentModel.AppointmentTime == undefined)
-            this.AppointmentModel.AppointmentTime = $('#basicExample').val();
-        this.AppointmentModel.AppointmentTime = this.Convert12TO24(this.AppointmentModel.AppointmentTime);
-        this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
-            var result = JSON.parse(m._body);
-            if (result.IsSuccess) {
-                this.toastr.Success(result.Message);
-                this.modalService.dismissAll(this.ModelContent);
-                this.CurntPrevDateList = result.ResultSet.CurntPrevDateList;
-
-                this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(this.AppointmentModel.AppointmentDate);
-                this.PrescriptionModel.AppointDate = this._CommonService.GetFormatDate(this.AppointmentModel.AppointmentDate);
-                this.AppointmentModel = new emr_Appointment();
-                this.loader.HideLoader();
-            }
-            else {
-                this.toastr.Error('Error', result.ErrorMessage);
-                this.loader.HideLoader();
-            }
         });
     }
     PatientSaveOrUpdate(isValid: boolean): void {
@@ -1762,7 +1911,7 @@ export class PrescriptionComponentForm implements OnInit {
             this.toastr.Error("Error", "Please select time.");
             return;
         }
-        if (this.PrescriptionModel.emr_prescription_treatment.length == 0 || this.PrescriptionModel.emr_prescription_treatment[0].MedicineName == undefined) {
+        if (this.emr_prescription_treatment_dynamicArray.length == 0 || this.emr_prescription_treatment_dynamicArray[0].MedicineName == undefined) {
             this.toastr.Error("Error", "Please select at leatest one medicine.");
             return;
         }

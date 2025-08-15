@@ -215,6 +215,8 @@ export class TimeAttendanceComponentList {
             return 'EO';
         else if (item.Status == 'Missing Out')
             return 'MO';
+          else if (item.Status == 'Lateness')
+            return 'LA';
         else if (item.Status == 'Leave')
             return 'L';
         else return '';

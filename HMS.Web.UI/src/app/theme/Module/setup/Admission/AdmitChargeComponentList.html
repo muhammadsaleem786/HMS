@@ -2,10 +2,13 @@
     <div class="row">
         <div class="col">
             <div class="tab-pane active" id="Charges">
-                <div class="col-sm-12 CustomAccordion">
-                    <a class="dropdown-item cursor-pointer" (click)="openInvoiceModal(InvoiceModal)">
+                <div class="col-sm-12 text-right my-2">
+                    <a class="cursor-pointer" (click)="openInvoiceModal(InvoiceModal)">
                         Print Invoice
                     </a>
+                </div>
+                <div class="col-sm-12 CustomAccordion">
+                   
                     <div class="tab-content">
                         <ngb-accordion [closeOthers]="true" activeIds="">
                             <ngb-panel id="patienttab-1">
@@ -269,7 +272,7 @@
 
         
 
-    <div class="modal-footer">
+    <div class="modal-footer" style="position:fixed; right: 20px; top:0">
         <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
         <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
     </div>

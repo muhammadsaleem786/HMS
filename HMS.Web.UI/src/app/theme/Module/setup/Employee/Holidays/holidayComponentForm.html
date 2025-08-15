@@ -1,5 +1,5 @@
 ﻿
-<form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+<form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)" style="max-width: 600px; margin: 10% auto">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">{{model.ID ? 'Edit' : 'Add'}} Public Holiday</h3>

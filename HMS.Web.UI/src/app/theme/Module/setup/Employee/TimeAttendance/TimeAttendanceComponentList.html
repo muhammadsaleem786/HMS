@@ -1,78 +1,268 @@
-﻿<div class="margin-t-6">
-    <div class="clearfix backBtnMain">
-        <h1 class="MainTittle">Time Attendance</h1>
-        <a routerLink="/home/setup"><i class="fa fa-arrow-circle-left"></i></a>
-    </div>
-
-    
-    <div style="padding: 0 15px 0 15px;">
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Filter by month*</label>
-                    <Datetime-Component (DateChangeValue)="onMonthFilterDateChanged($event)" [ngModelOptions]="{standalone:true}" [(ngModel)]="MonthFilterDate">
-                    </Datetime-Component>
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Time Attendance
+                    </h3>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Search</label>
-                    <input (keyup)="applyFilter($event.target.value)" class="form-control" [(ngModel)]="txtSearch" [ngModelOptions]="{standalone:true}" placeholder="Search....">
-                </div>
-            </div>
-            <div class="col-md-2 text-right">
-                <label style="visibility:hidden">Attendan</label>
-                <button class="btn btn-transparent btn-block" (click)="AddAttendance('0')">Add Attendance</button>
-            </div>
-            <div class="col-md-2 text-right">
-                <label style="visibility:hidden">Holiday</label>
-                <button class="btn btn-transparent btn-block" routerLink="/home/holiday">Add Holiday</button>
-            </div>
         </div>
-
-        <div class="table-responsive">
-            <div class="mat-elevation-z8">
-                <mat-table class="mt-custom-table mt-nowhitespace timeMatTable" #table [dataSource]="dataSource" matSort >
-
-
-                    <!-- Name Column -->
-                    <ng-container matColumnDef="Employee">
-                        <mat-header-cell mat-header-cell *matHeaderCellDef>Employee</mat-header-cell>
-                        <mat-cell mat-cell *matCellDef="let element"><span>{{element.Employee}}</span> </mat-cell>
-                    </ng-container>
-
-                    <div *ngFor="let itm of MonthDays; let ind = index">
-                        <div *ngIf="itm.id != 'Employee'">
-
-                            <ng-container matColumnDef="{{itm.id}}">
-                                <mat-header-cell *matHeaderCellDef>
-                                    {{(itm.value.getDate().toString().length == 1 ? ("0" + itm.value.getDate()) : itm.value.getDate()) +" " + (itm.value | date : 'EE')}}
-                                </mat-header-cell>
-                                <mat-cell mat-cell *matCellDef="let element; let i = index;" [ngClass]="GetTime(i,itm.value) == 'P' ? 'Present-circle' : 'Absent-circle'">
-                                    <!--<span>{{GetTime(i,itm.value)}}</span>-->
-                                    <span>{{GetTime(i,itm.value)}}</span>
-
-                                </mat-cell>
-
-                            </ng-container>
-                        </div>
-                    </div>
-
-
-                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                    <mat-row class="EmpAttendanceInfo" *matRowDef="let row; columns: displayedColumns; let indx = index" (click)="EditEvent(indx)"></mat-row>
-                </mat-table>
-                <mat-paginator showFirstLastButtons [length]="length"
-                               [pageSize]="pageSize"
-                               [pageSizeOptions]="pageSizeOptions"
-                               [hidePageSize]="true"
-                               (page)="pageEvent = $event">
-                </mat-paginator>
-            </div>
+        <div class="col-sm-8 text-right flex-row flex-end">
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+        </div>
+        <div class="col-sm-12">
+                <div class="legend  p-2 mt-3">
+                <span><span class="dot dot-P"></span> On Time (P)</span>
+                <span><span class="dot dot-A"></span> Absent (A)</span>
+                <span><span class="dot dot-MI dot-rect">MI</span> Missing In</span>
+                <span><span class="dot dot-MO dot-rect">MO</span> Missing Out</span>
+                <span><span class="dot dot-EO dot-rect">EO</span> Early Out</span>
+                <span><span class="dot dot-L"></span> Leave</span>
+                <span><span class="dot dot-Late dot-rect">LA</span> Lateness</span>
+                <span><span class="dot dot-WE"></span> Weekend</span>
+                <span><span class="dot dot-PH dot-rect">PH</span> Public Holiday</span>
+                </div>
         </div>
     </div>
-
-    
 </div>
 
+
+<div class="Cardview px-3 pb-3">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="form-group">
+          <label>Filter by month*</label>
+          <Datetime-Component
+            (DateChangeValue)="onMonthFilterDateChanged($event)"
+            [ngModelOptions]="{standalone:true}"
+            [(ngModel)]="MonthFilterDate">
+          </Datetime-Component>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Search</label>
+          <input
+            (keyup)="applyFilter($event.target.value)"
+            class="form-control"
+            [(ngModel)]="txtSearch"
+            [ngModelOptions]="{standalone:true}"
+            placeholder="Search....">
+        </div>
+      </div>
+       <div class="col-md-3"></div>
+      <div class="col-md-2 text-right">
+        <label class="invisible">Attendance</label>
+        <button class="btn btn-primary btn-block" (click)="AddAttendance('0')">
+          Add Attendance
+        </button>
+      </div>
+      <div class="col-md-2 text-right">
+        <label class="invisible">Holiday</label>
+        <button class="btn btn-secondary btn-block" routerLink="/home/holiday">
+          Add Holiday
+        </button>
+      </div>
+    </div>
+
+    <!-- Table Scroll -->
+    <div class="table-container">
+      <div class="mat-elevation-z8">
+        <mat-table class="mt-custom-table mt-nowhitespace timeMatTable"
+                   #table [dataSource]="dataSource" matSort>
+
+          <!-- Employee Column -->
+          <ng-container matColumnDef="Employee">
+            <mat-header-cell *matHeaderCellDef sticky>Employee</mat-header-cell>
+            <mat-cell *matCellDef="let element" sticky>
+              <span>{{element.Employee}}</span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Dynamic Day Columns -->
+          <div *ngFor="let itm of MonthDays; let ind = index">
+            <div *ngIf="itm.id != 'Employee'">
+              <ng-container matColumnDef="{{itm.id}}">
+                <mat-header-cell *matHeaderCellDef>
+                 <span class="date-header d-block w-100">
+                    {{ itm.value.getDate() < 10 ? '0' : '' }}{{ itm.value.getDate() }}
+                    <br>
+                    <small> {{ itm.value | date : 'EE' }}</small>
+                    </span>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element; let i = index;"
+                          [ngClass]="GetTime(i,itm.value) == 'P' ? 'Present-circle' : 'Absent-circle'">
+
+                  <span
+                    class="dot"
+                    [ngClass]="{
+                      'dot-P':  GetTime(i,itm.value) === 'P',  
+                      'dot-A':  GetTime(i,itm.value) === 'A',  
+                      'dot-MI': GetTime(i,itm.value) === 'MI', 
+                      'dot-MO': GetTime(i,itm.value) === 'MO',  
+                      'dot-EO': GetTime(i,itm.value) === 'EO',  
+                      'dot-L':  GetTime(i,itm.value) === 'L',   
+                      'dot-Late':  GetTime(i,itm.value) === 'LA',  
+                      'dot-WE': GetTime(i,itm.value) === 'W' || GetTime(i,itm.value) === 'Weekend',
+                      'dot-PH': GetTime(i,itm.value) === 'PH' || GetTime(i,itm.value) === 'Public Holiday',
+                      'dot-rect': ['MI','MO','EO','LA','PH'].includes(GetTime(i,itm.value))
+                    }"
+                    [attr.title]="
+                      GetTime(i,itm.value) === 'P'  ? 'On Time (P) – Employee attended as scheduled' :
+                      GetTime(i,itm.value) === 'A'  ? 'Absent (A) – Did not attend' :
+                      GetTime(i,itm.value) === 'MI' ? 'Missing In (MI) – No clock-in' :
+                      GetTime(i,itm.value) === 'MO' ? 'Missing Out (MO) – No clock-out' :
+                      GetTime(i,itm.value) === 'EO' ? 'Early Out (EO) – Left early' :
+                      GetTime(i,itm.value) === 'L'  ? 'Leave (L) – Approved leave' :
+                      GetTime(i,itm.value) === 'LA' ? 'Lateness' :
+                      ( (itm.value | date:'EEE') === 'Sat' || (itm.value | date:'EEE') === 'Sun' ) ? 'Weekend' :
+                      GetTime(i,itm.value) === 'PH' ? 'Public Holiday (PH)' : ''
+                    ">
+                    <ng-container *ngIf="['MI','MO','EO','LA','PH'].includes(GetTime(i,itm.value))">
+                      {{ GetTime(i,itm.value) }}
+                    </ng-container>
+                  </span>
+                </mat-cell>
+              </ng-container>
+            </div>
+          </div>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row class="EmpAttendanceInfo"
+                   *matRowDef="let row; columns: displayedColumns; let indx = index"
+                   (click)="EditEvent(indx)">
+          </mat-row>
+        </mat-table>
+      </div>
+    </div>
+
+  <!-- Pagination outside scroll -->
+  <mat-paginator 
+                 showFirstLastButtons
+                 [length]="length"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="pageSizeOptions"
+                 [hidePageSize]="true"
+                 (page)="pageEvent = $event">
+  </mat-paginator>
+    <!-- Legend -->
+</div>
+
+
+
+
+<style>
+    /* Card styling */
+.card {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+/* Table container with horizontal scroll excluding paginator */
+.table-container {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  height: 50vh;
+}
+
+/* Sticky first column */
+.mat-column-Employee {
+  min-width: 200px !important;
+  max-width: 200px !important;
+  position: sticky;
+  left: 0;
+  z-index:9 !important;
+  background: white;
+}
+
+/* Sticky header */
+.mat-header-cell {
+  position: sticky;
+  top: 0;
+  background: #f9f9f9;
+  z-index: 1;
+  font-weight: bold;
+  text-align: center;
+  line-height: normal;
+}
+.mat-header-cell small{
+    color: #7c7777;
+}
+/* Column widths */
+.mat-cell,
+.mat-header-cell {
+  min-width: 60px;
+  max-width: 60px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Row hover */
+.mat-row:hover {
+  background-color: #f5f5f5;
+}
+
+/* Dot styles */
+.dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  font-size: 10px;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.dot-rect {
+  width: auto;
+  min-width: 20px;
+  padding: 2px;
+  height: auto;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  font-size: 11px;
+}
+.dot-P  { background:#4CAF50; }
+.dot-A  { background:red; }
+.dot-MI { background:#FF9800; }
+.dot-MO { background:#FF5722; }
+.dot-EO { background:#F44336; }
+.dot-L  { background:#2196F3; }
+.dot-Late { background:#FFC107; }
+.dot-WE { background: #ddd }
+.dot-PH { background:#673AB7; }
+
+/* Legend styles */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  font-size: 13px;
+  color: #37474f;
+}
+.legend span {
+  display: flex;
+  align-items: center;
+}
+.legend .dot {
+  margin-right: 6px;
+}
+mat-footer-row, mat-header-row, mat-row{
+    border: 0px !important;
+}
+.mat-cell {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+.mat-cell:not(first-child){
+    
+    justify-content: center;
+}
+</style>

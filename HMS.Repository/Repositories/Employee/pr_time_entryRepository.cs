@@ -54,7 +54,12 @@ namespace HMS.Repository.Repositories.Employee
                                                               OrderByTimeIn ? c.TimeIn.ToString() :
                                                               OrderByTimeOut ? c.TimeOut.ToString() :
                                                               OrderByStatus ? c.Status : ""
+
                                                               );
+                if (PFilter.OrderBy == "ID")
+                {
+                    filteredData = filteredData.OrderByDescending(d => (d.ID)).AsQueryable();
+                }
                 objResult.TotalRecord = filteredData.Count();
                 List<pr_time_entryModel> list = new List<pr_time_entryModel>();
                 if (IgnorePaging)
@@ -102,10 +107,12 @@ namespace HMS.Repository.Repositories.Employee
                         }).OrderBy(x => x.Date).ToList();
                 }
                 IQueryable<pr_time_entryModel> prList = list.AsQueryable();
+
                 if (PFilter.IsOrderAsc)
                     prList = prList.OrderBy(orderingFunction);
                 else
                     prList = prList.OrderByDescending(orderingFunction);
+
 
                 objResult.DataList = prList.ToList<Object>();
 

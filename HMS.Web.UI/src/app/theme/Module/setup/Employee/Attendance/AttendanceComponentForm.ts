@@ -54,8 +54,8 @@ export class AttendanceComponentForm implements OnInit {
 
         this.Form1 = this._fb.group({
             EmployeeID: ['', <any>[Validators.required]],
-            TimeIn: ['', [Validators.required]],
-            TimeOut: ['', [Validators.required]],
+            TimeIn: [''],
+            TimeOut: [''],
             StatusID: ['', [Validators.required]],
             AttendDate: ['', [Validators.required]],
         });
@@ -138,6 +138,9 @@ export class AttendanceComponentForm implements OnInit {
     }
 
     IsTimeInOutValid(): boolean {
+        if (!this.TimeIn || !this.TimeOut) {
+            return true; // No validation needed if one is missing
+        }
         var tih = parseInt(this.TimeIn.split(':')[0]);
         var tim = parseInt(this.TimeIn.split(':')[1]);
         var toh = parseInt(this.TimeOut.split(':')[0]);
@@ -152,14 +155,13 @@ export class AttendanceComponentForm implements OnInit {
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true; // set form submit to true
 
-        if (isValid) {
+        if (this.TimeIn != undefined) {
             isValid = this.IsTimeInOutValid();
         }
 
 
         if (isValid) {
             this.submitted = false;
-
             var attenD = new Date(this.GetFormatDate(this.AttendDate));
             this.model.TimIntxt = this.TimeIn;
             this.model.TimOuttxt = this.TimeOut;

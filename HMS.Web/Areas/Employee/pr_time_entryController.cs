@@ -23,15 +23,21 @@ namespace HMS.Web.API.Areas.Employee
         private readonly Ipr_time_entryService _service;
         private readonly Iadm_companyService _adm_companyService;
         private readonly Ipr_employee_mfService _pr_employee_mfService;
+        private readonly Isys_holidaysService _sys_holidays;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
+        private readonly Iadm_userService _adm_userService;
+        private readonly Iadm_user_companyService _adm_user_companyService;
 
-        public pr_time_entryController(IUnitOfWorkAsync unitOfWorkAsync, Ipr_time_entryService Service
-            , Iadm_companyService adm_companyService, Ipr_employee_mfService pr_employee_mfService)
+        public pr_time_entryController(IUnitOfWorkAsync unitOfWorkAsync, Iadm_user_companyService adm_user_companyService, Iadm_userService adm_userService, Ipr_time_entryService Service
+            , Iadm_companyService adm_companyService, Isys_holidaysService sys_holidays, Ipr_employee_mfService pr_employee_mfService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = Service;
             _adm_companyService = adm_companyService;
             _pr_employee_mfService = pr_employee_mfService;
+            _sys_holidays = sys_holidays;
+            _adm_userService = adm_userService;
+            _adm_user_companyService = adm_user_companyService;
         }
         public async Task<ResponseInfo> Save(pr_time_entry Model)
         {
@@ -50,14 +56,24 @@ namespace HMS.Web.API.Areas.Employee
                 //    .FirstOrDefault();
                 //if (dept == null)
                 //{
-                int TimeInhh = Convert.ToInt16(Model.TimIntxt.Split(':')[0]);
-                int TimeInmm = Convert.ToInt16(Model.TimIntxt.Split(':')[1]);
-                int TimeOuthh = Convert.ToInt16(Model.TimOuttxt.Split(':')[0]);
-                int TimeOutmm = Convert.ToInt16(Model.TimOuttxt.Split(':')[1]);
-                TimeSpan tis = new TimeSpan(TimeInhh, TimeInmm, 0);
-                TimeSpan tos = new TimeSpan(TimeOuthh, TimeOutmm, 0);
-                Model.TimeIn = Model.TimeIn?.Date + tis;
-                Model.TimeOut = Model.TimeOut?.Date + tos;
+                if (Model.TimIntxt != null)
+                {
+                    int TimeInhh = Convert.ToInt16(Model.TimIntxt.Split(':')[0]);
+                    int TimeInmm = Convert.ToInt16(Model.TimIntxt.Split(':')[1]);
+                    TimeSpan tis = new TimeSpan(TimeInhh, TimeInmm, 0);
+                    Model.TimeIn = Model.TimeIn?.Date + tis;
+                }
+                else
+                    Model.TimeIn = null;
+                if (Model.TimOuttxt != null)
+                {
+                    int TimeOuthh = Convert.ToInt16(Model.TimOuttxt.Split(':')[0]);
+                    int TimeOutmm = Convert.ToInt16(Model.TimOuttxt.Split(':')[1]);
+                    TimeSpan tos = new TimeSpan(TimeOuthh, TimeOutmm, 0);
+                    Model.TimeOut = Model.TimeOut?.Date + tos;
+                }
+                else
+                    Model.TimeOut = null;
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
                     ID = _service.Queryable().Max(e => e.ID) + 1;
@@ -371,25 +387,6 @@ namespace HMS.Web.API.Areas.Employee
                          JoiningDate = z.JoiningDate,
                          pr_time = z.pr_time_entry.Select(d => new { ID = d.ID, d.TimeIn, d.TimeOut, Status = d.sys_drop_down_value.Value, z.StatusID }).ToList(),
                      }).OrderBy(d => d.Employee).ToList();
-
-                // var datalist = _service.Queryable().Where(x => x.CompanyID == CompanyID)
-                //.Include(x => x.pr_employee_mf).Include(x => x.sys_drop_down_value)
-
-
-                //var datalist2 = _service.Queryable().Where(x => x.CompanyID == CompanyID)
-                //   .Include(x => x.pr_employee_mf).Include(x => x.sys_drop_down_value)
-                //   .Select(z => new
-                //   {
-                //       z.EmployeeID,
-                //       Employee = z.pr_employee_mf.FirstName + " " + z.pr_employee_mf.LastName,
-                //       z.ID,
-                //       z.TimeIn,
-                //       z.TimeOut,
-                //       Status = z.sys_drop_down_value.Value,
-                //       z.StatusID
-                //   }).OrderBy(d => d.Employee).ToList();
-
-
                 var TimeAttList = datalist.Select(z => new
                 {
                     z.EmployeeID,
@@ -400,31 +397,8 @@ namespace HMS.Web.API.Areas.Employee
                     s.EmployeeID,
                     s.Employee,
                     s.JoiningDate,
-                    //TimeAttendanceListdt = datalist.Where(d => d.EmployeeID == s.EmployeeID).SelectMany(x=>x.pr_time).Count() == 0 ? (new List<object>()) : datalist.Where(d => d.EmployeeID == s.EmployeeID).SelectMany(t => t.pr_time).ToList<object>()
                     TimeAttendanceListdt = datalist.Where(d => d.EmployeeID == s.EmployeeID).SelectMany(t => t.pr_time).ToList<object>()
                 }).ToList<object>();
-
-                //var TimeAttList2 = datalist2.Select(z => new
-                //{
-                //    z.EmployeeID,
-                //    z.Employee,
-                //}).Distinct().Select(s => new
-                //{
-                //    s.EmployeeID,
-                //    s.Employee,
-                //    TimeAttendanceListdt = datalist2.Where(x => x.EmployeeID == s.EmployeeID)
-                //    .Select(a => new
-                //    {
-                //        ID = a.ID,
-                //        a.EmployeeID,
-                //        a.TimeIn,
-                //        a.TimeOut,
-                //        a.StatusID,
-                //        a.Status
-                //    })
-                //    .ToList()
-                //}).ToList<object>();
-
                 var result = GetWorkingDaysAndHolidays();
                 objResponse.ResultSet = new { TimeAttList = TimeAttList, result = result };
             }
@@ -441,17 +415,40 @@ namespace HMS.Web.API.Areas.Employee
         {
             var objResponse = new ResponseInfo();
             decimal CompanyID = Request.CompanyID();
-            var CompanyWorkingDays = _adm_companyService.Queryable().Where(x => x.ID == CompanyID).FirstOrDefault();
+            var users = _adm_user_companyService.Queryable()
+    .Where(x => x.CompanyID == CompanyID)
+    .Include(a => a.adm_user_mf)
+    .ToList();
+            var CompanyWorkingDays = users.Select(u =>
+            {
+                var offDays = (u.adm_user_mf.OffDay ?? "")
+                   .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(int.Parse)
+                    .ToList();
 
-            var PublicHolidays = 0;
-            //_sys_holidaysService.Queryable().Where(x => x.CompanyID == CompanyID)
-            //   .Select(t => new
-            //   {
-            //       t.ID,
-            //       t.HolidayName,
-            //       t.FromDate,
-            //       t.ToDate
-            //   }).ToList();
+                return new
+                {
+                    EmployeeId = u.adm_user_mf.EmployeeID,  // adjust property name if different
+                    WDSunday = offDays.Contains(0),
+                    WDMonday = offDays.Contains(1),
+                    WDTuesday = offDays.Contains(2),
+                    WDWednesday = offDays.Contains(3),
+                    WDThursday = offDays.Contains(4),
+                    WDFriday = offDays.Contains(5),
+                    WDSaturday = offDays.Contains(6)
+                };
+            }).ToList();
+
+            //var CompanyWorkingDays = _adm_companyService.Queryable().Where(x => x.ID == CompanyID).FirstOrDefault();
+
+            var PublicHolidays = _sys_holidays.Queryable().Where(x => x.CompanyID == CompanyID)
+               .Select(t => new
+               {
+                   t.ID,
+                   t.HolidayName,
+                   t.FromDate,
+                   t.ToDate
+               }).ToList();
 
             objResponse.ResultSet = new
             {

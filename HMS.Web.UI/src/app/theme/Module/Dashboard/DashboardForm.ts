@@ -68,12 +68,12 @@ export class DashboardForm {
     public ClickValue: string;
     private subscription: Subscription | null = null;
     @ViewChild("longContent") ModelContent: TemplateRef<any>;
-    openAppointmentModal(longContent,PatientId) {
+    openAppointmentModal(longContent, PatientId) {
         this.loader.ShowLoader();
         this.AppointmentModel = new emr_Appointment();
         this._AppointmentService.DeshboardLoadDropdown(PatientId).then(m => {
             if (m.IsSuccess) {
-               
+
 
                 this.DoctorList = m.ResultSet.DoctorList;
                 this.StatusList = m.ResultSet.StatusList;
@@ -101,7 +101,7 @@ export class DashboardForm {
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.PayrollRegion = this._CommonService.getPayrollRegion();
     }
-    ngOnInit() {  
+    ngOnInit() {
         //debugger
         //(window as any).trackEvent('dashboard', {
         //    email: 'saleem@yahoo.com',
@@ -113,7 +113,7 @@ export class DashboardForm {
         //        error: (err) => console.error('API Error:', err)
         //    });
         var date = new Date();
-       var currentdateday = this.datePipe.transform(date, 'dd');
+        var currentdateday = this.datePipe.transform(date, 'dd');
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let days = parseInt(currentdateday);
         if (days <= 9)
@@ -128,7 +128,7 @@ export class DashboardForm {
         this.model.FormDate = new Date(firstDay);
         this.model.ToDate = new Date(todate);
         this.Refresh(this.model.ToDate, this.model.ToDate);
-       this.Form2 = this._fb.group({
+        this.Form2 = this._fb.group({
             PatientName: [''],
             PatientId: ['', [Validators.required]],
             CNIC: ['', [Validators.required, Validators.pattern(ValidationVariables.CNICPattern)]],
@@ -166,7 +166,8 @@ export class DashboardForm {
                 this.ExpenseList = [];
                 this.MonthList = [];
                 this.BirthDayList = [];
-                this.DeshboardData = m.ResultSet.DeshboardData;
+                if (m.ResultSet.DeshboardData.length > 0)
+                    this.DeshboardData = m.ResultSet.DeshboardData;
                 this.AppointmentData = m.ResultSet.Appointment;
                 this.BirthDayData = m.ResultSet.BirthDay;
                 this.BirthDayList = m.ResultSet.BirthDay;
@@ -234,7 +235,7 @@ export class DashboardForm {
         };
     }
     LoadIncomeChart() {
-        const colors = ['#5470C6', '#EE6666'];      
+        const colors = ['#5470C6', '#EE6666'];
         this.incomeANDexpense = {
             tooltip: {
                 trigger: 'axis',
@@ -247,7 +248,7 @@ export class DashboardForm {
             },
 
             legend: {
-              
+
                 data: ['Income', 'Expense']
             },
             color: ['#0d3b5a', '#83d0cf', '#c1932d', '#6ac395', '#ddd'],
@@ -346,8 +347,8 @@ export class DashboardForm {
         var fDate = this._CommonService.GetFormatDate(this.model.FormDate);
         var ToDate = this._CommonService.GetFormatDate(this.model.ToDate);
         this._DashboardService
-            .DataLoad(fDate, ToDate).then(m => {                
-                this.FollowUpData = [];                
+            .DataLoad(fDate, ToDate).then(m => {
+                this.FollowUpData = [];
                 this.FollowUpData = m.ResultSet.FollowUp;
                 if (Val == 1) {
                     this.FollowUpData = m.ResultSet.FollowUp.filter(a => a.IsCreateAppointment == 1);
@@ -356,13 +357,13 @@ export class DashboardForm {
                     this.FollowUpData = m.ResultSet.FollowUp.filter(a => a.IsCreateAppointment == 0);
                 }
                 this.loader.HideLoader();
-            });        
+            });
     }
     onDateChanged() {
         this.loader.ShowLoader();
         var fDate = this._CommonService.GetFormatDate(this.model.FormDate);
         var ToDate = this._CommonService.GetFormatDate(this.model.ToDate);
-        this.Refresh(fDate, ToDate);       
+        this.Refresh(fDate, ToDate);
     }
 
     GoBack(DefaultRoute) {
@@ -419,7 +420,7 @@ export class DashboardForm {
     }
     onPatientNameEvent(event: any) {
         if (event != null && event != undefined) {
-            
+
 
         }
     }
@@ -430,7 +431,7 @@ export class DashboardForm {
             this.toastr.Error("You can not add appointment previous date.");
             return;
         }
-        this.submitted = true; 
+        this.submitted = true;
         if (this.AppointmentModel.PatientId == undefined || this.AppointmentModel.PatientId == null) {
             this.toastr.Error("Error", "Please select patient.");
             return;
@@ -493,7 +494,7 @@ export class DashboardForm {
             if (doctorid[0].SlotTime != null) {
                 this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
             }
-           
+
             $("#basicExample").timepicker({
                 'minTime': minTime,
                 'maxTime': maxTime,

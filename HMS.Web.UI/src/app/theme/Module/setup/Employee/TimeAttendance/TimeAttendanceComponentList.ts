@@ -50,7 +50,8 @@ export class TimeAttendanceComponentList {
     public PConfig = new PaginationConfig();
     public AttendanceList: any[] = [];
     public EmployeeTimeList: any[] = [];
-    public CompanyWorkingDays = new Company();
+    public CompanyWorkingDays: any;
+    public UserWorkingDays: any;
     public PublicHolidays: any[] = [];
     public IsList: boolean = true;
     public ID: number = 10;
@@ -78,8 +79,6 @@ export class TimeAttendanceComponentList {
             .GetTimeAttendanceList().then(m => {
                 this.AttendanceList = m.ResultSet.TimeAttList;
                 this.CompanyWorkingDays = m.ResultSet.result.CompanyWorkingDays;
-
-
                 this.PublicHolidays = m.ResultSet.result.PublicHolidays;
                 this.createTable(this.AttendanceList);
                 var date = new Date(this.MonthFilterDate);
@@ -142,50 +141,43 @@ export class TimeAttendanceComponentList {
     }
 
     IsWeekend(dat: Date): boolean {
-        var date = new Date(dat);
-
-        var WEDays = [];
-        if (!this.CompanyWorkingDays.WDSunday)
-            WEDays.push({ 'index': 0 });
-        if (!this.CompanyWorkingDays.WDMonday)
-            WEDays.push({ 'index': 1 });
-        if (!this.CompanyWorkingDays.WDTuesday)
-            WEDays.push({ 'index': 2 });
-        if (!this.CompanyWorkingDays.WDWednesday)
-            WEDays.push({ 'index': 3 });
-        if (!this.CompanyWorkingDays.WDThursday)
-            WEDays.push({ 'index': 4 });
-        if (!this.CompanyWorkingDays.WDFriday)
-            WEDays.push({ 'index': 5 });
-        if (!this.CompanyWorkingDays.WDSatuday)
-            WEDays.push({ 'index': 6 });
-
-        // Sunday = 0;
-        // Saturday = 6
-
-        var record = WEDays.filter(x => x.index == date.getDay());
-        if (record.length > 0)
-            return true;
+        if (this.UserWorkingDays.length > 0) {
+            var date = new Date(dat);
+            var WEDays = [];
+            if (this.UserWorkingDays[0].WDSunday)
+                WEDays.push({ 'index': 0 });
+            if (this.UserWorkingDays[0].WDMonday)
+                WEDays.push({ 'index': 1 });
+            if (this.UserWorkingDays[0].WDTuesday)
+                WEDays.push({ 'index': 2 });
+            if (this.UserWorkingDays[0].WDWednesday)
+                WEDays.push({ 'index': 3 });
+            if (this.UserWorkingDays[0].WDThursday)
+                WEDays.push({ 'index': 4 });
+            if (this.UserWorkingDays[0].WDFriday)
+                WEDays.push({ 'index': 5 });
+            if (this.UserWorkingDays[0].WDSaturday)
+                WEDays.push({ 'index': 6 });
+            var record = WEDays.filter(x => x.index == date.getDay());
+            if (record.length > 0)
+                return true;
+            else return false;
+        }
         else return false;
-
     }
 
     GetTime(index, dat): string {
         var date = new Date(dat);
-
-
         if (index == 0) {
-            ;
         }
-
+        var empId = this.dataSource.filteredData[index].EmployeeID;
+        this.UserWorkingDays = this.CompanyWorkingDays.filter(a => a.EmployeeId == empId);
         var att = this.dataSource.filteredData[index].TimeAttendanceListdt.filter(x => +this.GetTimeInDate(x.TimeIn) === +(new Date(date.toDateString())));
-        //var att = this.AttendanceList[index].TimeAttendanceListdt.filter(x => +this.GetTimeInDate(x.TimeIn) === +(new Date(date.toDateString())));
         if (att.length > 0)
             return this.GetAttStatus(att[0]);
-
-        // var holiday = this.PublicHolidays.filter(x => (new Date(x.FromDate)) <= (new Date(date.toDateString())) && (new Date(x.ToDate)) >= (new Date(date.toDateString())));
-        // if (holiday.length > 0)
-        //     return 'H';
+        var holiday = this.PublicHolidays.filter(x => (new Date(x.FromDate)) <= (new Date(date.toDateString())) && (new Date(x.ToDate)) >= (new Date(date.toDateString())));
+        if (holiday.length > 0)
+            return 'PH';
         if (this.IsWeekend(date))
             return 'W';
         else {
@@ -195,12 +187,6 @@ export class TimeAttendanceComponentList {
             if (date >= jdate && date <= TodayDate)
                 return 'A';
         }
-
-        //var att = this.dataSource.filteredData[index].TimeAttendanceListdt.filter(x => +this.GetTimeInDate(x.TimeIn) === +(new Date(date.toDateString())));
-        ////var att = this.AttendanceList[index].TimeAttendanceListdt.filter(x => +this.GetTimeInDate(x.TimeIn) === +(new Date(date.toDateString())));
-        //if (att.length > 0)
-        //    return this.GetAttStatus(att[0]);
-
         return '';
     }
 
@@ -215,7 +201,7 @@ export class TimeAttendanceComponentList {
             return 'EO';
         else if (item.Status == 'Missing Out')
             return 'MO';
-          else if (item.Status == 'Lateness')
+        else if (item.Status == 'Lateness')
             return 'LA';
         else if (item.Status == 'Leave')
             return 'L';

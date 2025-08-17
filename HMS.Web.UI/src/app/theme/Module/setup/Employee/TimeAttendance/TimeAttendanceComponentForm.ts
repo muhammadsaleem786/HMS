@@ -270,6 +270,10 @@ export class TimeAttendanceComponentForm implements OnInit {
                 this.EmployeeTimeList.TotalAbsents++;
                 return 'MO';
             }
+              else if (itm[0].Status == 'Public Holiday') {
+                this.EmployeeTimeList.TotalAbsents++;
+                return 'PH';
+            }
             else if (itm[0].Status == 'Leave') {
                 this.EmployeeTimeList.TotalLeaves++;
                 return 'L';

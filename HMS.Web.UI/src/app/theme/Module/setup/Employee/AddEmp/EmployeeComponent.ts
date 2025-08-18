@@ -224,6 +224,9 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                         if (m.IsSuccess) {
                             this.NeartoExpireDocs = m.ResultSet.NeartoExpireDocs;
                             this.model = m.ResultSet.Employee;
+                            this.model.AppStartTime = m.ResultSet.Employee.StartTime;
+                            this.model.AppEndTime = m.ResultSet.Employee.EndTime;
+
                             this.TakenLeavesByEmp = m.ResultSet.TakenLeavesByEmp;
                             if (this.model.EmployeePic != null || this.model.EmployeePic != undefined) {
                                 this.getImageUrlName(this.model.EmployeePic);
@@ -276,6 +279,15 @@ export class EmployeeComponent implements OnInit, OnDestroy {
             LocationID: [''],
             DesignationID: [''],
             DepartmentID: [''],
+            AppStartTime: ['', [Validators.required]],
+            AppEndTime: ['', [Validators.required]],
+            WDMonday: [''],
+            WDTuesday: [''],
+            WDWednesday: [''],
+            WDThursday: [''],
+            WDFriday: [''],
+            WDSaturday: [''],
+            WDSunday: [''],
             NICNo: ['', [Validators.required]],
             PassportNumber: [''],
             SCHSNO: [''],
@@ -535,9 +547,9 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                 this.model.PaymentMethodID = this.DefaultPaymentTypeID;
             else {
                 if (this.model.PaymentMethodID == this.DefaultPaymentTypeID)
-                    this.PaymentSelectionchange();
-                else
                     this.IsSalBnkTransfr = true;
+                else
+                    this.PaymentSelectionchange();
             }
         }
 
@@ -604,7 +616,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
             this.onStepChange({ selectedIndex: 3 });
             this.onStepChange({ selectedIndex: 4 });
             this.onStepChange({ selectedIndex: 5 });
-           
+
         }
         else {
             //assign default value on page load
@@ -1291,7 +1303,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         }
         this.ReCalculateSalary();
     }
-    
+
     ValidBaseSalary() {
         if (this.model.BasicSalary != null && this.model.BasicSalary != undefined && this.model.BasicSalary != 0) {
             if (this.model.BasicSalary.toString().length > 8)

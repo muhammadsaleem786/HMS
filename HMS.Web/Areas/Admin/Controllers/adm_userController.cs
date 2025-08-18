@@ -109,21 +109,21 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     var token = "GUID=" + guid + "&type=ApplicationUser";
                     string encrytoken = Cryptography.Encrypt(token);
                     encrytoken = HttpServerUtility.UrlTokenEncode(Encoding.ASCII.GetBytes(encrytoken));
-                    if (Model.AppStartTime != null)
-                    {
-                        TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
-                        Model.StartTime = starttime;
-                    }
-                    if (Model.AppEndTime != null)
-                    {
-                        TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
-                        Model.EndTime = endtime;
-                    }
-                    if (Model.DocWorkingDay != null)
-                    {
-                        string result = string.Join(",", Model.DocWorkingDay);
-                        Model.OffDay = result;
-                    }
+                    //if (Model.AppStartTime != null)
+                    //{
+                    //    TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
+                    //    Model.StartTime = starttime;
+                    //}
+                    //if (Model.AppEndTime != null)
+                    //{
+                    //    TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
+                    //    Model.EndTime = endtime;
+                    //}
+                    //if (Model.DocWorkingDay != null)
+                    //{
+                    //    string result = string.Join(",", Model.DocWorkingDay);
+                    //    Model.OffDay = result;
+                    //}
                     if (Model.GenderDropdown != null)
                     {
                         string result = string.Join(",", Model.GenderDropdown);
@@ -470,22 +470,22 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 adm_userCompany.AddRange(Model.adm_user_company);
 
                 string currdate = DateTime.Now.ToString("yyyy-MM-dd");
-                if (Model.AppStartTime != null)
-                {
-                    TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
-                    Model.StartTime = starttime;
-                }
-                if (Model.AppEndTime != null)
-                {
-                    TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
+                //if (Model.AppStartTime != null)
+                //{
+                //    TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
+                //    Model.StartTime = starttime;
+                //}
+                //if (Model.AppEndTime != null)
+                //{
+                //    TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
 
-                    Model.EndTime = endtime;
-                }
-                if (Model.DocWorkingDay != null)
-                {
-                    string result = string.Join(",", Model.DocWorkingDay);
-                    Model.OffDay = result;
-                }
+                //    Model.EndTime = endtime;
+                //}
+                //if (Model.DocWorkingDay != null)
+                //{
+                //    string result = string.Join(",", Model.DocWorkingDay);
+                //    Model.OffDay = result;
+                //}
                 if (Model.GenderDropdown != null)
                 {
                     string result = string.Join(",", Model.GenderDropdown);

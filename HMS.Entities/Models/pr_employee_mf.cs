@@ -53,7 +53,19 @@ namespace HMS.Entities.Models
         public int StatusID { get; set; }
         public Nullable<System.DateTime> TerminatedDate { get; set; }
         public Nullable<System.DateTime> FinalSettlementDate { get; set; }
-
+        [NotMapped]
+        public string AppStartTime { get; set; }
+        [NotMapped]
+        public string AppEndTime { get; set; }
+        public Nullable<TimeSpan> StartTime { get; set; }
+        public Nullable<TimeSpan> EndTime { get; set; }
+        public bool WDMonday { get; set; }
+        public bool WDTuesday { get; set; }
+        public bool WDWednesday { get; set; }
+        public bool WDThursday { get; set; }
+        public bool WDFriday { get; set; }
+        public bool WDSaturday { get; set; }
+        public bool WDSunday { get; set; }
         public int PaymentMethodDropDownID { get; set; }
         public int PaymentMethodID { get; set; }
         public Nullable<int> SpecialtyTypeDropdownID { get; set; }

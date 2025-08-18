@@ -12,7 +12,13 @@ namespace HMS.Entities.CustomModel
         public decimal ID { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
-        public string OffDay { get; set; }
+        public bool WDMonday { get; set; }
+        public bool WDTuesday { get; set; }
+        public bool WDWednesday { get; set; }
+        public bool WDThursday { get; set; }
+        public bool WDFriday { get; set; }
+        public bool WDSaturday { get; set; }
+        public bool WDSunday { get; set; }
         public Nullable<int> SlotTime { get; set; }
         public Nullable<int> StatusId { get; set; }
         public string IsShowDoctor { get; set; }

@@ -2,7 +2,6 @@
     constructor() {
         let obj = new adm_user_company();
         this.adm_user_company.push(obj);
-
         let objuser_payment = new user_payment();
         this.user_payment2.push(objuser_payment);
     }
@@ -14,9 +13,9 @@
     Pwd: string;
     MultilingualId: number;
     SlotTime: any;
-    AppStartTime: string;
-    AppEndTime: string;
-    OffDay: string;
+    //AppStartTime: string;
+    //AppEndTime: string;
+    //OffDay: string;
     IsOverLap: boolean;
     IsShowDoctor: string;
     Qualification: string;

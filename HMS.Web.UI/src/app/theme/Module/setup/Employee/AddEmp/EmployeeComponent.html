@@ -314,7 +314,7 @@
                                                     </select>
                                                 </div>
                                             </div>
- 
+
                                             <div class="col-sm-6">
                                                 <div class="form-group">
                                                     <label for="usr">Designation</label>
@@ -401,7 +401,7 @@
                                             </div>
                                         </div>
                                         <!-- Designation -->
-                                      
+
                                     </div>
                                     <div class="card p-4 rounded-3 shadow-sm bg-light-subtle mb-4">
                                         <div class="row">
@@ -496,13 +496,13 @@
                                         <div class="row">
                                             <!-- Pay Type -->
                                             <!--<div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label>Pay Type</label>
-                                                    <select formControlName="PayTypeID" [(ngModel)]="model.PayTypeID" class="form-control m-input">
-                                                        <option *ngFor="let item of Paytypes" [value]="item.ID">{{item.Value}}</option>
-                                                    </select>
-                                                </div>
-                                            </div>-->
+        <div class="form-group">
+            <label>Pay Type</label>
+            <select formControlName="PayTypeID" [(ngModel)]="model.PayTypeID" class="form-control m-input">
+                <option *ngFor="let item of Paytypes" [value]="item.ID">{{item.Value}}</option>
+            </select>
+        </div>
+    </div>-->
                                             <!-- Base Salary -->
                                             <div class="col-sm-6">
                                                 <div class="form-group">
@@ -516,6 +516,51 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Start Time</label>
+                                                    <div class="input-group">
+                                                        <input type="time" formControlName="AppStartTime" [(ngModel)]="model.AppStartTime" class="form-control time" value="00:00">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>End Time</label>
+                                                    <div class="input-group">
+                                                        <input type="time" formControlName="AppEndTime" [(ngModel)]="model.AppEndTime" class="form-control time" value="00:00">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p class="small text-muted">Employee working days.</p>
+                                                <div class="checkboxInlineNopad">
+                                                    <div class="checkbox-inline checkboxDefault">
+                                                        <input type="checkbox" formControlName="WDMonday" [(ngModel)]="model.WDMonday">
+                                                        <label>Monday</label>
+                                                    </div>
+                                                    <div class="checkbox-inline checkboxDefault">
+                                                        <input type="checkbox" formControlName="WDTuesday" [(ngModel)]="model.WDTuesday">
+                                                        <label>Tuesday</label>
+                                                    </div>
+                                                    <div class="checkbox-inline checkboxDefault">
+                                                        <input type="checkbox" formControlName="WDWednesday" [(ngModel)]="model.WDWednesday"><label>Wednesday</label>
+                                                    </div>
+                                                    <div class="checkbox-inline checkboxDefault">
+                                                        <input type="checkbox" formControlName="WDThursday" [(ngModel)]="model.WDThursday"><label>Thursday</label>
+                                                    </div>
+                                                    <div class="checkbox-inline checkboxDefault">
+                                                        <input type="checkbox" formControlName="WDFriday" [(ngModel)]="model.WDFriday"><label>Friday</label>
+                                                    </div>
+                                                    <div class="checkbox-inline checkboxDefault">
+                                                        <input type="checkbox" formControlName="WDSaturday" [(ngModel)]="model.WDSatuday"><label>Satuday</label>
+                                                    </div>
+                                                    <div class="checkbox-inline checkboxDefault">
+                                                        <input type="checkbox" formControlName="WDSunday" [(ngModel)]="model.WDSunday"><label>Sunday</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
                                             <!-- Payment Method -->
                                             <div class="col-sm-12">
                                                 <div class="form-group">

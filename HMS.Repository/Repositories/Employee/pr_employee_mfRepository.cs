@@ -28,15 +28,16 @@ namespace HMS.Repository.Repositories.Employee
                 {
                     DisplayName = PFilter.VisibleColumnInfoList.IndexOf("Name") > -1;
                     DisplayDesignation = PFilter.VisibleColumnInfoList.IndexOf("Designation") > -1;
-                    DisplayLocation = PFilter.VisibleColumnInfoList.IndexOf("Location") > -1;
+                    DisplayLocation = PFilter.VisibleColumnInfoList.IndexOf("EmployeeCode") > -1;
                     DisplayDepartment = PFilter.VisibleColumnInfoList.IndexOf("Department") > -1;
                     DisplayModifiedDate = PFilter.VisibleColumnInfoList.IndexOf("ModifiedDate") > -1;
                     DisplayStatus = PFilter.VisibleColumnInfoList.IndexOf("Status") > -1;
                     predicate = (c => c.CompanyID == CompanyID &&
                     (DisplayName && (c.FirstName + " " + c.LastName).ToLower().Replace("  ", " ").Contains(PFilter.SearchText.ToLower()) ||
                     (DisplayDesignation && c.pr_designation.DesignationName.ToLower().Contains(PFilter.SearchText.ToLower()) ||
-                    (DisplayDepartment && c.pr_department.DepartmentName.ToLower().Contains(PFilter.SearchText.ToLower())
-                    ))));
+                    (DisplayDepartment && c.pr_department.DepartmentName.ToLower().Contains(PFilter.SearchText.ToLower()) ||
+                    (DisplayLocation && c.EmployeeCode.ToLower().Contains(PFilter.SearchText.ToLower())
+                    )))));
                 }
 
                 IQueryable<pr_employee_mf> filteredData = repository.Queryable().Where(predicate);
@@ -46,7 +47,7 @@ namespace HMS.Repository.Repositories.Employee
 
                 OrderByName = PFilter.OrderBy.IndexOf("Name") > -1;
                 OrderByDesignation = PFilter.OrderBy.IndexOf("Designation") > -1;
-                OrderByLocation = PFilter.OrderBy.IndexOf("Location") > -1;
+                OrderByLocation = PFilter.OrderBy.IndexOf("EmployeeCode") > -1;
                 OrderByDepartment = PFilter.OrderBy.IndexOf("Department") > -1;
                 ModifiedDate = PFilter.OrderBy.IndexOf("ModifiedDate") > -1;
                 OrderByStatus = PFilter.OrderBy.IndexOf("Status") > -1;
@@ -56,7 +57,8 @@ namespace HMS.Repository.Repositories.Employee
                 orderingFunction = (c =>
                                                               OrderByName ? c.FirstName :
                                                               OrderByDesignation ? c.pr_designation.DesignationName :
-                                                               OrderByDepartment ? c.pr_department.DepartmentName : ""
+                                                               OrderByDepartment ? c.pr_department.DepartmentName :
+                                                               OrderByLocation ? c.EmployeeCode : ""
                                                                );
 
                 if (PFilter.OrderBy == "ID")
@@ -85,6 +87,7 @@ namespace HMS.Repository.Repositories.Employee
                             Status = s.StatusList.Value,
                             ModifiedDate = s.ModifiedDate,
                             CreatedDate = s.CreatedDate,
+                            EmployeeCode = s.EmployeeCode,
                         }).ToList<object>();
                 }
                 else
@@ -99,6 +102,7 @@ namespace HMS.Repository.Repositories.Employee
                             Status = s.StatusList.Value,
                             ModifiedDate = s.ModifiedDate,
                             CreatedDate = s.CreatedDate,
+                            EmployeeCode = s.EmployeeCode,
                         }).ToList<object>();
 
                 }
@@ -125,7 +129,7 @@ namespace HMS.Repository.Repositories.Employee
                 {
                     DisplayName = PFilter.VisibleColumnInfoList.IndexOf("Name") > -1;
                     DisplayDesignation = PFilter.VisibleColumnInfoList.IndexOf("Designation") > -1;
-                    DisplayLocation = PFilter.VisibleColumnInfoList.IndexOf("Location") > -1;
+                    DisplayLocation = PFilter.VisibleColumnInfoList.IndexOf("EmployeeCode") > -1;
                     DisplayDepartment = PFilter.VisibleColumnInfoList.IndexOf("Department") > -1;
                     DisplayStatus = PFilter.VisibleColumnInfoList.IndexOf("Status") > -1;
                     predicate = (c => c.CompanyID == CompanyID &&
@@ -140,7 +144,7 @@ namespace HMS.Repository.Repositories.Employee
 
                 OrderByName = PFilter.OrderBy.IndexOf("Name") > -1;
                 OrderByDesignation = PFilter.OrderBy.IndexOf("Designation") > -1;
-                OrderByLocation = PFilter.OrderBy.IndexOf("Location") > -1;
+                OrderByLocation = PFilter.OrderBy.IndexOf("EmployeeCode") > -1;
                 OrderByDepartment = PFilter.OrderBy.IndexOf("Department") > -1;
                 OrderByStatus = PFilter.OrderBy.IndexOf("Status") > -1;
                 Expression<Func<pr_employee_mf, string>> orderingFunction = (c =>

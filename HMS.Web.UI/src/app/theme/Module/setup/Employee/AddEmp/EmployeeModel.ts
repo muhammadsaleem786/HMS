@@ -103,6 +103,17 @@
     ContractTypeDropDownID: number;
     ContractTypeID: number;
     TotalPolicyAmountMonthly: number;
+    StartTime: string;
+    EndTime: string;
+    AppStartTime: string;
+    AppEndTime: string;
+    WDMonday: boolean;
+    WDTuesday: boolean;
+    WDWednesday: boolean;
+    WDThursday: boolean;
+    WDFriday: boolean;
+    WDSaturday: boolean;
+    WDSunday: boolean;
     adm_user_company: Array<adm_user_company> = [];
     pr_employee_allowance: Array<pr_employee_allowance> = [];
     pr_employee_ded_contribution: Array<pr_employee_ded_contribution> = [];

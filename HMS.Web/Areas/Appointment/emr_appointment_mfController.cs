@@ -354,21 +354,21 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     var token = "GUID=" + guid + "&type=ApplicationUser";
                     string encrytoken = Cryptography.Encrypt(token);
                     encrytoken = HttpServerUtility.UrlTokenEncode(Encoding.ASCII.GetBytes(encrytoken));
-                    if (Model.AppStartTime != null)
-                    {
-                        TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
-                        Model.StartTime = starttime;
-                    }
-                    if (Model.AppEndTime != null)
-                    {
-                        TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
-                        Model.EndTime = endtime;
-                    }
-                    if (Model.DocWorkingDay != null)
-                    {
-                        string result = string.Join(",", Model.DocWorkingDay);
-                        Model.OffDay = result;
-                    }
+                    //if (Model.AppStartTime != null)
+                    //{
+                    //    TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
+                    //    Model.StartTime = starttime;
+                    //}
+                    //if (Model.AppEndTime != null)
+                    //{
+                    //    TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
+                    //    Model.EndTime = endtime;
+                    //}
+                    //if (Model.DocWorkingDay != null)
+                    //{
+                    //    string result = string.Join(",", Model.DocWorkingDay);
+                    //    Model.OffDay = result;
+                    //}
                     if (Model.SlotTime != null)
                     {
                         Model.SlotTime = Model.SlotTime;

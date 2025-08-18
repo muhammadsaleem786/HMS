@@ -150,49 +150,49 @@
                                         </div>
                                     </div>
                                 </div>
-                               <div class="row multiSelect my-3">
-                                        <div class="col-sm-4 text-right">
-                                            <label>Off Day</label>
-                                        </div>
-                                        <div class="col-sm-8">
-                                            <div class="form-group">
-                                                <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="WorkingdayList" [texts]="ColumnTexts" [settings]="ColumnSettings" formControlName="DocWorkingDay" [(ngModel)]="model.DocWorkingDay"></ss-multiselect-dropdown>
-                                                <small *ngIf="Form1.controls.DocWorkingDay.hasError('required') && submitted">
-                                                    This value is required.
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <div class="row">
-                                    <div class="col-sm-4 text-right">
-                                        <label>Start Time</label>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="form-group">
+                                <!--<div class="row multiSelect my-3">
+                                         <div class="col-sm-4 text-right">
+                                             <label>Off Day</label>
+                                         </div>
+                                         <div class="col-sm-8">
+                                             <div class="form-group">
+                                                 <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="WorkingdayList" [texts]="ColumnTexts" [settings]="ColumnSettings" formControlName="DocWorkingDay" [(ngModel)]="model.DocWorkingDay"></ss-multiselect-dropdown>
+                                                 <small *ngIf="Form1.controls.DocWorkingDay.hasError('required') && submitted">
+                                                     This value is required.
+                                                 </small>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 <div class="row">
+                                     <div class="col-sm-4 text-right">
+                                         <label>Start Time</label>
+                                     </div>
+                                     <div class="col-sm-8">
+                                         <div class="form-group">
 
-                                            <input type="time" formControlName="AppStartTime" [(ngModel)]="model.AppStartTime" class="form-control time" value="00:00">
+                                             <input type="time" formControlName="AppStartTime" [(ngModel)]="model.AppStartTime" class="form-control time" value="00:00">
 
-                                            <small *ngIf="Form1.controls.AppStartTime.hasError('required') && submitted">
-                                                This value is required.
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4 text-right">
-                                        <label>End Time</label>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="form-group">
+                                             <small *ngIf="Form1.controls.AppStartTime.hasError('required') && submitted">
+                                                 This value is required.
+                                             </small>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="row">
+                                     <div class="col-sm-4 text-right">
+                                         <label>End Time</label>
+                                     </div>
+                                     <div class="col-sm-8">
+                                         <div class="form-group">
 
-                                            <input type="time" formControlName="AppEndTime" [(ngModel)]="model.AppEndTime" class="form-control time">
+                                             <input type="time" formControlName="AppEndTime" [(ngModel)]="model.AppEndTime" class="form-control time">
 
-                                            <small *ngIf="Form1.controls.AppEndTime.hasError('required') && submitted">
-                                                This value is required.
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
+                                             <small *ngIf="Form1.controls.AppEndTime.hasError('required') && submitted">
+                                                 This value is required.
+                                             </small>
+                                         </div>
+                                     </div>
+                                 </div>-->
                                 <div class="row mt-4">
                                     <div class="col-sm-4 text-right">
                                         <label> IsActive </label>
@@ -248,7 +248,7 @@
                                         </div>
                                     </div>
                                 </div>
-                               
+
 
 
 
@@ -267,7 +267,7 @@
                                     </div>
                                 </div>
 
-                              
+
 
 
 
@@ -309,7 +309,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row"*ngIf="model.TemplateId==2">
+                                <div class="row" *ngIf="model.TemplateId==2">
                                     <div class="col-sm-4 text-right">
                                         <label>Designation Urdu</label>
                                     </div>
@@ -334,7 +334,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row"*ngIf="model.TemplateId==2">
+                                <div class="row" *ngIf="model.TemplateId==2">
                                     <div class="col-sm-4 text-right">
                                         <label>Header Description</label>
                                     </div>

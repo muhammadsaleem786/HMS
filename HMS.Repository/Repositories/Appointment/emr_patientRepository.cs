@@ -169,7 +169,13 @@ namespace HMS.Repository.Repositories.Appointment
                     lvm.ID = Convert.ToDecimal(item["ID"].ToString());
                     lvm.StartTime = item["StartTime"].ToString();
                     lvm.EndTime = item["EndTime"].ToString();
-                    lvm.OffDay = item["OffDay"].ToString();
+                    lvm.WDMonday = Convert.ToBoolean(item["WDMonday"]);
+                    lvm.WDTuesday = Convert.ToBoolean(item["WDTuesday"]);
+                    lvm.WDWednesday = Convert.ToBoolean(item["WDWednesday"]);
+                    lvm.WDThursday = Convert.ToBoolean(item["WDThursday"]);
+                    lvm.WDFriday = Convert.ToBoolean(item["WDFriday"]);
+                    lvm.WDSaturday = Convert.ToBoolean(item["WDSaturday"]);
+                    lvm.WDSunday = Convert.ToBoolean(item["WDSunday"]);
                     lvm.IsShowDoctor = item["IsShowDoctor"].ToString();
                     lvm.IsDoctor = Convert.ToBoolean(item["IsDoctor"].ToString());
                     lvm.Qualification = item["Qualification"].ToString();

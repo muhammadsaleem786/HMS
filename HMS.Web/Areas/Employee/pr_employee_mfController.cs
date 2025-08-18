@@ -125,7 +125,16 @@ namespace HMS.Web.API.Areas.Employee
 
                     Model.ContractTypeDropDownID = (int)sys_dropdown_mfEnum.ContractType;
                     Model.HireDate = Model.JoiningDate;
-
+                    if (Model.AppStartTime != null)
+                    {
+                        TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
+                        Model.StartTime = starttime;
+                    }
+                    if (Model.AppEndTime != null)
+                    {
+                        TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
+                        Model.EndTime = endtime;
+                    }
                     Model.CreatedBy = LoginID;
                     Model.CreatedDate = Request.DateTimes();
                     if (!string.IsNullOrEmpty(Model.EmployeePic))
@@ -965,21 +974,22 @@ namespace HMS.Web.API.Areas.Employee
 
                     Model.EmployeePic = GetValidImage(Model.EmployeePic);
                     Utility.MoveFile(DocumentInfo.getTempDocumentPathInfo(), Model.EmployeePic, DocumentInfo.getProductPathInfo());
+                    if (Model.AppStartTime != null)
+                    {
+                        TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
+                        Model.StartTime = starttime;
+                    }
+                    if (Model.AppEndTime != null)
+                    {
+                        TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
 
+                        Model.EndTime = endtime;
+                    }
                     Model.pr_employee_allowance = null;
                     Model.pr_employee_ded_contribution = null;
                     Model.pr_employee_leave = null;
                     Model.adm_user_company = null;
-                    //Model.CityList = null;
-                    //Model.CountryList = null;
-                    //Model.EmployeeTypeList = null;
-                    //Model.PaymentMethodList = null;
-                    //Model.PayTypeList = null;
-                    //Model.StatusList = null;
                     Model.pr_pay_schedule = null;
-
-                    //Model.pr_department = null;
-                    //Model.pr_designation = null;
                     Model.CityDropDownID = (int)sys_dropdown_mfEnum.City;
                     Model.CountryDropDownID = (int)sys_dropdown_mfEnum.Country;
                     Model.OriginCityDropdownTypeID = (int)sys_dropdown_mfEnum.City;
@@ -989,15 +999,7 @@ namespace HMS.Web.API.Areas.Employee
                     Model.ModifiedBy = Request.LoginID();
                     Model.ModifiedDate = Request.DateTimes();
                     Model.ObjectState = ObjectState.Modified;
-
                     _service.Update(Model);
-
-
-
-
-                    //var empAllowIds = employee_allowanceList.Where(e => e.ID != 0).Select(s => s.ID).ToArray();
-                    //var DelEmpAllowModels = _pr_employee_allowanceService.Queryable().Where(e => e.EmployeeID == Model.ID && !empAllowIds.Contains(e.ID)).ToList();
-
                     var DelEmpAllowModels = _pr_employee_allowanceService.Queryable().Where(e => e.EmployeeID == Model.ID && e.CompanyID == CompanyID).ToList();
                     foreach (var obj in DelEmpAllowModels)
                     {
@@ -1010,15 +1012,6 @@ namespace HMS.Web.API.Areas.Employee
                         EmpAllowID = _pr_employee_allowanceService.Queryable().Max(e => e.ID) + 1;
                     foreach (pr_employee_allowance item in employee_allowanceList)
                     {
-                        //if (item.ID > 0)
-                        //{
-                        //    item.EffectiveFrom = item.EffectiveFrom.Date;
-                        //    item.EffectiveTo = Request.DateTimes().Date;
-                        //    item.ObjectState = ObjectState.Modified;
-                        //    _pr_employee_allowanceService.Update(item);
-                        //}
-                        //else
-                        //{
                         item.ID = EmpAllowID;
                         item.EmployeeID = Model.ID;
                         item.CompanyID = CompanyID;
@@ -1028,15 +1021,7 @@ namespace HMS.Web.API.Areas.Employee
                         item.ObjectState = ObjectState.Added;
                         _pr_employee_allowanceService.Insert(item);
                         EmpAllowID++;
-                        //}
                     }
-
-
-
-
-                    //var DedContIds = employee_ded_contributionList.Where(e => e.ID != 0).Select(s => s.ID).ToArray();
-                    //var DelEmpContDedModels = _pr_employee_ded_contributionService.Queryable().Where(e => e.EmployeeID == Model.ID && !DedContIds.Contains(e.ID)).ToList();
-
                     var DelEmpContDedModels = _pr_employee_ded_contributionService.Queryable().Where(e => e.EmployeeID == Model.ID && e.CompanyID == CompanyID).ToList();
                     foreach (var obj in DelEmpContDedModels)
                     {
@@ -1051,15 +1036,6 @@ namespace HMS.Web.API.Areas.Employee
 
                     foreach (pr_employee_ded_contribution item in employee_ded_contributionList)
                     {
-                        //if (item.ID > 0)
-                        //{
-                        //    item.EffectiveFrom = item.EffectiveFrom.Date;
-                        //    item.EffectiveTo = Request.DateTimes().Date;
-                        //    item.ObjectState = ObjectState.Modified;
-                        //    _pr_employee_ded_contributionService.Update(item);
-                        //}
-                        //else
-                        //{
                         item.ID = DedConID;
                         item.EmployeeID = Model.ID;
                         item.CompanyID = CompanyID;
@@ -1069,14 +1045,9 @@ namespace HMS.Web.API.Areas.Employee
                         item.ObjectState = ObjectState.Added;
                         _pr_employee_ded_contributionService.Insert(item);
                         DedConID++;
-                        //}
                     }
-
-
-
                     var DedLeaveIds = employee_leaveList.Where(e => e.ID != 0).Select(s => s.ID).ToArray();
                     var DelEmpLeaveDedModels = _pr_employee_leaveService.Queryable().Where(e => e.EmployeeID == Model.ID && !DedLeaveIds.Contains(e.ID)).ToList();
-                    //var DelEmpLeaveDedModels = _pr_employee_leaveService.Queryable().Where(e => e.EmployeeID == Model.ID && e.CompanyID == CompanyID).ToList();
                     foreach (var obj in DelEmpLeaveDedModels)
                     {
                         obj.ObjectState = ObjectState.Deleted;
@@ -1114,15 +1085,6 @@ namespace HMS.Web.API.Areas.Employee
                     {
                         await _unitOfWorkAsync.SaveChangesAsync();
                         objResponse.Message = MessageStatement.Update;
-                        //      pr_employee_mf emp2 = _service.Queryable()
-                        //    .Where(e => e.CompanyID == CompanyID && e.ID == Model.ID)
-                        //.Include(x => x.pr_employee_allowance)
-                        //.Include(x => x.pr_employee_ded_contribution)
-                        //.Include(x => x.pr_employee_leave)
-                        //.Include(x => x.pr_employee_document)
-                        //.Include(x => x.adm_user_company)
-                        //.FirstOrDefault();
-
 
 
                         var emp2 = GetPREmployeeByID(Model.ID.ToString());

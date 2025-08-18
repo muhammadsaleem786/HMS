@@ -161,21 +161,21 @@ namespace HMS.Entities.Models
         public Nullable<System.DateTime> ForgotTokenDate { get; set; }
         public bool PhoneNotification { get; set; }
         public bool EmailNotification { get; set; }
-        [NotMapped]
-        public string AppStartTime { get; set; }
-        [NotMapped]
-        public string AppEndTime { get; set; }
+        //[NotMapped]
+        //public string AppStartTime { get; set; }
+        //[NotMapped]
+        //public string AppEndTime { get; set; }
         public Nullable<TimeSpan> SlotTime { get; set; }
-        public Nullable<TimeSpan> StartTime { get; set; }
-        public Nullable<TimeSpan> EndTime { get; set; }
+        //public Nullable<TimeSpan> StartTime { get; set; }
+        //public Nullable<TimeSpan> EndTime { get; set; }
         public Boolean IsOverLap { get; set; }
         public Nullable<DateTime> ExpiryDate { get; set; }
         public Nullable<int> SpecialtyId { get; set; }
         public Nullable<int> SpecialtyDropdownId { get; set; }
         public string Type { get; set; }
-        [NotMapped]
-        public int[] DocWorkingDay { get; set; }
-        public string OffDay { get; set; }
+        //[NotMapped]
+        //public int[] DocWorkingDay { get; set; }
+        //public string OffDay { get; set; }
         public bool IsDeleted { get; set; }
         public string IsShowDoctor { get; set; }
         public Nullable<decimal> MultilingualId { get; set; }

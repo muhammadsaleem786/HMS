@@ -78,7 +78,6 @@ export class TimeAttendanceComponentList {
         this._attendanceService
             .GetTimeAttendanceList().then(m => {
                 this.AttendanceList = m.ResultSet.TimeAttList;
-                this.CompanyWorkingDays = m.ResultSet.result.CompanyWorkingDays;
                 this.PublicHolidays = m.ResultSet.result.PublicHolidays;
                 this.createTable(this.AttendanceList);
                 var date = new Date(this.MonthFilterDate);
@@ -141,22 +140,22 @@ export class TimeAttendanceComponentList {
     }
 
     IsWeekend(dat: Date): boolean {
-        if (this.UserWorkingDays.length > 0) {
+        if (this.CompanyWorkingDays.length > 0) {
             var date = new Date(dat);
             var WEDays = [];
-            if (this.UserWorkingDays[0].WDSunday)
+            if (!this.CompanyWorkingDays[0].WDSunday)
                 WEDays.push({ 'index': 0 });
-            if (this.UserWorkingDays[0].WDMonday)
+            if (!this.CompanyWorkingDays[0].WDMonday)
                 WEDays.push({ 'index': 1 });
-            if (this.UserWorkingDays[0].WDTuesday)
+            if (!this.CompanyWorkingDays[0].WDTuesday)
                 WEDays.push({ 'index': 2 });
-            if (this.UserWorkingDays[0].WDWednesday)
+            if (!this.CompanyWorkingDays[0].WDWednesday)
                 WEDays.push({ 'index': 3 });
-            if (this.UserWorkingDays[0].WDThursday)
+            if (!this.CompanyWorkingDays[0].WDThursday)
                 WEDays.push({ 'index': 4 });
-            if (this.UserWorkingDays[0].WDFriday)
+            if (!this.CompanyWorkingDays[0].WDFriday)
                 WEDays.push({ 'index': 5 });
-            if (this.UserWorkingDays[0].WDSaturday)
+            if (!this.CompanyWorkingDays[0].WDSaturday)
                 WEDays.push({ 'index': 6 });
             var record = WEDays.filter(x => x.index == date.getDay());
             if (record.length > 0)
@@ -171,7 +170,7 @@ export class TimeAttendanceComponentList {
         if (index == 0) {
         }
         var empId = this.dataSource.filteredData[index].EmployeeID;
-        this.UserWorkingDays = this.CompanyWorkingDays.filter(a => a.EmployeeId == empId);
+        this.CompanyWorkingDays = this.AttendanceList.filter(a => a.EmployeeID == empId);
         var att = this.dataSource.filteredData[index].TimeAttendanceListdt.filter(x => +this.GetTimeInDate(x.TimeIn) === +(new Date(date.toDateString())));
         if (att.length > 0)
             return this.GetAttStatus(att[0]);
@@ -203,10 +202,6 @@ export class TimeAttendanceComponentList {
             return 'MO';
         else if (item.Status == 'Lateness')
             return 'LA';
-          else if (item.Status == 'Public Holiday')
-            return 'PH';
-        else if (item.Status == 'Leave')
-            return 'L';
         else return '';
     }
 

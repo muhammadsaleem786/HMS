@@ -134,11 +134,11 @@ export class EmployeeComponentList {
         this.PConfig.Action.AddTextType = "T";
         this.PConfig.Action.AddText = "Add";
         this.PConfig.Fields = [
-            { Name: "Name", Title: "Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "Designation", Title: "Designation", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            //{ Name: "Location", Title: "Location", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "Department", Title: "Department", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "Status", Title: "Status", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "EmployeeCode", Title: "Employee Code", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Name", Title: "Name", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Designation", Title: "Designation", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Department", Title: "Department", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Status", Title: "Status", OrderNo: 5, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
         ];
 
 

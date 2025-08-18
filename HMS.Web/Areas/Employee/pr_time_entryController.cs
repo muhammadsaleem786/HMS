@@ -385,18 +385,32 @@ namespace HMS.Web.API.Areas.Employee
                          EmployeeID = z.ID,
                          Employee = z.FirstName + " " + z.LastName,
                          JoiningDate = z.JoiningDate,
+                         z.WDSunday,
+                         z.WDMonday,
+                         z.WDTuesday,
+                         z.WDWednesday,
+                         z.WDThursday,
+                         z.WDFriday,
+                         z.WDSaturday,
                          pr_time = z.pr_time_entry.Select(d => new { ID = d.ID, d.TimeIn, d.TimeOut, Status = d.sys_drop_down_value.Value, z.StatusID }).ToList(),
                      }).OrderBy(d => d.Employee).ToList();
                 var TimeAttList = datalist.Select(z => new
                 {
                     z.EmployeeID,
                     z.Employee,
-                    z.JoiningDate
+                    z.JoiningDate,z.WDSunday,z.WDMonday,z.WDTuesday,z.WDWednesday,z.WDThursday,z.WDFriday,z.WDSaturday,
                 }).Distinct().Select(s => new
                 {
                     s.EmployeeID,
                     s.Employee,
                     s.JoiningDate,
+                    s.WDSunday,
+                    s.WDMonday,
+                    s.WDTuesday,
+                    s.WDWednesday,
+                    s.WDThursday,
+                    s.WDFriday,
+                    s.WDSaturday,
                     TimeAttendanceListdt = datalist.Where(d => d.EmployeeID == s.EmployeeID).SelectMany(t => t.pr_time).ToList<object>()
                 }).ToList<object>();
                 var result = GetWorkingDaysAndHolidays();
@@ -415,44 +429,17 @@ namespace HMS.Web.API.Areas.Employee
         {
             var objResponse = new ResponseInfo();
             decimal CompanyID = Request.CompanyID();
-            var users = _adm_user_companyService.Queryable()
-    .Where(x => x.CompanyID == CompanyID)
-    .Include(a => a.adm_user_mf)
-    .ToList();
-            var CompanyWorkingDays = users.Select(u =>
-            {
-                var offDays = (u.adm_user_mf.OffDay ?? "")
-                   .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(int.Parse)
-                    .ToList();
-
-                return new
-                {
-                    EmployeeId = u.adm_user_mf.EmployeeID,  // adjust property name if different
-                    WDSunday = offDays.Contains(0),
-                    WDMonday = offDays.Contains(1),
-                    WDTuesday = offDays.Contains(2),
-                    WDWednesday = offDays.Contains(3),
-                    WDThursday = offDays.Contains(4),
-                    WDFriday = offDays.Contains(5),
-                    WDSaturday = offDays.Contains(6)
-                };
-            }).ToList();
-
-            //var CompanyWorkingDays = _adm_companyService.Queryable().Where(x => x.ID == CompanyID).FirstOrDefault();
-
             var PublicHolidays = _sys_holidays.Queryable().Where(x => x.CompanyID == CompanyID)
-               .Select(t => new
-               {
-                   t.ID,
-                   t.HolidayName,
-                   t.FromDate,
-                   t.ToDate
-               }).ToList();
+.Select(t => new
+{
+t.ID,
+t.HolidayName,
+t.FromDate,
+t.ToDate
+}).ToList();
 
             objResponse.ResultSet = new
             {
-                CompanyWorkingDays = CompanyWorkingDays,
                 PublicHolidays = PublicHolidays
             };
 
@@ -479,7 +466,14 @@ namespace HMS.Web.API.Areas.Employee
                        z.TimeIn,
                        z.TimeOut,
                        Status = z.sys_drop_down_value.Value,
-                       z.StatusID
+                       z.pr_employee_mf.StatusID,
+                       z.pr_employee_mf.WDSunday,
+                       z.pr_employee_mf.WDMonday,
+                       z.pr_employee_mf.WDTuesday,
+                       z.pr_employee_mf.WDWednesday,
+                       z.pr_employee_mf.WDThursday,
+                       z.pr_employee_mf.WDFriday,
+                       z.pr_employee_mf.WDSaturday,
                    }).ToList()
                    .Select(s => new
                    {
@@ -496,26 +490,40 @@ namespace HMS.Web.API.Areas.Employee
                        ExcusedTime = WorkingHours("E", s.TimeIn, s.TimeOut),
                        s.StatusID,
                        s.Status,
+                       s.WDSunday,
+                       s.WDMonday,
+                       s.WDTuesday,
+                       s.WDWednesday,
+                       s.WDThursday,
+                       s.WDFriday,
+                       s.WDSaturday,
                    })
                 .ToList()
                 .OrderBy(t => t.InTime).ToList();
-
-                //date.ToString("HH:mm:ss"); // for 24hr format
-                //date.ToString("hh:mm:ss"); // for 12hr format, it shows AM/PM
-                //var list = datalist
-
-
-
                 var obj = datalist.Select(x => new
                 {
                     x.EmployeeID,
                     x.Employee,
-                    x.Designation
+                    x.Designation,
+                    x.WDSunday,
+                    x.WDMonday,
+                    x.WDTuesday,
+                    x.WDWednesday,
+                    x.WDThursday,
+                    x.WDFriday,
+                    x.WDSaturday,
                 }).Distinct().Select(z => new
                 {
                     z.EmployeeID,
                     z.Employee,
                     z.Designation,
+                    z.WDSunday,
+                    z.WDMonday,
+                    z.WDTuesday,
+                    z.WDWednesday,
+                    z.WDThursday,
+                    z.WDFriday,
+                    z.WDSaturday,
                     TotalWorkingHours = datalist.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + nextMyObject.WorkingHours ?? TimeSpan.Zero).ToString(@"hh\:mm"),
                     TotalDelayHours = datalist.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + nextMyObject.DelayTime ?? TimeSpan.Zero).ToString(@"hh\:mm"),
                     TotalExcusedHours = datalist.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + nextMyObject.ExcusedTime ?? TimeSpan.Zero).ToString(@"hh\:mm"),

@@ -126,7 +126,7 @@ export class PaymentComponentForm implements OnInit {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
                     this.toastr.Success(result.Message);
-                    this._router.navigate(['home/Admin']);
+                    this._router.navigate(['/home/Admin']);
                     this.loader.HideLoader();
                 }
                 else {

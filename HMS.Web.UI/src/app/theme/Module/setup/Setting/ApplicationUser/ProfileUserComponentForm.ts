@@ -124,15 +124,15 @@ export class ProfileUserComponentForm implements OnInit {
                             this.getImageUrlName(this.model.UserImage);
                             this.IsNewImage = false;
                         } else this.IsNewImage = true;
-                        if (m.ResultSet.UserObj.StartTime != null)
-                            this.model.AppStartTime = m.ResultSet.UserObj.StartTime;
-                        if (m.ResultSet.UserObj.EndTime != null)
-                            this.model.AppEndTime = m.ResultSet.UserObj.EndTime;
-                        var days = m.ResultSet.UserObj.OffDay;
-                        if (days != null) {
-                            const daysArray = days.split(',').map(Number);
-                            this.model.DocWorkingDay = daysArray;
-                        }                       
+                        //if (m.ResultSet.UserObj.StartTime != null)
+                        //    this.model.AppStartTime = m.ResultSet.UserObj.StartTime;
+                        //if (m.ResultSet.UserObj.EndTime != null)
+                        //    this.model.AppEndTime = m.ResultSet.UserObj.EndTime;
+                        //var days = m.ResultSet.UserObj.OffDay;
+                        //if (days != null) {
+                        //    const daysArray = days.split(',').map(Number);
+                        //    this.model.DocWorkingDay = daysArray;
+                        //}                       
                         var GenderList = m.ResultSet.UserObj.IsGenderDropdown;
                         if (GenderList != null) {
                             const numArray = GenderList.split(',').map(Number);
@@ -180,11 +180,11 @@ export class ProfileUserComponentForm implements OnInit {
             if (this.model.SlotTime == null || this.model.SlotTime == undefined)
                 return this.toastr.Error('Error', 'please select slot time.')
 
-            if (this.model.AppStartTime == null || this.model.AppStartTime == undefined)
-                return this.toastr.Error('Error', 'please select start time.')
+            //if (this.model.AppStartTime == null || this.model.AppStartTime == undefined)
+            //    return this.toastr.Error('Error', 'please select start time.')
 
-            if (this.model.AppEndTime == null || this.model.AppEndTime == undefined)
-                return this.toastr.Error('Error', 'please select end time.')
+            //if (this.model.AppEndTime == null || this.model.AppEndTime == undefined)
+            //    return this.toastr.Error('Error', 'please select end time.')
 
         }
         this.submitted = true; // set form submit to true

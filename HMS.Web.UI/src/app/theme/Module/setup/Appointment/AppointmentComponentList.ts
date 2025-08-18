@@ -539,6 +539,7 @@ export class AppointmentComponentList implements OnInit {
         this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
         this._AppointmentService
             .GetPatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+                debugger
                 this.PModel.TotalRecord = m.TotalRecord;
                 if (this.GenderIds != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
@@ -920,20 +921,18 @@ export class AppointmentComponentList implements OnInit {
                     if (doctorobj != null && doctorobj.length != 0)
                         this.DoctorList.filter(a => a.ID == x.ID)[0].IsDoctor = true;
                 }
-                if (x.OffDay != null && x.OffDay != '') {
-                    var arry = x.OffDay.split(',').map(function (item) {
-                        return parseInt(item, 10);
-                    });
-                    var art = JSON.stringify(arry);
-                    var filtered = this.dayofweek.filter(
-                        function (e) {
-                            return this.indexOf(e) < 0;
-                        },
-                        art
-                    );
-                    this.dow = filtered;
-                } else
+                if (x) {
+                    this.dow = [];
+                    if (x.WDSunday) this.dow.push(0);
+                    if (x.WDMonday) this.dow.push(1);
+                    if (x.WDTuesday) this.dow.push(2);
+                    if (x.WDWednesday) this.dow.push(3);
+                    if (x.WDThursday) this.dow.push(4);
+                    if (x.WDFriday) this.dow.push(5);
+                    if (x.WDSaturday) this.dow.push(6);
+                } else {
                     this.dow = this.dayofweek;
+                }
                 this.Resource.push({
                     'id': x.ID,
                     'title': x.Name,

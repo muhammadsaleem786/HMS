@@ -143,7 +143,7 @@ export class TimeAttendanceComponentForm implements OnInit {
                 .GetTimeAttendanceByEmployeeID(this.EmpID).then(m => {
                     this.EmployeeTimeList = m.ResultSet.obj == null ? new EmpTimeAttListModel() : m.ResultSet.obj;
                     this.PublicHolidays = m.ResultSet.result.PublicHolidays;
-                    this.CompanyWorkingDays = m.ResultSet.result.CompanyWorkingDays;
+                    this.CompanyWorkingDays = m.ResultSet.obj;
                     this.EmployeeTimeList.TotalAbsents = 0;
                     this.EmployeeTimeList.TotalPresents = 0;
                     this.EmployeeTimeList.TotalLeaves = 0;
@@ -269,21 +269,13 @@ export class TimeAttendanceComponentForm implements OnInit {
             else if (itm[0].Status == 'Missing Out') {
                 this.EmployeeTimeList.TotalAbsents++;
                 return 'MO';
-            }
-              else if (itm[0].Status == 'Public Holiday') {
-                this.EmployeeTimeList.TotalAbsents++;
-                return 'PH';
-            }
-            else if (itm[0].Status == 'Leave') {
-                this.EmployeeTimeList.TotalLeaves++;
-                return 'L';
-            }
+            }            
         }
         if (this.PublicHolidays.length > 0) {
             var holiday = this.PublicHolidays.filter(x => (new Date(x.FromDate)) <= (new Date(date.toDateString())) && (new Date(x.ToDate)) >= (new Date(date.toDateString())));
             if (holiday.length > 0) {
                 this.EmployeeTimeList.TotalHolidays++;
-                return 'H';
+                return 'PH';
             }
 
             if (this.IsWeekend(date)) {

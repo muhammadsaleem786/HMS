@@ -196,6 +196,16 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.EarlyOut).HasColumnName("EarlyOut");
             this.Property(t => t.LeaveRestrictions).HasColumnName("LeaveRestrictions");
             this.Property(t => t.MissingAttendance).HasColumnName("MissingAttendance");
+            this.Property(t => t.WDSunday).HasColumnName("WDSunday");
+            this.Property(t => t.WDMonday).HasColumnName("WDMonday");
+            this.Property(t => t.WDTuesday).HasColumnName("WDTuesday");
+            this.Property(t => t.WDWednesday).HasColumnName("WDWednesday");
+            this.Property(t => t.WDThursday).HasColumnName("WDThursday");
+            this.Property(t => t.WDFriday).HasColumnName("WDFriday");
+            this.Property(t => t.WDSaturday).HasColumnName("WDSaturday");
+            this.Property(t => t.StartTime).HasColumnName("StartTime");
+            this.Property(t => t.EndTime).HasColumnName("EndTime");
+
 
 
             // Relationships

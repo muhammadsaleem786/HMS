@@ -1,17 +1,26 @@
-﻿
-<div class="margin-t-68 UserAttendInfo">
-    <div class="clearfix backBtnMain">
-        <div class="backBtn">
-            <a routerLink="/home/Timelist"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-11">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Time Attendance Detail of  <span style="color:#b5b5b5"><span>{{EmployeeTimeList?.Employee}}</span> {{EmployeeTimeList?.Designation}}</span>
+            
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-1 text-right flex-row flex-end">
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
         </div>
     </div>
+</div>
+<div class="Cardview py-2 pb-3">
 
-    <div style="padding: 0 40px 0 40px;">
+
+    
         <div class="row col-sm-12 InfoBlockRow">
-            <div class="col-sm-2 timeInfoBlock">
-                <strong>Employee Name</strong><br />
-                <span><span>{{EmployeeTimeList?.Employee}}</span> {{EmployeeTimeList?.Designation}}</span>
-            </div>
+           
             <div class="col-sm-2 timeInfoBlock">
                 <strong>Total Working Hours : </strong><br />
                 <span>{{EmployeeTimeList?.TotalWorkingHours}}</span>
@@ -47,15 +56,15 @@
         </div>
         <br />
         <br />
-        <div class="row">
-            <div class="col-md-4">
+        <div class="row m-0">
+            <div class="col-md-2">
                 <div class="form-group">
                     <label>Filter by day*</label>
                     <Datetime-Component (DateChangeValue)="ondayFilterDateChanged($event)" [ngModelOptions]="{standalone:true}" [(ngModel)]="MonthFilterDate">
                     </Datetime-Component>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label>Search</label>
                     <input (keyup)="applyFilter($event.target.value)" [(ngModel)]="txtSearch" [ngModelOptions]="{standalone:true}" class="form-control" placeholder="Search....">
@@ -63,7 +72,7 @@
             </div>
         </div>
 
-        <div class="mat-elevation-z8 AttendInfoWrap">
+        <div class="mat-elevation-z8 AttendInfoWrap mx-3">
             <mat-table class="mt-custom-table" #table [dataSource]="dataSource" matSort>            
                     <ng-container matColumnDef="Date">
                         <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>Day</mat-header-cell>
@@ -74,7 +83,19 @@
                     <ng-container matColumnDef="Status">
                         <mat-header-cell *matHeaderCellDef mat-sort-header>Present</mat-header-cell>
                         <mat-cell mat-cell *matCellDef="let element">
-                         {{element.Status}}
+                        <span 
+                            [ngClass]="[
+                                element.Status === 'P' ? 'dot dot-P' : '',
+                                element.Status === 'A' ? 'dot dot-A' : '',
+                                element.Status === 'MI' ? 'dot-rect dot-MI' : '',
+                                element.Status === 'EO' ? 'dot-rect dot-EO' : '',
+                                element.Status === 'MO' ? 'dot-rect dot-MO' : '',
+                                element.Status === 'H' ? 'dot-rect dot-PH' : '',
+                                element.Status === 'L' ? 'dot dot-L' : ''
+                            ]"
+                            >
+                            {{element.Status}}
+                            </span>
                         </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="TimeIn">
@@ -119,4 +140,193 @@
             </mat-paginator>
         </div>
     </div>
-</div>
+
+
+
+
+<style>
+    /* ===========================
+   Layout / Container
+   =========================== */
+
+
+
+/* ===========================
+   Top Info Summary Cards
+   =========================== */
+.InfoBlockRow {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+.timeInfoBlock {
+    
+    background: #f9fafb;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    padding: 18px 15px;
+    margin: 8px;
+    flex: 1 1 10%;
+    min-width: 100px;
+    text-align: center;
+    border: 1px solid #ddd;
+    
+    display: flex
+;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.timeInfoBlock strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 6px;
+}
+.timeInfoBlock span {
+  font-size: 22px;
+  font-weight: 600;
+  color: #111;
+}
+
+/* ===========================
+   Filters
+   =========================== */
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #444;
+}
+.form-control {
+    border-radius: 4px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    box-shadow: none !important;
+    height: 40px;
+}
+.form-control:focus {
+  border-color: #4e607a;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(78,96,122,0.15) !important;
+}
+
+/* ===========================
+   Table
+   =========================== */
+.AttendInfoWrap {
+  margin-top: 25px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.mt-custom-table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.mat-header-cell {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #333;
+  font-size: 13px;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.mat-cell {
+  font-size: 13px;
+  padding: 10px 15px;
+  color: #444;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+/* Center Present column */
+.mat-column-Status {
+  text-align: center;
+}
+
+mat-row{
+    border-bottom: 0px
+}
+/* ===========================
+   Dot Indicators
+   =========================== */
+.dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 10px;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Rectangle badges */
+.dot-rect {
+  display: inline-block;
+  min-width: 26px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #fff;
+  text-align: center;
+  line-height: 1.3;
+  letter-spacing: 0.4px;
+}
+
+/* Status Colors */
+.dot-P  { background:#4CAF50; }    /* Present */
+.dot-A  { background:#F44336; }    /* Absent */
+.dot-MI { background:#FF9800; }    /* Meeting */
+.dot-MO { background:#FF5722; }    /* Morning Off */
+.dot-EO { background:#E53935; }    /* Early Out */
+.dot-L  { background:#2196F3; }    /* Working */
+.dot-Late { background:#FFC107; }  /* Late */
+.dot-WE { background:#BDBDBD; }    /* Weekend */
+.dot-PH { background:#673AB7; }    /* Public Holiday */
+
+/* ===========================
+   Paginator
+   =========================== */
+.mat-paginator {
+  border-top: 1px solid #f0f0f0;
+  padding: 12px 20px;
+  font-size: 13px;
+  background: #fff;
+}
+
+/* ===========================
+   Status Legend
+   =========================== */
+.StatusLegend {
+  margin-top: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fff;
+}
+.StatusLegend span {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  color: #444;
+  gap: 6px;
+}
+.StatusLegend .dot,
+.StatusLegend .dot-rect {
+  flex-shrink: 0;
+}
+
+</style>

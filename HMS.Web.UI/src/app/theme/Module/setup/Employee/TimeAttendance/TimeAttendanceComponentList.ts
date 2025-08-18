@@ -203,6 +203,8 @@ export class TimeAttendanceComponentList {
             return 'MO';
         else if (item.Status == 'Lateness')
             return 'LA';
+          else if (item.Status == 'Public Holiday')
+            return 'PH';
         else if (item.Status == 'Leave')
             return 'L';
         else return '';

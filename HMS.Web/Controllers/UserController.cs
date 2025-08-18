@@ -643,7 +643,7 @@ namespace HMS.Web.API.Controllers
             string EmailPassword = System.Configuration.ConfigurationManager.AppSettings["EmailPassword"];
             string EmailSMTP = System.Configuration.ConfigurationManager.AppSettings["EmailSMTP"];
             int EmailPort = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["EmailPort"]);
-         
+
 
             if (EmailType == "tokenlink")
                 link = webUrl + "/#/confirmed?" + EncryptionToken;
@@ -700,49 +700,9 @@ namespace HMS.Web.API.Controllers
                 decimal LoginID = Request.LoginID();
                 decimal empID = 1;
                 if (!objResponse.IsSuccess)
-                {                  
+                {
                     if (_pr_employee_mfService.Queryable().Count() > 0)
-                        empID = _pr_employee_mfService.Queryable().Max(e => e.ID) + 1;
-
-                    decimal adm_userID = 1;
-                    if (_service.Queryable().Count() > 0)
-                        adm_userID = _service.Queryable().Max(e => e.ID) + 1;
-                    Model.ID = adm_userID;
-                    var guid = Guid.NewGuid().ToString();
-                    var token = "GUID=" + guid;
-                    string encrytoken = Cryptography.Encrypt(token);
-                    encrytoken = HttpServerUtility.UrlTokenEncode(Encoding.ASCII.GetBytes(encrytoken));
-                    Model.ActivationToken = guid;
-                    Model.ActivationTokenDate = Request.DateTimes();
-                    Model.ActivatedDate = null;
-                    Model.LastSignIn = Request.DateTimes();
-                    Model.LoginFailureNo = 0;
-                    Model.IsActivated = false;
-                    Model.UserLock = false;
-                    Model.EmployeeID = empID;
-                    Model.ObjectState = ObjectState.Added;
-                    _service.Insert(Model);
-                    adm_user_token user_token = new adm_user_token();
-                    decimal userTokenID = 1;
-                    if (_adm_user_tokenService.Queryable().Count() > 0)
-                        userTokenID = _adm_user_tokenService.Queryable().Max(e => e.ID) + 1;
-                    user_token.ID = userTokenID;
-                    user_token.UserID = Model.ID;
-                    user_token.IsExpired = false;
-                    user_token.DeviceType = "web";
-                    int deviceID = -1;
-
-                    int TokenexpireDays = 4320;
-                    var Token = JwtManager.GenerateToken(Model.ID.ToString(), TokenexpireDays);
-                    string token1 = Token.Split('|')[0];
-                    DateTime expDate = Convert.ToDateTime(Token.Split('|')[1]);
-                    user_token.TokenKey = token1;
-                    user_token.ExpiryDate = expDate;
-
-                    user_token.DeviceID = deviceID.ToString();
-                    user_token.ObjectState = ObjectState.Added;
-
-                    _adm_user_tokenService.Insert(user_token);
+                        empID = _pr_employee_mfService.Queryable().Max(e => e.ID) + 1;                    
                     // saveCompany 
                     adm_company obj = new adm_company();
                     decimal adm_companyID = 1;
@@ -793,8 +753,8 @@ namespace HMS.Web.API.Controllers
                     employee_mf.ContractTypeDropDownID = (int)sys_dropdown_mfEnum.ContractType;
                     employee_mf.ContractTypeID = 1;
                     employee_mf.Email = Model.Email;
-                    employee_mf.HomePhone = Model.Phone;
-                    employee_mf.Mobile = Model.Phone;
+                    employee_mf.HomePhone = Model.PhoneNo;
+                    employee_mf.Mobile = Model.PhoneNo;
                     employee_mf.StreetAddress = string.Empty;
                     employee_mf.CreatedBy = LoginID;
                     employee_mf.CreatedDate = Request.DateTimes();
@@ -803,6 +763,43 @@ namespace HMS.Web.API.Controllers
                     employee_mf.ObjectState = ObjectState.Added;
                     _pr_employee_mfService.Insert(employee_mf);
 
+                    decimal adm_userID = 1;
+                    if (_service.Queryable().Count() > 0)
+                        adm_userID = _service.Queryable().Max(e => e.ID) + 1;
+                    Model.ID = adm_userID;
+                    var guid = Guid.NewGuid().ToString();
+                    var token = "GUID=" + guid;
+                    string encrytoken = Cryptography.Encrypt(token);
+                    encrytoken = HttpServerUtility.UrlTokenEncode(Encoding.ASCII.GetBytes(encrytoken));
+                    Model.ActivationToken = guid;
+                    Model.ActivationTokenDate = Request.DateTimes();
+                    Model.ActivatedDate = null;
+                    Model.LastSignIn = Request.DateTimes();
+                    Model.LoginFailureNo = 0;
+                    Model.IsActivated = false;
+                    Model.UserLock = false;
+                    Model.EmployeeID = empID;
+                    Model.ObjectState = ObjectState.Added;
+                    _service.Insert(Model);
+                    adm_user_token user_token = new adm_user_token();
+                    decimal userTokenID = 1;
+                    if (_adm_user_tokenService.Queryable().Count() > 0)
+                        userTokenID = _adm_user_tokenService.Queryable().Max(e => e.ID) + 1;
+                    user_token.ID = userTokenID;
+                    user_token.UserID = Model.ID;
+                    user_token.IsExpired = false;
+                    user_token.DeviceType = "web";
+                    int deviceID = -1;
+
+                    int TokenexpireDays = 4320;
+                    var Token = JwtManager.GenerateToken(Model.ID.ToString(), TokenexpireDays);
+                    string token1 = Token.Split('|')[0];
+                    DateTime expDate = Convert.ToDateTime(Token.Split('|')[1]);
+                    user_token.TokenKey = token1;
+                    user_token.ExpiryDate = expDate;
+                    user_token.DeviceID = deviceID.ToString();
+                    user_token.ObjectState = ObjectState.Added;
+                    _adm_user_tokenService.Insert(user_token);
                     pr_pay_schedule pay_schedule = new pr_pay_schedule();
                     decimal pay_scheduleID = 1;
                     if (_pr_pay_scheduleService.Queryable().Count() > 0)
@@ -827,8 +824,6 @@ namespace HMS.Web.API.Controllers
                     pay_schedule.ModifiedDate = Request.DateTimes();
                     pay_schedule.ObjectState = ObjectState.Added;
                     _pr_pay_scheduleService.Insert(pay_schedule);
-
-
                     decimal LeavetypeID = 1;
                     if (_pr_leave_typeService.Queryable().Count() > 0)
                         LeavetypeID = _pr_leave_typeService.Queryable().Max(e => e.ID) + 1;
@@ -1034,9 +1029,9 @@ namespace HMS.Web.API.Controllers
                         if (i == 1)
                         {
                             objbill.ID = billID;
-                            objbill.CreatedBy =LoginID;
+                            objbill.CreatedBy = LoginID;
                             objbill.CreatedDate = Request.DateTimes();
-                            objbill.ModifiedBy =LoginID;
+                            objbill.ModifiedBy = LoginID;
                             objbill.ModifiedDate = Request.DateTimes();
                             objbill.CompanyId = adm_companyID;
                             objbill.ServiceName = "Item";
@@ -1067,7 +1062,7 @@ namespace HMS.Web.API.Controllers
                     {
                         await _unitOfWorkAsync.SaveChangesAsync();
                         objResponse.Message = MessageStatement.Save;
-                        objResponse.IsSuccess = true;                       
+                        objResponse.IsSuccess = true;
                     }
                     catch (DbUpdateException)
                     {

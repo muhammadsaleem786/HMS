@@ -29,6 +29,8 @@ export class ExpireComponentList {
     pagesRange: number[] = [];
     public IdsList: any = [];
     public IsShowSearch: boolean = false;
+    selectedValue: string = "A";
+    public CategoryList: any[] = [];
     @Output() pageChange: EventEmitter<string> = new EventEmitter<string>();
     constructor(public _CommonService: CommonService, public loader: LoaderService
         , public _router: Router, public _AsidebarService: AsidebarService, public _ItemService: ItemService, public toastr: CommonToastrService) {
@@ -58,8 +60,20 @@ export class ExpireComponentList {
             .GetExpireItemList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PModel.FilterID).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.ItemList = m.DataList;
+                this.CategoryList = m.OtherDataModel;
+                this.CategoryList.push({ "ID": "A", "Value": "All" })
                 this.loader.HideLoader();
             });
+    }
+    getFilterData() {
+        if (this.selectedValue == "A") {
+            this.PModel.FilterID = "0";
+            this.PModel.VisibleFilter = false;
+        } else {
+            this.PModel.FilterID = this.selectedValue
+            this.PModel.VisibleFilter = false;
+        }
+        this.Refresh();
     }
     AddRecord(id: string) {
 

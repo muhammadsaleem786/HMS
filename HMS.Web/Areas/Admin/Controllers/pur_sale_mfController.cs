@@ -188,6 +188,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     Instructions = z.emr_instruction.Instructions,
                     InstructionId = z.InstructionId,
+                    IsAllowNegativeStock=z.IsAllowNegativeStock,
                 }).ToList();
                 objResponse.ResultSet = new
                 {
@@ -218,6 +219,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     label = z.Name,
                     Instructions = z.emr_instruction.Instructions,
                     InstructionId = z.InstructionId,
+                    IsAllowNegativeStock=z.IsAllowNegativeStock,
                 }).ToList();
                 objResponse.ResultSet = new
                 {
@@ -254,6 +256,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     GroupId = z.GroupId,
                     TrackInventory = z.TrackInventory,
+                    IsAllowNegativeStock= z.IsAllowNegativeStock,
                 }).ToList();
                 objResponse.ResultSet = new
                 {
@@ -287,6 +290,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Type = z.ItemTypeId,
                     TypeValue = z.sys_drop_down_value2.Value,
                     CategoryId = z.CategoryID,
+                    IsAllowNegativeStock=z.IsAllowNegativeStock,
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0
                 }).ToList();
                 objResponse.ResultSet = new
@@ -322,6 +326,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Type = z.ItemTypeId,
                     TypeValue = z.sys_drop_down_value2.Value,
                     CategoryId = z.CategoryID,
+                    IsAllowNegativeStock=z.IsAllowNegativeStock,
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     GroupId = z.GroupId
                 }).ToList();
@@ -394,6 +399,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Type = z.ItemTypeId,
                     TypeValue = z.sys_drop_down_value2.Value,
                     CategoryId = z.CategoryID,
+                    IsAllowNegativeStock=z.IsAllowNegativeStock,
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     GroupId = z.GroupId,
                 }).ToList();

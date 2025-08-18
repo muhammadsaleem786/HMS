@@ -13,6 +13,7 @@
     CategoryID: number;   
     TrackInventory: boolean = false;
     IsActive: boolean = true;
+    IsAllowNegativeStock: boolean = false;
     CostPrice: number;
     SalePrice: number;
     InventoryOpeningStock: number;

@@ -517,7 +517,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _inv_stockService.ExpirePagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 64).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                }).ToList();
+                objResult.OtherDataModel = categoryList;
             }
             catch (Exception ex)
             {
@@ -534,7 +539,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _inv_stockService.RestockPagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 64).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                }).ToList();
+                objResult.OtherDataModel = categoryList;
             }
             catch (Exception ex)
             {
@@ -586,22 +596,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                   }).ToList<object>();
                     objResponse.Message = "Name already exist";
                 }
-
-
-                //if (AlreadyExistEmployees.Count() == 0)
-                //{
-                //    AlreadyExistEmployees = EmpList
-                // .Where(x => Namelist.Contains((x.FirstName.ToLower().Trim() + " " + x.LastName.ToLower().Trim())))
-                //                 .Select(t => new
-                //                 {
-                //                     t.FirstName,
-                //                     t.LastName,
-                //                     t.Email
-                //                 }).ToList<object>();
-                //    objResponse.Message = "Name already exist";
-                //}
-
-
                 if (AlreadyExistEmployees.Count > 0)
                 {
                     objResponse.ResultSet = AlreadyExistEmployees;

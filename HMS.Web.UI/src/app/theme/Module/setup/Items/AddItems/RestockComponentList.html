@@ -10,6 +10,16 @@
                         Restock
                     </h3>
                 </div>
+
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
+                        <option *ngFor="let item of CategoryList" [value]="item.ID">
+                            {{item.Value}}
+                        </option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>

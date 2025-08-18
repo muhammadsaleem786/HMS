@@ -117,6 +117,7 @@ export class ItemComponentForm {
             InventoryOpeningStock: [''],
             InventoryStockPerUnit: [''],
             InventoryStockQuantity: [''],
+            IsAllowNegativeStock: [''],
             IsActive: [''],
             GroupId: [''],
             POSItem: ['']

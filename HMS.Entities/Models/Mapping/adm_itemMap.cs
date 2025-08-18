@@ -49,6 +49,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.CategoryID).HasColumnName("CategoryID");
             this.Property(t => t.TrackInventory).HasColumnName("TrackInventory");
             this.Property(t => t.IsActive).HasColumnName("IsActive");            
+            this.Property(t => t.IsAllowNegativeStock).HasColumnName("IsAllowNegativeStock");
             this.Property(t => t.CostPrice).HasColumnName("CostPrice");            
             this.Property(t => t.SalePrice).HasColumnName("SalePrice");
             this.Property(t => t.InventoryOpeningStock).HasColumnName("InventoryOpeningStock");

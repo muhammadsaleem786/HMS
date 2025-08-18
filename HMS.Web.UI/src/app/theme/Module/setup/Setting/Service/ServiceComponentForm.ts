@@ -141,6 +141,7 @@ export class ServiceComponentForm implements OnInit {
                         stock: item.stock,
                         CategoryId: item.CategoryId,
                         TypeValue: item.TypeValue,
+                        IsAllowNegativeStock: item.IsAllowNegativeStock,
                     }));
                     response(items);
                     this.loader.HideLoader();
@@ -148,6 +149,13 @@ export class ServiceComponentForm implements OnInit {
             },
             minLength: 3,
             select: (event, ui) => {
+                debugger
+                if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
+                    this.toastr.Error("Error", "The item is out of stock.");
+                    ui.item.value = "";
+                    ui.item.label = "";
+                    return;
+                }
                 if (ui.item.stock == 0) {
                     this.toastr.Error("Error", "Stock must be greater than zero");
                     ui.item.value = "";

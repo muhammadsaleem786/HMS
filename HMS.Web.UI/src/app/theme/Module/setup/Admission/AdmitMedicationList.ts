@@ -208,6 +208,7 @@ export class AdmitMedicationList implements OnInit {
                         stock: item.stock,
                         CategoryId: item.CategoryId,
                         TypeValue: item.TypeValue,
+                        IsAllowNegativeStock: item.IsAllowNegativeStock,
                     }));
                     response(items);
                     this.loader.HideLoader();
@@ -215,6 +216,12 @@ export class AdmitMedicationList implements OnInit {
             },
             minLength: 3,
             select: (event, ui) => {
+                if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
+                    this.toastr.Error("Error", "The item is out of stock.");
+                    ui.item.value = "";
+                    ui.item.label = "";
+                    return;
+                }
                 this.model.MedicineName = ui.item.label;
                 this.model.ItemId = ui.item.value;
                 this.model.QuantityRequested = 1;

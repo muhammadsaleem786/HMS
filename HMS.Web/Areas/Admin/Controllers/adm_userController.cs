@@ -86,6 +86,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //}
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
+                var userEmp = _service.Queryable().Where(y => y.EmployeeID == Model.EmployeeID).FirstOrDefault();
+                if (userEmp != null)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "This employee " + Model.EmployeeID + " already associate another user.";
+                    return objResponse;
+                }
 
                 var user = _service.Queryable().Where(y => y.Email.ToLower() == Model.Email.ToLower()).FirstOrDefault();
                 if (user == null)

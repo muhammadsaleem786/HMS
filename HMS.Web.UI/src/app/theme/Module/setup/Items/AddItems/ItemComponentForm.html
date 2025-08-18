@@ -179,6 +179,16 @@
                         </div>
                         <div class="row">
                             <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username">Allow Negative Stock </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input id="IsNegativeStock" type="checkbox" class="" formControlName="IsAllowNegativeStock" [(ngModel)]="model.IsAllowNegativeStock">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
                                 <label class="form-control-label mt-2 pl-0" for="input-username">Track Inventory </label>
                             </div>
                             <div class="col-8">

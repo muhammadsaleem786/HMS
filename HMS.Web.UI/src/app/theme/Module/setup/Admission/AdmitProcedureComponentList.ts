@@ -195,6 +195,12 @@ export class AdmitProcedureComponentList implements OnInit {
             },
             minLength: 3,
             select: (event, ui) => {
+                if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
+                    this.toastr.Error("Error", "The item is out of stock.");
+                    ui.item.value = "";
+                    ui.item.label = "";
+                    return;
+                }
                 this.ipd_procedure_charged_dynamicArray[indx].ItemId = ui.item.value;
                 this.ipd_procedure_charged_dynamicArray[indx].Item = ui.item.label;
                 this.ipd_procedure_charged_dynamicArray[indx].Quantity = 1;

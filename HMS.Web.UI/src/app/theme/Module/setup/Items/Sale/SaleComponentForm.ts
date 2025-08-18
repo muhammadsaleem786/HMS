@@ -263,6 +263,7 @@ export class SaleComponentForm {
                         TypeValue: item.TypeValue,
                         GroupId: item.GroupId,
                         TrackInventory: item.TrackInventory,
+                        IsAllowNegativeStock: item.IsAllowNegativeStock,
                     }));
                     response(items);
                     this.loader.HideLoader();
@@ -270,6 +271,11 @@ export class SaleComponentForm {
             },
             minLength: 3,
             select: (event, ui) => {
+                if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
+                    this.toastr.Error("Error", "The item is out of stock.");
+                    ui.item.value = null;
+                    return;
+                }
                 if (ui.item.ItemTypeId == 3 || ui.item.ItemTypeId == 4) {
                     this.loadBatchAndSerialItem(ui.item.value);
                     ui.item.value = null;
@@ -640,7 +646,7 @@ export class SaleComponentForm {
             }
         });
     }
-      AppendTax(event: any, rowno: number) {
+    AppendTax(event: any, rowno: number) {
         this.CalculateSubTotal();
     }
     loadItemDetail(id: any, rowno: number) {

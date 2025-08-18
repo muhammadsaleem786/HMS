@@ -25,7 +25,6 @@ import { DeductionContributionModel } from '../DeductionContribution/DeductionCo
 import { IMyDateModel } from 'mydatepicker';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalVariable } from '../../../../../AngularConfig/global';
-//import * as echarts from 'echarts';
 import { CommonToastrService } from '../../../../../CommonService/CommonToastrService';
 import { PayscheduleService } from '../Payschedule/PayScheduleService';
 import { Payschedule } from '../Payschedule/PayScheduleModel';
@@ -42,8 +41,6 @@ import { EncryptionService } from '../../../../../CommonService/encryption.servi
         , VacationSickLeaveService, LocationsService
     ],
 })
-
-
 export class EmployeeComponent implements OnInit, OnDestroy {
     public model = new EmployeeModel();
     public CopyOfEmployeeModel = new EmployeeModel();
@@ -76,7 +73,6 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     public DestinationCountries = [];
     public SpecialtyTypeList = [];
     public ClassificationTypeList = [];
-
     public PaySchedules = [];
     public SelectedAllowancesList = [];
     public UnSelectedAllowancesList = [];
@@ -102,7 +98,6 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     public AirTicketClassTypeList: any[] = [];
     public AirTicketFrequencyList: any[] = [];
     public InsuranceClassTypeList: any[] = [];
-
     public DefaulAllowanceCategoryID: number;
     public DefaulAllowanceType: string;
     public IsValidAllowanceValue: boolean = false;
@@ -592,28 +587,30 @@ export class EmployeeComponent implements OnInit, OnDestroy {
 
             this.IsEmployeeEditSumary = true;
             this.CountrySelectionChange();
-
             this.FilterCities = this.AllCities.filter(x => x.DependedDropDownValueID == this.model.CountryID);
             this.OriginFilterCities = this.AllCities.filter(x => x.DependedDropDownValueID == this.model.OriginCountryTypeID);
             this.DestinationFilterCities = this.AllCities.filter(x => x.DependedDropDownValueID == this.model.DestinationCountryTypeID);
             this.OriginCountrySelChange();
             this.DestinationCountrySelChange();
-
-
             this.sixthWizardCall();
             this.CalculateSalary();
+            this.stepper.selectedIndex = 1;
+            this.stepper.selectedIndex = 2;
+            this.stepper.selectedIndex = 3;
+            this.stepper.selectedIndex = 4;
+            this.stepper.selectedIndex = 5;
+            this.onStepChange({ selectedIndex: 1 });
+            this.onStepChange({ selectedIndex: 2 });
+            this.onStepChange({ selectedIndex: 3 });
+            this.onStepChange({ selectedIndex: 4 });
+            this.onStepChange({ selectedIndex: 5 });
+           
         }
         else {
-
-            //this.UnSelectedAllowancesList = JSON.parse(JSON.stringify(result.DefaultAllowancesList));
-            //this.UnSelectedContributionList = JSON.parse(JSON.stringify(result.ContributionList));
-            //this.UnSelectedDeductionList = JSON.parse(JSON.stringify(result.DeductionList));
-            //this.SelectedAllowancesList = this.Allowanceslist.filter(x => x.Default == true);
-            //this.SelectedContributionList = this.ContributionList.filter(x => x.Default == true);
-            //this.SelectedDeductionList = this.DeductionList.filter(x => x.Default == true);
-
             //assign default value on page load
-
+            if (this.Nationalities.length > 0) {
+                this.model.NationalityID = 1;
+            }
             if (this.Countries.length > 0) {
                 if (this.PayrollRegion == 'SA') {
                     //SA = 1;
@@ -629,23 +626,17 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                     this.model.DestinationCountryTypeID = 2;
                     this.locationModel.CountryID = 1;
                 }
-
-
                 this.model.CountryID = this.Countries[0].ID;
-
                 this.CountrySelectionChange();
                 this.OriginCountrySelChange();
                 this.DestinationCountrySelChange();
-
                 this.AddLocationCountrySelChange();
             }
 
             if (this.VacationAndSickLeaves.length > 0) {
-
                 this.LeaveTypeID = this.VacationAndSickLeaves[0].ID;
                 this.Hours = this.VacationAndSickLeaves[0].EarnedValue;
             }
-
             var FilterPaytype = this.Paytypes.filter(x => x.ID == 1);
             if (FilterPaytype.length > 0) {
                 this.DefaultPayTypeID = FilterPaytype[0].ID;
@@ -659,7 +650,6 @@ export class EmployeeComponent implements OnInit, OnDestroy {
             }
         }
     }
-
     EmpStatusOnLoad() {
 
         //Inactive status = 2
@@ -689,7 +679,6 @@ export class EmployeeComponent implements OnInit, OnDestroy {
             }
         }
     }
-
     GetCityName() {
         if (this.model.CityID) {
             var city = this.FilterCities.filter(x => x.ID == this.model.CityID);
@@ -698,7 +687,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         }
     }
     GetCountryName() {
-        if (this.model.CityID) {
+        if (this.model.CountryID) {
             var list = this.Countries.filter(x => x.ID == this.model.CountryID);
             if (list.length > 0)
                 this.CountryName = list[0].Value;
@@ -975,6 +964,18 @@ export class EmployeeComponent implements OnInit, OnDestroy {
             this.IsOther = false;
             this.AllowanceModel.AllowanceName = 'a';
         }
+    }
+    PayWizardViewed() {
+        if (!this.IsEdit && !this.IsPayWizardViewed)
+            this.model.pr_employee_leave = [];
+
+        this.IsPayWizardViewed = true;
+
+        if (this.model.NoOfAirTicket == 0 || this.model.NoOfAirTicket == undefined)
+            this.model.AirTicketProvided = 'N';
+
+        if (this.model.InsuranceCardNo == '' || this.model.InsuranceCardNo == '0' || this.model.InsuranceCardNoExpiryDate == null)
+            this.model.MedicalInsuranceProvided = 'N';
     }
     GotoLeaveWizard() {
         if (!this.IsEdit) this.IsLeaveWizardViewed = true;
@@ -1290,18 +1291,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         }
         this.ReCalculateSalary();
     }
-    PayWizardViewed() {
-        if (!this.IsEdit && !this.IsPayWizardViewed)
-            this.model.pr_employee_leave = [];
-
-        this.IsPayWizardViewed = true;
-
-        if (this.model.NoOfAirTicket == 0 || this.model.NoOfAirTicket == undefined)
-            this.model.AirTicketProvided = 'N';
-
-        if (this.model.InsuranceCardNo == '' || this.model.InsuranceCardNo == '0' || this.model.InsuranceCardNoExpiryDate == null)
-            this.model.MedicalInsuranceProvided = 'N';
-    }
+    
     ValidBaseSalary() {
         if (this.model.BasicSalary != null && this.model.BasicSalary != undefined && this.model.BasicSalary != 0) {
             if (this.model.BasicSalary.toString().length > 8)
@@ -1329,9 +1319,9 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     }
     CountrySelectionChange() {
         this.FilterCities = this.AllCities.filter(x => x.DependedDropDownValueID == this.model.CountryID);
-        if (this.FilterCities.length > 0)
+        if (this.FilterCities.length > 0 && !this.IsEdit)
             this.model.CityID = this.FilterCities[0].ID;
-        else
+        else if (this.FilterCities.length == 0)
             this.model.CityID = undefined;
     }
     OriginCountrySelChange() {

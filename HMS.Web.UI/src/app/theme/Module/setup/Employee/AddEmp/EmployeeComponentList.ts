@@ -136,9 +136,9 @@ export class EmployeeComponentList {
         this.PConfig.Fields = [
             { Name: "Name", Title: "Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "Designation", Title: "Designation", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "Location", Title: "Location", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "Department", Title: "Department", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "Status", Title: "Status", OrderNo: 5, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            //{ Name: "Location", Title: "Location", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Department", Title: "Department", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Status", Title: "Status", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
         ];
 
 

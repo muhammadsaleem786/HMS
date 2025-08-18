@@ -312,10 +312,10 @@ export class AdmitSummeryComponentList implements OnInit {
             legend: {
                 data: ['Fever', 'BP', 'SPO2', 'Heart Rate'],
                 selected: {
-                    'Fever': true,       
-                    'BP': false,         
-                    'SPO2': false,       
-                    'Heart Rate': false  
+                    'Fever': true,
+                    'BP': false,
+                    'SPO2': false,
+                    'Heart Rate': false
                 }
             },
             xAxis: {
@@ -341,7 +341,7 @@ export class AdmitSummeryComponentList implements OnInit {
             },
             series: []
         };
-            }
+    }
 
     updateChartWithData(response: any) {
         const rawData = response[0]['ChartData'];
@@ -488,7 +488,7 @@ export class AdmitSummeryComponentList implements OnInit {
             });
         }
     }
-    OpenVitalList(VitalList) {        
+    OpenVitalList(VitalList) {
         this.loader.ShowLoader();
         this.AdmitId = localStorage.getItem('AdmitId');
         this.PatientId = localStorage.getItem('PatientId');
@@ -623,6 +623,7 @@ export class AdmitSummeryComponentList implements OnInit {
                         stock: item.stock,
                         CategoryId: item.CategoryId,
                         TypeValue: item.TypeValue,
+                        IsAllowNegativeStock: item.IsAllowNegativeStock,
                     }));
                     response(items);
                     this.loader.HideLoader();
@@ -630,6 +631,12 @@ export class AdmitSummeryComponentList implements OnInit {
             },
             minLength: 3,
             select: (event, ui) => {
+                if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
+                    this.toastr.Error("Error", "The item is out of stock.");
+                    ui.item.value = "";
+                    ui.item.label = "";
+                    return;
+                }
                 this.MedicationModel.MedicineName = ui.item.label;
                 this.MedicationModel.DrugId = ui.item.value;
             }

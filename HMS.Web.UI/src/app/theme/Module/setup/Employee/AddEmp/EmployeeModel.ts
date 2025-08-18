@@ -103,72 +103,7 @@
     ContractTypeDropDownID: number;
     ContractTypeID: number;
     TotalPolicyAmountMonthly: number;
-    //ID: number;
-    //CompanyID: number;
-    //FirstName: string;
-    //LastName: string;
-    //Gender: string = "M";
-    //DOB: Date;
-    //StreetAddress: string;
-    //CityID: number;
-    //ZipCode: string;
-    //CountryID: number;
-    //Email: string;
-    //HomePhone: string;
-    //Mobile: string;
-    //EmergencyContactPerson: string;
-    //EmergencyContactNo: string;
-    //HireDate: Date;
-    //JoiningDate: Date;
-    //PayTypeID: number;
-    //PayScheduleID: number;
-    //BasicSalary: number;
-    //StatusID: number;
-    //PaymentMethodID: number;
-    //BankName: string;
-    //BranchName: string;
-    //BranchCode: string;
-    //AccountNo: string;
-    //SwiftCode: string;
-    //EmployeeTypeID: number;
-    //TypeStartDate: Date = new Date();
-    //TypeEndDate: Date = new Date();
-    //TerminatedDate: Date = new Date();
-    //FinalSettlementDate: Date = new Date();
-    //LocationID: number;
-    //DesignationID: number;
-    //DepartmentID: number;
-    //NICNo: string;
-    //NationalSecurityNo: string;
-    //NationalityID: number;
-    //EmployeeCode: string;
-    //EmployeePic: string;
-    //CityDropDownID: number;
-    //CountryDropDownID: number;
-    //PayTypeDropDownID: number;
-    //StatusDropDownID: number;
-    //PaymentMethodDropDownID: number;
-    //EmployeeTypeDropDownID: number;
-    //NationalityDropDownID: number;
-
-    //NoOfAirTicket: number;
-    //AirTicketFrequencyTypeDropdownID: number;
-    //AirTicketFrequencyTypeID: number;
-    //OriginCountryDropdownTypeID: number;
-    //OriginCountryTypeID: number;
-    //DestinationCountryDropdownTypeID: number;
-    //DestinationCountryTypeID: number;
-    //OriginCityDropdownTypeID: number;
-    //OriginCityTypeID: number;
-    //DestinationCityDropdownTypeID: number;
-    //DestinationCityTypeID: number;
-    //AirTicketRemarks: string;
-
-
     adm_user_company: Array<adm_user_company> = [];
-    //adm_company_location: Array<Adm_Company_Location> = [];
-    //pr_department: pr_department = new pr_department();
-    //pr_designation: pr_designation = new pr_designation();
     pr_employee_allowance: Array<pr_employee_allowance> = [];
     pr_employee_ded_contribution: Array<pr_employee_ded_contribution> = [];
     pr_employee_leave: Array<pr_employee_leave> = [];
@@ -199,7 +134,6 @@ export class Salary {
     TaxableDeductionTotal: number = 0;
 
     CalculateSalary() {
-        debugger
         //this.GrossSalary = this.BasicSalary + this.TaxableAllowanceTotal + this.TaxableDeductionTotal- this.DeductionTotal;
 
         this.GrossSalary = this.BasicSalary + this.AllowanceTotal;
@@ -384,23 +318,5 @@ export class pr_employee_Dependent {
     MaritalStatusTypeID: number;
     DOB: Date = undefined;
     Remarks: string = '';
-    
-}
 
-//export class pr_employee_air_ticket {
-//    ID: number;
-//    CompanyID: number;	
-//    EmployeeID: number;
-//    NoOfAirTicket: number;
-//    AirTicketFrequencyTypeDropdownID: number;
-//    AirTicketFrequencyTypeID: number;
-//    OriginCountryDropdownTypeID: number;
-//    OriginCountryTypeID: number;
-//    DestinationCountryDropdownTypeID: number;
-//    DestinationCountryTypeID: number;
-//    OriginCityDropdownTypeID: number;
-//    OriginCityTypeID: number;
-//    DestinationCityDropdownTypeID: number;
-//    DestinationCityTypeID: number;
-//    Remarks: string;
-//}
+}

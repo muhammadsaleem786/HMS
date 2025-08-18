@@ -40,6 +40,7 @@ namespace HMS.Entities.Models
         public bool IsActive { get; set; }
         public decimal CostPrice { get; set; }
         public decimal SalePrice { get; set; }
+        public bool IsAllowNegativeStock {  get; set; }
         public Nullable<decimal> InventoryOpeningStock { get; set; }
         public Nullable<decimal> InventoryStockPerUnit { get; set; }
         public Nullable<decimal> InventoryStockQuantity { get; set; }

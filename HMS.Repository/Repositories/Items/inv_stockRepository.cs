@@ -204,7 +204,7 @@ namespace HMS.Repository.Repositories.Items
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID);
+                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID && (FilterID == "0" || e.adm_item.GroupId.ToString() == FilterID));
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;
 
@@ -317,7 +317,7 @@ namespace HMS.Repository.Repositories.Items
                     DisplaySKU = PFilter.VisibleColumnInfoList.IndexOf("CostPrice") > -1;
                     DisplayDescription = PFilter.VisibleColumnInfoList.IndexOf("Unit") > -1;
                     DisplayRate = PFilter.VisibleColumnInfoList.IndexOf("Stock") > -1;
-                    predicate = (c => c.CompanyId == CompanyID && 
+                    predicate = (c => c.CompanyId == CompanyID &&
                     (DisplayName && (c.adm_item.Name).Contains(PFilter.SearchText.ToLower()) ||
                     (DisplaySKU && (c.adm_item.SKU).ToLower().Contains(PFilter.SearchText.ToLower())
                   )));
@@ -364,6 +364,7 @@ namespace HMS.Repository.Repositories.Items
                   BatchSarialNumber = s.BatchSarialNumber,
                   ExpiredWarrantyDate = s.ExpiredWarrantyDate,
                   TypeValue = s.adm_item.sys_drop_down_value2.Value,
+                  IsAllowNegativeStock = s.adm_item.IsAllowNegativeStock,
               }).ToList<object>();
                 }
                 else
@@ -381,6 +382,7 @@ namespace HMS.Repository.Repositories.Items
                  BatchSarialNumber = s.BatchSarialNumber,
                  ExpiredWarrantyDate = s.ExpiredWarrantyDate,
                  TypeValue = s.adm_item.sys_drop_down_value2.Value,
+                 IsAllowNegativeStock = s.adm_item.IsAllowNegativeStock,
              }).ToList<object>();
 
                 }
@@ -402,7 +404,7 @@ namespace HMS.Repository.Repositories.Items
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
                 Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID &&
                                                           e.Quantity > 0 &&
-                                                          e.ExpiredWarrantyDate <= expiryDateLimit);
+                                                          e.ExpiredWarrantyDate <= expiryDateLimit && (FilterID == "0" || e.adm_item.GroupId.ToString() == FilterID));
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;
 

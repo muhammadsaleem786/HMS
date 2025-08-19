@@ -2367,9 +2367,6 @@
                         <th style="border-top:0px; padding: 2px;">
                             Days
                         </th>
-                        <th style="border-top:0px; padding: 2px;">
-                            Measure
-                        </th>
                         <th style="border-top:0px; padding:0 2px 5px;">
                             Instruction
                         </th>
@@ -2398,8 +2395,9 @@
                                         )
                                     </label>
                                 </td>
-                                <td style="padding:2px;">{{m.Duration}}</td>
-                                <td style="padding:2px;">{{m.Measure}}</td>
+                                <td style="padding:2px;border-bottom:1px solid #eee;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}}</td>
+                                <td style="padding:5px; border-bottom:1px solid #eee;" *ngIf="DoctorInfo.TemplateId==2">{{m.Duration}} {{ getDurationInUrdu(m.DurationValue) }}</td>
+
                                 <td style="padding:2px;">{{m.Instructions}}</td>
                             </tr>
                         </tbody>

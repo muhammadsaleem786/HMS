@@ -229,4 +229,31 @@ export class PrescriptionComponentList {
         });
         return Name;
     };
+    getDurationInUrdu(value: string): string {
+        switch (value) {
+            case 'Day (s)':
+                return 'دن';
+            case 'Week (s)':
+                return 'ہفتہ';
+            case 'Month (s)':
+                return 'مہینہ';
+            case 'Daily':
+                return 'روزانہ';
+            case 'Weekly':
+                return 'ہفتہ وار';
+            case 'Monthly':
+                return 'ماہانہ';
+            case 'Continuously':
+                return 'مسلسل';
+            case 'When Required':
+                return 'جب ضرورت ہو';
+            case 'STAT':
+                return 'فوری';
+            case 'PRN':
+                return 'حسبِ ضرورت';
+            default:
+                return value;
+        }
+    }
+
 }

@@ -8,9 +8,8 @@ import { CommonService } from '../../../../../CommonService/CommonService';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
 import { CommonToastrService } from '../../../../../CommonService/CommonToastrService';
-import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { emr_Appointment } from '../../Appointment/AppointmentModel';
+
 @Component({
     moduleId: module.id,
     templateUrl: 'ZKTComponentList.html',
@@ -21,12 +20,13 @@ export class ZKTComponentList {
     public Id: string; public submitted: boolean;
     public PModel = new PaginationModel();
     public PConfig = new PaginationConfig();
-    public ComplaintList: any[] = [];
     public IsList: boolean = true;
-    public ID: number = 10; public model = new pr_attendance();
+    public ID: number = 10;
+    public AttendanceModel = new pr_attendance();
     public Rights: any;
+    public ZKTList: any[] = [];
     public Keywords: any[] = [];
-    public Form1: FormGroup;
+    public Form2: FormGroup;
     public IsEdit: boolean = false;
     public ControlRights: any;
     @ViewChild("ZKTModal") ModelContent: TemplateRef<any>;
@@ -36,7 +36,7 @@ export class ZKTComponentList {
         this.ControlRights = this._CommonService.ScreenRights("5");
     }
     ngOnInit() {
-        this.Form1 = this._fb.group({
+        this.Form2 = this._fb.group({
             IPAddress: ['', [Validators.required]],
             PortNo: ['', [Validators.required]],
             LastDataSync: [''],
@@ -50,18 +50,18 @@ export class ZKTComponentList {
         this.PConfig.Action.ScreenName = 'Attendance';
         this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
-            { Name: "Complaint", Title: "Complaint", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "IPAddress", Title: "IP Address", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "PortNo", Title: "Port No", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "LastDataSync", Title: "Last Data Sync", OrderNo: 3, SortingAllow: true, Visible: true, isDate: true, DateFormat: "" },
+            { Name: "IsActive", Title: "Active", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
         ];
     }
     Refresh() {
-        debugger
-        if (this.PModel.SearchText == '')
-            this.loader.ShowLoader();
-        this.Id = "0";
+        this.PModel.VisibleColumnInfo = "IPAddress#IPAddress,PortNo#PortNo,LastDataSync#LastDataSync,LocationCode#LocationCode,IsActive#IsActive";
         this._ZKTService
             .GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
-                this.ComplaintList = m.DataList;
+                this.ZKTList = m.DataList;
                 this.loader.HideLoader();
             });
     }
@@ -73,7 +73,7 @@ export class ZKTComponentList {
             this._ZKTService.GetById(id).then(m => {
                 if (m.ResultSet != null) {
                     this.IsEdit = true;
-                    this.model = m.ResultSet.Result;
+                    this.AttendanceModel = m.ResultSet.Result;
                     this.modalService.open(this.ModelContent, { size: 'md' });
                 }
                 this.loader.HideLoader();
@@ -81,7 +81,7 @@ export class ZKTComponentList {
         }
         else {
             this.loader.ShowLoader();
-            this.model = new pr_attendance();
+            this.AttendanceModel = new pr_attendance();
             this.modalService.open(this.ModelContent, { size: 'md' });
             this.loader.HideLoader();
         }
@@ -92,11 +92,12 @@ export class ZKTComponentList {
         this.IsList = false;
     }
     SaveOrUpdate(isValid: boolean): void {
+        debugger
         this.submitted = true; // set form submit to true
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();
-            this._ZKTService.SaveOrUpdate(this.model).then(m => {
+            this._ZKTService.SaveOrUpdate(this.AttendanceModel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
                     this.toastr.Success(result.Message);
@@ -110,11 +111,12 @@ export class ZKTComponentList {
             });
         }
     }
+
     Delete(id: string) {
         var result = confirm("Are you sure you want to delete selected record.");
         if (result) {
             this.loader.ShowLoader();
-            this._ZKTService.Delete(this.model.ID.toString()).then(m => {
+            this._ZKTService.Delete(this.AttendanceModel.ID.toString()).then(m => {
                 if (m.ErrorMessage != null)
                     this.toastr.Error('Error', m.ErrorMessage);
                 else {

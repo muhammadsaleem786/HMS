@@ -20,7 +20,7 @@
 
     <div>
         <div class="Cardview search_onTop px-2 noAddBtn">
-          <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="UserRoleList" (pageChange)="GetList()" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+          <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="UserRoleList" (pageChange)="GetList()"(AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
             <setup-UserRoleComponentForm [hidden]="IsList" [id]="Id" (pageClose)="Close($event)"></setup-UserRoleComponentForm>
 
         </div>

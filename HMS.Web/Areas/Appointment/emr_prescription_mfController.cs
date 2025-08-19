@@ -872,7 +872,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == CompanyID).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).FirstOrDefault();
+                var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == CompanyID).FirstOrDefault();
                 decimal Doctorid = Convert.ToDecimal(result.DoctorId);
                 decimal patientid = Convert.ToDecimal(result.PatientId);
                 int userid = Convert.ToInt32(Request.LoginID());

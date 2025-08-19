@@ -62,4 +62,9 @@ export class DashboardService {
         var data = { 'FromDate': FromDate, 'ToDate': ToDate };
         return this.http.Get(this.urlToApi + '/DataLoad', data).then(e => e);
     }
+    getCharts(FromDate: any, ToDate: any) {
+        var data = { 'FromDate': FromDate, 'ToDate': ToDate };
+        return this.http.Get(this.urlToApi + '/DataLoad', data).then(e => e);
+    }
+
 }

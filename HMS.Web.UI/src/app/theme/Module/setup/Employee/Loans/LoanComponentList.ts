@@ -114,7 +114,7 @@ export class LoanComponentList {
         this.PConfig.Action.ScreenName = "Loans";
         this.PConfig.Action.Add = true;
         this.PConfig.Action.AddTextType = "T";
-        this.PConfig.Action.AddText = "Add";
+        this.PConfig.Action.AddText = "New Loan";
         this.PConfig.Fields = [
             { Name: "EmpName", Title: "Employee", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "", IsShowCurrency: false },
             { Name: "Description", Title: "Description", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "", IsShowCurrency: false },

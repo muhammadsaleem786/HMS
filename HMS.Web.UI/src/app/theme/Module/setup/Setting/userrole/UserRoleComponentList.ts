@@ -87,7 +87,8 @@ export class UserRoleComponentList {
             this._router.navigate(['home/userrole/saverole'], { queryParams: { id: this.Id } });
         }
     }
-    AddRecord(id: string) {     
+    AddRecord(id: string) {  
+        debugger
             //if (id != "0")
             //    this.loader.ShowLoader();
             //this.Id = id;

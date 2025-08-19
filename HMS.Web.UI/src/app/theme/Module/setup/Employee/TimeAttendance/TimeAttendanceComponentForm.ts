@@ -14,6 +14,7 @@ import { MatPaginator, MatSort, MatTableDataSource, MatTable, PageEvent } from '
 import { DataSource } from '@angular/cdk/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';
+import { EmployeeModel } from '../AddEmp/EmployeeModel';
 
 @Component({
     selector: 'setup-TimeAttendanceComponentForm',
@@ -83,7 +84,7 @@ export class TimeAttendanceComponentForm implements OnInit {
     public LeaveTypesList = [];
     public EmpfilteredList = [];
     public AttendanceStatusList = [];
-    public CompanyWorkingDays = new Company();
+    public CompanyWorkingDays = new EmployeeModel();
     public PublicHolidays: any[] = [];
     public EmployeeTimeList = new EmpTimeAttListModel();
     public MonthDays = [];
@@ -234,7 +235,7 @@ export class TimeAttendanceComponentForm implements OnInit {
             WEDays.push({ 'index': 4 });
         if (!this.CompanyWorkingDays.WDFriday)
             WEDays.push({ 'index': 5 });
-        if (!this.CompanyWorkingDays.WDSatuday)
+        if (!this.CompanyWorkingDays.WDSaturday)
             WEDays.push({ 'index': 6 });
 
         // Sunday = 0;

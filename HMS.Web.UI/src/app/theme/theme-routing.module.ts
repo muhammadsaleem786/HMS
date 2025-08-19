@@ -309,7 +309,7 @@ const SecureRoutes: Routes = [
             { path: 'Department', component: DepartmentComponentList, canActivate: [AuthGuard] },
             { path: 'Designation', component: designationComponentList, canActivate: [AuthGuard] },
             { path: 'Payroll', component: PayrollComponentList, canActivate: [AuthGuard] },
-
+            { path: 'zktlist', component: ZKTComponentList, canActivate: [AuthGuard] },
             { path: 'Allowance', component: AllowanceComponentList, canActivate: [AuthGuard] },
             { path: 'Deduction', component: DeductionContributionComponentList, canActivate: [AuthGuard] },
             { path: 'holiday', component: holidayComponentList, canActivate: [AuthGuard] },

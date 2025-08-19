@@ -169,29 +169,62 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             var objResponse = new ResponseInfo();
             try
             {
+                if (!DateTime.TryParse(FromDate, out var fromDateValue) ||
+            !DateTime.TryParse(ToDate, out var toDateValue))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "Invalid date format.";
+                    return objResponse;
+                }
+                int userId = Request.LoginID();
                 var CompanyID = Request.CompanyID();
-                int userid = Convert.ToInt32(Request.LoginID());
-                DataAccessManager dataAccessManager = new DataAccessManager();
+               
                 var ht = new Hashtable();
                 ht.Add("@CompanyId", CompanyID);
-                ht.Add("@FromeDate",Convert.ToDateTime(FromDate));
+                ht.Add("@FromDate", Convert.ToDateTime(FromDate));
                 ht.Add("@ToDate", Convert.ToDateTime(ToDate));
-                ht.Add("@UserId", userid);
-                
-                var result= dataAccessManager.GetDataSet("SP_Dashboard", ht);
-                var Deshboard = result.Tables[0];
-                var Appointment = result.Tables[1];
-                var BirthDay = result.Tables[2];
-                var FollowUp = result.Tables[3];
-                var IncomeAndExpense = result.Tables[4];
+                ht.Add("@UserId", userId);
+                DataAccessManager dataAccessManager = new DataAccessManager();
+                var result = dataAccessManager.GetDataSet("SP_Dashboard_new", ht);
+
+                var dashboard = result.Tables.Count > 0 ? result.Tables[0] : null;
+                var appointment = result.Tables.Count > 1 ? result.Tables[1] : null;
+                var birthday = result.Tables.Count > 2 ? result.Tables[2] : null;
+                var followUp = result.Tables.Count > 3 ? result.Tables[3] : null;
+                var incomeExpense = result.Tables.Count > 4 ? result.Tables[4] : null;
+
                 objResponse.ResultSet = new
                 {
-                    DeshboardData = Deshboard,
-                    Appointment = Appointment,
-                    BirthDay = BirthDay,
-                    FollowUp = FollowUp,
-                    IncomeAndExpense= IncomeAndExpense,
+                    DashboardData = dashboard,
+                    Appointment = appointment,
+                    BirthDay = birthday,
+                    FollowUp = followUp,
+                    IncomeAndExpense = incomeExpense
                 };
+
+                //var CompanyID = Request.CompanyID();
+                //int userid = Convert.ToInt32(Request.LoginID());
+                //DataAccessManager dataAccessManager = new DataAccessManager();
+                //var ht = new Hashtable();
+                //ht.Add("@CompanyId", CompanyID);
+                //ht.Add("@FromeDate",Convert.ToDateTime(FromDate));
+                //ht.Add("@ToDate", Convert.ToDateTime(ToDate));
+                //ht.Add("@UserId", userid);
+
+                //var result= dataAccessManager.GetDataSet("SP_Dashboard_new", ht);
+                //var Deshboard = result.Tables[0];
+                //var Appointment = result.Tables[1];
+                //var BirthDay = result.Tables[2];
+                //var FollowUp = result.Tables[3];
+                //var IncomeAndExpense = result.Tables[4];
+                //objResponse.ResultSet = new
+                //{
+                //    DeshboardData = Deshboard,
+                //    Appointment = Appointment,
+                //    BirthDay = BirthDay,
+                //    FollowUp = FollowUp,
+                //    IncomeAndExpense = IncomeAndExpense,
+                //};
                 objResponse.IsSuccess = true;
             }
             catch (Exception ex)
@@ -206,10 +239,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         [ActionName("Refresh")]
         public ResponseInfo Refresh()
         {
-            var objResponse = new ResponseInfo();           
+            var objResponse = new ResponseInfo();
             return objResponse;
         }
 
-        
+
     }
 }

@@ -158,155 +158,272 @@ export class DashboardForm {
         ToDate = this._CommonService.GetFormatDate(ToDate);
         this._DashboardService
             .DataLoad(fDate, ToDate).then(m => {
-                this.DeshboardData = [];
-                this.AppointmentData = [];
-                this.BirthDayData = [];
-                this.FollowUpData = [];
-                this.IncomeList = [];
-                this.ExpenseList = [];
-                this.MonthList = [];
-                this.BirthDayList = [];
-                if (m.ResultSet.DeshboardData.length > 0)
-                    this.DeshboardData = m.ResultSet.DeshboardData;
-                this.AppointmentData = m.ResultSet.Appointment;
-                this.BirthDayData = m.ResultSet.BirthDay;
-                this.BirthDayList = m.ResultSet.BirthDay;
-                this.BirthDayData.forEach((item, index) => {
-                    if (item.Image != null && item.Image != '')
-                        item.Image = GlobalVariable.BASE_Temp_File_URL + '' + item.Image;
+                const result = (m && m.ResultSet) ? m.ResultSet : {};
+                this.DeshboardData = (result && result.DashboardData) ? result.DashboardData : [];
+                this.AppointmentData = (result && result.Appointment) ? result.Appointment : [];
+                this.BirthDayData = (result && result.BirthDay) ? result.BirthDay : [];
+                this.BirthDayList = (result && result.BirthDay) ? result.BirthDay : [];
+                this.FollowUpData = (result && result.FollowUp) ? result.FollowUp : [];
+                this.BirthDayData = this.BirthDayData.map(function (item) {
+                    return {
+                        Id: item.Id,
+                        Name: item.Name,
+                        Image: item.Image ? GlobalVariable.BASE_Temp_File_URL + item.Image : item.Image
+                    };
                 });
-                this.FollowUpData = m.ResultSet.FollowUp;
-                m.ResultSet.IncomeAndExpense.forEach((item, index) => {
-                    this.IncomeList.push(item.Income);
-                    this.ExpenseList.push(item.ExAmount);
-                    this.MonthList.push(item.MONTH_NAME);
-                });
-                this.Male = this.DeshboardData[0].Male;
-                this.Female = this.DeshboardData[0].Female;
-                this.other = this.DeshboardData[0].Other;
-                this.Child = this.DeshboardData[0].Child;
+
+                this.IncomeList = (result.IncomeAndExpense && result.IncomeAndExpense.map(function (x) { return x.Income; })) || [];
+                this.ExpenseList = (result.IncomeAndExpense && result.IncomeAndExpense.map(function (x) { return x.ExAmount; })) || [];
+                this.MonthList = (result.IncomeAndExpense && result.IncomeAndExpense.map(function (x) { return x.MONTH_NAME; })) || [];
+
+                // Safe access dashboard counts
+                var dashboard = (this.DeshboardData && this.DeshboardData.length > 0) ? this.DeshboardData[0] : {};
+
+                this.Male = (dashboard.Male != null) ? dashboard.Male : 0;
+                this.Female = (dashboard.Female != null) ? dashboard.Female : 0;
+                this.other = (dashboard.Other != null) ? dashboard.Other : 0;
+                this.Child = (dashboard.Child != null) ? dashboard.Child : 0;
+
+                //this.DeshboardData = [];
+                //this.AppointmentData = [];
+                //this.BirthDayData = [];
+                //this.FollowUpData = [];
+                //this.IncomeList = [];
+                //this.ExpenseList = [];
+                //this.MonthList = [];
+                //this.BirthDayList = [];
+                //if (m.ResultSet.DeshboardData.length > 0)
+                //    this.DeshboardData = m.ResultSet.DeshboardData;
+                //this.AppointmentData = m.ResultSet.Appointment;
+                //this.BirthDayData = m.ResultSet.BirthDay;
+                //this.BirthDayList = m.ResultSet.BirthDay;
+                //this.BirthDayData.forEach((item, index) => {
+                //    if (item.Image != null && item.Image != '')
+                //        item.Image = GlobalVariable.BASE_Temp_File_URL + '' + item.Image;
+                //});
+               // this.FollowUpData = m.ResultSet.FollowUp;
+                //m.ResultSet.IncomeAndExpense.forEach((item, index) => {
+                //    this.IncomeList.push(item.Income);
+                //    this.ExpenseList.push(item.ExAmount);
+                //    this.MonthList.push(item.MONTH_NAME);
+                //});
+                //this.Male = this.DeshboardData[0].Male;
+                //this.Female = this.DeshboardData[0].Female;
+                //this.other = this.DeshboardData[0].Other;
+                //this.Child = this.DeshboardData[0].Child;
                 this.loadPiChart();
                 this.LoadIncomeChart();
                 this.loader.HideLoader();
             });
     }
     loadPiChart() {
+        const chartData = [
+            { value: this.Male || 0, name: 'Male' },
+            { value: this.Female || 0, name: 'Female' },
+            { value: this.Child || 0, name: 'Child' },
+            { value: this.other || 0, name: 'Others' }
+        ];
+
         this.options = {
-            tooltip: {
-                trigger: 'item'
-            },
+            tooltip: { trigger: 'item' },
             legend: {
                 top: '5%',
                 left: 'center'
             },
-            series: [
-                {
-                    name: 'Access From',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    avoidLabelOverlap: false,
-                    itemStyle: {
-                        borderRadius: 10,
-                        borderColor: '#fff',
-                        borderWidth: 2
-                    },
+            series: [{
+                name: 'Population',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
                     label: {
-                        show: false,
-                        position: 'center'
-                    },
-                    emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: '20',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    labelLine: {
-                        show: false
-                    },
-                    data: [
-                        { value: this.Male, name: 'Male' },
-                        { value: this.Female, name: 'Female' },
-                        { value: this.Child, name: 'Child' },
-                        { value: this.other, name: 'Others' }
-                    ]
-                }
-            ]
+                        show: true,
+                        fontSize: 20,
+                        fontWeight: 'bold'
+                    }
+                },
+                labelLine: { show: false },
+                data: chartData
+            }]
         };
     }
     LoadIncomeChart() {
-        const colors = ['#5470C6', '#EE6666'];
+        var monthList = this.MonthList || [];
+        var incomeList = this.IncomeList || [];
+        var expenseList = this.ExpenseList || [];
+
+        var commonBarStyle = {
+            barWidth: '10',
+            itemStyle: {
+                barBorderRadius: 5,
+                shadowColor: '#efefef',
+                shadowBlur: 3
+            }
+        };
+
         this.incomeANDexpense = {
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
                     type: 'cross',
-                    crossStyle: {
-                        color: '#999'
-                    }
+                    crossStyle: { color: '#999' }
                 }
             },
-
             legend: {
-
                 data: ['Income', 'Expense']
             },
-            color: ['#0d3b5a', '#83d0cf', '#c1932d', '#6ac395', '#ddd'],
-            xAxis: [
-                {
-                    type: 'category',
-                    data: this.MonthList,// ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', ],
-                    axisPointer: {
-                        type: 'shadow'
-                    }
-                }
-            ],
-            yAxis: [
-                {
-                    type: 'value',
-                    //  name: 'Revenue (EUR Million)',
-                    nameLocation: 'middle',
-                    nameTextStyle: {
-                        padding: [0, 0, 20]
-
-                    },
-
-                }
-
-            ],
+            color: ['#0d3b5a', '#83d0cf'], // trimmed to only 2 colors
+            xAxis: [{
+                type: 'category',
+                data: monthList,
+                axisPointer: { type: 'shadow' }
+            }],
+            yAxis: [{
+                type: 'value',
+                nameLocation: 'middle',
+                nameTextStyle: { padding: [0, 0, 20] }
+            }],
             series: [
-                {
+                Object.assign({
                     name: 'Income',
                     type: 'bar',
-                    barWidth: '10',
-                    label: {
-                        //    show: true
-                    },
-                    data: this.IncomeList, // [3140.4969, 3295.398, 3425.6202, 3584.3879, 3718.5932, 3322.4434],
-                    itemStyle: {
-                        barBorderRadius: 5,
-                        shadowColor: '#efefef',
-                        shadowBlur: 3
-                    }
-
-                },
-                {
+                    data: incomeList
+                }, commonBarStyle),
+                Object.assign({
                     name: 'Expense',
                     type: 'bar',
-                    barWidth: '10',
-                    label: {
-                        //    show: true
-                    },
-                    data: this.ExpenseList,//[3115.408, 3189.078, 3277.8823, 3406.3439, 3528.0631, 3163.6963],
-                    itemStyle: {
-                        barBorderRadius: 5,
-                        shadowColor: '#efefef',
-                        shadowBlur: 3
-                    }
-                },
+                    data: expenseList
+                }, commonBarStyle)
             ]
         };
     }
+
+    //loadPiChart() {
+    //    this.options = {
+    //        tooltip: {
+    //            trigger: 'item'
+    //        },
+    //        legend: {
+    //            top: '5%',
+    //            left: 'center'
+    //        },
+    //        series: [
+    //            {
+    //                name: 'Access From',
+    //                type: 'pie',
+    //                radius: ['40%', '70%'],
+    //                avoidLabelOverlap: false,
+    //                itemStyle: {
+    //                    borderRadius: 10,
+    //                    borderColor: '#fff',
+    //                    borderWidth: 2
+    //                },
+    //                label: {
+    //                    show: false,
+    //                    position: 'center'
+    //                },
+    //                emphasis: {
+    //                    label: {
+    //                        show: true,
+    //                        fontSize: '20',
+    //                        fontWeight: 'bold'
+    //                    }
+    //                },
+    //                labelLine: {
+    //                    show: false
+    //                },
+    //                data: [
+    //                    { value: this.Male, name: 'Male' },
+    //                    { value: this.Female, name: 'Female' },
+    //                    { value: this.Child, name: 'Child' },
+    //                    { value: this.other, name: 'Others' }
+    //                ]
+    //            }
+    //        ]
+    //    };
+    //}
+    //LoadIncomeChart() {
+    //    const colors = ['#5470C6', '#EE6666'];
+    //    this.incomeANDexpense = {
+    //        tooltip: {
+    //            trigger: 'axis',
+    //            axisPointer: {
+    //                type: 'cross',
+    //                crossStyle: {
+    //                    color: '#999'
+    //                }
+    //            }
+    //        },
+
+    //        legend: {
+
+    //            data: ['Income', 'Expense']
+    //        },
+    //        color: ['#0d3b5a', '#83d0cf', '#c1932d', '#6ac395', '#ddd'],
+    //        xAxis: [
+    //            {
+    //                type: 'category',
+    //                data: this.MonthList,// ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', ],
+    //                axisPointer: {
+    //                    type: 'shadow'
+    //                }
+    //            }
+    //        ],
+    //        yAxis: [
+    //            {
+    //                type: 'value',
+    //                //  name: 'Revenue (EUR Million)',
+    //                nameLocation: 'middle',
+    //                nameTextStyle: {
+    //                    padding: [0, 0, 20]
+
+    //                },
+
+    //            }
+
+    //        ],
+    //        series: [
+    //            {
+    //                name: 'Income',
+    //                type: 'bar',
+    //                barWidth: '10',
+    //                label: {
+    //                    //    show: true
+    //                },
+    //                data: this.IncomeList, // [3140.4969, 3295.398, 3425.6202, 3584.3879, 3718.5932, 3322.4434],
+    //                itemStyle: {
+    //                    barBorderRadius: 5,
+    //                    shadowColor: '#efefef',
+    //                    shadowBlur: 3
+    //                }
+
+    //            },
+    //            {
+    //                name: 'Expense',
+    //                type: 'bar',
+    //                barWidth: '10',
+    //                label: {
+    //                    //    show: true
+    //                },
+    //                data: this.ExpenseList,//[3115.408, 3189.078, 3277.8823, 3406.3439, 3528.0631, 3163.6963],
+    //                itemStyle: {
+    //                    barBorderRadius: 5,
+    //                    shadowColor: '#efefef',
+    //                    shadowBlur: 3
+    //                }
+    //            },
+    //        ]
+    //    };
+    //}
     onChange(Val: any) {
         var date = new Date();
         if (Val == "0") {

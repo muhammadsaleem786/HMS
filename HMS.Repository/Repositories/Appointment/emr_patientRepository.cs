@@ -177,7 +177,7 @@ namespace HMS.Repository.Repositories.Appointment
                     lvm.WDSaturday = Convert.ToBoolean(item["WDSaturday"]);
                     lvm.WDSunday = Convert.ToBoolean(item["WDSunday"]);
                     lvm.IsShowDoctor = item["IsShowDoctor"].ToString();
-                    lvm.IsDoctor = Convert.ToBoolean(item["IsDoctor"].ToString());
+                    lvm.IsDoctor = Convert.ToBoolean(item["IsDoctor"]);
                     lvm.Qualification = item["Qualification"].ToString();
                     lvm.Designation = item["Designation"].ToString();
                     lvm.PhoneNo = item["PhoneNo"].ToString();

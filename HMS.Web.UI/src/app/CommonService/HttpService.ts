@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { EncryptionService } from './encryption.service';
 import { CommonToastrService } from '../CommonService/CommonToastrService';
 import { ToastrService } from 'ngx-toastr';
+
 @Injectable()
 export class HttpService {
     constructor(private http: Http, private router: Router, public toastr: CommonToastrService, private encrypt: EncryptionService) {
@@ -18,6 +19,7 @@ export class HttpService {
             .then(response => response.json())
             .catch(error => this.handleError(error));
     }
+   
     public Post(url: string, data: any): Promise<any> {
         let headers = this.CreateAuthorizationHeader();
         return this.http

@@ -1,28 +1,25 @@
-﻿<div class="margin-t-68 removeAction">
-    <div class="row headSection paginationHead">
+﻿ <div class="row m-0">
         <div class="col-sm-8">
-            <div class="backBtn">
-                <a routerLink="/home/Item"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
-            </div>
-            <div class="row">
-                <div class="col max-content">
-                    <h3 class="page-heading mt-d-inline-block">
-                        Restock
-                    </h3>
-                </div>
-
-            </div>
-            <div class="col">
-                <div class="form-group">
+        <h2 class="grid-heading margin-t-15 mb-2"> Restock</h2>
+         <div class="form-group d-flex" style="width: 433px; padding-left: 92px; gap: 12px;">
+            <label>Type</label>
                     <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
                         <option *ngFor="let item of CategoryList" [value]="item.ID">
                             {{item.Value}}
                         </option>
                     </select>
-                </div>
-            </div>
         </div>
+
     </div>
+    <div class="col-sm-4 text-right flex-row flex-end">
+
+        <a class="btn btn-light mr-1 mt-2" routerLink="/home/setup">Back</a>
+     
+    </div>
+    </div>
+
+<div class="margin-t-68 removeAction">
+   
     <div class="Cardview search_onTop px-3 pt-0">
         <div class="TableView">
             <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="ItemList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>

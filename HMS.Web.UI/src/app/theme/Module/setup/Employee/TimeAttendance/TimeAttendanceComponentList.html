@@ -53,16 +53,17 @@
         </div>
       </div>
        <div class="col-md-3"></div>
+       
       <div class="col-md-2 text-right">
-        <label class="invisible">Attendance</label>
-        <button class="btn btn-primary btn-block" (click)="AddAttendance('0')">
-          New Attendance
+        <label class="invisible">Holiday</label>
+        <button class="btn btn-danger btn-block" routerLink="/home/holiday">
+         <i class="icon-calendar-31 iconImage"></i> Add Holiday
         </button>
       </div>
       <div class="col-md-2 text-right">
-        <label class="invisible">Holiday</label>
-        <button class="btn btn-secondary btn-block" routerLink="/home/holiday">
-          New Holiday
+        <label class="invisible">Attendance</label>
+        <button class="btn btn-primary btn-block" (click)="AddAttendance('0')">
+         <i class="icon-calendar-insert iconImage"></i>  Add Attendance
         </button>
       </div>
     </div>

@@ -56,6 +56,7 @@ export class AdmitAppointSummeryComponentList implements OnInit {
     public Step: number = 30;
     public AppointmentModel = new emr_Appointment();
     public DoctorList: any[] = [];
+    public ReminderList: any[] = [];
     public StatusList: any[] = []; public CompanyObj: any;
     public DoctorClanderList: any[] = []; public AppointmentList: any[] = [];
     @ViewChild("longContent") ModelContent: TemplateRef<any>;
@@ -70,6 +71,7 @@ export class AdmitAppointSummeryComponentList implements OnInit {
                 this.StatusList = m.ResultSet.AllStatusList;
                 this.ServiceType = m.ResultSet.ServiceType;
                 this.TokenNo = m.ResultSet.TokenNo;
+                this.ReminderList = m.ResultSet.ReminderList;
                 if (this.Rights.indexOf(12) > -1) {
                     if (m.ResultSet.ServiceType != null) {
                         this.AppointmentModel.ServiceId = this.ServiceType.ID;
@@ -78,6 +80,8 @@ export class AdmitAppointSummeryComponentList implements OnInit {
                         this.AppointmentModel.TokenNo = this.TokenNo;
                         this.AppointmentModel.AppointmentDate = new Date();
                         this.AppointmentModel.BillDate = new Date();
+                        if (this.ReminderList.length > 0)
+                            this.AppointmentModel.ReminderId = this.ReminderList[0].ID;
                         this.CalAmount();
                     }
                 }
@@ -113,6 +117,7 @@ export class AdmitAppointSummeryComponentList implements OnInit {
             AppointmentDate: ['', [Validators.required]],
             AppointmentTime: [''],
             StatusId: [''],
+            ReminderId: [''],
             //bill field
             AppointmentId: [''],
             ServiceId: [''],
@@ -161,6 +166,14 @@ export class AdmitAppointSummeryComponentList implements OnInit {
             this.toastr.Error("Error", "Please select appointment date.");
             return;
         }
+        if (this.AppointmentModel.AppointmentTime == undefined || this.AppointmentModel.AppointmentTime == null) {
+            this.toastr.Error("Error", "Please select time.");
+            return;
+        }
+        if (this.AppointmentModel.ServiceId == undefined || this.AppointmentModel.ServiceId == null) {
+            this.toastr.Error("Error", "Please select service.");
+            return;
+        }
         if (this.Rights.indexOf(12) > -1) {
             if (this.AppointmentModel.ServiceId == undefined || this.AppointmentModel.ServiceId == null) {
                 this.toastr.Error("Error", "Please select service.");
@@ -200,6 +213,68 @@ export class AdmitAppointSummeryComponentList implements OnInit {
                 this.loader.HideLoader();
             }
         });
+    }
+    handlePrint(val: any) {
+        let selectedDate = new Date(this.AppointmentModel.AppointmentDate);
+        let currentDate = new Date();
+        selectedDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(0, 0, 0, 0);
+        if (this.AppointmentModel.Discount > this.AppointmentModel.Price) {
+            this.toastr.Error("discount not greater price amount.");
+            return;
+        }
+        this.submitted = true;
+        if (this.AppointmentModel.PatientId == undefined || this.AppointmentModel.PatientId == null) {
+            this.toastr.Error("Error", "Please select patient.");
+            return;
+        }
+        if (this.AppointmentModel.AppointmentDate == undefined || this.AppointmentModel.AppointmentDate == null) {
+            this.toastr.Error("Error", "Please select appointment date.");
+            return;
+        }
+        if (this.AppointmentModel.AppointmentTime == undefined || this.AppointmentModel.AppointmentTime == null) {
+            this.toastr.Error("Error", "Please select time.");
+            return;
+        }
+        if (this.AppointmentModel.ServiceId == undefined || this.AppointmentModel.ServiceId == null) {
+            this.toastr.Error("Error", "Please select service.");
+            return;
+        }
+        if (this.AppointmentModel.BillDate == undefined || this.AppointmentModel.BillDate == null) {
+            this.toastr.Error("Error", "Please select bill date.");
+            return;
+        }
+        if (this.AppointmentModel.Price == undefined || this.AppointmentModel.Price == null) {
+            this.toastr.Error("Error", "Please select price.");
+            return;
+        }
+        if (val == "P") {
+            this.AppointmentModel.IsExistFollowUp = false;
+            this.PrintContent();
+            this.AppointmentSaveOrUpdate(true);
+        } else {
+            this.AppointmentModel.IsExistFollowUp = false;
+            this.AppointmentSaveOrUpdate(true);
+        }
+    }
+    PrintContent() {
+        const printSection = document.getElementById('print-section');
+        const printContents = printSection ? printSection.innerHTML : '';
+        if (printContents) {
+            const popupWin = window.open('', '_blank', 'width=800,height=600');
+            if (popupWin) {
+                popupWin.document.open();
+                popupWin.document.write(`
+  <html>
+    <head>
+      <title>Print</title>
+    </head>
+    <body onload="window.print();window.close()">${printContents}</body>
+  </html>
+`);
+                popupWin.document.close();
+            }
+        }
     }
     Convert12TO24(time12h: any) {
         const [time, modifier] = time12h.split(' ');
@@ -403,7 +478,7 @@ export class AdmitAppointSummeryComponentList implements OnInit {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.PreviousAppList = m.DataList;
                 this.FutureAppList = m.OtherDataModel;
-              
+
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
                 this.loader.HideLoader();
             });

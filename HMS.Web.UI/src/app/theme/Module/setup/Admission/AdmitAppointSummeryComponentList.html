@@ -192,9 +192,8 @@
                                         <div class="col-8">
                                             <div class="input-group mb-3">
 
-                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (click)="LoadPatient()" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" placeholder="Search by mobile or cnic" autocomplete="off">
-                                             
-                                            </div>
+                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (click)="LoadPatient()" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" placeholder="Search by mobile no" autocomplete="off">
+                      </div>
 
                                             <small class="text-danger" *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
                                                 This value is required.
@@ -222,7 +221,7 @@
                                             <label class="form-control-label mt-2 pl-0" for="input-username"> Mobile</label>
                                         </div>
                                         <div class="col-8">
-                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile"appPhoneMask placeholder="Mobile" autocomplete="off" disabled="disabled">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile" appPhoneMask placeholder="Mobile" autocomplete="off" disabled="disabled">
                                             <small class="text-danger" *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
@@ -302,10 +301,27 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Reminder</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" formControlName="ReminderId" [(ngModel)]="AppointmentModel.ReminderId">
+                                                <option *ngFor="let item of ReminderList" [value]="item.ID">
+                                                    {{item.Value}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </form>
+                    <div class="row">
+                        <div class="col text-right">
+                            <button class="btn btn-primary" (click)="t.select('tab-selectbyid2')">Next</button>
+                        </div>
+                    </div>
                 </ng-template>
             </ngb-tab>
             <ngb-tab id="tab-selectbyid2">
@@ -331,7 +347,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-4 text-right">
-                                        <label class="form-control-label mt-2 pl-0 required"  for="input-username"> Bill Date*</label>
+                                        <label class="form-control-label mt-2 pl-0 required" for="input-username"> Bill Date*</label>
                                     </div>
                                     <div class="col-8">
                                         <div class="form-group">
@@ -423,8 +439,12 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-light" useExistingCss="true" printSectionId="print-section" ngxPrint><i class="icon icon-printer"></i> Print Coupn</button>
-                            <button type="submit" class="btn btn-primary"*ngIf="ControlRights.CreateRights" >Save</button>
+                            <button class="btn btn-light"
+                                    type="button"
+                                    (click)="handlePrint('P')">
+                                <i class="icon icon-printer"></i> Print Coupon
+                            </button>
+                            <button type="button" (click)="handlePrint('S')" class="btn btn-primary"*ngIf="ControlRights.CreateRights">Save</button>
                         </div>
                     </form>
                 </ng-template>
@@ -447,8 +467,8 @@
                                         </div>
                                         <div class="col-8">
                                             <div class="input-group mb-3">
+                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" (click)="LoadPatient()" placeholder="Search by mobile no" autocomplete="off">
 
-                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" (click)="LoadPatient()" placeholder="Search by mobile or cnic" autocomplete="off">
                                                 <!--<div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient(content)">
                                                     <span class="svgIcon">
                                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
@@ -557,6 +577,18 @@
                                         <div class="col-8">
                                             <select class="form-control form-control-sm form-control-alternative" formControlName="StatusId" [(ngModel)]="AppointmentModel.StatusId">
                                                 <option *ngFor="let item of StatusList" [value]="item.ID">
+                                                    {{item.Value}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-4 text-right">
+                                            <label class="form-control-label mt-2" for="input-username"> Reminder</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-control form-control-sm form-control-alternative" formControlName="ReminderId" [(ngModel)]="AppointmentModel.ReminderId">
+                                                <option *ngFor="let item of ReminderList" [value]="item.ID">
                                                     {{item.Value}}
                                                 </option>
                                             </select>

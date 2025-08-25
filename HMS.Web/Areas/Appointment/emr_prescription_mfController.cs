@@ -8,6 +8,7 @@ using HMS.Service.Services.Items;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
+using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Repository.Pattern.Infrastructure;
@@ -15,6 +16,7 @@ using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -58,17 +60,21 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iemr_service_mfService _emr_service_mfService;
         private readonly Iadm_companyService _adm_companyService;
         private readonly Iadm_itemService _adm_itemService;
+        private readonly Iemr_notes_favoriteService _emr_notes_favoriteService;
+        private readonly Iadm_reminder_mfService _adm_reminder_mf;
+
 
         public emr_prescription_mfController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_service_mfService emr_service_mfService, Iemr_vitalService emr_vitalService, Iemr_patientService emr_patientService, Iemr_prescription_mfService service, Iemr_medicineService emr_medicineService,
             Iemr_prescription_complaintService emr_prescription_complaintService, Iemr_prescription_diagnosService emr_prescription_diagnosService,
             Iemr_prescription_investigationService emr_prescription_investigationService,
             Iemr_prescription_observationService emr_prescription_observationService,
-            Iemr_complaintService emr_complaintService,
+            Iemr_complaintService emr_complaintService, Iadm_reminder_mfService adm_reminder_mf,
             Iemr_diagnosService emr_diagnosService,
             Iemr_investigationService emr_investigationService,
             Iemr_observationService emr_observationService,
             Iemr_instructionService emr_instructionService,
             Iadm_companyService adm_companyService,
+            Iemr_notes_favoriteService emr_notes_favoriteService,
                       Iemr_prescription_treatmentService emr_prescription_treatmentService, Iemr_prescription_treatment_templateService emr_prescription_treatment_templateService,
             Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
@@ -81,6 +87,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _emr_vitalService = emr_vitalService;
             _procedureService = procedureService;
             _adm_companyService = adm_companyService;
+            _adm_reminder_mf = adm_reminder_mf;
             _emr_prescription_complaintService = emr_prescription_complaintService;
             _emr_prescription_diagnosService = emr_prescription_diagnosService;
             _emr_prescription_investigationService = emr_prescription_investigationService;
@@ -101,6 +108,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _emr_observationService = emr_observationService;
             _emr_instructionService = emr_instructionService;
             _adm_itemService = adm_itemService;
+            _emr_notes_favoriteService = emr_notes_favoriteService;
         }
         [HttpPost]
         [HttpGet]
@@ -865,51 +873,226 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             return _service.Query(e => e.ID.ToString() == key).Select().Any();
         }
         [HttpGet]
-        [ActionName("GetById")]
-        public ResponseInfo GetById(string Id)
+        [ActionName("GetByPrescriptionId")]
+        public async Task<ResponseInfo> GetByPrescriptionId(string Id)
         {
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
-                var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == CompanyID).FirstOrDefault();
-                decimal Doctorid = Convert.ToDecimal(result.DoctorId);
-                decimal patientid = Convert.ToDecimal(result.PatientId);
+                decimal companyId = Request.CompanyID();
+                var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == companyId).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).FirstOrDefault();
+                decimal doctorId = Convert.ToDecimal(result.DoctorId);
+                decimal patientId = Convert.ToDecimal(result.PatientId);
+                decimal prescriptionId = Convert.ToDecimal(result.ID);
                 int userid = Convert.ToInt32(Request.LoginID());
                 DateTime date = Convert.ToDateTime(DateTime.Now);
 
-                DataAccessManager dataAccessManager = new DataAccessManager();
+                var patientInfo = await _emr_patientService.Queryable()
+    .Where(p => p.ID == patientId && p.CompanyId == companyId)
+    .FirstOrDefaultAsync();
+
+                var reslt = await _emr_appointment_mfService.Queryable()
+     .Where(a => a.PatientId == patientId
+              && a.CompanyId == companyId
+              && a.DoctorId == doctorId)
+     .GroupBy(a => new { a.PatientId, Date = DbFunctions.TruncateTime(a.AppointmentDate) }) // group by patient + date only
+     .Select(g => new
+     {
+         g.Key.PatientId,
+         AppointmentDate = g.Key.Date
+     })
+     .OrderByDescending(x => x.AppointmentDate)
+     .ToListAsync();
+
+                // if you really need string format "yyyy-MM-dd"
+                var appointmentDates = reslt.Select(a => new
+                {
+                    a.PatientId,
+                    AppointmentDate = a.AppointmentDate.Value.ToString("yyyy-MM-dd")
+                }).ToList();
+
+
+                var complaints = await _emr_complaintService.Queryable().Take(10).ToListAsync();
+                var prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
+    .Where(pc => pc.PrescriptionId == prescriptionId && pc.CompanyID == companyId)
+    .ToListAsync();
+
+                var favorites = await _emr_notes_favoriteService.Queryable()
+                    .Where(ft => ft.ReferenceType == "C"
+                              && ft.DoctorId == doctorId
+                              && ft.CompanyId == companyId)
+                    .ToListAsync();
+                var complaintList = complaints
+    .Select(cmp =>
+    {
+        var pc = prescriptionComplaints.FirstOrDefault(x => x.ComplaintId == cmp.ID);
+        var fav = favorites.FirstOrDefault(x => x.ReferenceId == cmp.ID);
+
+        return new
+        {
+            Id = cmp.ID,
+            Complaint = pc?.Complaint ?? cmp.Complaint,
+            FavoriteId = fav?.ID,
+            IsFavorite = fav != null ? 1 : 0
+        };
+    })
+    .Distinct()
+    .Take(10)
+    .ToList();
+
+
+                var observations = await _emr_observationService.Queryable()
+     .Take(10)
+     .ToListAsync();
+
+                var prescriptionObservations = await _emr_prescription_observationService.Queryable()
+    .Where(po => po.CompanyID == companyId && po.PrescriptionId == prescriptionId)
+    .ToListAsync();
+
+                var favoritesObser = await _emr_notes_favoriteService.Queryable()
+    .Where(ft => ft.ReferenceType == "O"
+              && ft.DoctorId == doctorId
+              && ft.CompanyId == companyId)
+    .ToListAsync();
+
+
+                var observationList = observations
+    .Select(ob =>
+    {
+        var po = prescriptionObservations.FirstOrDefault(x => x.ObservationId == ob.ID);
+        var fav = favoritesObser.FirstOrDefault(x => x.ReferenceId == ob.ID);
+
+        return new
+        {
+            Id = ob.ID,
+            Observation = po?.Observation ?? ob.Observation,
+            FavoriteId = fav?.ID,
+            IsFavorite = fav != null ? 1 : 0
+        };
+    })
+    .Distinct()
+    .Take(10)
+    .ToList();
+                // 1. Base investigations
+                var investigations = await _emr_investigationService.Queryable()
+                    .Take(10)
+                    .ToListAsync();
+                // 2. Prescription investigations
+                var prescriptionInvestigations = await _emr_prescription_investigationService.Queryable()
+                    .Where(pi => pi.CompanyID == companyId && pi.PrescriptionId == prescriptionId)
+                    .ToListAsync();
+                // 3. Favorites
+                var investigationFavorites = await _emr_notes_favoriteService.Queryable()
+                    .Where(ft => ft.ReferenceType == "I"
+                              && ft.DoctorId == doctorId
+                              && ft.CompanyId == companyId)
+                    .ToListAsync();
+                // 4. Merge
+                var investigationList = investigations
+                    .Select(inv =>
+                    {
+                        var pi = prescriptionInvestigations.FirstOrDefault(x => x.InvestigationId == inv.ID);
+                        var fav = investigationFavorites.FirstOrDefault(x => x.ReferenceId == inv.ID);
+                        return new
+                        {
+                            Id = inv.ID,
+                            Investigation = pi?.Investigation ?? inv.Investigation,
+                            FavoriteId = fav?.ID,
+                            IsFavorite = fav != null ? 1 : 0
+                        };
+                    })
+                    .Distinct()
+                    .Take(10)
+                    .ToList();
+                // 1. Base diagnoses
+                var diagnoses = await _emr_diagnosService.Queryable()
+                    .Take(10)
+                    .ToListAsync();
+                // 2. Prescription diagnoses
+                var prescriptionDiagnoses = await _emr_prescription_diagnosService.Queryable()
+                    .Where(pd => pd.CompanyID == companyId && pd.PrescriptionId == prescriptionId)
+                    .ToListAsync();
+                // 3. Favorites
+                var diagnosisFavorites = await _emr_notes_favoriteService.Queryable()
+                    .Where(ft => ft.ReferenceType == "D"
+                              && ft.DoctorId == doctorId
+                              && ft.CompanyId == companyId)
+                    .ToListAsync();
+                // 4. Merge
+                var diagnosisList = diagnoses
+                    .Select(dia =>
+                    {
+                        var pd = prescriptionDiagnoses.FirstOrDefault(x => x.DiagnosId == dia.ID);
+                        var fav = diagnosisFavorites.FirstOrDefault(x => x.ReferenceId == dia.ID);
+                        return new
+                        {
+                            Id = dia.ID,
+                            Diagnos = pd?.Diagnos ?? dia.Diagnos,
+                            FavoriteId = fav?.ID,
+                            IsFavorite = fav != null ? 1 : 0
+                        };
+                    })
+                    .Distinct()
+                    .Take(10)
+                    .ToList();
+
+                var dropDownIds = new[] { 14, 15, 16, 2, 17 };
+                var allDropDownValues = await _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToListAsync();
+                var unitList = allDropDownValues
+      .Where(x => x.DropDownID == 14).ToList();
+                var medicineTypeList = allDropDownValues
+    .Where(x => x.DropDownID == 15).ToList();
+                var doseList = allDropDownValues
+    .Where(x => x.DropDownID == 16).ToList();
+                var medicineList = await _emr_medicineService.Queryable()
+    .Where(m => m.CompanyID == companyId)
+    .Select(m => new
+    {
+        m.ID,
+        m.Medicine
+    })
+    .ToListAsync();
+                var genderList = allDropDownValues
+    .Where(x => x.DropDownID == 2).ToList();
+                var bloodList = allDropDownValues
+    .Where(x => x.DropDownID == 17).ToList();
+                var isShowDoctorIds = await _adm_userService.Queryable()
+    .Where(u => u.ID == userid)
+    .Select(u => u.IsShowDoctor)
+    .FirstOrDefaultAsync();
                 var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@PatientId", patientid);
-                ht.Add("@Doctorid", Doctorid);
-                ht.Add("@Date", date);
+                ht.Add("@CompanyId", companyId);
                 ht.Add("@UserId", userid);
+                DataAccessManager dataAccessManager = new DataAccessManager();
+                var doctorList = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
 
-                var AllData = dataAccessManager.GetDataSet("SP_GetPrescriptionByPatientIdAndDoctorId", ht);
-                var PatientInfo = AllData.Tables[0];
-                var UnitList = AllData.Tables[15];
-                var MadicineTypeList = AllData.Tables[16];
-                var DoesList = AllData.Tables[17];
-
-                var MedicineList = AllData.Tables[14];
-                var CurntPrevDateList = AllData.Tables[1];
-
-
-                var ComplaintList = AllData.Tables[2];
-                var ObservationList = AllData.Tables[3];
-                var InvestigationsList = AllData.Tables[4];
-
-                var DiagnosisList = AllData.Tables[5];
+                var PatientInfo = patientInfo;
+                var UnitList = unitList;
+                var MadicineTypeList = medicineTypeList;
+                var DoesList = doseList;
+                var MedicineList = medicineList;
+                var CurntPrevDateList = appointmentDates;
+                var ComplaintList = complaintList;
+                var ObservationList = observationList;
+                var InvestigationsList = investigationList;
+                var DiagnosisList = diagnosisList;
                 var ClinicList = _adm_user_companyService.Queryable()
                             .Where(e => e.UserID == userid).Include(x => x.adm_company).Select(x => new { x.CompanyID, x.adm_company.CompanyName }).ToList();
-                var BloodList = AllData.Tables[19];
-                var GenderType = AllData.Tables[18];
-                var DoctorList = AllData.Tables[20];
-                var DoctorCalander = AllData.Tables[22];
+                var BloodList = bloodList;
+                var GenderType = genderList;
+                var DoctorList = doctorList.Tables[0];
+                var DoctorCalander = doctorList.Tables[0];
                 decimal[] IdList = null;
-                var isShowIds = AllData.Tables[21].Rows[0]["IsShowDoctorIds"].ToString();
-                if (isShowIds != "")
+                var isShowIds = isShowDoctorIds;
+                if (!string.IsNullOrWhiteSpace(isShowIds))
                     IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
 
                 objResponse.ResultSet = new
@@ -1080,6 +1263,91 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             return objResult;
         }
         [HttpGet]
+        [ActionName("GetPrescription")]
+        public async Task<PaginationResult> GetPrescription(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, bool IgnorePaging = false)
+        {
+            var objResult = new PaginationResult();
+            try
+            {
+                decimal companyId = Request.CompanyID();
+                string TotalRecord = "0";
+                if (SearchText == null)
+                    SearchText = "";
+
+                var query = _service.Queryable()
+        .Where(mf => mf.CompanyID == companyId)
+        .Select(mf => new
+        {
+            mf.ID,
+            mf.AppointmentDate,
+            PatientName = mf.emr_patient_mf.PatientName,   // via navigation property
+            PaidAmount = mf.emr_patient_mf.emr_patient_bill
+                .Where(b => b.CompanyId == companyId
+                            && b.DoctorId == mf.DoctorId
+                            && DbFunctions.TruncateTime(b.CreatedDate) == DbFunctions.TruncateTime(mf.CreatedDate))
+                .Sum(b => (decimal?)b.PaidAmount) ?? 0,
+            OutstandingBalance = mf.emr_patient_mf.emr_patient_bill
+                .Where(b => b.CompanyId == companyId
+                            && b.DoctorId == mf.DoctorId
+                            && DbFunctions.TruncateTime(b.CreatedDate) == DbFunctions.TruncateTime(mf.CreatedDate))
+                .Sum(b => (decimal?)b.OutstandingBalance) ?? 0,
+            MedicineIds = mf.emr_prescription_treatment
+                        .Where(t => t.CompanyID == companyId && t.PrescriptionId == mf.ID)
+                        .Select(t => t.MedicineId)
+                        .Distinct()
+                        .ToList()
+        });
+                if (!string.IsNullOrEmpty(SearchText))
+                {
+                    query = query.Where(x => x.PatientName.Contains(SearchText));
+                }
+                var totalRecords = await query.CountAsync();
+                var paged = await query
+    .OrderByDescending(x => x.ID)
+    .Skip((CurrentPageNo - 1) * RecordPerPage)
+    .Take(RecordPerPage)
+    .ToListAsync();
+                var result = paged.Select(r => new
+                {
+                    r.ID,
+                    r.AppointmentDate,
+                    r.PatientName,
+                    r.PaidAmount,
+                    r.OutstandingBalance,
+                    MedicineName = string.Join(", ",
+        _emr_medicineService.Queryable()
+            .Where(m => r.MedicineIds.Contains(m.ID))
+            .Select(m => m.Medicine)
+            .ToList()),
+                    TotalRecord = totalRecords
+                }).ToList();
+
+                //string TotalRecord = "0";
+                //if (SearchText == null)
+                //    SearchText = "";
+                //DataAccessManager dataAccessManager = new DataAccessManager();
+                //var ht = new Hashtable();
+                //ht.Add("@CompanyID", CompanyID);
+                //ht.Add("@CurrentPageNo", CurrentPageNo);
+                //ht.Add("@RecordPerPage", RecordPerPage);
+                //ht.Add("@SearchText", SearchText.ToString());
+
+                //var AllData = dataAccessManager.GetDataSet("SP_PrescriptionList", ht);
+                //var DataList = AllData.Tables[0];
+                //if (DataList.Rows.Count > 0)
+                //    TotalRecord = DataList.Rows[0]["TotalRecord"].ToString();
+                objResult.OtherDataModel = result;
+                objResult.TotalRecord = totalRecords;
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace.Error(ex);
+            }
+            return objResult;
+        }
+
+        [HttpGet]
         [ActionName("ExportData")]
         public ResponseInfo ExportData(int ExportType, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText)
         {
@@ -1227,33 +1495,120 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         }
         [HttpGet]
         [ActionName("LoadDropdown")]
-        public ResponseInfo LoadDropdown()
+        public async Task<ResponseInfo> LoadDropdown()
         {
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 int userid = Convert.ToInt32(Request.LoginID());
-                DataAccessManager dataAccessManager = new DataAccessManager();
+
+                var dropDownIds = new[] { 2, 17, 1 };
+                var allDropDownValues = await _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToListAsync();
+                var genderList = allDropDownValues
+    .Where(x => x.DropDownID == 2).ToList();
+                var bloodList = allDropDownValues
+    .Where(x => x.DropDownID == 17).ToList();
+                var statusList = allDropDownValues
+    .Where(x => x.DropDownID == 1)
+    .ToList();
+                var isShowDoctorIds = await _adm_userService.Queryable()
+.Where(x => x.ID == userid)
+.Select(x => x.IsShowDoctor)
+.FirstOrDefaultAsync();
+
+
+                var medicineList = await _emr_medicineService.Queryable()
+    .Where(x => x.CompanyID == companyId)
+    .Select(x => new { x.ID, x.Medicine })
+    .ToListAsync();
+                var companyInfo = await _adm_user_companyService.Queryable()
+    .Where(x => x.UserID == userid)
+    .Select(x => new
+    {
+        x.CompanyID,
+        CompanyName = x.adm_company.CompanyName
+    }).ToListAsync();
+
+                var serviceType = await _emr_service_mfService.Queryable()
+                    .Where(x => x.CompanyId == companyId && x.ServiceName == "Consultation")
+                    .Select(x => new { x.ID, x.ServiceName, x.Price })
+                    .ToListAsync();
+
+
+                var nextToken = GetNextToken(companyId);
+                var isBackDatedAppointment = await _adm_companyService.Queryable()
+    .Where(x => x.ID == companyId)
+    .Select(x => x.IsBackDatedAppointment)
+    .FirstOrDefaultAsync();
+
+                var reminders = await _adm_reminder_mf.Queryable()
+   .Where(r => r.CompanyId == companyId)
+   .Select(r => new { r.ID, Value = r.Name })
+   .ToListAsync();
+
+
+                var followUps = await _service.Queryable()
+    .Where(mf => mf.CompanyID == companyId
+              && DbFunctions.TruncateTime(mf.FollowUpDate) >= DbFunctions.TruncateTime(DateTime.Now))
+    .Select(mf => new
+    {
+        // Convert TimeSpan (or DateTime) to string in-memory after query
+        AppointmentTime = mf.FollowUpTime, // keep raw for now
+
+        PatientName = mf.emr_patient_mf.PatientName, // navigation property
+        PatientId = mf.PatientId,
+        mf.IsCreateAppointment,
+        Mobile = mf.emr_patient_mf.Mobile,
+        mf.FollowUpNotes,
+        mf.FollowUpDate
+    })
+    .OrderByDescending(mf => mf.FollowUpDate)
+    .Distinct()
+    .ToListAsync();
+
+                // Format AppointmentTime after query
+                var followUpsResult = followUps
+                    .Select(f => new
+                    {
+                        AppointmentTime = f.AppointmentTime.HasValue ? f.FollowUpDate.Value.Add(f.AppointmentTime.Value).ToString("hh:mm tt") : null,
+                        f.PatientName,
+                        f.PatientId,
+                        f.IsCreateAppointment,
+                        f.Mobile,
+                        f.FollowUpNotes,
+                        f.FollowUpDate
+                    })
+                    .ToList();
                 var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
+                ht.Add("@CompanyId", companyId);
                 ht.Add("@UserId", userid);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
-                var GenderType = AllData.Tables[0];
-                var DoctorList = AllData.Tables[1];
+                DataAccessManager dataAccessManager = new DataAccessManager();
+                var doctorData = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
+                var GenderType = genderList;
+                var DoctorList = doctorData.Tables[0];
                 decimal[] IdList = null;
-                var isShowIds = AllData.Tables[2].Rows[0]["IsShowDoctorIds"].ToString();
-                if (isShowIds != "")
+                var isShowIds = isShowDoctorIds;
+                if (!string.IsNullOrWhiteSpace(isShowIds))
                     IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
-                var DoctorCalander = AllData.Tables[3];
-                var MedicineList = AllData.Tables[4];
-                var ClinicList = AllData.Tables[5];
-                var BloodList = AllData.Tables[6];
-                var ServiceType = AllData.Tables[7];
-                var token = AllData.Tables[8].Rows[0]["TokenNo"].ToString();
+                var DoctorCalander = doctorData.Tables[0];
+                var MedicineList = medicineList;
+                var ClinicList = companyInfo;
+                var BloodList = bloodList;
+                var ServiceType = serviceType;
+                var token = nextToken;
                 decimal TokenNo = Convert.ToDecimal(token);
-                var StatusList = AllData.Tables[10];
-                var Followuplist = AllData.Tables[24];
+                var StatusList = statusList;
+                var Followuplist = followUpsResult;
+                var ReminderList = reminders;
 
                 objResponse.ResultSet = new
                 {
@@ -1268,6 +1623,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     TokenNo = TokenNo,
                     StatusList = StatusList,
                     Followuplist = Followuplist,
+                    ReminderList = ReminderList,
                 };
             }
             catch (Exception ex)
@@ -1278,6 +1634,32 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResponse;
         }
+        public int GetNextToken(decimal companyId)
+        {
+            // Step 1: Get the maximum TokenNo from adm_company
+            int maxCompanyToken = _adm_companyService.Queryable()
+                .Where(cm => cm.ID == companyId)
+                .Max(cm => (int?)cm.TokenNo) ?? 0;
+
+            // Step 2: Check if any records exist in emr_appointment_mf for today
+            bool hasAppointmentsToday = _emr_appointment_mfService.Queryable()
+                .Any(mf => mf.CompanyId == companyId && mf.AppointmentDate == DateTime.Today);
+
+            // Step 3: Get the maximum TokenNo from emr_appointment_mf for today
+            int maxAppointmentToken = hasAppointmentsToday
+                ? _emr_appointment_mfService.Queryable()
+                    .Where(mf => mf.CompanyId == companyId && mf.AppointmentDate == DateTime.Today)
+                    .Max(mf => (int?)mf.TokenNo) ?? 0
+                : 0;
+
+            // Step 4: Calculate the next token
+            int nextToken = hasAppointmentsToday
+                ? Math.Max(maxAppointmentToken, maxCompanyToken) + 1
+                : maxCompanyToken + 1;
+
+            return nextToken;
+        }
+
         [HttpGet]
         [ActionName("PrescriptionLoad")]
         public ResponseInfo PrescriptionLoad(string id, string DocId, string Date)
@@ -1395,7 +1777,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 objResponse.ResultSet = CurntPrevDate.Select(z => new
                 {
                     z.PatientId,
-                    AppointmentDate=z.AppointmentDate.ToString("yyyy-MM-dd")
+                    AppointmentDate = z.AppointmentDate.ToString("yyyy-MM-dd")
                 });
 
             }
@@ -1713,6 +2095,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         }
 
         public PaginationResult PaginationWithParm(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        ResponseInfo IERPAPIInterface<emr_prescription_mf>.GetById(string Id)
         {
             throw new NotImplementedException();
         }

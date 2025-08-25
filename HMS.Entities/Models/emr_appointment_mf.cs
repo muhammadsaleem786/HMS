@@ -59,6 +59,8 @@ namespace HMS.Entities.Models
         public virtual adm_user_mf adm_user_mf { get; set; }
         public virtual adm_user_mf adm_user_mf1 { get; set; }
         public virtual adm_user_mf adm_user_mf2 { get; set; }
+        [ForeignKey("DoctorId")]
+        public virtual adm_user_mf Doctor { get; set; }
         public virtual emr_patient_mf emr_patient_mf { get; set; }
         public virtual ICollection<ipd_admission_charges> ipd_admission_charges { get; set; }
     }

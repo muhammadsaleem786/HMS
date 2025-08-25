@@ -16,6 +16,7 @@ using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -26,6 +27,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Http;
 
 namespace HMS.Web.API.Areas.Appointment.Controllers
@@ -322,174 +324,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
         }
 
-        [HttpPost]
-        [HttpGet]
-        [ActionName("UserSave")]
-        public async Task<ResponseInfo> UserSave(adm_user_mf Model)
-        {
-            var objResponse = new ResponseInfo();
-            try
-            {
-                //if (!ModelState.IsValid)
-                //{
-                //    objResponse.IsSuccess = false;
-                //    objResponse.ErrorMessage = MessageStatement.BadRequest;
-                //    return objResponse;
-                //}
-                decimal CompanyID = Request.CompanyID();
-                decimal UserID = Request.LoginID();
-
-                var user = _adm_userService.Queryable().Where(y => y.Email.ToLower() == Model.Email.ToLower()).FirstOrDefault();
-                if (user == null)
-                {
-                    adm_user_mf admUser = new adm_user_mf();
-                    decimal adm_userID = 1;
-                    if (_adm_userService.Queryable().Count() > 0)
-                        adm_userID = _adm_userService.Queryable().Max(e => e.ID) + 1;
-
-                    List<adm_user_company> adm_userCompany = new List<adm_user_company>();
-                    adm_userCompany.AddRange(Model.adm_user_company);
-
-                    var guid = Guid.NewGuid().ToString();
-                    var token = "GUID=" + guid + "&type=ApplicationUser";
-                    string encrytoken = Cryptography.Encrypt(token);
-                    encrytoken = HttpServerUtility.UrlTokenEncode(Encoding.ASCII.GetBytes(encrytoken));
-                    //if (Model.AppStartTime != null)
-                    //{
-                    //    TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
-                    //    Model.StartTime = starttime;
-                    //}
-                    //if (Model.AppEndTime != null)
-                    //{
-                    //    TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
-                    //    Model.EndTime = endtime;
-                    //}
-                    //if (Model.DocWorkingDay != null)
-                    //{
-                    //    string result = string.Join(",", Model.DocWorkingDay);
-                    //    Model.OffDay = result;
-                    //}
-                    if (Model.SlotTime != null)
-                    {
-                        Model.SlotTime = Model.SlotTime;
-                    }
-                    Model.adm_user_company = null;
-                    Model.user_payment = null;
-                    Model.user_payment1 = null;
-                    Model.user_payment2 = null;
-                    Model.ID = adm_userID;
-                    Model.AccountType = "A";
-                    Model.ForgotToken = guid;
-                    Model.ForgotTokenDate = Request.DateTimes();
-                    Model.MultilingualId = Model.MultilingualId;
-                    Model.ObjectState = ObjectState.Added;
-                    _adm_userService.Insert(Model);
-
-                    adm_user_token user_token = new adm_user_token();
-                    decimal userTokenID = 1;
-                    if (_adm_user_tokenService.Queryable().Count() > 0)
-                        userTokenID = _adm_user_tokenService.Queryable().Max(e => e.ID) + 1;
-                    user_token.ID = userTokenID;
-                    user_token.UserID = Model.ID;
-                    DateTime date = Request.DateTimes();
-                    date = date.AddDays(3);
-                    user_token.ExpiryDate = date;
-                    user_token.TokenKey = guid;
-                    user_token.IsExpired = false;
-                    user_token.DeviceType = "web";
-                    int deviceID = -1;
-                    user_token.DeviceID = deviceID.ToString();
-                    user_token.ObjectState = ObjectState.Added;
-                    _adm_user_tokenService.Insert(user_token);
-
-                    decimal adm_user_ComID = 1;
-                    if (_adm_user_companyService.Queryable().Count() > 0)
-                        adm_user_ComID = _adm_user_companyService.Queryable().Max(e => e.ID) + 1;
-                    foreach (adm_user_company item in adm_userCompany)
-                    {
-                        adm_user_company admUserCompanyModel = new adm_user_company();
-                        admUserCompanyModel.ID = adm_user_ComID;
-                        admUserCompanyModel.UserID = Model.ID;
-                        admUserCompanyModel.CompanyID = CompanyID;
-                        admUserCompanyModel.RoleID = item.RoleID;
-                        admUserCompanyModel.AdminID = _adm_user_companyService.Queryable()
-                            .Where(e => e.CompanyID == CompanyID && e.UserID == e.AdminID)
-                            .Select(s => s.UserID).FirstOrDefault();
-
-                        admUserCompanyModel.ObjectState = ObjectState.Added;
-                        _adm_user_companyService.Insert(admUserCompanyModel);
-                        adm_user_ComID++;
-                    }
-
-
-                    //string path = @"~\Templates\EmailConfirm.txt";
-                    //SendEmailforResetPassword(Model, "EasyHMS | Verify your account", path, encrytoken);
-
-                    //string path = @"~\Templates\EmailConfirm.txt";
-                    //path = HttpContext.Current.Server.MapPath(path);
-                    //Task.Run(() => SendEmailConfirmNotify(_unitOfWorkAsync, userobj, "EasyHMS | Verify your account", path, "WelcomeEmail", encrytoken));
-
-                    try
-                    {
-                        await _unitOfWorkAsync.SaveChangesAsync();
-                        objResponse.Message = MessageStatement.Save;
-                        objResponse.IsSuccess = true;
-                        var DoctorList = _emr_patientService.DoctorList(CompanyID, UserID);
-                        var userObj = _adm_userService.Queryable().Where(a => a.ID == UserID).FirstOrDefault();
-                        decimal[] IdList = null;
-                        List<DoctorList> DoctorCalander = new List<DoctorList>();
-                        if (userObj.IsShowDoctor != null)
-                        {
-                            IdList = userObj.IsShowDoctor.Split(',').Select(decimal.Parse).ToArray();
-                            DoctorCalander = DoctorList.DoctList.Where(a => !IdList.Contains(a.ID)).ToList();
-                        }
-                        else
-                        {
-                            DoctorCalander = DoctorList.DoctList.ToList();
-                        }
-                        objResponse.ResultSet = new
-                        {
-                            DoctorList = DoctorList,
-                            DoctorCalander = DoctorCalander,
-                        };
-
-                        //EmailService objService = new EmailService();
-                        //string PayrollRegion = System.Configuration.ConfigurationManager.AppSettings["PayrollRegion"].ToString();
-                        //string path = "";
-                        //    path = @"~\Templates\EmailConfirm.txt";                      
-
-                        //path = HttpContext.Current.Server.MapPath(path);
-                        //objService.SendEmailCofirm(path, Model.Email, Model.Name, CompanyID, encrytoken, Request.LoginID(), "Erpisto | Verify your account");
-
-
-                        //EmailService objService = new EmailService();
-
-                    }
-                    catch (DbUpdateException)
-                    {
-                        if (ModelExists(Model.ID.ToString()))
-                        {
-                            objResponse.IsSuccess = false;
-                            objResponse.ErrorMessage = MessageStatement.Conflict;
-                            return objResponse;
-                        }
-                        throw;
-                    }
-                }
-                else
-                {
-                    objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = "This " + Model.Email + " already register please use another email.";
-                }
-            }
-            catch (Exception ex)
-            {
-                objResponse.IsSuccess = false;
-                objResponse.ErrorMessage = ex.Message;
-                Logger.Trace.Error(ex);
-            }
-            return objResponse;
-        }
         public string WorkingHours(DateTime? TimeIn, decimal? DoctorId)
         {
             var slotTime = _adm_userService.Queryable().Where(a => a.ID == DoctorId).FirstOrDefault().SlotTime;
@@ -1037,68 +871,292 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         }
         [HttpGet]
         [ActionName("AppointList")]
-        public PaginationResult AppointList(string date, string StatusId, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, bool IgnorePaging = false)
+        public async Task<PaginationResult> AppointListAsync(string date, string StatusId, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, bool IgnorePaging = false)
         {
             var objResult = new PaginationResult();
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                int? stid = Convert.ToInt32(StatusId);
-                int userid = Convert.ToInt32(Request.LoginID());
+                int statusId = Convert.ToInt32(StatusId);
+                int userId = Convert.ToInt32(Request.LoginID());
                 DateTime todayDate = Convert.ToDateTime(date);
-                string TotalRecord = "0";
+                int stId = (statusId == 0) ? 1 : statusId;
                 if (SearchText == null)
                     SearchText = "";
-                DataAccessManager dataAccessManager = new DataAccessManager();
+                int? appointmentStatusId = await _adm_userService.Queryable()
+.Where(u => u.ID == userId)
+.Select(u => (int?)u.AppointmentStatusId)
+.FirstOrDefaultAsync();
+                int finalAppointmentStatusId = (appointmentStatusId == null || appointmentStatusId == 0) ? 1 : appointmentStatusId.Value;
+                //Roleid
+                var roleId = _adm_user_companyService.Queryable().Where(u => u.UserID == userId)
+                             .Select(u => u.RoleID).FirstOrDefault();
+                // Step 2: Get RoleName from adm_role_mf
+                var roleName = _adm_role_mfService.Queryable().Where(r => r.ID == roleId)
+                    .Select(r => r.RoleName).FirstOrDefault();
+                decimal? doctorFilterId = null;
+                if (string.Equals(roleName, "Doctor", StringComparison.OrdinalIgnoreCase))
+                {
+                    doctorFilterId = Convert.ToDecimal(userId);
+                }
+                var patientNewCounts = _emr_patientService.Queryable()
+    .Where(p => p.CompanyId == CompanyID)
+    .Select(p => new
+    {
+        PatientId = p.ID,
+        NewPatientCount = p.emr_appointment_mf
+            .Where(a => a.CompanyId == p.CompanyId && DbFunctions.TruncateTime(a.AppointmentDate) <= DbFunctions.TruncateTime(todayDate))
+            .Count()
+    });
+
+
+                var rawEventsQuery = _service.Queryable()
+     .Where(mf => mf.CompanyId == CompanyID
+               && DbFunctions.TruncateTime(mf.AppointmentDate) == DbFunctions.TruncateTime(todayDate)
+               && (finalAppointmentStatusId == 1 || mf.StatusId == finalAppointmentStatusId)
+               && (doctorFilterId == null || mf.DoctorId == doctorFilterId)
+               && (string.IsNullOrEmpty(SearchText) || mf.emr_patient_mf.PatientName.Contains(SearchText)))
+     .Select(mf => new
+     {
+         mf.ID,
+         DoctorName = mf.Doctor.Name,
+         PatientName = mf.emr_patient_mf.PatientName,
+
+         NewPatients = patientNewCounts
+             .Where(nc => nc.PatientId == mf.PatientId)
+             .Select(nc => nc.NewPatientCount)
+             .FirstOrDefault(),
+
+         mf.AppointmentDate,
+         mf.AppointmentTime, // keep raw
+         SlotTime = mf.Doctor.SlotTime, // keep raw
+
+         mf.PatientProblem,
+         ServiceId = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.ServiceId).FirstOrDefault(),
+         PaidAmount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.PaidAmount).FirstOrDefault(),
+         Discount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Discount).FirstOrDefault(),
+         BillDate = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (DateTime?)b.BillDate).FirstOrDefault(),
+         Price = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Price).FirstOrDefault(),
+         ServiceName = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId)
+                         .Select(b => b.emr_service_mf.ServiceName)
+                         .FirstOrDefault(),
+
+         mf.TokenNo,
+         mf.DoctorId,
+         MRNO = mf.emr_patient_mf.MRNO,
+         mf.StatusId,
+         CNIC = mf.emr_patient_mf.CNIC,
+         mf.PatientId,
+         CreatedBy = mf.adm_user_mf.Name,
+         Gender = mf.emr_patient_mf.Gender,
+         Image = mf.emr_patient_mf.Image,
+         mf.Notes,
+         mf.ReminderId,
+
+         Color = mf.StatusId == 1 ? "#dddddd"
+              : mf.StatusId == 2 ? "#fd8d64"
+              : mf.StatusId == 5 ? "#fdca66"
+              : mf.StatusId == 6 ? "#dd2626"
+              : mf.StatusId == 7 ? "#65d3fd"
+              : mf.StatusId == 8 ? "#6597ff"
+              : mf.StatusId == 9 ? "#0bb8ab"
+              : mf.StatusId == 10 ? "#fb64a7"
+              : mf.StatusId == 25 ? "#6265fd"
+              : ""
+     });
+
+                int totalRecords = await rawEventsQuery.CountAsync();
+
+                var pagedEventsRaw = await rawEventsQuery
+                    .OrderBy(e => e.ID)
+                    .Skip((CurrentPageNo - 1) * RecordPerPage)
+                    .Take(RecordPerPage)
+                    .ToListAsync();
+
+                // format after ToListAsync
+                var pagedEvents = pagedEventsRaw.Select(mf => new
+                {
+                    mf.ID,
+                    mf.DoctorName,
+                    mf.PatientName,
+                    mf.NewPatients,
+                    mf.PatientProblem,
+                    mf.ServiceId,
+                    mf.PaidAmount,
+                    mf.Discount,
+                    mf.BillDate,
+                    mf.Price,
+                    mf.ServiceName,
+                    mf.TokenNo,
+                    mf.DoctorId,
+                    mf.MRNO,
+                    mf.StatusId,
+                    mf.CNIC,
+                    mf.PatientId,
+                    mf.CreatedBy,
+                    mf.Gender,
+                    mf.Image,
+                    mf.Notes,
+                    mf.ReminderId,
+                    mf.Color,
+
+                    AppointmentDate = mf.AppointmentDate.ToString("yyyy-MM-dd"),
+                    AppointmentTime = mf.AppointmentTime.ToString(@"hh\:mm\:ss"),
+                    StartDate = mf.AppointmentDate
+                   .Add(mf.AppointmentTime)
+                   .ToString("yyyy-MM-ddTHH:mm:ss"),
+                    EndDate = mf.AppointmentDate
+                  .Add(mf.AppointmentTime)
+                  .Add(mf.SlotTime ?? TimeSpan.Zero)
+                  .ToString("yyyy-MM-ddTHH:mm:ss"),
+                });
+
+                var dropDownIds = new[] { 2, 1,17 };
+                var allDropDownValues = await _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToListAsync();
+
+                var genderList = allDropDownValues
+    .Where(d => d.DropDownID == 2)
+    .Select(d => new { d.ID, d.Value })
+    .ToList();
+
+                var dropdownValues = allDropDownValues
+    .Where(val => val.DropDownID == 1)
+    .ToList();
+
+                var appointmentStatusCounts = dropdownValues.Select(val => new
+                {
+                    val.ID,
+                    val.Value,
+                    IsActive = val.ID == finalAppointmentStatusId,
+
+                    Count = _service.Queryable()
+         .Where(mf => mf.CompanyId == CompanyID
+                   && DbFunctions.TruncateTime(mf.AppointmentDate) == DbFunctions.TruncateTime(todayDate)
+                   && (
+                        (val.ID == 1 &&
+                             ((roleName == "Doctor" && mf.DoctorId == userId)
+                              || roleName != "Doctor"))
+                        ||
+                        (val.ID != 1 && mf.StatusId == val.ID &&
+                             ((roleName == "Doctor" && mf.DoctorId == userId)
+                              || roleName != "Doctor"))
+                       )
+               )
+         .Count()
+                }).ToList();
+
+                var isShowDoctorId = await _adm_userService.Queryable()
+                .Where(u => u.ID == userId)
+                .Select(u => u.IsShowDoctor)
+                .FirstOrDefaultAsync();
+                //doctor list
+
+
+                var medicines = await _emr_medicineService.Queryable()
+    .Where(m => m.CompanyID == CompanyID)
+    .Select(m => new { m.ID, m.Medicine })
+    .ToListAsync();
+
+                var companyInfo = await _adm_user_companyService.Queryable()
+    .Where(uc => uc.UserID == userId)
+    .Select(uc => new
+    {
+        uc.CompanyID,
+        CompanyName = uc.adm_company.CompanyName // navigation property
+    })
+    .ToListAsync();
+                var bloodList = allDropDownValues
+    .Where(d => d.DropDownID == 17)
+    .ToList();
+
+                var consultationService = await _emr_service_mfService.Queryable()
+    .Where(s => s.CompanyId == CompanyID && s.ServiceName == "Consultation")
+    .Select(s => new { s.ID, s.ServiceName, s.Price })
+    .ToListAsync();
+                var maxCompanyToken = await _adm_companyService.Queryable()
+    .Where(c => c.ID == CompanyID)
+    .Select(c => (int?)c.TokenNo) // nullable to handle empty table
+    .MaxAsync() ?? 0;
+                var nextToken = await _service.Queryable()
+    .Where(mf => mf.CompanyId == CompanyID
+              && DbFunctions.TruncateTime(mf.AppointmentDate) == DbFunctions.TruncateTime(DateTime.Now))
+    .Select(mf => (int?)mf.TokenNo)
+    .MaxAsync() ?? maxCompanyToken;
+
+                nextToken += 1;
+
+                var isBackDatedAppointment = await _adm_companyService.Queryable()
+    .Where(c => c.ID == CompanyID)
+    .Select(c => c.IsBackDatedAppointment)
+    .FirstOrDefaultAsync();
+
+                var reminders = await _adm_reminder_mf.Queryable()
+    .Where(r => r.CompanyId == CompanyID)
+    .Select(r => new { r.ID, Value = r.Name })
+    .ToListAsync();
+
+
+                var followUps = await _emr_prescription_mfService.Queryable()
+    .Where(mf => mf.CompanyID == CompanyID
+              && DbFunctions.TruncateTime(mf.FollowUpDate) >= DbFunctions.TruncateTime(DateTime.Now))
+    .Select(mf => new
+    {
+        // Convert TimeSpan (or DateTime) to string in-memory after query
+        AppointmentTime = mf.FollowUpTime, // keep raw for now
+
+        PatientName = mf.emr_patient_mf.PatientName, // navigation property
+        PatientId = mf.PatientId,
+        mf.IsCreateAppointment,
+        Mobile = mf.emr_patient_mf.Mobile,
+        mf.FollowUpNotes,
+        mf.FollowUpDate
+    })
+    .OrderByDescending(mf => mf.FollowUpDate)
+    .Distinct()
+    .ToListAsync();
+
+                // Format AppointmentTime after query
+                var followUpsResult = followUps
+                    .Select(f => new
+                    {
+                        AppointmentTime = f.AppointmentTime.HasValue? f.FollowUpDate.Value.Add(f.AppointmentTime.Value).ToString("hh:mm tt"): null,
+                        f.PatientName,
+                        f.PatientId,
+                        f.IsCreateAppointment,
+                        f.Mobile,
+                        f.FollowUpNotes,
+                        f.FollowUpDate
+                    })
+                    .ToList();
                 var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@UserId", userid);
-                ht.Add("@StatusId", stid);
-                ht.Add("@CurrentDate", todayDate);
-                ht.Add("@CurrentPageNo", CurrentPageNo);
-                ht.Add("@RecordPerPage", RecordPerPage);
-                ht.Add("@SearchText", SearchText.ToString());
+                ht.Add("@CompanyId", CompanyID);
+                ht.Add("@UserId", userId);
+                DataAccessManager dataAccessManager = new DataAccessManager();
+                var doctorList = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
+                objResult.GenderList = genderList;
+                objResult.DoctorList = doctorList.Tables[0];
+                objResult.AppointmentList = pagedEvents;
+                objResult.AllStatusList = appointmentStatusCounts;
+                objResult.DoctorCalander = doctorList.Tables[0];
+                objResult.IsShowDoctorIds = isShowDoctorId;
+                objResult.ClinicList = companyInfo;
+                objResult.BloodList = bloodList;
+                objResult.MedicineList = medicines;
+                objResult.ServiceType = consultationService;
+                objResult.TokenNo = nextToken.ToString();
+                objResult.IsBackDatedAppointment = isBackDatedAppointment;
+                objResult.TotalRecord = totalRecords;
+                objResult.Reminderlist = reminders;
+                objResult.Followuplist = followUpsResult;
 
-                var AllData = dataAccessManager.GetDataSet("SP_CalendarData", ht);
-
-                var LIST = AllData.Tables[0];
-                if (LIST.Rows.Count > 0)
-                    TotalRecord = LIST.Rows[0]["TotalRecord"].ToString();
-                var GenderType = AllData.Tables[1];
-                var StatusList = AllData.Tables[2];
-                var AllStatusList = AllData.Tables[3];
-                var DoctorList = AllData.Tables[4];
-                var DoctorCalander = AllData.Tables[4];
-                var Reminderlist = AllData.Tables[12];
-                var Followuplist = AllData.Tables[13];
-                decimal[] IdList = null;
-                var isShowIds = AllData.Tables[5].Rows[0]["IsShowDoctorIds"].ToString();
-                if (isShowIds != "")
-                    IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
-                var MedicineList = AllData.Tables[6];
-                var ClinicList = AllData.Tables[7];
-                var BloodList = AllData.Tables[8];
-                var ServiceType = AllData.Tables[9];
-                var token = AllData.Tables[10].Rows[0]["TokenNo"].ToString();
-                decimal TokenNo = Convert.ToDecimal(token);
-                var IsBackDated = AllData.Tables[11].Rows[0]["IsBackDatedAppointment"].ToString();
-                bool IsBackDatedAppointment = Convert.ToBoolean(IsBackDated);
-
-                objResult.GenderList = GenderType;
-                objResult.DoctorList = DoctorList;
-                objResult.AppointmentList = LIST;
-                objResult.AllStatusList = AllStatusList;
-                objResult.DoctorCalander = DoctorCalander;
-                objResult.IsShowDoctorIds = IdList;
-                objResult.ClinicList = ClinicList;
-                objResult.BloodList = BloodList;
-                objResult.MedicineList = MedicineList;
-                objResult.ServiceType = ServiceType;
-                objResult.TokenNo = TokenNo.ToString();
-                objResult.IsBackDatedAppointment = IsBackDatedAppointment;
-                objResult.TotalRecord = Convert.ToInt32(TotalRecord);
-                objResult.Reminderlist = Reminderlist;
-                objResult.Followuplist = Followuplist;
             }
             catch (Exception ex)
             {
@@ -1206,6 +1264,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     z.CNIC,
                     z.Mobile,
                 }).FirstOrDefault();
+                var reminderlist = _adm_reminder_mf.Queryable().Where(a => a.CompanyId == CompanyID)
+                    .Select(z => new
+                    {
+                        ID = z.ID,
+                        Value = z.Name
+                    })
+                    .ToList();
+
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {
@@ -1214,6 +1280,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     TokenNo = TokenNo,
                     StatusList = StatusList,
                     PatientObj = PatientObj,
+                    reminderlist = reminderlist,
                 };
             }
             catch (Exception ex)
@@ -1267,28 +1334,32 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         }
         [HttpGet]
         [ActionName("GetAdmitAppointmentDropdown")]
-        public ResponseInfo GetAdmitAppointmentDropdown(string PatientId)
+        public async Task<ResponseInfo> GetAdmitAppointmentDropdown(string PatientId)
         {
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
-                decimal UserID = Request.LoginID();
-
-                DataAccessManager dataAccessManager = new DataAccessManager();
+                decimal companyId = Request.CompanyID();
+                decimal userid = Request.LoginID();
+                var isShowDoctorIds = await _adm_userService.Queryable()
+.Where(x => x.ID == userid)
+.Select(x => x.IsShowDoctor)
+.FirstOrDefaultAsync();
+                var visitList = await _sys_drop_down_valueService.Queryable()
+   .Where(x => x.DropDownID==30 && (x.CompanyID == companyId || x.CompanyID == null))
+   .ToListAsync();
                 var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@UserId", UserID);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
-
-                var DoctorList = AllData.Tables[1];
+                ht.Add("@CompanyId", companyId);
+                ht.Add("@UserId", userid);
+                DataAccessManager dataAccessManager = new DataAccessManager();
+                var doctorData = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
+                var DoctorList = doctorData.Tables[0];
                 decimal[] IdList = null;
-                var isShowIds = AllData.Tables[2].Rows[0]["IsShowDoctorIds"].ToString();
-                if (isShowIds != "")
+                var isShowIds = isShowDoctorIds;
+                if (!string.IsNullOrWhiteSpace(isShowIds))
                     IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
-                var DoctorCalander = AllData.Tables[3];
-
-                var VisitList = AllData.Tables[16];
+                var DoctorCalander = doctorData.Tables[0];
+                var VisitList = visitList;
                 objResponse.ResultSet = new
                 {
                     VisitList = VisitList,

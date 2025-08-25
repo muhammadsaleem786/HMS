@@ -12,6 +12,7 @@ using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -27,7 +28,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
     public class ipd_admission_imagingController : ApiController, IERPAPIInterface<ipd_admission_imaging>, IDisposable
     {
         private readonly Iipd_admission_imagingService _service;
-        private readonly Iemr_appointment_mfService _emr_appointment_mfService;        
+        private readonly Iemr_appointment_mfService _emr_appointment_mfService;
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
 
@@ -74,8 +75,8 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Save;
-                    objResponse.IsSuccess = true;                
-                    
+                    objResponse.IsSuccess = true;
+
 
                 }
                 catch (DbUpdateException)
@@ -175,25 +176,34 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 decimal UserID = Request.LoginID();
                 int ID = Convert.ToInt32(Id);
-                var Result = _service.Queryable().Where(e => e.ID == ID && e.CompanyId == CompanyID).FirstOrDefault();
-               
+                var Result = _service.Queryable().Where(e => e.ID == ID && e.CompanyId == companyId).FirstOrDefault();
+                var dropDownIds = new[] { 31, 32, 27 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+                var statusList = allDropDownValues
+.Where(x => x.DropDownID == 31).ToList();
+                var resultList = allDropDownValues
+.Where(x => x.DropDownID == 32).ToList();
+                var imageTypeList = allDropDownValues
+.Where(x => x.DropDownID == 27).ToList();
 
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@UserId", UserID);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
-
-                var StatusList = AllData.Tables[17];
-                var ResultList = AllData.Tables[18];
-                var ImagingTypeList = AllData.Tables[19];
+                var StatusList = statusList;
+                var ResultList = resultList;
+                var ImagingTypeList = imageTypeList;
                 objResponse.ResultSet = new
                 {
                     Result = Result,
-                    ImagingTypeList= ImagingTypeList,
+                    ImagingTypeList = ImagingTypeList,
                     StatusList = StatusList,
                     ResultList = ResultList,
                 };
@@ -225,7 +235,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
         }
         [HttpGet]
         [ActionName("ImagePagination")]
-        public PaginationResult ImagePagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string AdmitId,string PatientId, bool IgnorePaging = false)
+        public PaginationResult ImagePagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string AdmitId, string PatientId, bool IgnorePaging = false)
         {
             var objResult = new PaginationResult();
             try
@@ -240,7 +250,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             return objResult;
         }
 
-         [HttpGet]
+        [HttpGet]
         [ActionName("ExportData")]
         public ResponseInfo ExportData(int ExportType, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText)
         {
@@ -282,7 +292,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 _service.Delete(model);
                 await _unitOfWorkAsync.SaveChangesAsync();
                 objResponse.Message = MessageStatement.Delete;
-                
+
             }
             catch (Exception ex)
             {
@@ -321,7 +331,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-               
+
             }
             catch (Exception ex)
             {

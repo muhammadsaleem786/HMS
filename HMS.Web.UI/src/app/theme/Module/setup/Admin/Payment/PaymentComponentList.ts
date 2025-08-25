@@ -17,11 +17,13 @@ export class PaymentComponentList {
     public PModel = new PaginationModel();
     public PConfig = new PaginationConfig();
     public UserList: any[] = [];
+    public StatusList: any[] = [];
     public IsList: boolean = true;
     public ID: number = 10;
     public Rights: any;
     public Keywords: any[] = [];
     public ControlRights: any;
+    selectedValue: string = "A";
     constructor(public _CommonService: CommonService, private encrypt: EncryptionService, public loader: LoaderService, public _AdminService: PaymentService
         , public _router: Router, public toastr: CommonToastrService,) {
         this.loader.ShowLoader();
@@ -30,6 +32,11 @@ export class PaymentComponentList {
         // this.Keywords = this._CommonService.GetKeywords("Expense");
     }
     ngOnInit() {
+        this.StatusList = [
+            { "ID": 1, "Value": "All" },
+            { "ID": 2, "Value": "Active" },
+            { "ID": 3, "Value": "InActive" }
+        ];
         this.PConfig.PrimaryColumn = "ID";
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PConfig.Action.ScreenName = 'User';
@@ -40,14 +47,25 @@ export class PaymentComponentList {
             { Name: "Date", Title: "Date", OrderNo: 1, SortingAllow: true, Visible: true, isDate: true, DateFormat: "dd/MM/yyyy" },
             { Name: "Email", Title: "Email", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "PhoneNo", Title: "Phone No", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Status", Title: "Status", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
         ];
+    }
+    getFilterData() {
+        if (this.selectedValue == "A") {
+            this.PModel.FilterID = "0";
+            this.PModel.VisibleFilter = false;
+        } else {
+            this.PModel.FilterID = this.selectedValue
+            this.PModel.VisibleFilter = false;
+        }
+        this.Refresh();
     }
     Refresh() {
         if (this.PModel.SearchText == '')
             this.loader.ShowLoader();
         this.Id = "0";
         this._AdminService
-            .GetPaymentList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+            .GetPaymentList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PModel.FilterID).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.UserList = m.DataList;
                 this.loader.HideLoader();

@@ -10,7 +10,7 @@ import { AsidebarService } from '../../../CommonService/AsidebarService';
 import { CommonService } from '../../../CommonService/CommonService';
 import { EncryptionService } from '../../../CommonService/encryption.service';
 import { CommonToastrService } from '../../../CommonService/CommonToastrService';
-import { DashboardModel } from './DashboardModel'
+import { DashboardModel, DashboardSummaryDto } from './DashboardModel'
 import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationVariables } from '../../../AngularConfig/global';
@@ -34,26 +34,19 @@ export class DashboardForm {
     public IsList: boolean = true;
     public ID: number = 10;
     public model = new DashboardModel();
+    public dashboardSummary = new DashboardSummaryDto();
     public AppointmentModel = new emr_Appointment();
     public Rights: any;
     public Keywords: any[] = [];
     public PayrollRegion: string;
-    public Currency: string;
-    public DeshboardData: any = [];
-    public AppointmentData: any = [];
-    public BirthDayData: any = [];
-    public BirthDayList: any = [];
-    public FollowUpData: any = [];
+    public Currency: string;    
+    public ReminderList: any[] = [];
     public Form2: FormGroup;
     public ScreenRights: any;
     public ColorArr = ['#b0d3fb', '#fdd4af', '#ace4da', '#e49aa3', '#ccc', '#daa8ff'];
     public PieColorArr = ['#5e54d0', '#D4D7DC'];
     public options: any;
-    public IsCustomDate: boolean = false;
-    public Male: any;
-    public Female: any;
-    public other: any;
-    public Child: any;
+    public IsCustomDate: boolean = false;    
     public TodayDate: any;
     public submitted: boolean;
     appointmentOption: any;
@@ -73,14 +66,13 @@ export class DashboardForm {
         this.AppointmentModel = new emr_Appointment();
         this._AppointmentService.DeshboardLoadDropdown(PatientId).then(m => {
             if (m.IsSuccess) {
-
-
                 this.DoctorList = m.ResultSet.DoctorList;
                 this.StatusList = m.ResultSet.StatusList;
                 this.AppointmentModel.PatientId = m.ResultSet.PatientObj.ID;
                 this.AppointmentModel.PatientName = m.ResultSet.PatientObj.PatientName;
                 this.AppointmentModel.CNIC = m.ResultSet.PatientObj.CNIC;
                 this.AppointmentModel.Mobile = m.ResultSet.PatientObj.Mobile;
+                this.ReminderList = m.ResultSet.reminderlist;
                 if (this.Rights.indexOf(12) > -1) {
                     this.AppointmentModel.ServiceId = m.ResultSet.ServiceType.ID;
                     this.AppointmentModel.ServiceName = m.ResultSet.ServiceType.ServiceName;
@@ -88,6 +80,8 @@ export class DashboardForm {
                     this.AppointmentModel.TokenNo = m.ResultSet.TokenNo;
                     this.AppointmentModel.BillDate = new Date();
                     this.AppointmentModel.AppointmentDate = new Date();
+                    if (m.ResultSet.reminderlist.length > 0)
+                        this.AppointmentModel.ReminderId = m.ResultSet.reminderlist[0].ID;
                     this.CalAmount();
                 }
                 this.modalService.open(longContent, { size: 'lg' });
@@ -102,16 +96,6 @@ export class DashboardForm {
         this.PayrollRegion = this._CommonService.getPayrollRegion();
     }
     ngOnInit() {
-        //debugger
-        //(window as any).trackEvent('dashboard', {
-        //    email: 'saleem@yahoo.com',
-        //    timestamp: new Date().toISOString(),
-        //});
-        //this.subscription = interval(5000).pipe(switchMap(() => this._DashboardService.getData()))
-        //    .subscribe({
-        //        next: (response) => {},
-        //        error: (err) => console.error('API Error:', err)
-        //    });
         var date = new Date();
         var currentdateday = this.datePipe.transform(date, 'dd');
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -120,12 +104,8 @@ export class DashboardForm {
             this.TodayDate = "0" + '' + (days) + ' ' + months[date.getMonth()];
         else
             this.TodayDate = days + ' ' + months[date.getMonth()];
-
-        var firstDay = new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
-        var formdate = this._CommonService.GetFormatDate(firstDay);
-        var lastDay = new Date(Date.UTC(date.getFullYear(), date.getMonth() + 1, 0));
         var todate = this._CommonService.GetFormatDate(date);
-        this.model.FormDate = new Date(firstDay);
+        this.model.FormDate = new Date(todate);
         this.model.ToDate = new Date(todate);
         this.Refresh(this.model.ToDate, this.model.ToDate);
         this.Form2 = this._fb.group({
@@ -139,6 +119,7 @@ export class DashboardForm {
             AppointmentDate: ['', [Validators.required]],
             AppointmentTime: [''],
             StatusId: [''],
+            ReminderId: [''],
             //bill field
             AppointmentId: [''],
             ServiceId: [''],
@@ -158,59 +139,22 @@ export class DashboardForm {
         ToDate = this._CommonService.GetFormatDate(ToDate);
         this._DashboardService
             .DataLoad(fDate, ToDate).then(m => {
-                const result = (m && m.ResultSet) ? m.ResultSet : {};
-                this.DeshboardData = (result && result.DashboardData) ? result.DashboardData : [];
-                this.AppointmentData = (result && result.Appointment) ? result.Appointment : [];
-                this.BirthDayData = (result && result.BirthDay) ? result.BirthDay : [];
-                this.BirthDayList = (result && result.BirthDay) ? result.BirthDay : [];
-                this.FollowUpData = (result && result.FollowUp) ? result.FollowUp : [];
-                this.BirthDayData = this.BirthDayData.map(function (item) {
-                    return {
-                        Id: item.Id,
-                        Name: item.Name,
-                        Image: item.Image ? GlobalVariable.BASE_Temp_File_URL + item.Image : item.Image
-                    };
-                });
-
-                this.IncomeList = (result.IncomeAndExpense && result.IncomeAndExpense.map(function (x) { return x.Income; })) || [];
-                this.ExpenseList = (result.IncomeAndExpense && result.IncomeAndExpense.map(function (x) { return x.ExAmount; })) || [];
-                this.MonthList = (result.IncomeAndExpense && result.IncomeAndExpense.map(function (x) { return x.MONTH_NAME; })) || [];
-
-                // Safe access dashboard counts
-                var dashboard = (this.DeshboardData && this.DeshboardData.length > 0) ? this.DeshboardData[0] : {};
-
-                this.Male = (dashboard.Male != null) ? dashboard.Male : 0;
-                this.Female = (dashboard.Female != null) ? dashboard.Female : 0;
-                this.other = (dashboard.Other != null) ? dashboard.Other : 0;
-                this.Child = (dashboard.Child != null) ? dashboard.Child : 0;
-
-                //this.DeshboardData = [];
-                //this.AppointmentData = [];
-                //this.BirthDayData = [];
-                //this.FollowUpData = [];
-                //this.IncomeList = [];
-                //this.ExpenseList = [];
-                //this.MonthList = [];
-                //this.BirthDayList = [];
-                //if (m.ResultSet.DeshboardData.length > 0)
-                //    this.DeshboardData = m.ResultSet.DeshboardData;
-                //this.AppointmentData = m.ResultSet.Appointment;
-                //this.BirthDayData = m.ResultSet.BirthDay;
-                //this.BirthDayList = m.ResultSet.BirthDay;
-                //this.BirthDayData.forEach((item, index) => {
-                //    if (item.Image != null && item.Image != '')
-                //        item.Image = GlobalVariable.BASE_Temp_File_URL + '' + item.Image;
+                this.IncomeList = [];
+                this.ExpenseList = [];
+                this.MonthList = [];
+                this.dashboardSummary = m.ResultSet.dto;
+                this.dashboardSummary.IncomeAndExpense.forEach((item, index) => {
+                    this.IncomeList.push(item.Income);
+                    this.ExpenseList.push(item.ExAmount);
+                    this.MonthList.push(item.MonthName);
+                });                
+                //this.BirthDayData = this.dashboardSummary.todaysBirthdays.map(function (item) {
+                //    return {
+                //        Id: item.Id,
+                //        Name: item.patientName,
+                //        Image: item.image ? GlobalVariable.BASE_Temp_File_URL + item.image : item.image
+                //    };
                 //});
-               // this.FollowUpData = m.ResultSet.FollowUp;
-                //m.ResultSet.IncomeAndExpense.forEach((item, index) => {
-                //    this.IncomeList.push(item.Income);
-                //    this.ExpenseList.push(item.ExAmount);
-                //    this.MonthList.push(item.MONTH_NAME);
-                //});
-                //this.Male = this.DeshboardData[0].Male;
-                //this.Female = this.DeshboardData[0].Female;
-                //this.other = this.DeshboardData[0].Other;
-                //this.Child = this.DeshboardData[0].Child;
                 this.loadPiChart();
                 this.LoadIncomeChart();
                 this.loader.HideLoader();
@@ -218,10 +162,10 @@ export class DashboardForm {
     }
     loadPiChart() {
         const chartData = [
-            { value: this.Male || 0, name: 'Male' },
-            { value: this.Female || 0, name: 'Female' },
-            { value: this.Child || 0, name: 'Child' },
-            { value: this.other || 0, name: 'Others' }
+            { value: this.dashboardSummary.Male || 0, name: 'Male' },
+            { value: this.dashboardSummary.Female || 0, name: 'Female' },
+            { value: this.dashboardSummary.Child || 0, name: 'Child' },
+            { value: this.dashboardSummary.Other || 0, name: 'Others' }
         ];
 
         this.options = {
@@ -306,124 +250,6 @@ export class DashboardForm {
             ]
         };
     }
-
-    //loadPiChart() {
-    //    this.options = {
-    //        tooltip: {
-    //            trigger: 'item'
-    //        },
-    //        legend: {
-    //            top: '5%',
-    //            left: 'center'
-    //        },
-    //        series: [
-    //            {
-    //                name: 'Access From',
-    //                type: 'pie',
-    //                radius: ['40%', '70%'],
-    //                avoidLabelOverlap: false,
-    //                itemStyle: {
-    //                    borderRadius: 10,
-    //                    borderColor: '#fff',
-    //                    borderWidth: 2
-    //                },
-    //                label: {
-    //                    show: false,
-    //                    position: 'center'
-    //                },
-    //                emphasis: {
-    //                    label: {
-    //                        show: true,
-    //                        fontSize: '20',
-    //                        fontWeight: 'bold'
-    //                    }
-    //                },
-    //                labelLine: {
-    //                    show: false
-    //                },
-    //                data: [
-    //                    { value: this.Male, name: 'Male' },
-    //                    { value: this.Female, name: 'Female' },
-    //                    { value: this.Child, name: 'Child' },
-    //                    { value: this.other, name: 'Others' }
-    //                ]
-    //            }
-    //        ]
-    //    };
-    //}
-    //LoadIncomeChart() {
-    //    const colors = ['#5470C6', '#EE6666'];
-    //    this.incomeANDexpense = {
-    //        tooltip: {
-    //            trigger: 'axis',
-    //            axisPointer: {
-    //                type: 'cross',
-    //                crossStyle: {
-    //                    color: '#999'
-    //                }
-    //            }
-    //        },
-
-    //        legend: {
-
-    //            data: ['Income', 'Expense']
-    //        },
-    //        color: ['#0d3b5a', '#83d0cf', '#c1932d', '#6ac395', '#ddd'],
-    //        xAxis: [
-    //            {
-    //                type: 'category',
-    //                data: this.MonthList,// ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', ],
-    //                axisPointer: {
-    //                    type: 'shadow'
-    //                }
-    //            }
-    //        ],
-    //        yAxis: [
-    //            {
-    //                type: 'value',
-    //                //  name: 'Revenue (EUR Million)',
-    //                nameLocation: 'middle',
-    //                nameTextStyle: {
-    //                    padding: [0, 0, 20]
-
-    //                },
-
-    //            }
-
-    //        ],
-    //        series: [
-    //            {
-    //                name: 'Income',
-    //                type: 'bar',
-    //                barWidth: '10',
-    //                label: {
-    //                    //    show: true
-    //                },
-    //                data: this.IncomeList, // [3140.4969, 3295.398, 3425.6202, 3584.3879, 3718.5932, 3322.4434],
-    //                itemStyle: {
-    //                    barBorderRadius: 5,
-    //                    shadowColor: '#efefef',
-    //                    shadowBlur: 3
-    //                }
-
-    //            },
-    //            {
-    //                name: 'Expense',
-    //                type: 'bar',
-    //                barWidth: '10',
-    //                label: {
-    //                    //    show: true
-    //                },
-    //                data: this.ExpenseList,//[3115.408, 3189.078, 3277.8823, 3406.3439, 3528.0631, 3163.6963],
-    //                itemStyle: {
-    //                    barBorderRadius: 5,
-    //                    shadowColor: '#efefef',
-    //                    shadowBlur: 3
-    //                }
-    //            },
-    //        ]
-    //    };
-    //}
     onChange(Val: any) {
         var date = new Date();
         if (Val == "0") {
@@ -465,13 +291,13 @@ export class DashboardForm {
         var ToDate = this._CommonService.GetFormatDate(this.model.ToDate);
         this._DashboardService
             .DataLoad(fDate, ToDate).then(m => {
-                this.FollowUpData = [];
-                this.FollowUpData = m.ResultSet.FollowUp;
+                this.dashboardSummary = new DashboardSummaryDto();
+                this.dashboardSummary = m.ResultSet.dto;                
                 if (Val == 1) {
-                    this.FollowUpData = m.ResultSet.FollowUp.filter(a => a.IsCreateAppointment == 1);
+                    this.dashboardSummary.TodaysFollowUps = m.ResultSet.dto.TodaysFollowUps.filter(a => a.IsCreateAppointment == 1);
                 }
                 if (Val == 2) {
-                    this.FollowUpData = m.ResultSet.FollowUp.filter(a => a.IsCreateAppointment == 0);
+                    this.dashboardSummary.TodaysFollowUps = m.ResultSet.dto.TodaysFollowUps.filter(a => a.IsCreateAppointment == 0);
                 }
                 this.loader.HideLoader();
             });
@@ -535,11 +361,7 @@ export class DashboardForm {
             this.AppointmentModel.Price = 0;
         this.AppointmentModel.OutstandingBalance = this.AppointmentModel.Price - this.AppointmentModel.Discount - this.AppointmentModel.PaidAmount;
     }
-    onPatientNameEvent(event: any) {
-        if (event != null && event != undefined) {
-
-
-        }
+    onPatientNameEvent(event: any) {       
     }
     AppointmentSaveOrUpdate(isValid: boolean): void {
         let CurrentDate = this._CommonService.GetFormatDate(new Date());

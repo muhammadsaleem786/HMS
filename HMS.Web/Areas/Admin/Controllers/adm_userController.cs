@@ -109,21 +109,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     var token = "GUID=" + guid + "&type=ApplicationUser";
                     string encrytoken = Cryptography.Encrypt(token);
                     encrytoken = HttpServerUtility.UrlTokenEncode(Encoding.ASCII.GetBytes(encrytoken));
-                    //if (Model.AppStartTime != null)
-                    //{
-                    //    TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
-                    //    Model.StartTime = starttime;
-                    //}
-                    //if (Model.AppEndTime != null)
-                    //{
-                    //    TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
-                    //    Model.EndTime = endtime;
-                    //}
-                    //if (Model.DocWorkingDay != null)
-                    //{
-                    //    string result = string.Join(",", Model.DocWorkingDay);
-                    //    Model.OffDay = result;
-                    //}
+
                     if (Model.GenderDropdown != null)
                     {
                         string result = string.Join(",", Model.GenderDropdown);
@@ -182,13 +168,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         _adm_user_companyService.Insert(admUserCompanyModel);
                         adm_user_ComID++;
                     }
-                    var employeeobj = _pr_employee_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.ID == Model.EmployeeID).FirstOrDefault();
-                    if (employeeobj != null)
-                    {
-                        employeeobj.EmployeePic = Model.UserImage;
-                        employeeobj.ObjectState = ObjectState.Modified;
-                        _pr_employee_mfService.Update(employeeobj);
-                    }
+
 
                     //string path = @"~\Templates\EmailConfirm.txt";
                     //SendEmailforResetPassword(Model, "EasyHMS | Verify your account", path, encrytoken);
@@ -372,13 +352,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         }
         [HttpGet]
         [ActionName("PaymentPagination")]
-        public PaginationResult PaymentPagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, bool IgnorePaging = false)
+        public PaginationResult PaymentPagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)
         {
             var objResult = new PaginationResult();
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                objResult = _service.PaymentPagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, IgnorePaging);
+                objResult = _service.PaymentPagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
             }
             catch (Exception ex)
             {
@@ -470,22 +450,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 adm_userCompany.AddRange(Model.adm_user_company);
 
                 string currdate = DateTime.Now.ToString("yyyy-MM-dd");
-                //if (Model.AppStartTime != null)
-                //{
-                //    TimeSpan starttime = TimeSpan.Parse(Model.AppStartTime);
-                //    Model.StartTime = starttime;
-                //}
-                //if (Model.AppEndTime != null)
-                //{
-                //    TimeSpan endtime = TimeSpan.Parse(Model.AppEndTime);
-
-                //    Model.EndTime = endtime;
-                //}
-                //if (Model.DocWorkingDay != null)
-                //{
-                //    string result = string.Join(",", Model.DocWorkingDay);
-                //    Model.OffDay = result;
-                //}
+                
                 if (Model.GenderDropdown != null)
                 {
                     string result = string.Join(",", Model.GenderDropdown);
@@ -493,7 +458,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 }
                 Model.adm_user_company = null;
                 Model.adm_user_company1 = null;
-
+                Model.user_payment = null;
+                Model.user_payment1 = null;
+                Model.user_payment2 = null;
                 Model.ObjectState = ObjectState.Modified;
                 _service.Update(Model);
                 foreach (adm_user_company item in adm_userCompany)
@@ -501,13 +468,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     item.adm_role_mf = null;
                     item.ObjectState = ObjectState.Modified;
                     _adm_user_companyService.Update(item);
-                }
-                var employeeobj = _pr_employee_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.ID == Model.EmployeeID).FirstOrDefault();
-                if (employeeobj != null)
-                {
-                    employeeobj.EmployeePic = Model.UserImage;
-                    employeeobj.ObjectState = ObjectState.Modified;
-                    _pr_employee_mfService.Update(employeeobj);
                 }
                 try
                 {

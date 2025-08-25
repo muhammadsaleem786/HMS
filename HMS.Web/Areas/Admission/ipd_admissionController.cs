@@ -12,6 +12,7 @@ using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -34,9 +35,10 @@ namespace HMS.Web.API.Areas.Admission.Controllers
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iemr_patientService _emr_patientService;
         private readonly Iadm_companyService _adm_companyService;
+        private readonly Iadm_userService _adm_userService;
 
         public ipd_admissionController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_service_mfService emr_service_mfService, Iemr_patient_billService emr_patient_billService, Iipd_admissionService service, Iemr_appointment_mfService emr_appointment_mfService,
-            Isys_drop_down_valueService sys_drop_down_valueService, Iemr_patientService emr_patientService, Iadm_companyService adm_companyService)
+           Iadm_userService adm_userService, Isys_drop_down_valueService sys_drop_down_valueService, Iemr_patientService emr_patientService, Iadm_companyService adm_companyService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -46,6 +48,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             _emr_service_mfService = emr_service_mfService;
             _emr_patientService = emr_patientService;
             _adm_companyService = adm_companyService;
+            _adm_userService = adm_userService;
         }
         [HttpPost]
         [HttpGet]
@@ -411,32 +414,74 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 int userid = Convert.ToInt32(Request.LoginID());
-                DataAccessManager dataAccessManager = new DataAccessManager();
+                var dropDownIds = new[] { 2, 17, 1, 22, 23, 25, 30 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+
+                var genderList = allDropDownValues
+   .Where(x => x.DropDownID == 2).ToList();
+                var bloodList = allDropDownValues
+    .Where(x => x.DropDownID == 17).ToList();
+                var statusList = allDropDownValues
+    .Where(x => x.DropDownID == 1)
+    .ToList();
+                var bloodTypeList = allDropDownValues
+    .Where(x => x.DropDownID == 22)
+    .ToList();
+                var titleList = allDropDownValues
+   .Where(x => x.DropDownID == 23)
+   .ToList();
+                var admissionList = allDropDownValues
+   .Where(x => x.DropDownID == 25)
+   .ToList();
+                var locationList = allDropDownValues
+   .Where(x => x.DropDownID == 30)
+   .ToList();
+                var isShowDoctorIds = _adm_userService.Queryable()
+.Where(x => x.ID == userid)
+.Select(x => x.IsShowDoctor)
+.FirstOrDefault();
+                var admissionNo = _service.Queryable()
+    .Where(a => a.CompanyId == companyId && DbFunctions.TruncateTime(a.AdmissionDate) == DbFunctions.TruncateTime(DateTime.Now))
+    .Max(a => (int?)a.ID) ?? 0;
+
+                admissionNo += 1;
+                var mrNo =  _emr_patientService.Queryable()
+    .Where(p => p.CompanyId == companyId)
+    .Max(p => (int?)p.ID) ?? 0;
+                mrNo += 1;
+
+
                 var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
+                ht.Add("@CompanyId", companyId);
                 ht.Add("@UserId", userid);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
-                var GenderType = AllData.Tables[0];
-                var BloodList = AllData.Tables[6];
-                var StatusList = AllData.Tables[10];
-
-                var BillTypeList = AllData.Tables[11];
-
-                var TittleList = AllData.Tables[12];
-                var AdmissionTypeList = AllData.Tables[15];
-                var AdmissionLocation = AllData.Tables[16];
-
-                var DoctorList = AllData.Tables[1];
+                DataAccessManager dataAccessManager = new DataAccessManager();
+                var doctorData = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
+                var GenderType = genderList;
+                var BloodList = bloodList;
+                var StatusList = statusList;
+                var BillTypeList = bloodTypeList;
+                var TittleList = titleList;
+                var AdmissionTypeList = admissionList;
+                var AdmissionLocation = locationList;
+                var DoctorList = doctorData.Tables[0];
                 decimal[] IdList = null;
-                var isShowIds = AllData.Tables[2].Rows[0]["IsShowDoctorIds"].ToString();
-                if (isShowIds != "")
+                var isShowIds = isShowDoctorIds;
+                if (!string.IsNullOrWhiteSpace(isShowIds))
                     IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
-                var DoctorCalander = AllData.Tables[3];
-                var AdmissionNo = AllData.Tables[13].Rows[0]["AdmissionNo"].ToString();
+                var DoctorCalander = doctorData.Tables[0];
+                var AdmissionNo = admissionNo;
 
-                decimal getMaxMRNO = Convert.ToDecimal(AllData.Tables[14].Rows[0]["MRNO"].ToString());
+                decimal getMaxMRNO = mrNo;
                 string MRNO = "";
                 MRNO = (getMaxMRNO).ToString("0000000000");
 
@@ -470,21 +515,31 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 decimal UserID = Request.LoginID();
                 int ID = Convert.ToInt32(Id);
-                var obj = _service.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == ID).Include(a => a.emr_patient_mf).FirstOrDefault();
+                var obj = _service.Queryable().Where(a => a.CompanyId == companyId && a.ID == ID).Include(a => a.emr_patient_mf).FirstOrDefault();
 
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@UserId", UserID);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
+                var dropDownIds = new[] { 33,34,35 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+               var wardList= allDropDownValues
+   .Where(x => x.DropDownID == 33).ToList();
+                var roomList = allDropDownValues
+  .Where(x => x.DropDownID == 34).ToList();
+                var bedList = allDropDownValues
+  .Where(x => x.DropDownID == 35).ToList();
 
-
-                var WardList = AllData.Tables[21];
-                var RoomList = AllData.Tables[22];
-                var BedList = AllData.Tables[23];
+                var WardList = wardList;
+                var RoomList = roomList;
+                var BedList = bedList;
 
 
                 objResponse.ResultSet = new

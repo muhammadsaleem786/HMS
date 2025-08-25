@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AttendanceService } from '../Employee/Attendance/AttendanceService';
 import { AppointmentService } from './AppointmentService';
 import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo, InvoiceCompanyInfo, emr_notes_favorite } from './AppointmentModel';
 import { emr_prescription_mf, emr_prescription_complaint, emr_prescription_diagnos, emr_prescription_investigation, emr_prescription_observation, emr_prescription_treatment, emr_prescription_treatment_template, emr_medicine } from './../Prescription/PrescriptionModel';
@@ -15,7 +16,6 @@ import { GlobalVariable } from '../../../../AngularConfig/global';
 import * as moment from 'moment/moment';
 import { IMyDateModel } from 'mydatepicker';
 import { ValidationVariables } from '../../../../AngularConfig/global';
-import { ApplicationUserModel } from '../../setup/Setting/ApplicationUser/ApplicationUserModel';
 import { ApplicationUserService } from '../../setup/Setting/ApplicationUser/ApplicationUserService';
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
 import { BillingService } from './../Billing/BillingService';
@@ -28,6 +28,7 @@ declare var $: any;
 import swal from 'sweetalert';
 import { debounce } from 'lodash';
 import { EncryptionService } from '../../../../CommonService/encryption.service';
+
 @Component({
     moduleId: module.id,
     templateUrl: 'AppointmentComponentList.html',
@@ -38,6 +39,7 @@ export class AppointmentComponentList implements OnInit {
     hour: number;
     minute: number;
     second: number;
+    public keyword: string;
     time = { hour: 13, minute: 30 };
     hourStep = 1;
     minuteStep = 15;
@@ -54,7 +56,6 @@ export class AppointmentComponentList implements OnInit {
     public VitalModel = new emr_vital();
     public Form1: FormGroup;
     public Form2: FormGroup;
-    public Form3: FormGroup;
     public Form4: FormGroup;
     public Form5: FormGroup;
     public Form6: FormGroup;
@@ -72,7 +73,6 @@ export class AppointmentComponentList implements OnInit {
     public GenderList: any[] = [];
     public UnitList: any[] = [];
     public MadicineTypeList: any[] = [];
-    public TemplateList: any[] = [];
     public MedicineList: any[] = [];
     public PatientVitalList: any[] = [];
     public DoctorList: any[] = [];
@@ -157,7 +157,7 @@ export class AppointmentComponentList implements OnInit {
     public RoleName: string;
     public IsPreviousApp: boolean = false;
     public InvoiceCompanyInfo = new InvoiceCompanyInfo();
-    public Usermodel = new ApplicationUserModel(); public sub: any;
+    public sub: any;
     public SpecialtyList = [];
     public ComplaintList: any[] = [];
     public ObservationList: any[] = [];
@@ -182,7 +182,7 @@ export class AppointmentComponentList implements OnInit {
         closeOnSelect: false,
         showCheckAll: true,
         showUncheckAll: true,
-        dynamicTitleMaxItems: 3,
+        dynamicTitleMaxItems: 1,
         displayAllSelectedText: true,
         maxHeight: '1000px',
     };
@@ -197,7 +197,6 @@ export class AppointmentComponentList implements OnInit {
     @ViewChild("longContent") ModelContent: TemplateRef<any>;
     @ViewChild("content") PatientContent: TemplateRef<any>;
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
-    @ViewChild("DocContent") DocContent: TemplateRef<any>;
     @ViewChild("EmailModal") EmailModal: TemplateRef<any>;
     @ViewChild("Confirmation") ModelConfirmation: TemplateRef<any>;
     @ViewChild("MedicineTemplate") MedicineTemplateContent: TemplateRef<any>;
@@ -222,9 +221,9 @@ export class AppointmentComponentList implements OnInit {
             if (this.PrescriptionModel.PatientId != null && this.PrescriptionModel.PatientId != undefined) {
                 this.AppointmentModel.PatientId = this.PrescriptionModel.PatientId;
                 this.AppointmentModel.PatientName = this.PrescriptionModel.PatientName;
-                 this.AppointmentModel.CNIC = this.model.CNIC;
+                this.AppointmentModel.CNIC = this.model.CNIC;
                 this.AppointmentModel.Mobile = this.model.Mobile;
-           
+
                 this.AppointmentModel.DoctorId = this.PrescriptionModel.DoctorId;
             }
             this.LoadSearchableDropdown();
@@ -232,18 +231,6 @@ export class AppointmentComponentList implements OnInit {
     }
     openAppointmentApptMoreDetailModal(ApptMoreDetail) {
         this.modalService.open(ApptMoreDetail, { size: 'lg' });
-    }
-    openDoctorModal(DocContent) {
-        this._ApplicationUserService.GetRoles().then(m => {
-            if (m.IsSuccess) {
-                this.RoleList = m.ResultSet.role;
-                this.WorkingdayList = m.ResultSet.dropdown.filter(a => a.DropDownID === 12);
-                this.SpecialtyList = m.ResultSet.dropdown.filter(a => a.DropDownID === 24);
-                const Id = this.RoleList.filter(a => a.RoleName == "Doctor");
-                this.Usermodel.adm_user_company[0].RoleID = Id[0].ID;
-                this.modalService.open(DocContent, { size: 'md' });
-            }
-        });
     }
     OpenMedicinePrescription() {
         this.loader.ShowLoader();
@@ -263,7 +250,6 @@ export class AppointmentComponentList implements OnInit {
         this._AppointmentService.TempleteList().then(m => {
             if (m.IsSuccess) {
                 this.loader.HideLoader();
-                this.TemplateList = m.ResultSet.result;
                 this.modalService.open(MedicineTemplate, { size: 'md' });
             } else
                 this.loader.HideLoader();
@@ -331,7 +317,7 @@ export class AppointmentComponentList implements OnInit {
         $('#PatientNameSearch').autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                $("#PatientNameSearch").val("");
+                //$("#PatientNameSearch").val("");
                 this.SearhPatientId = 0;
                 this._AppointmentService.searchByName(request.term).then(m => {
                     response(m.ResultSet.PatientInfo);
@@ -390,27 +376,6 @@ export class AppointmentComponentList implements OnInit {
             ServiceName: [''],
             Remarks: [''],
             OutstandingBalance: [''],
-        });
-        this.Form3 = this._fb.group({
-            Name: [''],
-            UserID: [''],
-            CompanyID: [''],
-            RoleID: ['', [Validators.required]],
-            Email: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.EmailPattern)]],
-            PhoneNo: ['', [<any>Validators.required]],
-            AdminID: [''],
-            IsDefault: [''],
-            SlotTime: ['', [Validators.required]],
-            AppStartTime: ['', [Validators.required]],
-            IsOverLap: [''],
-            AppEndTime: ['', [Validators.required]],
-            DocWorkingDay: [''],
-            Designation: [''],
-            Qualification: [''],
-            Type: [''],
-            SpecialtyId: [''],
-            SpecialtyDropdownId: [''],
-            Pwd: ['', [Validators.required, <any>Validators.minLength(6)]],
         });
         this.Form4 = this._fb.group({
             Remarks: [''],
@@ -507,6 +472,7 @@ export class AppointmentComponentList implements OnInit {
             OutstandingBalance: ['']
         });
     }
+
     loadVital() {
         this.IsPatient = false;
         this._router.navigate(['home/Appoint/VitalPres'], { queryParams: { id: this.PatientId } });
@@ -539,9 +505,8 @@ export class AppointmentComponentList implements OnInit {
         this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
         this._AppointmentService
             .GetPatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-                debugger
                 this.PModel.TotalRecord = m.TotalRecord;
-                if (this.GenderIds != null) {
+                if (this.GenderIds != null && m.GenderList != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
                 }
                 else
@@ -678,6 +643,11 @@ export class AppointmentComponentList implements OnInit {
         }
     }
     onPatientNameEvent(event: any, id: any) {
+        const control = this.Form2.get('PatientName');
+        if (control.invalid || id == undefined) {
+            this.toastr.Error("Please first select patient");
+            return;
+        }
         if (event != null && event != undefined && event != "") {
             this.loader.ShowLoader();
             this._PatientService.GetById(id).then(m => {
@@ -943,7 +913,7 @@ export class AppointmentComponentList implements OnInit {
                     }],
                 });
             });
-        } 
+        }
         this.AppointmentList.forEach(x => {
             this.Events.push({
                 'id': x.ID,
@@ -1711,7 +1681,7 @@ export class AppointmentComponentList implements OnInit {
         this._AppointmentService
             .GetAppointFilterData(date.toString(), StatusID.toString(), this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
-                
+
                 if (this.GenderIds != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
                 }
@@ -2037,7 +2007,6 @@ export class AppointmentComponentList implements OnInit {
     }
     showPatientDetail(id: any, date: any, AppId: any) {
         if (id != undefined && AppId != undefined) {
-            $("#PatientNameSearch").val("");
             this.IsLoadDocument = false;
             this.IsLoadBill = false;
             this.IsPrevious = false;
@@ -2267,34 +2236,6 @@ export class AppointmentComponentList implements OnInit {
         this.IsPrevious = false;
         this.IsVital = false;
         this.AppointId = null;
-    }
-    SaveOrUpdate(isValid: boolean): void {
-        this.submitted = true; // set form submit to true
-        if (isValid) {
-            var multiid = parseInt(localStorage.getItem('lingualId'));
-            this.submitted = false;
-            this.loader.ShowLoader();
-            this.Usermodel.MultilingualId = multiid;
-            if (this.Usermodel.SlotTime != null) {
-                var time = '0' + ':' + this.Usermodel.SlotTime + ':0'
-                this.Usermodel.SlotTime = time;
-            }
-            this._AppointmentService.UserSave(this.Usermodel).then(m => {
-                var result = JSON.parse(m._body);
-                if (result.IsSuccess) {
-                    this.toastr.Success(result.Message);
-                    this.DoctorList = [];
-                    this.DoctorList = result.ResultSet.DoctorList.DoctList;
-                    this.DoctorClanderList = result.ResultSet.DoctorCalander;
-                    this.Usermodel = new ApplicationUserModel();
-                    this.modalService.dismissAll(this.DocContent);
-                }
-                else
-                    this.toastr.Error('Error', result.ErrorMessage);
-
-                this.loader.HideLoader();
-            });
-        }
     }
     getPages(totalRecord: number, recordPerPage: number) {
 

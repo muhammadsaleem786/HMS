@@ -1121,26 +1121,23 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                 var AppointmentList = AppointmentInfo(CompanyID);
 
-                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
-                var BloodList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 17).ToList();
 
-                var StatusList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 1 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
+                var dropDownIds = new[] { 2, 17, 1,22,23 };
+                var allDropDownValues =  _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
                 {
-                    ID = m.ID,
-                    Value = m.Value
-                }).ToList();
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
 
-                var BillTypeList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 22 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
-                {
-                    ID = m.ID,
-                    Value = m.Value
-                }).ToList();
-
-                var TittleList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 23 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
-                {
-                    ID = m.ID,
-                    Value = m.Value
-                }).ToList();
+                var GenderType = allDropDownValues.Where(e => e.DropDownID == 2).ToList();
+                var BloodList = allDropDownValues.Where(e => e.DropDownID == 17).ToList();
+                var StatusList = allDropDownValues.Where(a => a.DropDownID == 1).ToList();
+                var BillTypeList = allDropDownValues.Where(a => a.DropDownID == 22).ToList();
+                var TittleList = allDropDownValues.Where(a => a.DropDownID == 23).ToList();
                 decimal UserID = Request.LoginID();
                 var DoctorList = _service.DoctorList(CompanyID, UserID);
 

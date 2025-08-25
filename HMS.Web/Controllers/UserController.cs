@@ -190,6 +190,7 @@ namespace HMS.Web.API.Controllers
                     Logger.Trace.Error(ex);
                 }
             }
+
             catch (Exception ex)
             {
                 objResponse.IsSuccess = false;

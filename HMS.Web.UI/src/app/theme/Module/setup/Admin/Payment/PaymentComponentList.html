@@ -1,5 +1,5 @@
 ﻿<div class="margin-t-68 removeAction">
-    <div class="row headSection paginationHead">        
+    <div class="row headSection paginationHead">
         <div class="col-sm-8">
             <div class="row">
                 <div class="col max-content">
@@ -7,7 +7,16 @@
                         Admin
                     </h3>
                 </div>
-            </div>            
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
+                    <option *ngFor="let item of StatusList" [value]="item.ID">
+                        {{item.Value}}
+                    </option>
+                </select>
+            </div>
         </div>
         <div class="col-sm-4 text-right flex-row flex-end">
             <a class="btn btn-danger" (click)="AddSignUp('0')">Sign Up</a>

@@ -75,3 +75,63 @@ export class VacationAndSickLeaveModel {
     RemainingVacationHours: number = 0;
     RemainingSickHours: number = 0;
 }
+
+
+export class AppointmentDto {
+    StartTime: string | null;
+    EndTime: string | null;
+    PatientName: string;
+    ScheduledStatus: string;
+    DoctorName: string;
+}
+
+export class BirthdayDto {
+    Id: number;
+    PatientName: string;
+    DOB: Date | null;
+    Image: string;
+    Gender: number;
+}
+
+export class FollowUpDto {
+    AppointmentTime: string | null;
+    PatientName: string;
+    DoctorName: string;
+    Id: number; // use number instead of decimal in TS
+    IsCreateAppointment: boolean;
+    EndTime: string | null;
+    Mobile: string;
+    FollowUpNotes: string;
+}
+export class IncomeAndExpense {
+    MonthName: string;
+    ExAmount: number;
+    Income: number;
+}
+export class DashboardSummaryDto {
+    Child: number=0;
+    NewPatients: number = 0;
+    Male: number = 0;
+    Female: number = 0;
+    Other: number = 0;
+    PatientVisits: number = 0;
+    TotalAppointments: number = 0;
+    MissedAppointments: number = 0;
+    PaymentCollection: number = 0;
+    OutstandingAmount: number = 0;
+    ProfessionalFees: number = 0;
+    Expenses: number = 0;
+    ProExpenses: number = 0;
+    PurPayment: number = 0;
+    OutStandingIncome: number = 0;
+    DueIncome: number = 0;
+    Income: number = 0;
+    PharmacyIncome: number = 0;
+    IPDIncome: number = 0;
+    PathologyIncome: number = 0;
+    GeneralIncome: number = 0;
+    TodaysAppointments: AppointmentDto[];
+    TodaysBirthdays: BirthdayDto[];
+    TodaysFollowUps: FollowUpDto[];
+    IncomeAndExpense: IncomeAndExpense[];
+}

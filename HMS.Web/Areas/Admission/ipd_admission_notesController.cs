@@ -12,6 +12,7 @@ using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -313,9 +314,9 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-                var CurntPrevDate = _emr_appointment_mfService.Queryable().Where(a => a.CompanyId == CompanyID && a.PatientId.ToString() == PatientId).Select(z => new
+                var CurntPrevDate = _emr_appointment_mfService.Queryable().Where(a => a.CompanyId == companyId && a.PatientId.ToString() == PatientId).Select(z => new
                 {
                     AppointmentId = z.ID,
                     AppointmentDate = z.AppointmentDate,
@@ -330,15 +331,28 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 }).ToList();
 
 
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@UserId", UserID);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
+                var dropDownIds = new[] { 31, 32, 27 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+                var imageTypeList = allDropDownValues
+.Where(x => x.DropDownID == 27).ToList();
 
-                var StatusList = AllData.Tables[17];
-                var ResultList = AllData.Tables[18];
-                var ImagingTypeList = AllData.Tables[19];
+                var statusTypeList = allDropDownValues
+.Where(x => x.DropDownID == 31).ToList();
+
+                var resultTypeList = allDropDownValues
+               .Where(x => x.DropDownID == 32).ToList();
+
+                var StatusList = statusTypeList;
+                var ResultList = resultTypeList;
+                var ImagingTypeList = imageTypeList;
 
 
                 objResponse.ResultSet = new

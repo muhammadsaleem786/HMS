@@ -103,14 +103,14 @@ namespace HMS.Repository.Repositories.Admin
             }
             return objResult;
         }
-        public static PaginationResult PaymentPagination(this IRepository<adm_user_mf> repository, decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, bool IgnorePaging = false)
+        public static PaginationResult PaymentPagination(this IRepository<adm_user_mf> repository, decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)
         {
             var objResult = new PaginationResult();
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<adm_user_mf, bool>> predicate = (e => e.adm_user_company.Any(x => x.AdminID == x.UserID));
-
+                Expression<Func<adm_user_mf, bool>> predicate = (e => FilterID == "2" ? e.IsActivated == true : FilterID == "3" ? e.IsActivated == false : e.IsActivated == e.IsActivated && e.adm_user_company.Any(x => x.CompanyID == CompanyID));
+               
                 bool DisplayUserID, DisplayRoleID, DisplayEmail, DisplayLastLogin;
                 bool OrderByUserID, OrderByRoleID, OrderByEmail, OrderByLastLogin;
 
@@ -167,6 +167,7 @@ namespace HMS.Repository.Repositories.Admin
                             PhoneNo = s.PhoneNo,
                             LastLogin = s.LastSignIn,
                             Date = s.ActivationTokenDate,
+                            Status = s.IsActivated == true ? "Active" : "InActive",
                             ClinicName = s.adm_user_company.Select(x => x.adm_company).FirstOrDefault().CompanyName,
                         }).OrderByDescending(a => a.ID).ToList<object>();
                 }
@@ -184,6 +185,7 @@ namespace HMS.Repository.Repositories.Admin
                            PhoneNo = s.PhoneNo,
                            LastLogin = s.LastSignIn,
                            Date = s.ActivationTokenDate,
+                           Status = s.IsActivated == true ? "Active" : "InActive",
                            ClinicName = s.adm_user_company.Select(x => x.adm_company).FirstOrDefault().CompanyName,
                        }).OrderByDescending(a => a.ID).ToList<object>();
                 }

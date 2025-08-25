@@ -19,7 +19,7 @@
                                             </Datetime-Component>
                                         </div>
                                         <div class="form-group mb-0 col border-right border-left">
-                                            <input type="text" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName" (focusout)="onFocusOutEvent(PatientName,SearhPatientId)" id="PatientNameSearch" placeholder="Search Patient">
+                                            <input type="text" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName" (focusout)="onFocusOutEvent(PatientName,SearhPatientId)" id="PatientNameSearch" placeholder="Search by mobile no">
                                         </div>
                                         <div class="input-group-icon">
                                             <div ngbDropdown container="body">
@@ -177,9 +177,7 @@
                                             <div class="card-">
                                                 <div class="card-body p-2">
                                                     <div class="btn_calendar_right text-right" *ngIf="PatientDetailInfo==false">
-                                                        <button class="btn btn-danger mb-2 mr-2" (click)="openDoctorModal(DocContent)" *ngIf="DoctAddRights.CreateRights">
-                                                            <i class="icon icon-plus"></i>  Doctors
-                                                        </button>
+                                                        
                                                         <button class="btn btn-danger mb-2 mr-2" (click)="openAppointmentModal(longContent)" *ngIf="ControlRights.CreateRights">
                                                             <i class="icon icon-plus"></i> Appointment
                                                         </button>
@@ -1484,7 +1482,7 @@
                                         </div>
                                         <div class="col-8">
                                             <div class="input-group mb-3">
-                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (click)="LoadSearchableDropdown()" (focusout)="onPatientNameEvent(AppointmentModel.PatientName,AppointmentModel.PatientId)" placeholder="Search by name/mobile or cnic" autocomplete="off">
+                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (click)="LoadSearchableDropdown()" (focusout)="onPatientNameEvent(AppointmentModel.PatientName,AppointmentModel.PatientId)" placeholder="Search by mobile no" autocomplete="off">
                                                 <div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient(content)">
                                                     <span class="svgIcon">
                                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
@@ -1740,7 +1738,7 @@
                                     (click)="handlePrint('P')">
                                 <i class="icon icon-printer"></i> Print Coupon
                             </button>
-                           <button type="button"(click)="handlePrint('S')" class="btn btn-primary">Save</button>
+                           <button type="button"(click)="handlePrint('S')" class="btn btn-primary"*ngIf="ControlRights.CreateRights">Save</button>
                         </div>
                     </form>
                 </ng-template>
@@ -1763,7 +1761,7 @@
                                         <div class="col-8">
                                             <div class="input-group mb-3">
 
-                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" placeholder="Search by name/mobile or cnic" autocomplete="off">
+                                                <input type="text" id="PatientSearchByName" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="AppointmentModel.PatientName" (focusout)="onPatientNameEvent(AppointmentModel.PatientName)" placeholder="Search by mobile no" autocomplete="off">
                                                 <div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient(content)">
                                                     <span class="svgIcon">
                                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
@@ -1902,231 +1900,6 @@
     </div>
 </ng-template>
 
-<!-- =========== Add Doctor Model ===================-->
-<ng-template #DocContent let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title"><img src="../assets/app/media/img/icons/adddoctor.png" class="img-fluid icon"> Add Doctors</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <form [formGroup]="Form3" novalidate (ngSubmit)="SaveOrUpdate(Form3.valid)">
-        <div class="modal-body  DoctorShiftModal">
-            <div class="row">
-                <div class="col-sm-12 px-5">
-
-
-                    <div class="row form-group">
-                        <div class="col-4 text-right">
-                            <label>Name</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="text" formControlName="Name" [(ngModel)]="Usermodel.Name" class="form-control" maxlength="250">
-                            <small *ngIf="Form3.controls.Name.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-right required">
-                            <label>Email*</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="text" formControlName="Email" [(ngModel)]="Usermodel.Email" class="form-control" maxlength="250">
-                            <small *ngIf="Form3.controls.Email.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                            <small *ngIf="Form3.controls.Email.hasError('pattern') && !Form3.controls.Email.hasError('required')">
-                                Please enter valid email.
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="row form-group">
-                        <div class="col-4 text-right">
-                            <label>Password</label>
-                        </div>
-                        <div class="col-8">
-                            <div class="input-group">
-                                <input class="form-control form-control-sm md-input" id="password-field" type="password" formControlName="Pwd" [(ngModel)]="Usermodel.Pwd" maxlength="1000" placeholder="Password">
-
-                                <span class="input-group-addon btn btn-light">
-                                    <span toggle="#password-field" class="icon icon-eye field-icon toggle-password"></span>
-                                </span>
-                            </div>
-                            <small *ngIf="Form3.controls.Pwd.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                            <small *ngIf="Form3.controls.Pwd.hasError('minlength') && !Form3.controls.Pwd.hasError('required')">
-                                At least 6 chracters
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="row form-group">
-                        <div class="col-4 text-right required">
-                            <label>Phone Number*</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="text" formControlName="PhoneNo" [(ngModel)]="Usermodel.PhoneNo" appPhoneMask class="form-control" maxlength="50">
-                            <small *ngIf="Form3.controls.PhoneNo.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="row form-group">
-                        <div class="col">
-                            <hr>
-                        </div>
-
-                    </div>
-
-                    <div class="row form-group">
-                        <div class="col-4 text-right required">
-                            <label>Role *</label>
-                        </div>
-                        <div class="col-8">
-                            <select formControlName="RoleID" [(ngModel)]="Usermodel.adm_user_company[0].RoleID" [attr.disabled]="true" class="form-control">
-                                <option *ngFor="let item of RoleList" [value]="item.ID">
-                                    {{item.RoleName}}
-                                </option>
-                            </select>
-
-                            <small *ngIf="Form3.controls.RoleID.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
-
-
-                    <div class="row form-group">
-                        <div class="col-4 text-right">
-                            <label> Overlapping </label>
-                        </div>
-                        <div class="col-8">
-
-                            <input type="checkbox" formControlName="IsOverLap" [(ngModel)]="Usermodel.IsOverLap" />
-                            <label class="ml-2">Allow ?</label>
-                        </div>
-                    </div>
-                    <div class="row form-group multiSelect">
-                        <div class="col-4 text-right">
-                            <label>Off Day</label>
-                        </div>
-                        <div class="col-8">
-                            <ss-multiselect-dropdown class="pull-right howmanychecked" [options]="WorkingdayList" [texts]="ColumnTexts" [settings]="ColumnSettings" formControlName="DocWorkingDay" [(ngModel)]="model.DocWorkingDay"></ss-multiselect-dropdown>
-                            <small *ngIf="Form3.controls.DocWorkingDay.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
-
-
-                    <div class="row form-group">
-                        <div class="col-4 text-right required">
-
-                            <label>Duration *</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="text" formControlName="SlotTime" [(ngModel)]="Usermodel.SlotTime" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                            <small *ngIf="Form3.controls.SlotTime.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
-
-
-                    <div class="row form-group">
-                        <div class="col-4 text-right required">
-                            <label>Start Time *</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="time" formControlName="AppStartTime" [(ngModel)]="Usermodel.AppStartTime" class="form-control time" value="00:00">
-
-                            <small *ngIf="Form3.controls.AppStartTime.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="row form-group">
-                        <div class="col-4 text-right required">
-
-                            <label>End Time *</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="time" formControlName="AppEndTime" [(ngModel)]="Usermodel.AppEndTime" class="form-control time">
-
-                            <small *ngIf="Form3.controls.AppEndTime.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="row form-group">
-                        <div class="col-4 text-right required">
-
-                            <label>Qualification</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="text" formControlName="Qualification" [(ngModel)]="Usermodel.Qualification" class="form-control">
-
-                            <small *ngIf="Form3.controls.Qualification.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-right required">
-
-                            <label>Designation</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="text" formControlName="Designation" [(ngModel)]="Usermodel.Designation" class="form-control">
-
-                            <small *ngIf="Form3.controls.Designation.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-right required">
-
-                            <label>Specialty</label>
-                        </div>
-                        <div class="col-8">
-                            <select formControlName="SpecialtyId" [(ngModel)]="Usermodel.SpecialtyId" class="form-control">
-                                <option *ngFor="let item of SpecialtyList" [value]="item.id">
-                                    {{item.name}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-right">
-
-                        </div>
-                        <div class="col-8">
-                            <span class="mr-5 ml-4">
-                                <input type="radio" class="custom-control-input" name="Type" id="Type" value="R" formControlName="Type" [(ngModel)]="Usermodel.Type">
-                                <label class="custom-control-label" for="Type">Resident </label>
-                            </span>
-                            <span>
-                                <input type="radio" class="custom-control-input" name="Type" id="Type1" value="V" formControlName="Type" [(ngModel)]="Usermodel.Type">
-                                <label class="custom-control-label" for="Type1">Visiting</label>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button id="saveSchedule" type="submit" class="btn btn-primary" *ngIf="!IsAdmin && ControlRights.CreateRights">Save</button>
-            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
-        </div>
-    </form>
-</ng-template>
 <!-------Add Medicine Model-->
 <ng-template #MedicinePresModal let-modal>
     <div class="modal-header">

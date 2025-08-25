@@ -86,6 +86,7 @@
     <Compile Include="CustomModel\DashboardDefaultConDedModel.cs" />
     <Compile Include="CustomModel\DashboardFilterModel.cs" />
     <Compile Include="CustomModel\DashboardPrEmployeeModel.cs" />
+    <Compile Include="CustomModel\DashboardSummaryDto.cs" />
     <Compile Include="CustomModel\DoctorList.cs" />
     <Compile Include="CustomModel\EmailModel.cs" />
     <Compile Include="CustomModel\EmpBulkUpdateModel.cs" />

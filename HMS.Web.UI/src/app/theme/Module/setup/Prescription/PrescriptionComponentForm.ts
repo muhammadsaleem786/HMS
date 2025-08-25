@@ -43,6 +43,7 @@ export class PrescriptionComponentForm implements OnInit {
     public MedicineModel = new emr_medicine();
     public UnitList: any[] = [];
     public MadicineTypeList: any[] = [];
+    public ReminderList: any[] = [];
     public ClinicList: any[] = [];
     public TemplateList: any[] = [];
     public MedicineList: any[] = [];
@@ -114,7 +115,6 @@ export class PrescriptionComponentForm implements OnInit {
     @ViewChild("MedicineTemplate") MedicineTemplateContent: TemplateRef<any>; @ViewChild("longContent") ModelContent: TemplateRef<any>;
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
     openAppointmentModal(longContent) {
-
         this.AppointmentModel = new emr_Appointment();
         this.modalService.open(longContent, { size: 'lg' });
         setTimeout(() => {
@@ -125,6 +125,8 @@ export class PrescriptionComponentForm implements OnInit {
                 this.AppointmentModel.TokenNo = this.TokenNo;
                 this.AppointmentModel.AppointmentDate = new Date();
                 this.AppointmentModel.BillDate = new Date();
+                if (this.ReminderList.length > 0)
+                    this.AppointmentModel.ReminderId = this.ReminderList[0].ID;
                 this.CalAmount();
             }
             if (this.PrescriptionModel.PatientId != null && this.PrescriptionModel.PatientId != undefined) {
@@ -133,10 +135,13 @@ export class PrescriptionComponentForm implements OnInit {
                 this.AppointmentModel.CNIC = this.patientInfo.CNIC;
                 this.AppointmentModel.Mobile = this.patientInfo.Mobile;
                 this.AppointmentModel.DoctorId = this.PrescriptionModel.DoctorId;
+                this.AppointmentModel.ServiceId = this.patientInfo.ServiceID;
+                this.AppointmentModel.ServiceName = this.patientInfo.ServiceName;
+                this.AppointmentModel.Price = this.patientInfo.ServicePrice;
+                this.AppointmentModel.PaidAmount = this.patientInfo.ServicePrice;
                 this.AppointmentModel.AppointmentDate = new Date();
                 this.AppointmentModel.BillDate = new Date();
             }
-            //this.LoadSearchableDropdown();
         }, 1000);
     }
     openNewPatient(content) {
@@ -215,7 +220,7 @@ export class PrescriptionComponentForm implements OnInit {
             AppointmentDate: ['', [Validators.required]],
             AppointmentTime: [''],
             StatusId: [''],
-
+            ReminderId: [''],
             //bill field
             AppointmentId: [''],
             ServiceId: [''],
@@ -294,7 +299,6 @@ export class PrescriptionComponentForm implements OnInit {
             .pipe(filter(params => params.id))
             .subscribe(params => {
                 this.PrescriptionModel.ID = params.id;
-
                 if (this.PrescriptionModel.ID > 0) {
                     this.loader.ShowLoader();
                     this.IsEdit = true;
@@ -318,7 +322,7 @@ export class PrescriptionComponentForm implements OnInit {
                             this.PrescriptionModel = m.ResultSet.result;
                             this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(m.ResultSet.result.AppointmentDate);
                             this.CurntPrevDateList = m.ResultSet.CurntPrevDateList;
-                            this.PrescriptionModel.PatientName = m.ResultSet.PatientInfo[0].PatientName;
+                            this.PrescriptionModel.PatientName = m.ResultSet.PatientInfo.PatientName;
 
                             this.MedicineList = m.ResultSet.MedicineList;
                             if (m.ResultSet.result.emr_prescription_treatment_template.length > 0)
@@ -751,6 +755,7 @@ export class PrescriptionComponentForm implements OnInit {
             this.emr_prescription_observation_dynamicArray = [];
             this.GenderList = m.ResultSet.GenderList;
             this.DoctorList = m.ResultSet.DoctorList;
+
             if (this.DoctorList.length == 1)
                 this.PrescriptionModel.DoctorId = this.DoctorList[0].ID;
             this.DoctorClanderList = m.ResultSet.DoctorList;
@@ -765,8 +770,8 @@ export class PrescriptionComponentForm implements OnInit {
             this.ServiceType = m.ResultSet.ServiceType;
             this.TokenNo = m.ResultSet.TokenNo;
             this.Followuplist = m.ResultSet.Followuplist;
+            this.ReminderList = m.ResultSet.ReminderList;
             this.CurntPrevDateList.push({ "AppointmentDate": this._CommonService.GetFormatDate(new Date()) });
-
             if (m.ResultSet.ServiceType != null) {
                 this.AppointmentModel.ServiceId = m.ResultSet.ServiceType.ID;
                 this.AppointmentModel.ServiceName = m.ResultSet.ServiceType.ServiceName;
@@ -980,7 +985,6 @@ export class PrescriptionComponentForm implements OnInit {
             }
         });
     }
-
     LoadAppPatient() {
         //Search By Name
         $('#AppPatientSearchByName').autocomplete({
@@ -1012,6 +1016,7 @@ export class PrescriptionComponentForm implements OnInit {
             },
             minLength: 3,
             select: (event, ui) => {
+                this.patientInfo = ui.item;
                 this.PrescriptionModel.PatientName = ui.item.label;
                 this.PrescriptionModel.PatientId = ui.item.value;
                 if (this.PrescriptionModel.PatientId != null && this.PrescriptionModel.DoctorId != null) {
@@ -1032,29 +1037,14 @@ export class PrescriptionComponentForm implements OnInit {
             }
         });
     }
-    onPatientNameEvent(event: any) {
+    onPatientNameEvent(event: any, id: any) {
+        const control = this.Form2.get('PatientName');
+        if (control.invalid || id == undefined) {
+            this.toastr.Error("Please first select patient");
+            return;
+        }
         if (event != null && event != undefined) {
-            //var patientList = this.PatientList.filter(a => a.PatientName == event);
-            //if (patientList.length == 0 || patientList.length == null) {
-            //    swal({
-            //        title: "Are you sure?",
-            //        text: "Are you sure to add new patient.",
-            //        icon: "warning",
-            //        buttons: ['Cancel', 'Yes'],
-            //        dangerMode: true,
-            //    })
-            //        .then((willDelete) => {
-            //            if (willDelete) {
-            //                this.loader.ShowLoader();
-            //                this._AppointmentService.GetEMRNO().then(m => {
-            //                    this.model.MRNO = m.ResultSet.MRNO;
-            //                    this.model.PatientName = event;
-            //                    this.modalService.open(this.PatientContent, { size: 'lg' });
-            //                    this.loader.HideLoader();
-            //                });
-            //            }
-            //        });
-            //}
+            
 
         }
     }
@@ -1140,7 +1130,6 @@ export class PrescriptionComponentForm implements OnInit {
             source: (request, response) => {
                 this.loader.ShowLoader();
                 this._SaleService.searchByNamePrescription(request.term).then(m => {
-
                     if (m.ResultSet.ItemInfo.length == 0) {
                         this.emr_prescription_treatment_dynamicArray[indx].MedicineId = null;
                         this.emr_prescription_treatment_dynamicArray[indx].Measure = null;
@@ -1427,6 +1416,9 @@ export class PrescriptionComponentForm implements OnInit {
             select: (event, ui) => {
                 this.AppointmentModel.ServiceId = ui.item.value;
                 this.AppointmentModel.ServiceName = ui.item.label;
+                this.AppointmentModel.Price = ui.item.Price;
+                this.AppointmentModel.PaidAmount = ui.item.Price;
+                this.CalAmount();
                 return ui.item.label;
             }
         });
@@ -1731,8 +1723,8 @@ export class PrescriptionComponentForm implements OnInit {
             if (m.IsSuccess) {
                 this.modalService.dismissAll(this.MedicineTemplateContent);
                 this.MedicineList = m.ResultSet.MedicineList;
-                this.PrescriptionModel = m.ResultSet.result;
-                this.PrescriptionModel.PatientName = m.ResultSet.result.emr_patient_mf.PatientName;
+                //this.PrescriptionModel = m.ResultSet.result;
+                //this.PrescriptionModel.PatientName = m.ResultSet.result.emr_patient_mf.PatientName;
                 this.PrescriptionModel.TemplateName = m.ResultSet.result.emr_prescription_treatment_template[0].TemplateName;
 
                 this.emr_prescription_complaint_dynamicArray = [];
@@ -1741,8 +1733,8 @@ export class PrescriptionComponentForm implements OnInit {
                 this.emr_prescription_observation_dynamicArray = [];
                 this.emr_prescription_treatment_dynamicArray = [];
 
-                if (this.PrescriptionModel.emr_prescription_complaint != null) {
-                    this.PrescriptionModel.emr_prescription_complaint.forEach((item, index) => {
+                if (m.ResultSet.result.emr_prescription_complaint != null) {
+                    m.ResultSet.result.emr_prescription_complaint.forEach((item, index) => {
                         var list = this.ComplaintList.filter(a => a.id == item.ComplaintId);
                         if (list.length > 0 || item.ComplaintId == null) {
                             if (item.ComplaintId != null) {
@@ -1761,7 +1753,7 @@ export class PrescriptionComponentForm implements OnInit {
                         this.emr_prescription_complaint_dynamicArray.push(item);
                     });
                     this.ComplaintList.forEach((item, index) => {
-                        var list1 = this.PrescriptionModel.emr_prescription_complaint.filter(a => a.ComplaintId == item.id);
+                        var list1 = m.ResultSet.result.emr_prescription_complaint.filter(a => a.ComplaintId == item.id);
                         if (list1.length == 0 || list1 == undefined) {
                             item.IsSelected = false;
                             item.ComplaintId = item.id;
@@ -1776,8 +1768,8 @@ export class PrescriptionComponentForm implements OnInit {
 
                     });
                 }
-                if (this.PrescriptionModel.emr_prescription_diagnos != null) {
-                    this.PrescriptionModel.emr_prescription_diagnos.forEach((item, index) => {
+                if (m.ResultSet.result.emr_prescription_diagnos != null) {
+                    m.ResultSet.result.emr_prescription_diagnos.forEach((item, index) => {
                         var list = this.DiagnosisList.filter(a => a.id == item.DiagnosId);
                         if (list.length > 0 || item.DiagnosId == null) {
                             if (item.DiagnosId != null) {
@@ -1797,7 +1789,7 @@ export class PrescriptionComponentForm implements OnInit {
                         this.emr_prescription_diagnos_dynamicArray.push(item);
                     });
                     this.DiagnosisList.forEach((item, index) => {
-                        var list1 = this.PrescriptionModel.emr_prescription_diagnos.filter(a => a.DiagnosId == item.id);
+                        var list1 = m.ResultSet.result.emr_prescription_diagnos.filter(a => a.DiagnosId == item.id);
                         if (list1.length == 0 || list1 == undefined) {
                             item.IsSelected = false;
                             item.DiagnosId = item.id;
@@ -1812,8 +1804,8 @@ export class PrescriptionComponentForm implements OnInit {
 
                     });
                 }
-                if (this.PrescriptionModel.emr_prescription_investigation != null) {
-                    this.PrescriptionModel.emr_prescription_investigation.forEach((item, index) => {
+                if (m.ResultSet.result.emr_prescription_investigation != null) {
+                    m.ResultSet.result.emr_prescription_investigation.forEach((item, index) => {
                         var list = this.InvestigationsList.filter(a => a.id == item.InvestigationId);
                         if (list.length > 0 || item.InvestigationId == null) {
                             if (item.InvestigationId != null) {
@@ -1833,7 +1825,7 @@ export class PrescriptionComponentForm implements OnInit {
                         this.emr_prescription_investigation_dynamicArray.push(item);
                     });
                     this.InvestigationsList.forEach((item, index) => {
-                        var list1 = this.PrescriptionModel.emr_prescription_investigation.filter(a => a.InvestigationId == item.id);
+                        var list1 = m.ResultSet.result.emr_prescription_investigation.filter(a => a.InvestigationId == item.id);
                         if (list1.length == 0 || list1 == undefined) {
                             item.IsSelected = false;
                             item.InvestigationId = item.id;
@@ -1848,8 +1840,8 @@ export class PrescriptionComponentForm implements OnInit {
 
                     });
                 }
-                if (this.PrescriptionModel.emr_prescription_observation != null) {
-                    this.PrescriptionModel.emr_prescription_observation.forEach((item, index) => {
+                if (m.ResultSet.result.emr_prescription_observation != null) {
+                    m.ResultSet.result.emr_prescription_observation.forEach((item, index) => {
                         var list = this.ObservationList.filter(a => a.id == item.ObservationId);
                         if (list.length > 0 || item.ObservationId == null) {
                             if (item.ObservationId != null) {
@@ -1869,7 +1861,7 @@ export class PrescriptionComponentForm implements OnInit {
                         this.emr_prescription_observation_dynamicArray.push(item);
                     });
                     this.ObservationList.forEach((item, index) => {
-                        var list1 = this.PrescriptionModel.emr_prescription_observation.filter(a => a.ObservationId == item.id);
+                        var list1 = m.ResultSet.result.emr_prescription_observation.filter(a => a.ObservationId == item.id);
                         if (list1.length == 0 || list1 == undefined) {
                             item.IsSelected = false;
                             item.ObservationId = item.id;

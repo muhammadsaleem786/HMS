@@ -88,7 +88,7 @@ export class ApplicationUserComponentForm implements OnInit {
         ];
         this.loadRole();
         this.Form1 = this._fb.group({
-            Name: [''],
+            Name: ['', [Validators.required]],
             UserID: [''],
             CompanyID: [''],
             RoleID: ['', [Validators.required]],

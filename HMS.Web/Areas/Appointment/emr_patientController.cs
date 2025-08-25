@@ -7,11 +7,13 @@ using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
 using iTextSharp.text;
+using Microsoft.Ajax.Utilities;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -41,10 +43,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iemr_service_mfService _emr_service_mfService;
         private readonly Iemr_patient_billService _emr_patient_billService;
         private readonly Iadm_companyService _adm_companyService;
+        private readonly Iadm_reminder_mfService _adm_reminder_mf;
 
         public emr_patientController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_service_mfService emr_service_mfService, Iemr_patient_billService emr_patient_billService, Iemr_medicineService emr_medicineService, Iemr_patientService service, Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
-            Isys_notification_alertService sys_notification_alertService, Iadm_companyService adm_companyService)
+           Iadm_reminder_mfService adm_reminder_mf, Isys_notification_alertService sys_notification_alertService, Iadm_companyService adm_companyService)
         {
             _adm_companyService = adm_companyService;
             _emr_patient_billService = emr_patient_billService;
@@ -58,6 +61,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _adm_user_tokenService = adm_user_tokenService;
             _emr_medicineService = emr_medicineService;
             _sys_notification_alertService = sys_notification_alertService;
+            _adm_reminder_mf = adm_reminder_mf;
         }
         [HttpPost]
         [HttpGet]
@@ -662,7 +666,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var LIST = AllData.Tables[0].AsEnumerable().Where(row => row["gender"]?.ToString() == StatusId);
 
                 DataTable filteredTable = LIST.Any() ? LIST.CopyToDataTable() : AllData.Tables[0].Clone();
-                if (filteredTable!=null && filteredTable.Rows.Count > 0)
+                if (filteredTable != null && filteredTable.Rows.Count > 0)
                     TotalRecord = filteredTable.Rows[0]["TotalRecord"].ToString();
                 var GenderType = AllData.Tables[1];
                 var StatusList = AllData.Tables[2];
@@ -950,59 +954,55 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 int userid = Convert.ToInt32(Request.LoginID());
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@UserId", userid);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
+                var dropDownIds = new[] { 2, 17, 1, 22, 23 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+                var ganderList = allDropDownValues
+.Where(x => x.DropDownID == 2).ToList();
 
+                var bloodList = allDropDownValues
+.Where(x => x.DropDownID == 17).ToList();
 
-                var GenderType = AllData.Tables[0];//_sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
-                var BloodList = AllData.Tables[6];//_sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 17).ToList();
+                var statusList = allDropDownValues
+               .Where(x => x.DropDownID == 1).ToList();
 
-                var StatusList = AllData.Tables[10];//_sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 1 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
-                //{
-                //    ID = m.ID,
-                //    Value = m.Value
-                //}).ToList();
-
-                var BillTypeList = AllData.Tables[11];//_sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 22 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
-                //{
-                //    ID = m.ID,
-                //    Value = m.Value
-                //}).ToList();
-
-                var TittleList = AllData.Tables[12];//_sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 23 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
-                //{
-                //    ID = m.ID,
-                //    Value = m.Value
-                //}).ToList();
-
-
-                //decimal UserID = Request.LoginID();
-                var DoctorList = AllData.Tables[1];//_service.DoctorList(CompanyID, UserID);
-
-                //var userObj = _adm_userService.Queryable().Where(a => a.ID == UserID).FirstOrDefault();
-
+                var billTypeList = allDropDownValues
+               .Where(x => x.DropDownID == 22).ToList();
+                var titleList = allDropDownValues
+               .Where(x => x.DropDownID == 23).ToList();
+                var isShowDoctorIds = _adm_userService.Queryable()
+.Where(x => x.ID == userid)
+.Select(x => x.IsShowDoctor)
+.FirstOrDefault();
+                var mrNo = _service.Queryable()
+   .Where(p => p.CompanyId == companyId)
+   .Max(p => (int?)p.ID) ?? 0;
+                mrNo += 1;
+                var DoctorList = _service.DoctorList(companyId, userid);
+                var GenderType = ganderList;
+                var BloodList = bloodList;
+                var StatusList = statusList;
+                var BillTypeList = billTypeList;
+                var TittleList = titleList;
                 decimal[] IdList = null;
-                var isShowIds = AllData.Tables[2].Rows[0]["IsShowDoctorIds"].ToString();
-                if (isShowIds != "")
+                var isShowIds = isShowDoctorIds;
+                if (!string.IsNullOrWhiteSpace(isShowIds))
                     IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
-                var DoctorCalander = AllData.Tables[3];
+                var DoctorCalander = DoctorList;
 
 
-                decimal getMaxMRNO = Convert.ToDecimal(AllData.Tables[14].Rows[0]["MRNO"].ToString());
+                decimal getMaxMRNO = mrNo;
                 string MRNO = "";
                 MRNO = (getMaxMRNO).ToString("0000000000");
-
-                //string MRNO = CompanyID.ToString();
-                //decimal? maxid = _service.Queryable().Where(a => a.CompanyId == CompanyID).Max(a => (decimal?)a.ID);
-
-                //var getMaxVal = _service.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == maxid).Select(a => new { a.ID }).FirstOrDefault();
-                //MRNO = ((getMaxVal.ID) + 1).ToString("0000000000");
-
                 objResponse.ResultSet = new
                 {
                     MRNO = MRNO,
@@ -1030,19 +1030,36 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 int userid = Convert.ToInt32(Request.LoginID());
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@UserId", userid);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
-                decimal getMaxMRNO = Convert.ToDecimal(AllData.Tables[14].Rows[0]["MRNO"].ToString());
+                var mrNo = _service.Queryable()
+.Where(p => p.CompanyId == companyId)
+.Max(p => (int?)p.ID) ?? 0;
+                mrNo += 1;
+                var dropDownIds = new[] { 2, 22, 23 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+
+                var genderList = allDropDownValues
+ .Where(x => x.DropDownID == 2).ToList();
+                var billTypeList = allDropDownValues
+   .Where(x => x.DropDownID == 22).ToList();
+                var titleList = allDropDownValues
+   .Where(x => x.DropDownID == 23).ToList();
+                decimal getMaxMRNO = mrNo;
                 string MRNO = "";
                 MRNO = (getMaxMRNO).ToString("0000000000");
-                var GenderList = AllData.Tables[0];
-                var BillTypeList = AllData.Tables[11];
-                var TittleList = AllData.Tables[12];
+
+                var GenderList = genderList;
+                var BillTypeList = billTypeList;
+                var TittleList = titleList;
                 objResponse.ResultSet = new
                 {
                     BillTypeList = BillTypeList,
@@ -1147,10 +1164,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                 var ServiceType = _emr_service_mfService.Queryable().Where(e => e.CompanyId == CompanyID && e.ServiceName == "Consultation")
                   .Select(a => new { a.ID, a.ServiceName, a.Price }).FirstOrDefault();
-                decimal TokenNo = 1;
-                if (_emr_appointment_mfService.Queryable().Where(a => a.CompanyId == CompanyID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(todayDate)).Count() > 0)
-                    TokenNo = _emr_appointment_mfService.Queryable().Where(a => a.CompanyId == CompanyID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(todayDate)).Max(e => e.TokenNo) + 1;
-
+                var nextToken = GetNextToken(CompanyID);
+                var reminders = _adm_reminder_mf.Queryable()
+  .Where(r => r.CompanyId == CompanyID)
+  .Select(r => new { r.ID, Value = r.Name })
+  .ToList();
 
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
@@ -1164,8 +1182,9 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     BillTypeList = BillTypeList,
                     TittleList = TittleList,
                     ServiceType = ServiceType,
-                    TokenNo = TokenNo,
+                    TokenNo = nextToken,
                     AppointmentList = AppointmentList,
+                    ReminderList = reminders
                 };
             }
             catch (Exception ex)
@@ -1175,6 +1194,31 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Logger.Trace.Error(ex);
             }
             return objResponse;
+        }
+        public int GetNextToken(decimal companyId)
+        {
+            // Step 1: Get the maximum TokenNo from adm_company
+            int maxCompanyToken = _adm_companyService.Queryable()
+                .Where(cm => cm.ID == companyId)
+                .Max(cm => (int?)cm.TokenNo) ?? 0;
+
+            // Step 2: Check if any records exist in emr_appointment_mf for today
+            bool hasAppointmentsToday = _emr_appointment_mfService.Queryable()
+                .Any(mf => mf.CompanyId == companyId && mf.AppointmentDate == DateTime.Today);
+
+            // Step 3: Get the maximum TokenNo from emr_appointment_mf for today
+            int maxAppointmentToken = hasAppointmentsToday
+                ? _emr_appointment_mfService.Queryable()
+                    .Where(mf => mf.CompanyId == companyId && mf.AppointmentDate == DateTime.Today)
+                    .Max(mf => (int?)mf.TokenNo) ?? 0
+                : 0;
+
+            // Step 4: Calculate the next token
+            int nextToken = hasAppointmentsToday
+                ? Math.Max(maxAppointmentToken, maxCompanyToken) + 1
+                : maxCompanyToken + 1;
+
+            return nextToken;
         }
         public List<AppointmentInfo> AppointmentInfo(decimal CompanyID)
         {

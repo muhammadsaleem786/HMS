@@ -55,6 +55,7 @@ export class AppointSummeryComponentList implements OnInit {
     public DisabledSlot: any;
     public Step: number = 30;
     public AppointmentModel = new emr_Appointment();
+    public ReminderList: any[] = [];
     public DoctorList: any[] = [];
     public StatusList: any[] = []; public CompanyObj: any;
     public DoctorClanderList: any[] = []; public AppointmentList: any[] = [];
@@ -70,6 +71,7 @@ export class AppointSummeryComponentList implements OnInit {
                 this.StatusList = m.ResultSet.AllStatusList;
                 this.ServiceType = m.ResultSet.ServiceType;
                 this.TokenNo = m.ResultSet.TokenNo;
+                this.ReminderList = m.ResultSet.ReminderList;
                 if (this.Rights.indexOf(12) > -1) {
                     if (m.ResultSet.ServiceType != null) {
                         this.AppointmentModel.ServiceId = this.ServiceType.ID;
@@ -78,6 +80,8 @@ export class AppointSummeryComponentList implements OnInit {
                         this.AppointmentModel.TokenNo = this.TokenNo;
                         this.AppointmentModel.AppointmentDate = new Date();
                         this.AppointmentModel.BillDate = new Date();
+                        if (this.ReminderList.length > 0)
+                            this.AppointmentModel.ReminderId = this.ReminderList[0].ID;
                         this.CalAmount();
                     }
                 }
@@ -112,6 +116,7 @@ export class AppointSummeryComponentList implements OnInit {
             Notes: [''],
             AppointmentDate: ['', [Validators.required]],
             AppointmentTime: [''],
+            ReminderId: [''],
             StatusId: [''],
             //bill field
             AppointmentId: [''],
@@ -200,6 +205,68 @@ export class AppointSummeryComponentList implements OnInit {
                 this.loader.HideLoader();
             }
         });
+    }
+    handlePrint(val: any) {
+        let selectedDate = new Date(this.AppointmentModel.AppointmentDate);
+        let currentDate = new Date();
+        selectedDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(0, 0, 0, 0);
+        if (this.AppointmentModel.Discount > this.AppointmentModel.Price) {
+            this.toastr.Error("discount not greater price amount.");
+            return;
+        }
+        this.submitted = true;
+        if (this.AppointmentModel.PatientId == undefined || this.AppointmentModel.PatientId == null) {
+            this.toastr.Error("Error", "Please select patient.");
+            return;
+        }
+        if (this.AppointmentModel.AppointmentDate == undefined || this.AppointmentModel.AppointmentDate == null) {
+            this.toastr.Error("Error", "Please select appointment date.");
+            return;
+        }
+        if (this.AppointmentModel.AppointmentTime == undefined || this.AppointmentModel.AppointmentTime == null) {
+            this.toastr.Error("Error", "Please select time.");
+            return;
+        }
+        if (this.AppointmentModel.ServiceId == undefined || this.AppointmentModel.ServiceId == null) {
+            this.toastr.Error("Error", "Please select service.");
+            return;
+        }
+        if (this.AppointmentModel.BillDate == undefined || this.AppointmentModel.BillDate == null) {
+            this.toastr.Error("Error", "Please select bill date.");
+            return;
+        }
+        if (this.AppointmentModel.Price == undefined || this.AppointmentModel.Price == null) {
+            this.toastr.Error("Error", "Please select price.");
+            return;
+        }
+        if (val == "P") {
+            this.AppointmentModel.IsExistFollowUp = false;
+            this.PrintContent();
+            this.AppointmentSaveOrUpdate(true);
+        } else {
+            this.AppointmentModel.IsExistFollowUp = false;
+            this.AppointmentSaveOrUpdate(true);
+        }
+    }
+    PrintContent() {
+        const printSection = document.getElementById('print-section');
+        const printContents = printSection ? printSection.innerHTML : '';
+        if (printContents) {
+            const popupWin = window.open('', '_blank', 'width=800,height=600');
+            if (popupWin) {
+                popupWin.document.open();
+                popupWin.document.write(`
+  <html>
+    <head>
+      <title>Print</title>
+    </head>
+    <body onload="window.print();window.close()">${printContents}</body>
+  </html>
+`);
+                popupWin.document.close();
+            }
+        }
     }
     Convert12TO24(time12h: any) {
         const [time, modifier] = time12h.split(' ');

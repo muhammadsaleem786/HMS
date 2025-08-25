@@ -12,6 +12,7 @@ using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -152,21 +153,33 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 decimal UserID = Request.LoginID();
 
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@UserId", UserID);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
+                var dropDownIds = new[] { 31, 32, 28 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+                var labTypeList = allDropDownValues
+.Where(x => x.DropDownID == 28).ToList();
 
+                var statusTypeList = allDropDownValues
+.Where(x => x.DropDownID == 31).ToList();
 
-                var LabTypeList = AllData.Tables[20];
-                var StatusList = AllData.Tables[17];
-                var ResultList = AllData.Tables[18];
+                var resultTypeList = allDropDownValues
+               .Where(x => x.DropDownID == 32).ToList();
 
-                var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID.ToString() == PatientId).Select(z => new
+                var LabTypeList = labTypeList;
+                var StatusList = statusTypeList;
+                var ResultList = resultTypeList;
+
+                var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == companyId && a.ID.ToString() == PatientId).Select(z => new
                 {
                     z.PatientName,
                     z.ID,
@@ -223,22 +236,36 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 decimal UserID = Request.LoginID();
                 int ID = Convert.ToInt32(Id);
-                var Result = _service.Queryable().Where(e => e.ID == ID && e.CompanyId == CompanyID).FirstOrDefault();
-               
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@UserId", UserID);
-                var AllData = dataAccessManager.GetDataSet("SP_LoadDropdown", ht);
-                var LabTypeList = AllData.Tables[20];
-                var StatusList = AllData.Tables[17];
-                var ResultList = AllData.Tables[18];
+                var Result = _service.Queryable().Where(e => e.ID == ID && e.CompanyId == companyId).FirstOrDefault();
+
+                var dropDownIds = new[] { 31, 32, 28 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+                var labTypeList = allDropDownValues
+.Where(x => x.DropDownID == 28).ToList();
+
+                var statusTypeList = allDropDownValues
+.Where(x => x.DropDownID == 31).ToList();
+
+                var resultTypeList = allDropDownValues
+               .Where(x => x.DropDownID == 32).ToList();
+
+                var LabTypeList = labTypeList;
+                var StatusList = statusTypeList;
+                var ResultList = resultTypeList;
 
 
-                var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID.ToString() == PatientId).Select(z => new
+                var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == companyId && a.ID.ToString() == PatientId).Select(z => new
                 {
                     z.PatientName,
                     z.ID,

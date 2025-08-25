@@ -200,6 +200,7 @@ export class ProfileUserComponentForm implements OnInit {
             this._ApplicationUserService.SaveOrUpdate(this.model).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
+                    this.toastr.Success(result.Message);
                     this._router.navigate(['home/setup']);
                 }
                 else

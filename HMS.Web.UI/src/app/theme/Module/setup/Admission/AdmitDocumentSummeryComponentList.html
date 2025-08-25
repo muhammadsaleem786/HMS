@@ -3,10 +3,10 @@
     <div class="row table_border">
         <div class="col text-right">
             <button class="btn btn-danger btn-sm" style="position: absolute; top: 0px; right: 15px; z-index: 10;" (click)="openDocumentModal(DocumentContent)"*ngIf="ControlRights.CreateRights && IsEdit">
-                <i class="icon icon-pulse"></i>    Update Admit Document
+                <i class="icon icon-pulse"></i>    Update Document
             </button>
             <button class="btn btn-danger btn-sm" style="position: absolute; top: 0px; right: 15px; z-index: 10;" (click)="openDocumentModal(DocumentContent)" *ngIf="ControlRights.CreateRights && IsEdit==false">
-                <i class="icon icon-pulse"></i>    Add New Admit Document
+                <i class="icon icon-pulse"></i>    New Document
             </button>
             <div class="TableView">
                 <div class="input-group searchAddEmployee">
@@ -83,8 +83,6 @@
 <ng-template #DocumentContent let-modal>
     <div class="modal-header">
         <h4 class="modal-title"><img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon"> Add Document</h4>
-
-
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>

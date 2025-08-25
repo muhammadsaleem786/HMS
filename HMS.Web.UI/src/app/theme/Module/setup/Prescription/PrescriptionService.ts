@@ -10,7 +10,7 @@ export class PrescriptionService {
 
     GetList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string): Promise<any> {
         var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': false };
-        return this.http.Get(this.urlToApi + '/Pagination', data).then(e => e);
+        return this.http.Get(this.urlToApi + '/GetPrescription', data).then(e => e);
     }
 
 
@@ -24,7 +24,7 @@ export class PrescriptionService {
     }
     GetById(Id: number): Promise<any> {
         var data = { 'Id': Id };
-        return this.http.Get(this.urlToApi + '/GetById', data).then(e => e);
+        return this.http.Get(this.urlToApi + '/GetByPrescriptionId', data).then(e => e);
     }
     SaveOrUpdate(entity: emr_prescription_mf): Promise<any> {
         if (isNaN(entity.ID) || entity.ID == 0)

@@ -3,7 +3,8 @@
 
 
 
-    <div class="col-sm-12">
+    <div class="row m-0">
+        <div class="col-sm-8">
         <h2 class="grid-heading margin-t-15 mb-2"> Payroll</h2>
     </div>
     <div class="col-sm-4 text-right flex-row flex-end">
@@ -11,6 +12,7 @@
         <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
         <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">Run Payroll</a>
 
+    </div>
     </div>
     <div class="Cardview payroll_Wrap p-3" *ngIf="payrolShow">
 
@@ -119,242 +121,338 @@
 <div *ngIf="!IsShowPayrollMasterList && !IsList">
     <span style="display:none" id="ShowPayStubId" data-toggle="modal" data-target="#PayStubModal"></span>
     <span style="display:none" id="ShowPublishPayrollConfirmationModal" data-toggle="modal" data-target="#PublishPayrollConfirmationModal"></span>
+    
     <div class="modal" id="PayStubModal" role="dialog">
-        <div class="modal-dialog" style="max-width: 600px;">
-            <form novalidate (ngSubmit)="SavePayStubOfSingleEmp()">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="row">
-                            <div class="col-xs-10">
-                                <div style="margin: 10px 0 0 10px;">
-                                    <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding" style="display: inline-block;">
-                                        {{EmployeeModel.FirstName + ' ' +EmployeeModel.LastName+"'s"}} Pay Details -
-                                    </h3>
-                                   </div>
-                                     <strong style="margin-left: 10px;">({{model.FromDate | date: "dd/MM/yyyy"}} - {{model.ToDate | date: "dd/MM/yyyy"}})</strong>
-                               
+    <div class="modal-dialog" style="max-width: 880px;">
+        <form novalidate (ngSubmit)="SavePayStubOfSingleEmp()">
+            <div class="modal-content" style="border: none; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+                <!-- Header -->
+                <div class="modal-header" style="border: none; background: linear-gradient(to right, #f8fafc, #eff6ff); border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 24px;">
+                    <div style="width: 100%;">
+                        <div class="d-flex align-items-center" style="gap: 12px; margin-bottom: 16px;">
+                            <div style="padding: 8px; background-color: #dbeafe; border-radius: 8px;">
+                                <svg style="width: 20px; height: 20px; color: #2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
                             </div>
-                            <!--<div class="col-xs-2">
-                                <button id="saveSchedule" *ngIf="!IsStatusPublished" type="button" class="btn btn-primary pull-right" (click)="ShowListModal('prorate')" data-toggle="modal" data-target="#ProrateModal">Prorate</button>
-                            </div>-->
+                            <h3 style="font-size: 24px; font-weight: bold; color: #1f2937; margin: 0;">
+                                {{EmployeeModel.FirstName + ' ' +EmployeeModel.LastName+"'s"}} Pay Details
+                            </h3>
                         </div>
-                        <button type="button" class="close mt-modal-close" id="ClosePayStubModalId" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                        <div class="d-flex align-items-center" style="gap: 8px; color: #4b5563;">
+                            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <strong style="font-size: 14px; font-weight: 500;">({{model.FromDate | date: "dd/MM/yyyy"}} - {{model.ToDate | date: "dd/MM/yyyy"}})</strong>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <div class="label-font-normal">
-                            <!--<div class="row">
-                                <div class="col-sm-6">
-                                    <div class="mt-d-flex">
-                                        <div>
-                                            <h4 class="m-form__heading-title whiteSpaceNowrap mt-m-r-10">Base Salery</h4>
-                                        </div>
-                                        <div>
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="basic-addon1"> {{Currency}}</span>
-                                                <input type="number" min="0" pattern=".{0,8}" (change)="PayScreenBaseSalaryChangeCalculation()" [(ngModel)]="model.BasicSalary" [ngModelOptions]="{standalone: true}" class="form-control" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="usr">Pay Schedule</label>
-                                        <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#PayScheduleModal" (click)="IntializeModels()"></i>
-                                        <select class="form-control m-input" formControlName="PayScheduleID" [(ngModel)]="this.model.PayScheduleID">
-                                            <option *ngFor="let item of PaySchedules" [value]="item.ID">
-                                                {{item.ScheduleName}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Starting*</label>
-                                        <Datetime-Component formControlName="EffectiveFrom" placeholder="DD/MM/YYYY" [(ngModel)]="EffectiveFrom">
-                                        </Datetime-Component>
-                                    </div>
-                                </div>
-                            </div>-->
-                            <strong class="pull-left">Allowances</strong>
-                            <div class="">
-                                <i class="fa fa-plus-square pull-right font-25 color-green cursor-pointer" *ngIf="!IsStatusPublished" data-toggle="modal" (click)="ShowListModal('A')" data-target="#AllowancesListModal" style="margin-top: 15px;"></i>
-                                <table class="table mt-coloredTable">
-                                    <thead>
+                    <button type="button" class="close" style="position: absolute; top: 16px; right: 16px; color: #9ca3af; opacity: 1;" id="ClosePayStubModalId" data-dismiss="modal">
+                        <i class="fa fa-times" style="font-size: 18px;"></i>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body" style="padding: 24px; background: linear-gradient(135deg, #f8fafc, #eff6ff);">
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        
+                        <div class="row">
+                            <div class="col-sm-6">
+
+                        <!-- Allowances Section -->
+                        <div class="card" style="border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; padding: 24px;">
+                            <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 24px;">
+                                <h2 class="d-flex align-items-center" style="font-size: 20px; font-weight: 600; color: #1f2937; margin: 0; gap: 8px;">
+                                    <svg style="width: 20px; height: 20px; color: #16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                    </svg>
+                                    Allowances
+                                </h2>
+                                <i class="fa fa-plus-square" 
+                                   style="font-size: 24px; color: #16a34a; cursor: pointer;" 
+                                   *ngIf="!IsStatusPublished" 
+                                   data-toggle="modal" 
+                                   (click)="ShowListModal('A')" 
+                                   data-target="#AllowancesListModal"></i>
+                            </div>
+                            
+                            <div style="border-radius: 8px; border: 1px solid #e5e7eb; overflow: hidden;">
+                                <table class="table table-hover mb-0">
+                                    <thead style="background-color: #f0fdf4;">
                                         <tr>
-                                            <th>
-                                                Name
-                                            </th>
-                                            <!--<th>
-                                                Percentage
-                                            </th>-->
-                                            <th>
-                                                Amount
-                                            </th>
-                                            <!--<th style="text-align: center;">
-                                                <div *ngIf="PayrollRegion != 'SA'">
-                                                    Taxable
-                                                </div>
-                                            </th>-->
-                                            <th></th>
+                                            <th style="padding: 12px 16px; text-align: left; font-size: 14px; font-weight: 500; color: #374151;">Name</th>
+                                            <th style="padding: 12px 16px; text-align: left; font-size: 14px; font-weight: 500; color: #374151;">Amount</th>
+                                            <th style="padding: 12px 16px; text-align: center; font-size: 14px; font-weight: 500; color: #374151; width: 64px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let item of model.pr_employee_payroll_dt; let i=index" [hidden]="item.Type == 'D' || item.Type == 'C'">
-                                            <td>
-                                                <label>
+                                        <tr *ngFor="let item of model.pr_employee_payroll_dt; let i=index" 
+                                            [hidden]="item.Type == 'D' || item.Type == 'C'"
+                                            style="background-color: white;">
+                                            <td style="padding: 12px 16px;">
+                                                <label style="color: #1f2937; font-weight: 500; margin: 0;">
                                                     {{GetAllowanceTitle(item.AllowDedID)}}
                                                 </label>
                                             </td>
-                                            <!--<td>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">%</span>
-                                                    <input type="number" readonly="readonly" class="form-control" [(ngModel)]="item.Percentage" [ngModelOptions]="{standalone: true}" />
-                                                </div>
-                                            </td>-->
-                                            <td class="max-width-250">
+                                            <td style="padding: 12px 16px;">
                                                 <div *ngIf="!IsStatusPublished">
-                                                    <div class="input-group max-width-250">
-                                                        <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
-                                                        <input type="number" class="form-control" [(ngModel)]="item.Amount" (blur)="ReCalculateSalary()" [ngModelOptions]="{standalone: true}" min="0" pattern=".{0,8}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                    <div class="input-group" style="max-width: 300px;">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" style="background-color: #dcfce7; color: #15803d; font-size: 14px; font-weight: 500;">{{Currency}}</span>
+                                                        </div>
+                                                        <input type="number" 
+                                                               class="form-control" 
+                                                               [(ngModel)]="item.Amount" 
+                                                               (blur)="ReCalculateSalary()" 
+                                                               [ngModelOptions]="{standalone: true}" 
+                                                               min="0" 
+                                                               pattern=".{0,8}" 
+                                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" 
+                                                               style="border-left: none;" />
                                                     </div>
                                                 </div>
                                                 <div *ngIf="IsStatusPublished">
-                                                    <label [ngStyle]="item.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''">{{item.AdjustmentType == 'C' ? item.Amount + item.AdjustmentAmount : item.Amount - item.AdjustmentAmount}}</label>
-                                                    <i class="fa fa-pencil cursor-pointer" (click)="AdjustmentEditClick(item.AllowDedID,'A',item.RefID)" *ngIf="IsStatusPublished" data-toggle="modal" data-target="#AdjustmentModal"></i>
+                                                    <label [ngStyle]="item.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''" 
+                                                           style="color: #16a34a; font-weight: 600; margin: 0;">
+                                                        {{item.AdjustmentType == 'C' ? item.Amount + item.AdjustmentAmount : item.Amount - item.AdjustmentAmount}}
+                                                    </label>
+                                                    <i class="fa fa-pencil" 
+                                                       style="cursor: pointer; margin-left: 8px; color: #9ca3af;" 
+                                                       (click)="AdjustmentEditClick(item.AllowDedID,'A',item.RefID)" 
+                                                       *ngIf="IsStatusPublished" 
+                                                       data-toggle="modal" 
+                                                       data-target="#AdjustmentModal"></i>
                                                 </div>
                                             </td>
-                                            <!--<td class="max-width-250" style="text-align: center;">
-                                                <div class="checkboxDefault" *ngIf="PayrollRegion != 'SA' || (item.Taxable && IsStatusPublished)">
-                                                    <input type="checkbox" [(ngModel)]="item.Taxable" [attr.disabled]="IsStatusPublished ? true : null" [ngModelOptions]="{standalone: true}">
-                                                </div>
-                                            </td>-->
-                                            <td class="max-width-250">
+                                            <td style="padding: 12px 16px; text-align: center;">
                                                 <div *ngIf="!IsStatusPublished">
-                                                    <i class="fa fa-times" (click)="RemoveAllowanceFromSelList(item.AllowDedID)"></i>
+                                                    <i class="fa fa-times" 
+                                                       style="color: #ef4444; cursor: pointer;" 
+                                                       (click)="RemoveAllowanceFromSelList(item.AllowDedID)"></i>
                                                 </div>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <strong class="pull-left">Deductions</strong>
-                            <div class="">
-                                <i class="fa fa-plus-square pull-right font-25 color-green cursor-pointer" *ngIf="!IsStatusPublished" data-toggle="modal" (click)="ShowListModal('D')" data-target="#ContributionAndDeductionListModal" style="margin-top: 15px;"></i>
-                                <table class="table mt-coloredTable">
-                                    <thead>
+                        </div>
+                            </div>
+                             <div class="col-sm-6">
+
+                        <!-- Deductions Section -->
+                        <div class="card" style="border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; padding: 24px;">
+                            <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 24px;">
+                                <h2 class="d-flex align-items-center" style="font-size: 20px; font-weight: 600; color: #1f2937; margin: 0; gap: 8px;">
+                                    <svg style="width: 20px; height: 20px; color: #ea580c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+                                    </svg>
+                                    Deductions
+                                </h2>
+                                <i class="fa fa-plus-square" 
+                                   style="font-size: 24px; color: #ea580c; cursor: pointer;" 
+                                   *ngIf="!IsStatusPublished" 
+                                   data-toggle="modal" 
+                                   (click)="ShowListModal('D')" 
+                                   data-target="#ContributionAndDeductionListModal"></i>
+                            </div>
+                            
+                            <div style="border-radius: 8px; border: 1px solid #e5e7eb; overflow: hidden;">
+                                <table class="table table-hover mb-0">
+                                    <thead style="background-color: #fff7ed;">
                                         <tr>
-                                            <th>
-                                                Name
-                                            </th>
-                                            <!--<th>
-                                                Percentage
-                                            </th>-->
-                                            <th>
-                                                Amount
-                                            </th>
-                                            <!--<th>
-                                                Starting Balance
-                                            </th>-->
-                                            <!--<th style="text-align: center;">
-                                                <div *ngIf="PayrollRegion != 'SA'">
-                                                    Taxable
-                                                </div>
-                                            </th>-->
-                                            <th></th>
+                                            <th style="padding: 12px 16px; text-align: left; font-size: 14px; font-weight: 500; color: #374151;">Name</th>
+                                            <th style="padding: 12px 16px; text-align: left; font-size: 14px; font-weight: 500; color: #374151;">Amount</th>
+                                            <th style="padding: 12px 16px; text-align: center; font-size: 14px; font-weight: 500; color: #374151; width: 64px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let item of model.pr_employee_payroll_dt; let i = index" [hidden]="item.Type == 'C' || item.Type == 'A'">
-                                            <td>
-                                                <label>
+                                        <tr *ngFor="let item of model.pr_employee_payroll_dt; let i = index" 
+                                            [hidden]="item.Type == 'C' || item.Type == 'A'"
+                                            style="background-color: white;">
+                                            <td style="padding: 12px 16px;">
+                                                <label style="color: #1f2937; font-weight: 500; margin: 0;">
                                                     {{GetContributionDeductionTitle(item.AllowDedID,item.Type)}}
                                                 </label>
                                             </td>
-                                            <!--<td>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">%</span>
-                                                    <input type="number" readonly="readonly" class="form-control" [(ngModel)]="item.Percentage" [ngModelOptions]="{standalone: true}" />
-                                                </div>
-                                            </td>-->
-                                            <td>
+                                            <td style="padding: 12px 16px;">
                                                 <div *ngIf="!IsStatusPublished">
-                                                    <div class="input-group max-width-250">
-                                                        <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
-                                                        <input type="number" class="form-control" [(ngModel)]="item.Amount"(blur)="ReCalculateSalary()" [ngModelOptions]="{standalone: true}" pattern=".{0,8}" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                    <div class="input-group" style="max-width: 300px;">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" style="background-color: #fed7aa; color: #c2410c; font-size: 14px; font-weight: 500;">{{Currency}}</span>
+                                                        </div>
+                                                        <input type="number" 
+                                                               class="form-control" 
+                                                               [(ngModel)]="item.Amount"
+                                                               (blur)="ReCalculateSalary()" 
+                                                               [ngModelOptions]="{standalone: true}" 
+                                                               pattern=".{0,8}" 
+                                                               min="0" 
+                                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" 
+                                                               style="border-left: none;" />
                                                     </div>
                                                 </div>
                                                 <div *ngIf="IsStatusPublished">
-                                                    <label [ngStyle]="item.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''">{{item.AdjustmentType == 'C' ? item.Amount + item.AdjustmentAmount : item.Amount - item.AdjustmentAmount}}</label>
-                                                    <i class="fa fa-pencil cursor-pointer" (click)="AdjustmentEditClick(item.AllowDedID,'D',item.RefID)" *ngIf="IsStatusPublished" data-toggle="modal" data-target="#AdjustmentModal"></i>
+                                                    <label [ngStyle]="item.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''" 
+                                                           style="color: #ea580c; font-weight: 600; margin: 0;">
+                                                        {{item.AdjustmentType == 'C' ? item.Amount + item.AdjustmentAmount : item.Amount - item.AdjustmentAmount}}
+                                                    </label>
+                                                    <i class="fa fa-pencil" 
+                                                       style="cursor: pointer; margin-left: 8px; color: #9ca3af;" 
+                                                       (click)="AdjustmentEditClick(item.AllowDedID,'D',item.RefID)" 
+                                                       *ngIf="IsStatusPublished" 
+                                                       data-toggle="modal" 
+                                                       data-target="#AdjustmentModal"></i>
                                                 </div>
-                                                <!--<div class="input-group">
-                                                    <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
-                                                    <input type="number" class="form-control" [(ngModel)]="item.Amount" [attr.disabled]="IsStatusPublished ? true : null" (change)="CalDedContPercentage(item.AllowDedID,item.Type)" [ngModelOptions]="{standalone: true}" />
-                                                    <i class="fa fa-pencil pull-right" *ngIf="IsStatusPublished" data-toggle="modal" (click)="AdjustmentEditClick(item,'D')" data-target="#AdjustmentModal"></i>
-                                                </div>-->
                                             </td>
-                                            <!--<td>
-                                                <input type="number" class="form-control" *ngIf="GetContributionDeductionTitle(item.DeductionContributionID,item.Category) =='Provident Fund'" [(ngModel)]="item.StartingBalance" [ngModelOptions]="{standalone: true}" />
-                                            </td>-->
-                                            <!--<td>
-                                                <div class="text-center checkboxDefault" *ngIf="PayrollRegion != 'SA' || (item.Taxable && IsStatusPublished)">
-                                                    <input type="checkbox" [(ngModel)]="item.Taxable" [attr.disabled]="IsStatusPublished ? true : null" [ngModelOptions]="{standalone: true}">
-                                                </div>
-                                            </td>-->
-                                            <td>
+                                            <td style="padding: 12px 16px; text-align: center;">
                                                 <div *ngIf="!IsStatusPublished">
-                                                    <i class="fa fa-times" (click)="RemoveDeductionFromSelList(item.AllowDedID)"></i>
+                                                    <i class="fa fa-times" 
+                                                       style="color: #ef4444; cursor: pointer;" 
+                                                       (click)="RemoveDeductionFromSelList(item.AllowDedID)"></i>
                                                 </div>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div style="display: table; margin: 0 auto; width: 100%;">
-                                <!--<div class="clearfix">
-                                    <span (click)="ReCalculateSalary()" *ngIf="!IsStatusPublished" class="reCalc pull-right"><i class="fa fa-refresh"></i> Re-Calculate</span>
-                                </div>-->
-                                <div class="row salarCalc m-0">
-                                    <div class="col-sm-3" style="background: #06e0a6">
-                                        <span class="font-14">Basic salary</span>
-                                        <p [ngStyle]="model.AdjustmentBy ? {'color':'#00a4d3', 'text-decoration' : 'underline'} : ''">
-                                            {{SalaryModel.BasicSalary | number: '1.0-0'}}
-                                            <i class="fa fa-pencil cursor-pointer" *ngIf="IsStatusPublished" data-toggle="modal" (click)="AdjustmentEditClick(model.ID,'B',0)" data-target="#AdjustmentModal"></i>
-                                        </p>
+                        </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Salary Summary -->
+                        <div class="card" style="border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; padding: 24px;">
+                            <h2 class="text-center" style="font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 24px;">Salary Breakdown Summary</h2>
+                            
+                            <div class="row">
+                                <!-- Basic Salary -->
+                                <div class="col-lg-3 col-md-6 mb-3">
+                                    <div class="card text-white" style="background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 12px; padding: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div style="padding: 8px; background-color: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+                                                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p style="font-size: 14px; font-weight: 500; opacity: 0.9; margin-bottom: 4px;">Basic salary</p>
+                                            <p style="font-size: 24px; font-weight: bold; margin: 0;" [ngStyle]="model.AdjustmentBy ? {'color':'#fff', 'text-decoration' : 'underline'} : ''">
+                                                {{SalaryModel.BasicSalary | number: '1.0-0'}}
+                                               
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-3" style="background: #10923b">
-                                        <span class="font-14">Gross salary</span>
-                                        <p>
-                                            {{SalaryModel.GrossSalary | number: '1.0-0'}}
-                                        </p>
+                                    <p class="mt-2">
+                                          Adjust salary  <i class="fa fa-pencil" 
+                                                   style="cursor: pointer; margin-left: 8px;" 
+                                                   *ngIf="IsStatusPublished" 
+                                                   data-toggle="modal" 
+                                                   (click)="AdjustmentEditClick(model.ID,'B',0)" 
+                                                   data-target="#AdjustmentModal"></i>
+                                    </p>
+                                </div>
+
+                                <!-- Gross Salary -->
+                                <div class="col-lg-3 col-md-6 mb-3">
+                                    <div class="card text-white" style="background: linear-gradient(135deg, #16a34a, #15803d); border-radius: 12px; padding: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div style="padding: 8px; background-color: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+                                                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p style="font-size: 14px; font-weight: 500; opacity: 0.9; margin-bottom: 4px;">Gross salary</p>
+                                            <p style="font-size: 24px; font-weight: bold; margin: 0;">{{SalaryModel.GrossSalary | number: '1.0-0'}}</p>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-3" style="background: #c72902" *ngIf="PayrollRegion != 'SA'">
-                                        <span class="font-14">Deductions</span>
-                                        <p>
-                                            {{SalaryModel.DeductionTotal | number: '1.0-0'}}
-                                            <!--<i class="fa fa-pencil pull-right" *ngIf="IsStatusPublished" data-toggle="modal" (click)="AdjustmentEditClick(model.ID,'T')" data-target="#AdjustmentModal"></i>-->
-                                        </p>
+                                </div>
+
+                                <!-- Deductions -->
+                                <div class="col-lg-3 col-md-6 mb-3" *ngIf="PayrollRegion != 'SA'">
+                                    <div class="card text-white" style="background: linear-gradient(135deg, #f97316, #ef4444); border-radius: 12px; padding: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div style="padding: 8px; background-color: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+                                                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p style="font-size: 14px; font-weight: 500; opacity: 0.9; margin-bottom: 4px;">Deductions</p>
+                                            <p style="font-size: 24px; font-weight: bold; margin: 0;">{{SalaryModel.DeductionTotal | number: '1.0-0'}}</p>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-3" style="background: #2f3479">
-                                        <span class="font-14">Net salary</span>
-                                        <p>
-                                            {{SalaryModel.NetSalary | number: '1.0-0'}}
-                                        </p>
+                                </div>
+
+                                <!-- Net Salary -->
+                                <div class="col-lg-3 col-md-6 mb-3">
+                                    <div class="card text-white" style="background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 12px; padding: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 2px solid #93c5fd;">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div style="padding: 8px; background-color: rgba(255, 255, 255, 0.2); border-radius: 8px;">
+                                                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                                </svg>
+                                            </div>
+                                            <div style="padding: 4px 8px; background-color: rgba(255, 255, 255, 0.2); border-radius: 12px; font-size: 12px; font-weight: 500;">Final</div>
+                                        </div>
+                                        <div>
+                                            <p style="font-size: 14px; font-weight: 500; opacity: 0.9; margin-bottom: 4px;">Net salary</p>
+                                            <p style="font-size: 24px; font-weight: bold; margin: 0;">{{SalaryModel.NetSalary | number: '1.0-0'}}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Visual Flow -->
+                            <div class="text-center mt-4" style="display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 14px; color: #4b5563; flex-wrap: wrap;">
+                                <span class="badge" style="padding: 4px 12px; background-color: #dcfce7; color: #15803d; font-weight: 500; border-radius: 20px;">Basic</span>
+                                <span>+</span>
+                                <span class="badge" style="padding: 4px 12px; background-color: #dcfce7; color: #15803d; font-weight: 500; border-radius: 20px;">Allowances</span>
+                                <span>=</span>
+                                <span class="badge" style="padding: 4px 12px; background-color: #dcfce7; color: #15803d; font-weight: 500; border-radius: 20px;">Gross</span>
+                                <span>-</span>
+                                <span class="badge" style="padding: 4px 12px; background-color: #fed7aa; color: #c2410c; font-weight: 500; border-radius: 20px;">Deductions</span>
+                                <span>=</span>
+                                <span class="badge" style="padding: 4px 16px; background-color: #dbeafe; color: #1d4ed8; font-weight: bold; border-radius: 20px;">Net Salary</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn -light" data-dismiss="modal" #closeModal>Close</button>
-                        <button type="button" class="btn btn-primary btnDel pull-left" *ngIf="!IsStatusPublished" (click)="DeletePayStubOfSingleEmp()">Delete</button>
-                        
-                        <button id="saveSchedule" type="submit" class="btn btn-primary" *ngIf="!IsStatusPublished">Save</button>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer" style="border: none; background-color: #f9fafb; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; padding: 24px;">
+                    <div class="d-flex justify-content-between flex-wrap" style="gap: 12px; width: 100%;">
+                        <button type="button" 
+                                class="btn btn-danger" 
+                                style="padding: 8px 24px; font-weight: 500; border-radius: 8px;" 
+                                *ngIf="!IsStatusPublished" 
+                                (click)="DeletePayStubOfSingleEmp()">
+                            Delete
+                        </button>
+                        <div class="d-flex" style="gap: 12px;">
+                            <button type="button" 
+                                    class="btn btn-secondary" 
+                                    style="padding: 8px 24px; font-weight: 500; border-radius: 8px;" 
+                                    data-dismiss="modal" 
+                                    #closeModal>
+                                Close
+                            </button>
+                            <button id="saveSchedule" 
+                                    type="submit" 
+                                    class="btn btn-primary" 
+                                    style="padding: 8px 24px; font-weight: 500; border-radius: 8px;" 
+                                    *ngIf="!IsStatusPublished">
+                                Save
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
+</div>
     <div class="modal" id="AllowancesListModal" role="dialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-md">
             <div class="modal-content" (click)="IsModalClick()">
@@ -616,88 +714,152 @@
             </form>
         </div>
     </div>
+  
     <div class="modal" id="AdjustmentModal" data-backdrop="static" data-keyboard="false" role="dialog">
-        <div class="modal-dialog">
-            <form [formGroup]="AdjustmentForm" novalidate (ngSubmit)="SavePayrollAdjustment(AdjustmentForm.valid)">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <!--<h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">{{model.ID ? 'Edit' : 'Add'}} Departments</h3>-->
-                        <h3 class="grid-heading text-color-skyblue font-weight-400 no-padding">0 Pay Stub - Adjustment</h3>
-                        <button type="button" style="display:none" id="CloseAdjustModal" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
-
-
-                        <button type="button" class="close mt-modal-close" (click)="ShowListModal('cancel')" data-dismiss="modal"><i class="fa fa-times"></i></button>
-                    </div>
-                    <!--<div class="modal-header no-padding no-border-b">
-                        <button type="button" class="close" data-dismiss="modal"><i class="glyphicon glyphicon-glyphicon-remove-circle"></i></button>
-                    </div>-->
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <strong>{{EmployeeModel.FirstName + ' ' + EmployeeModel.LastName + ' - ' }} {{model.FromDate | date: "dd/MM/yyyy"}} - {{model.ToDate | date: "dd/MM/yyyy"}}</strong>
-                            <h4>{{AdjustmentModel.AdjustmentTitle}}</h4>
-                            <div class="row">
-                                <div class="col-md-3"></div>
-                                <div class="well well-sm text-center center-block col-md-6 text-white" style="background: #00D399; color: #fff;">
-                                    <strong>Original {{AdjustmentModel.OrignalText}} Amount</strong>
-                                    <p>{{Currency}} {{AdjustmentModel.OrignalValue | number: '1.0-0'}}</p>
-                                </div>
-                                <div class="col-md-3"></div>
+    <div class="modal-dialog" style="max-width: 700px;">
+        <form [formGroup]="AdjustmentForm" novalidate (ngSubmit)="SavePayrollAdjustment(AdjustmentForm.valid)">
+            <div class="modal-content" style="border: none; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+                <!-- Header -->
+                <div class="modal-header" style="border: none; background: linear-gradient(to right, #f8fafc, #eff6ff); border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 24px;">
+                    <div style="width: 100%;">
+                        <div class="d-flex align-items-center" style="gap: 12px; margin-bottom: 16px;">
+                            <div style="padding: 8px; background-color: #fef3c7; border-radius: 8px;">
+                                <svg style="width: 20px; height: 20px; color: #d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                </svg>
                             </div>
+                            <h3 style="font-size: 24px; font-weight: bold; color: #1f2937; margin: 0;">
+                                Pay Stub - Adjustment
+                            </h3>
                         </div>
-                        <div class="form-group">
-                            <label>Adjustment Date*</label>
-                            <Datetime-Component formControlName="AdjustmentDate" placeholder="DD/MM/YYYY" [(ngModel)]="AdjustmentModel.AdjustmentDate">
-                            </Datetime-Component>
-                            <em class="text-muted">Transaction Date : {{model.PayDate | date: "dd/MM/yyyy"}}</em>
-                            <small *ngIf="AdjustmentForm.controls.AdjustmentDate.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                        <div class="form-group">
-                            <h4>Adjustment Type </h4>
-                            <label class="radio-inline" style="margin-bottom: 10px;">
-                                <input type="radio" formControlName="AdjustmentType" (change)="CreditOrDebitAmount(AdjustmentValueClickIndex)" name="AdjustmentType" [(ngModel)]="AdjustmentModel.AdjustmentType" value="C" checked> Credit - Add adjustment amount to {{AdjustmentModel.AdjustmentText | lowercase}} amount
-                            </label>
-                            <label class="radio-inline" style="margin: 0;">
-                                <input type="radio" formControlName="AdjustmentType" (change)="CreditOrDebitAmount(AdjustmentValueClickIndex)" name="AdjustmentType" [(ngModel)]="AdjustmentModel.AdjustmentType" value="D"> Debit - Subtract adjustment amount from {{AdjustmentModel.AdjustmentText | lowercase}}
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <h4>Adjustment Amount* </h4>
-                            <div class="input-group">
-                                <span class="input-group-addon" id="basic-addon1">{{Currency}}</span>
-                                <input type="number" formControlName="AdjustmentAmount" min="0" pattern=".{0,8}" (keyup)="CreditOrDebitAmount()" [(ngModel)]="AdjustmentModel.AdjustmentAmount" class="form-control" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                            </div>
-                            <small *ngIf="AdjustmentForm.controls.AdjustmentAmount.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                        <div class="form-group">
-                            <label>Comments*</label>
-                            <textarea type="text" formControlName="AdjustmentComments" [(ngModel)]="AdjustmentModel.AdjustmentComments" maxlength="500" class="form-control"></textarea>
-                            <small *ngIf="AdjustmentForm.controls.AdjustmentComments.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-3"></div>
-                                <div class="well well-sm text-center center-block col-md-6 text-white" style="background: #F05675; color: #fff;">
-                                    <strong>Adjustment {{AdjustmentModel.AdjustmentText}} Amount</strong>
-                                    <p>{{Currency}} {{AdjustmentModel.AdjustmentValue | number: '1.0-0'}}</p>
-                                </div>
-                                <div class="col-md-3"></div>
-                            </div>
+                        <div class="d-flex align-items-center" style="gap: 8px; color: #4b5563;">
+                            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <strong style="font-size: 14px; font-weight: 500;">{{EmployeeModel.FirstName + ' ' + EmployeeModel.LastName + ' - ' }} {{model.FromDate | date: "dd/MM/yyyy"}} - {{model.ToDate | date: "dd/MM/yyyy"}}</strong>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary btnDel pull-left" *ngIf="IsStatusPublished && IsSavedAdjustmentModel" (click)="DeleteAdjustmentModel(AdjustmentValueClickIndex)">Delete</button>
-                        <button type="button" class="btn btn-default btn -light" data-dismiss="modal" id="closeAdjustmentModal" (click)="ShowListModal('cancel')">Cancel</button>
-                        <button id="saveSchedule" type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" style="display:none" id="CloseAdjustModal" class="close mt-modal-close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                    <button type="button" class="close" style="position: absolute; top: 16px; right: 16px; color: #9ca3af; opacity: 1;" (click)="ShowListModal('cancel')" data-dismiss="modal">
+                        <i class="fa fa-times" style="font-size: 18px;"></i>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body" style="padding: 24px; background: linear-gradient(135deg, #f8fafc, #eff6ff);">
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        
+                        <!-- Adjustment Title -->
+                        <div class="card" style="border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; padding: 20px;">
+                             <strong style="font-size: 18px; display: block; margin-top: 8px;">Original {{AdjustmentModel.OrignalText}} Amount</strong>
+                                        <p style="font-size: 24px; font-weight: bold; margin: 0;">{{Currency}} {{AdjustmentModel.OrignalValue | number: '1.0-0'}}</p>
+                        </div>
+
+
+                        <!-- Form Fields -->
+                        <div class="card" style="border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; padding: 24px;">
+                            
+                            <!-- Adjustment Date -->
+                            <div class="form-group" style="margin-bottom: 24px;width:200px">
+                                <label style="font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px; display: block;">Adjustment Date*</label>
+                                <Datetime-Component formControlName="AdjustmentDate" placeholder="DD/MM/YYYY" [(ngModel)]="AdjustmentModel.AdjustmentDate" style="width: 100%;"></Datetime-Component>
+                                <em style="color: #6b7280; font-size: 12px; margin-top: 4px; display: block;">Transaction Date : {{model.PayDate | date: "dd/MM/yyyy"}}</em>
+                                <small *ngIf="AdjustmentForm.controls.AdjustmentDate.hasError('required') && submitted" style="color: #ef4444; font-size: 12px; margin-top: 4px; display: block;">
+                                    This value is required.
+                                </small>
+                            </div>
+
+                            <!-- Adjustment Type -->
+                            <div class="form-group" style="margin-bottom: 24px;">
+                                <h4 style="font-size: 16px; font-weight: 600; color: #374151; margin-bottom: 16px;">Adjustment Type</h4>
+                                <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                                    <label class="d-flex align-items-center" style="margin-bottom: 12px; cursor: pointer;">
+                                        <input type="radio" formControlName="AdjustmentType" (change)="CreditOrDebitAmount(AdjustmentValueClickIndex)" name="AdjustmentType" [(ngModel)]="AdjustmentModel.AdjustmentType" value="C" checked style="margin-right: 8px;">
+                                        <span style="color: #374151; font-weight: 500;">Credit - Add adjustment amount to {{AdjustmentModel.AdjustmentText | lowercase}} amount</span>
+                                    </label>
+                                    <label class="d-flex align-items-center" style="margin: 0; cursor: pointer;">
+                                        <input type="radio" formControlName="AdjustmentType" (change)="CreditOrDebitAmount(AdjustmentValueClickIndex)" name="AdjustmentType" [(ngModel)]="AdjustmentModel.AdjustmentType" value="D" style="margin-right: 8px;">
+                                        <span style="color: #374151; font-weight: 500;">Debit - Subtract adjustment amount from {{AdjustmentModel.AdjustmentText | lowercase}}</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Adjustment Amount -->
+                            <div class="form-group" style="margin-bottom: 24px;">
+                                <h4 style="font-size: 16px; font-weight: 600; color: #374151; margin-bottom: 12px;">Adjustment Amount*</h4>
+                                <div class="input-group" style="max-width: 400px;">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text justify-content-center" style="background-color: #fef3c7; color: #d97706; font-size: 14px; font-weight: 500; border: 1px solid #fed7aa;width:40px">{{Currency}}</span>
+                                    </div>
+                                    <input type="number" 
+                                           formControlName="AdjustmentAmount" 
+                                           min="0" 
+                                           pattern=".{0,8}" 
+                                           (keyup)="CreditOrDebitAmount()" 
+                                           [(ngModel)]="AdjustmentModel.AdjustmentAmount" 
+                                           class="form-control" 
+                                           aria-describedby="basic-addon1" 
+                                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" 
+                                           style="border-left: none; border-color: #fed7aa;" />
+                                </div>
+                                <small *ngIf="AdjustmentForm.controls.AdjustmentAmount.hasError('required') && submitted" style="color: #ef4444; font-size: 12px; margin-top: 4px; display: block;">
+                                    This value is required.
+                                </small>
+
+                                 <strong style="font-size: 16px; display: block; margin-top: 8px;">Adjustment {{AdjustmentModel.AdjustmentText}} Amount</strong>
+                                        <p style="font-size: 24px; font-weight: bold; margin: 0;">{{Currency}} {{AdjustmentModel.AdjustmentValue | number: '1.0-0'}}</p>
+                            </div>
+
+                            <!-- Comments -->
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px; display: block;">Comments*</label>
+                                <textarea type="text" 
+                                          formControlName="AdjustmentComments" 
+                                          [(ngModel)]="AdjustmentModel.AdjustmentComments" 
+                                          maxlength="500" 
+                                          class="form-control" 
+                                          rows="4"
+                                          style="border-color: #d1d5db; border-radius: 6px;"></textarea>
+                                <small *ngIf="AdjustmentForm.controls.AdjustmentComments.hasError('required') && submitted" style="color: #ef4444; font-size: 12px; margin-top: 4px; display: block;">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </form>
-        </div>
+
+                <!-- Footer -->
+                <div class="modal-footer" style="border-top: 1px solid #e5e7eb; padding: 20px 24px; background-color: #f9fafb; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                    <div class="d-flex justify-content-between w-100">
+                        <button type="button" 
+                                class="btn" 
+                                style="background-color: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 500;" 
+                                *ngIf="IsStatusPublished && IsSavedAdjustmentModel" 
+                                (click)="DeleteAdjustmentModel(AdjustmentValueClickIndex)">
+                            Delete
+                        </button>
+                        <div style="display: flex; gap: 12px;">
+                            <button type="button" 
+                                    class="btn" 
+                                    style="background-color: #6b7280; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-weight: 500;" 
+                                    data-dismiss="modal" 
+                                    id="closeAdjustmentModal" 
+                                    (click)="ShowListModal('cancel')">
+                                Cancel
+                            </button>
+                            <button id="saveSchedule" 
+                                    type="submit" 
+                                    class="btn" 
+                                    style="background-color: #2563eb; color: white; border: none; padding: 8px 24px; border-radius: 6px; font-weight: 500;">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
 </div>
 

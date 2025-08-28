@@ -2024,7 +2024,6 @@ export class AppointmentComponentList implements OnInit {
             this._AppointmentService.PatientInfoLoad(id, selectdate, AppId).then(m => {
                 this.PrescriptionModel.AppointmentDate = selectdate;
                 this.PrescriptionModel.AppointmentId = AppId;
-
                 var appointfind = m.ResultSet.AppointmentList.filter(a => a.PatientId == id);
                 if (appointfind.length > 0) {
                     let CurntDate = this._CommonService.GetFormatDate(new Date());
@@ -2042,19 +2041,19 @@ export class AppointmentComponentList implements OnInit {
                 }
                 this.IsPatient = true;
                 this.PatientDetailInfo = true;
-                this.model = m.ResultSet.patientInfo[0];
+                this.model = m.ResultSet.patientInfo;
                 this.BillTypeList = m.ResultSet.BillTypeList;
                 this.TittleList = m.ResultSet.TittleList;
-                if (m.ResultSet.prescription_mf.length > 0) {
-                    this.PrescriptionModel = m.ResultSet.prescription_mf[0];
-                    this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(m.ResultSet.prescription_mf[0].AppointmentDate);
-                    if (m.ResultSet.prescription_mf[0].FollowUpDate != null && m.ResultSet.prescription_mf[0].FollowUpDate != undefined)
-                        this.PrescriptionModel.FollowUpDate = m.ResultSet.prescription_mf[0].FollowUpDate;
-                    if (m.ResultSet.prescription_mf[0].FollowUpTime != null && m.ResultSet.prescription_mf[0].FollowUpTime != undefined)
-                        this.PrescriptionModel.FollowUpTime = m.ResultSet.prescription_mf[0].FollowUpTime;
-                    this.PrescriptionModel.Notes = m.ResultSet.prescription_mf[0].Notes;
-                    this.PrescriptionModel.IsCreateAppointment = m.ResultSet.prescription_mf[0].IsCreateAppointment;
-                    this.PrescriptionModel.IsTemplate = m.ResultSet.prescription_mf[0].IsTemplate;
+                if (m.ResultSet.prescription_mf != null) {
+                    this.PrescriptionModel = m.ResultSet.prescription_mf;
+                    this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(m.ResultSet.prescription_mf.AppointmentDate);
+                    if (m.ResultSet.prescription_mf.FollowUpDate != null && m.ResultSet.prescription_mf.FollowUpDate != undefined)
+                        this.PrescriptionModel.FollowUpDate = m.ResultSet.prescription_mf.FollowUpDate;
+                    if (m.ResultSet.prescription_mf.FollowUpTime != null && m.ResultSet.prescription_mf.FollowUpTime != undefined)
+                        this.PrescriptionModel.FollowUpTime = m.ResultSet.prescription_mf.FollowUpTime;
+                    this.PrescriptionModel.Notes = m.ResultSet.prescription_mf.Notes;
+                    this.PrescriptionModel.IsCreateAppointment = m.ResultSet.prescription_mf.IsCreateAppointment;
+                    this.PrescriptionModel.IsTemplate = m.ResultSet.prescription_mf.IsTemplate;
 
 
                 }
@@ -2066,19 +2065,18 @@ export class AppointmentComponentList implements OnInit {
 
                 this.PrescriptionModel.AppointmentDate = selectdate;
                 this.PrescriptionModel.AppointmentId = AppId;
-                this.PrescriptionModel.PatientName = m.ResultSet.patientInfo[0].PatientName;
+                this.PrescriptionModel.PatientName = m.ResultSet.patientInfo.PatientName;
                 this.PrescriptionModel.PatientId = id;
                 this.PrescriptionModel.ClinicId = this.CompanyObj.CompanyID;
                 this.PrescriptionModel.DoctorId = m.ResultSet.Doctorid;
 
                 var appointfind = m.ResultSet.AppointmentList.filter(a => a.ID == AppId);
-
                 if (appointfind.length > 0 && appointfind[0].AppointmentTime != null && this.PrescriptionModel.IsCreateAppointment == true)
                     this.PrescriptionModel.FollowUpTime = appointfind[0].AppointmentTime;
-                if (this.CurntPrevDateList.length == 0) {
-                    this.CurntPrevDateList = [];
-                    this.CurntPrevDateList = m.ResultSet.CurntPrevDateList;
-                }
+
+                this.CurntPrevDateList = [];
+                this.CurntPrevDateList = m.ResultSet.CurntPrevDateList;
+
                 this.emr_prescription_complaint_dynamicArray = [];
                 this.emr_prescription_diagnos_dynamicArray = [];
                 this.emr_prescription_investigation_dynamicArray = [];
@@ -2682,8 +2680,8 @@ export class AppointmentComponentList implements OnInit {
                     this.PrescriptionModel.DoctorId = app[0].DoctorId;
                     this.PrescriptionModel.PatientId = app[0].PatientId;
                 }
-               this.PrescriptionModel.PatientName = m.ResultSet.result.emr_patient_mf.PatientName;
-                
+                this.PrescriptionModel.PatientName = m.ResultSet.result.emr_patient_mf.PatientName;
+
                 this.emr_prescription_complaint_dynamicArray = [];
                 this.emr_prescription_diagnos_dynamicArray = [];
                 this.emr_prescription_investigation_dynamicArray = [];

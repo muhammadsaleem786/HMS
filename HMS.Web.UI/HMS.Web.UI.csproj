@@ -280,6 +280,7 @@
     <Content Include="src\app\theme\Module\setup\Setting\Reminder\ReminderComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Service\ServiceComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Service\ServiceComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Template\TemplateComponentList.html" />
     <Content Include="src\app\theme\Module\setup\SetupDashboard\SetupDashboardComponent.html" />
     <Content Include="src\app\theme\Module\setup\Setting\userrole\UserRoleComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Setting\userrole\UserRoleComponentList.html" />
@@ -660,6 +661,9 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Service\ServiceModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Service\ServiceComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Service\Service.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Template\TemplateComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Template\TemplateModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Template\TemplateService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\SetupDashboard\SetupDashboardComponent.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\SetupDashboard\SetupDashboardService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\userrole\UserRoleComponentForm.ts" />

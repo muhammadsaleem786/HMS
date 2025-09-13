@@ -81,6 +81,7 @@ import { ServiceComponentForm } from '../theme/Module/setup/Setting/Service/Serv
 
 import { ReminderComponentList } from '../theme/Module/setup/Setting/Reminder/ReminderComponentList';
 import { ReminderComponentForm } from '../theme/Module/setup/Setting/Reminder/ReminderComponentForm';
+import { TemplateComponentList } from '../theme/Module/setup/Setting/Template/TemplateComponentList';
 
 import { FilterPipe } from '../angularfilter/filter.pipe'
 //end
@@ -223,6 +224,7 @@ const SecureRoutes: Routes = [
             //setting module
             { path: 'DropDown', component: DropDownComponentList, canActivate: [AuthGuard] },
             { path: 'reminder', component: ReminderComponentList, canActivate: [AuthGuard] },
+            { path: 'template', component: TemplateComponentList, canActivate: [AuthGuard] },
             { path: 'reminder/savereminder', component: ReminderComponentForm, canActivate: [AuthGuard] },
             { path: 'reminder/savereminder:id', component: ReminderComponentForm, canActivate: [AuthGuard] },
 
@@ -359,7 +361,7 @@ export const SecureComponent: any[] = [
     MedicineInstructionComponentList, ObservationComponentList, ComplaintComponentList, InvestigationComponentList, DiagnosComponentList, DropDownComponentList,
     ApplicationUserComponentList, ApplicationUserComponentForm, MedicineComponentList, MedicineComponentForm, CompanyComponentForm, UserRoleComponentList
     , ProfileUserComponentForm, ServiceComponentList, ServiceComponentForm,
-    UserRoleComponentForm, FilterPipe, ReminderComponentList, ReminderComponentForm,
+    UserRoleComponentForm, FilterPipe, ReminderComponentList, TemplateComponentList, ReminderComponentForm,
     //end
     //Item Module
     ItemComponentList, SaleHoldComponentList, ItemComponentForm, VendorComponentList, VendorComponentForm,

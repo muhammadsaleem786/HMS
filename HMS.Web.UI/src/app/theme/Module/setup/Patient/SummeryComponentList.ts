@@ -228,6 +228,8 @@ export class SummeryComponentList implements OnInit {
                     this.DoctorInfo.PhoneNo = "";
                 }
                 this.PatientRXmodel.PatientName = m.ResultSet.result.PatientName;
+                this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
+
                 if (m.ResultSet.result.ClinicIogo != null)
                     this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result.ClinicIogo;
                 this.PatientRXmodel.Age = m.ResultSet.result.Age;

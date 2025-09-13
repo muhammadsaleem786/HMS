@@ -1,6 +1,7 @@
 ﻿using Repository.Pattern.Ef6;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,23 @@ namespace HMS.Entities.Models
         public decimal ID { get; set; }
         public decimal CompanyID { get; set; }
         public string Measure { get; set; }
+        [NotMapped]
+        public string Name { get; set; }
+        [NotMapped]
+        public string Name1 { get; set; }
+        [NotMapped]
+        public string Name2 { get; set; }
+        [NotMapped]
+        public string Name3 { get; set; }
+        [NotMapped]
+        public string Name4 { get; set; }
+        [NotMapped]
+        public string Name5 { get; set; }
+        [NotMapped]
+        public string Name6 { get; set; }
+        [NotMapped]
+        public string Name7 { get; set; }
+       
         public Nullable<System.DateTime> Date { get; set; }
         public int VitalId { get; set; }
         public int VitalDropdownId { get; set; }

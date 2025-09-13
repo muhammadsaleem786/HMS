@@ -10,6 +10,7 @@ using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -116,6 +117,98 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResponse;
         }
+        [HttpPost]
+        [ActionName("VitalPrescriptionSave")]
+        public async Task<ResponseInfo> VitalPrescriptionSave(emr_vital Model)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = MessageStatement.BadRequest;
+                    return objResponse;
+                }
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                decimal ID = 1;
+                if (_service.Queryable().Count() > 0)
+                    ID = _service.Queryable().Max(e => e.ID) + 1;
+
+                var vitalMappings = new List<(string Value, int VitalId)>
+        {
+            (Model.Name, 67),
+            (Model.Name1, 68),
+            (Model.Name2, 69),
+            (Model.Name3, 70),
+            (Model.Name4, 71),
+            (Model.Name5, 72),
+            (Model.Name6, 73),
+            (Model.Name7, 74)
+        };
+                foreach (var (value, vitalId) in vitalMappings)
+                {
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        var vital = new emr_vital
+                        {
+                            ID = ID++,
+                            Measure = value,
+                            VitalDropdownId = (int)sys_dropdown_mfEnum.VitalDropdownId,
+                            VitalId = vitalId,
+                            CompanyID = Request.CompanyID(),
+                            PatientId = Model.PatientId,
+                            CreatedBy = Request.LoginID(),
+                            CreatedDate = Request.DateTimes(),
+                            ModifiedBy = Request.LoginID(),
+                            ModifiedDate = Request.DateTimes(),
+                            Date = Model.Date
+                        };
+                        _service.Insert(vital);
+                    }
+                }
+                try
+                {
+                    await _unitOfWorkAsync.SaveChangesAsync();
+                    objResponse.Message = MessageStatement.Save;
+                    objResponse.IsSuccess = true;
+                    var vitalObj = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(Model.Date)).Select(z => new
+                    {
+                        z.ID,
+                        z.Date,
+                        z.Measure,
+                        z.VitalId,
+                        Name = z.sys_drop_down_value.Value,
+                        Unit = z.sys_drop_down_value.Unit
+                    }).ToList();
+                    objResponse.ResultSet = new
+                    {
+                        vitalObj = vitalObj,
+                    };
+
+                }
+                catch (DbUpdateException)
+                {
+                    if (ModelExists(Model.ID.ToString()))
+                    {
+                        objResponse.IsSuccess = false;
+                        objResponse.ErrorMessage = MessageStatement.Conflict;
+                        return objResponse;
+                    }
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+
+
         [HttpPut]
         [HttpGet]
         [ActionName("Update")]
@@ -277,7 +370,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
         [HttpGet]
         [ActionName("Delete")]
-        public async Task<ResponseInfo> Delete(string Id,string VitalId)
+        public async Task<ResponseInfo> Delete(string Id, string VitalId)
         {
             var objResponse = new ResponseInfo();
             try
@@ -358,7 +451,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     z.Value,
                     z.Unit
                 }).ToList();
-                var vitalObj = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId== PatId && a.VitalId == 67).Select(z => new
+                var vitalObj = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == PatId && a.VitalId == 67).Select(z => new
                 {
                     z.ID,
                     z.Date,

@@ -7,7 +7,7 @@
     CompanyID: number;
     CustomerId: number;
     SaleTypeID: number;
-    Date: Date;  
+    Date: Date=new Date();  
     SubTotal: number;
     DiscountType: number = 1;
     Discount: number=0;

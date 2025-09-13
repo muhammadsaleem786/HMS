@@ -271,6 +271,10 @@ export class AppointmentService {
         var data = { 'PatientId': PatientId };
         return this.http.Get(this.VitalToApiAp + '/Load', data).then(e => e);
     }
+    VitalPrescriptionSave(entity: emr_vital): Promise<any> {
+        if (isNaN(entity.ID) || entity.ID == 0)
+            return this.http.Post(this.VitalToApiAp + '/VitalPrescriptionSave', entity).then(e => e);
+    }
 
     VitalSave(entity: emr_vital): Promise<any> {
         if (isNaN(entity.ID) || entity.ID == 0)

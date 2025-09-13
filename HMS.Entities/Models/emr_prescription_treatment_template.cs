@@ -12,6 +12,7 @@ namespace HMS.Entities.Models
         public decimal ID { get; set; }
         public decimal CompanyID { get; set; }
         public string TemplateName { get; set; }
+       public bool IsActive { get; set; }
         public decimal PrescriptionId { get; set; }
         public decimal CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }

@@ -92,7 +92,14 @@ export class emr_vital {
     VitalId: number;
     VitalDropdownId: number;
     PatientId: number;
-    Name: number;
+    Name: string;
+    Name1: string;
+    Name2: string;
+    Name3: string;
+    Name4: string;
+    Name5: string;
+    Name6: string;
+    Name7: string;
     Unit: string;
 }
 
@@ -110,6 +117,7 @@ export class patientInfo {
     Gender: string;
     AppointmentDate: string;
     ClinicIogo: string;
+    Notes: string;
 }
 export class DoctorInfo {
     Name: string;

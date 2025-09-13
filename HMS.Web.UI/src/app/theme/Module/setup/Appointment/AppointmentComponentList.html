@@ -554,7 +554,7 @@
                                                                                                     <ng-template ngbPanelTitle>
                                                                                                         <span>
                                                                                                             <img src="../assets/app/media/img/icons/remakrs.png" class="img-fluid radius">
-                                                                                                            Detail Remarks
+                                                                                                            Notes For Patient
                                                                                                         </span><i class="icon-chevron-right iconImage"></i>
                                                                                                     </ng-template>
                                                                                                     <ng-template ngbPanelContent>
@@ -2109,117 +2109,121 @@
                 <p style="margin:2px 0; font-size:13px; font-weight:bold; color:#444; font-family: Arial, sans-serif;">{{DoctorInfo.DesignationUrdu}}</p>
                 <p style="margin:2px 0; font-size:13px; color:#444; font-family: Arial, sans-serif;">{{DoctorInfo.HeaderDescription}}</p>
             </div>
-            <!-- BODY -->
-            <div style="padding:12px; min-height:200mm; font-family: Arial, sans-serif;">
 
-                <!-- Patient Info Row -->
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #5e72e4; margin-bottom:8px; padding-bottom:6px; font-family: Arial, sans-serif;">
-                    <div style="width:30%; font-family: Arial, sans-serif;">
-                        <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">P/Name: </label>
-                        <input type="text" [(ngModel)]="PatientRXmodel.PatientName" readonly
-                               style="border: 0; border-bottom: 1px solid #aaa; width: 65%; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+        </div>
+
+        <!-- BODY -->
+        <div style="padding:12px; min-height:200mm; font-family: Arial, sans-serif;">
+
+            <!-- Patient Info Row -->
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #5e72e4; margin-bottom:8px; padding-bottom:6px; font-family: Arial, sans-serif;">
+                <div style="width:30%; font-family: Arial, sans-serif;">
+                    <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">P/Name: </label>
+                    <input type="text" [(ngModel)]="PatientRXmodel.PatientName" readonly
+                           style="border: 0; border-bottom: 1px solid #aaa; width: 65%; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                </div>
+                <div style="width:140px; font-family: Arial, sans-serif;">
+                    <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Age/Sex: </label>
+                    <input type="text" [(ngModel)]="PatientRXmodel.Age" readonly
+                           style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                </div>
+                <div style="width:140px; font-family: Arial, sans-serif;">
+                    <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Weight: </label>
+                    <input type="text" readonly
+                           style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                </div>
+                <div style="width:140px; text-align:right; font-family: Arial, sans-serif;">
+                    <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Date: </label>
+                    <input type="text" [(ngModel)]="PatientRXmodel.AppointmentDate" readonly
+                           style="border: 0; border-bottom: 1px solid #aaa; width: 100px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                </div>
+            </div>
+
+            <!-- Content Split -->
+            <div style="display:flex; height:90%; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, sans-serif;">
+
+                <!-- Left Sidebar -->
+                <div style="width:28%; padding-right:10px; font-size:13px; color:#d9534f; font-family: Arial, sans-serif;">
+                    <div style="margin-bottom:12px; font-family: Arial, sans-serif;" *ngIf="PatientVitalList.length > 0">
+                        <strong style="font-family: Arial, sans-serif;font-size:18px;">Vitals:</strong>
+                        <div *ngFor="let d of PatientVitalList" style="font-family: Arial, sans-serif;">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
                     </div>
-                    <div style="width:140px; font-family: Arial, sans-serif;">
-                        <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Age/Sex: </label>
-                        <input type="text" [(ngModel)]="PatientRXmodel.Age" readonly
-                               style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                    <div style="margin-bottom:12px; font-family: Arial, sans-serif;" *ngIf="emr_prescription_diagnos_dynamicArray.length > 0">
+                        <strong style="font-family: Arial, sans-serif; font-size: 18px;">Diagnoses:</strong>
+                        <div *ngFor="let d of emr_prescription_diagnos_dynamicArray" style="font-family: Arial, sans-serif;">{{d.Diagnos}}</div>
                     </div>
-                    <div style="width:140px; font-family: Arial, sans-serif;">
-                        <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Weight: </label>
-                        <input type="text" readonly
-                               style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                    <div style="margin-bottom:12px; font-family: Arial, sans-serif;" *ngIf="emr_prescription_complaint_dynamicArray.length > 0">
+                        <strong style="font-family: Arial, sans-serif; font-size: 18px;">Complaint:</strong>
+                        <div *ngFor="let d of emr_prescription_complaint_dynamicArray" style="font-family: Arial, sans-serif;">{{d.Complaint}}</div>
                     </div>
-                    <div style="width:140px; text-align:right; font-family: Arial, sans-serif;">
-                        <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Date: </label>
-                        <input type="text" [(ngModel)]="PatientRXmodel.AppointmentDate" readonly
-                               style="border: 0; border-bottom: 1px solid #aaa; width: 100px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                    <div style="margin-bottom:12px; font-family: Arial, sans-serif;" *ngIf="emr_prescription_investigation_dynamicArray.length > 0">
+                        <strong style="font-family: Arial, sans-serif; font-size: 18px;">Investigation:</strong>
+                        <div *ngFor="let d of emr_prescription_investigation_dynamicArray" style="font-family: Arial, sans-serif;">{{d.Investigation}}</div>
+                    </div>
+                    <div style="margin-bottom:12px; font-family: Arial, sans-serif;" *ngIf="emr_prescription_observation_dynamicArray.length > 0">
+                        <strong style="font-family: Arial, sans-serif; font-size: 18px;">Examination:</strong>
+                        <div *ngFor="let d of emr_prescription_observation_dynamicArray" style="font-family: Arial, sans-serif;">{{d.Observation}}</div>
                     </div>
                 </div>
 
-                <!-- Content Split -->
-                <div style="display:flex; height:90%; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, sans-serif;">
+                <!-- Right Main Content -->
+                <div style="width:72%; border-left:1px solid #5e72e4; padding-left:12px; font-family: Arial, sans-serif;">
+                    <table style="width:100%; border-collapse:collapse; font-size:12px; line-height:normal; margin-top:5px; font-family: Arial, sans-serif;">
+                        <thead>
+                            <tr style="background:#f2f5fa; font-family: Arial, sans-serif;">
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">Medicine</th>
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">Type</th>
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">Days</th>
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">Instruction</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let m of emr_prescription_treatment_dynamicArray" style="font-family: Arial, sans-serif;">
+                                <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">
+                                    {{m.MedicineName}}
+                                    <label *ngIf="DoctorInfo.TemplateId==2" style="font-family: Arial, sans-serif;">
+                                        (
+                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }} {{m.Morning}}</span>
+                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;">+ {{ m.TypeId == 39 ? 'گولی دوپہر' : 'دوپہر' }} {{m.AfterNoon}}</span>
+                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;">+ {{ m.TypeId == 39 ? 'گولی شام' : 'شام' }} {{m.Evening}}</span>
+                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;">+ {{ m.TypeId == 39 ? 'گولی رات' : 'رات' }} {{m.Night}}</span>
+                                        )
+                                    </label>
+                                    <label *ngIf="DoctorInfo.TemplateId==1" style="font-family: Arial, sans-serif;">
+                                        (
+                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}</span>
+                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;">+ {{m.AfterNoon}}</span>
+                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;">+ {{m.Evening}}</span>
+                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;">+ {{m.Night}}</span>
+                                        )
+                                    </label>
+                                </td>
+                                <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">{{m.MedicineType}}</td>
+                                <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}}</td>
+                                <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==2">{{m.Duration}} {{ getDurationInUrdu(m.DurationValue) }}</td>
+                                <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">{{m.Instructions}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                    <!-- Left Sidebar -->
-                    <div style="width:28%; padding-right:10px; font-size:13px; color:#d9534f; font-family: Arial, sans-serif;">
-                        <div style="margin-bottom:12px; font-family: Arial, sans-serif;">
-                            <strong style="font-family: Arial, sans-serif;font-size:18px;">Vitals:</strong>
-                            <div *ngFor="let d of PatientVitalList" style="font-family: Arial, sans-serif;">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
-                        </div>
-                        <div style="margin-bottom:12px; font-family: Arial, sans-serif;">
-                            <strong style="font-family: Arial, sans-serif; font-size: 18px;">Diagnoses:</strong>
-                            <div *ngFor="let d of emr_prescription_diagnos_dynamicArray" style="font-family: Arial, sans-serif;">{{d.Diagnos}}</div>
-                        </div>
-                        <div style="margin-bottom:12px; font-family: Arial, sans-serif;">
-                            <strong style="font-family: Arial, sans-serif; font-size: 18px;">Complaint:</strong>
-                            <div *ngFor="let d of emr_prescription_complaint_dynamicArray" style="font-family: Arial, sans-serif;">{{d.Complaint}}</div>
-                        </div>
-                        <div style="margin-bottom:12px; font-family: Arial, sans-serif;">
-                            <strong style="font-family: Arial, sans-serif; font-size: 18px;">Investigation:</strong>
-                            <div *ngFor="let d of emr_prescription_investigation_dynamicArray" style="font-family: Arial, sans-serif;">{{d.Investigation}}</div>
-                        </div>
-                        <div style="margin-bottom:12px; font-family: Arial, sans-serif;">
-                            <strong style="font-family: Arial, sans-serif; font-size: 18px;">Examination:</strong>
-                            <div *ngFor="let d of emr_prescription_observation_dynamicArray" style="font-family: Arial, sans-serif;">{{d.Observation}}</div>
-                        </div>
-                    </div>
-
-                    <!-- Right Main Content -->
-                    <div style="width:72%; border-left:1px solid #5e72e4; padding-left:12px; font-family: Arial, sans-serif;">
-                        <table style="width:100%; border-collapse:collapse; font-size:12px; line-height:normal; margin-top:5px; font-family: Arial, sans-serif;">
-                            <thead>
-                                <tr style="background:#f2f5fa; font-family: Arial, sans-serif;">
-                                    <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">Medicine</th>
-                                    <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">Type</th>
-                                    <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">Days</th>
-                                    <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">Instruction</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let m of emr_prescription_treatment_dynamicArray" style="font-family: Arial, sans-serif;">
-                                    <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">
-                                        {{m.MedicineName}}
-                                        <label *ngIf="DoctorInfo.TemplateId==2" style="font-family: Arial, sans-serif;">{{m.Instructions}}</label><br>
-                                        <label *ngIf="DoctorInfo.TemplateId==2" style="font-family: Arial, sans-serif;">
-                                            (
-                                            <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }} {{m.Morning}}</span>
-                                            <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;">+ {{ m.TypeId == 39 ? 'گولی دوپہر' : 'دوپہر' }} {{m.AfterNoon}}</span>
-                                            <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;">+ {{ m.TypeId == 39 ? 'گولی شام' : 'شام' }} {{m.Evening}}</span>
-                                            <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;">+ {{ m.TypeId == 39 ? 'گولی رات' : 'رات' }} {{m.Night}}</span>
-                                            )
-                                        </label>
-                                        <label *ngIf="DoctorInfo.TemplateId==1" style="font-family: Arial, sans-serif;">
-                                            (
-                                            <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}</span>
-                                            <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;">+ {{m.AfterNoon}}</span>
-                                            <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;">+ {{m.Evening}}</span>
-                                            <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;">+ {{m.Night}}</span>
-                                            )
-                                        </label>
-                                    </td>
-                                    <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">{{m.MedicineType}}</td>
-                                    <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}}</td>
-                                    <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==2">{{m.Duration}} {{ getDurationInUrdu(m.DurationValue) }}</td>
-                                    <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">{{m.Instructions}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <h3 style="margin:12px 0 6px; font-size:15px; color:#5e72e4; font-family: Arial, sans-serif;">Instructions</h3>
-                        <div style="font-size:12px; margin:0; line-height:normal; font-family: Arial, sans-serif;">
-                            <span *ngFor="let m of emr_prescription_treatment_dynamicArray" style="font-family: Arial, sans-serif;">{{m.Instructions}},</span>
-                        </div>
+                    <h3 style="margin:12px 0 6px; font-size:15px; color:#5e72e4; font-family: Arial, sans-serif;">Instructions</h3>
+                    <div style="font-size:12px; margin:0; line-height:normal; font-family: Arial, sans-serif;">
+                        <span style="font-family: Arial, sans-serif;">{{PatientRXmodel.Notes}}</span>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- FOOTER -->
-        <div style="padding:6px 10px; text-align:center; border-top:2px solid #5e72e4;">
-            <p style="font-size:13px; margin:0; color:#444;">{{DoctorInfo.Footer}}</p>
-            <div style="position:fixed; right:20px; bottom:20px; font-family: Arial, sans-serif;">
-                <button class="btn btn-primary" useExistingCss="true" printSectionId="print-RxPrintModal" ngxPrint>Print</button>
-                <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
-            </div>
+        <div style="padding:6px 10px; text-align:center; border-top:2px solid #5e72e4; font-family: Arial, sans-serif;">
+            <p style="font-size:13px; margin:0; color:#444; font-family: Arial, sans-serif;">{{DoctorInfo.Footer}}</p>
         </div>
+    </div>
+
+    <!-- PRINT + CLOSE BUTTONS -->
+    <div style="position:fixed; right:20px; bottom:20px; font-family: Arial, sans-serif;">
+        <button class="btn btn-primary" useExistingCss="true" printSectionId="print-RxPrintModal" ngxPrint>Print</button>
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
     </div>
 </ng-template>
 <!-- ============================ -->

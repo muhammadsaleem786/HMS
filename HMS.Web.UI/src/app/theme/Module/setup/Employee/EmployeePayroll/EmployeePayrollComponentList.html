@@ -1,8 +1,5 @@
 ﻿<!--<div *ngIf="IsShowPayrollMasterList && payrolShow == false">-->
 <div *ngIf="IsShowPayrollMasterList">
-
-
-
     <div class="row m-0">
         <div class="col-sm-8">
         <h2 class="grid-heading margin-t-15 mb-2"> Payroll</h2>
@@ -22,47 +19,42 @@
 </div>
 <div class="margin-t-68">
     <div *ngIf="!IsShowPayrollMasterList">
-        <!--<div class="col-sm-12">
-            <a routerLink="/payroll"><i class="fa fa-2x fa-arrow-circle-left" style="color: #4e607a;"></i></a>
-        </div>-->
-      
         <div class="row mt-2 mx-0">
-            <div class="col-sm-1" style="max-width:30px;">
-                <a (click)="GoBack('/setup')" class="cursor-pointer mt-1 d-block"><i class="fa fa-chevron-left" style="color: #4e607a;"></i></a>
-            </div>
             <div class="col-md-10 d-flex align-items-center" style="gap:5px;">
                 <h3>Payroll</h3>
                 <p class="mb-0">of <strong>({{PayPeriod}})</strong></p>
                 <strong class="ml-3">Status:</strong> <span class="badge badge-primary">{{Status}}</span>
             </div>
         </div>
-        
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+        </div>
         <i id="SearchButton" style="display:none" class="btn btn-primary" data-toggle="modal" data-target="#FilterModal"></i>
-       
-       <div class="Cardview payroll_Wrap p-3">
-              <app-pagination [PModel]="PDetModel" [PConfig]="PDetConfig" [PData]="PayrollDetList" (pageChange)="GetDetList()" (AddOrEditEvent)="AddDetRecord($event)" (GoBackEvent)="GoBack($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)">
-        </app-pagination>
 
-         <div  *ngIf="PayrollDetList?.length > 0">
-            <table class="table" style="margin-top:0px;background: #efefef;">
-                <tr>
-                    <td><strong>Total</strong></td>
-                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalBaseSalary | number: '1.0-0') }}</strong></td>
-                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalAllowance | number: '1.0-0' )}}</strong></td>
-                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalDeduction | number: '1.0-0')}}</strong></td>
-                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalGrossSalary | number: '1.0-0')}}</strong></td>
-                    <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalNetSalary | number: '1.0-0')}}</strong></td>
-                </tr>
-            </table>
-            <div class="btnArea-footer" *ngIf="PayrollDetList[0]?.Status == 'O'">
-                <button id="saveSchedule" type="button" class="btn btn-primary" (click)="PublishPayroll()">Publish</button>
-                <button type="button" class="btn btn-primary btnDel pull-left" (click)="DeletePayroll()">Delete</button>
+        <div class="Cardview payroll_Wrap p-3">
+            <app-pagination [PModel]="PDetModel" [PConfig]="PDetConfig" [PData]="PayrollDetList" (pageChange)="GetDetList()" (AddOrEditEvent)="AddDetRecord($event)" (GoBackEvent)="GoBack($event)" (ViewEvent)="View($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)">
+            </app-pagination>
+
+            <div *ngIf="PayrollDetList?.length > 0">
+                <table class="table" style="margin-top:0px;background: #efefef;">
+                    <tr>
+                        <td><strong>Total</strong></td>
+                        <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalBaseSalary | number: '1.0-0') }}</strong></td>
+                        <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalAllowance | number: '1.0-0' )}}</strong></td>
+                        <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalDeduction | number: '1.0-0')}}</strong></td>
+                        <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalGrossSalary | number: '1.0-0')}}</strong></td>
+                        <td><strong>{{Currency +' ' + (PrEmpDtSalaryTotalModel.TotalNetSalary | number: '1.0-0')}}</strong></td>
+                    </tr>
+                </table>
+                <div class="btnArea-footer" *ngIf="PayrollDetList[0]?.Status == 'O'">
+                    <button id="saveSchedule" type="button" class="btn btn-primary" (click)="PublishPayroll()">Publish</button>
+                    <button type="button" class="btn btn-primary btnDel pull-left" (click)="DeletePayroll()">Delete</button>
+                </div>
             </div>
+
         </div>
 
-       </div>
-      
-       
+
         <div class="modal fade" id="FilterModal" data-backdrop="static" data-keyboard="false" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">

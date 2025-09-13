@@ -21,53 +21,47 @@ namespace HMS.Repository.Repositories.Appointment
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
                 Expression<Func<emr_prescription_treatment_template, bool>> predicate = (e => e.CompanyID == ID);
 
-                bool DisplayName, DisplayUserName, DisplayPhoneNo, DisplayEmail;
-                bool OrderByName, OrderByUserName, OrderByPhoneNo, OrderByEmail;
+                bool DisplayName, DisplayPhoneNo;
+                bool OrderByName, OrderByPhoneNo;
 
 
-                //if (!string.IsNullOrEmpty(PFilter.SearchText))
-                //{
-                //    DisplayName = PFilter.VisibleColumnInfoList.IndexOf("Name") > -1;
-                //    //DisplayUserName = PFilter.VisibleColumnInfoList.IndexOf("UserName") > -1;
-                //    DisplayPhoneNo = PFilter.VisibleColumnInfoList.IndexOf("PhoneNo") > -1;
-                //    DisplayEmail = PFilter.VisibleColumnInfoList.IndexOf("Email") > -1;
-                //    predicate = (c =>
-                //    (DisplayName && c.Name.ToLower().Contains(PFilter.SearchText.ToLower()) ||
-                //    (DisplayEmail && c.Email.ToLower().Contains(PFilter.SearchText.ToLower())
+                if (!string.IsNullOrEmpty(PFilter.SearchText))
+                {
+                    DisplayName = PFilter.VisibleColumnInfoList.IndexOf("TemplateName") > -1;
+                    DisplayPhoneNo = PFilter.VisibleColumnInfoList.IndexOf("CreatedDate") > -1;
+                    predicate = (c =>
+                    (DisplayName && c.TemplateName.ToLower().Contains(PFilter.SearchText.ToLower()) ||
+                    (DisplayPhoneNo && c.CreatedDate.ToString().Contains(PFilter.SearchText.ToLower())
+                    )));
+                }
 
-                //    //
-                //    )));
-                //}
+                IQueryable<emr_prescription_treatment_template> filteredData = repository.Queryable().Where(predicate);
 
-                //IQueryable<adm_user> filteredData = repository.Queryable().Where(predicate);
+                if (string.IsNullOrEmpty(PFilter.OrderBy))
+                    PFilter.OrderBy = "ID";
 
-                ////if (string.IsNullOrEmpty(PFilter.OrderBy))
-                ////    PFilter.OrderBy = "TaxCode";
+                OrderByName = PFilter.OrderBy.IndexOf("TemplateName") > -1;
+                OrderByPhoneNo = PFilter.OrderBy.IndexOf("CreatedDate") > -1;
 
-                //OrderByName = PFilter.OrderBy.IndexOf("Name") > -1;
-                ////OrderByUserName = PFilter.OrderBy.IndexOf("UserName") > -1;
-                //OrderByPhoneNo = PFilter.OrderBy.IndexOf("PhoneNo") > -1;
-                //OrderByEmail = PFilter.OrderBy.IndexOf("Email") > -1;
+                Expression<Func<emr_prescription_treatment_template, string>> orderingFunction = (c =>
+                                                              OrderByName ? c.TemplateName :
+                                                              OrderByPhoneNo ? c.CreatedDate.ToString() : ""
+                                                              );
 
-                //Expression<Func<adm_user, string>> orderingFunction = (c =>
-                //                                              OrderByName ? c.Name :
-                //                                              OrderByEmail ? c.Email : ""
-                //                                              );
+                if (PFilter.IsOrderAsc)
+                    filteredData = filteredData.OrderBy(orderingFunction);
+                else
+                    filteredData = filteredData.OrderByDescending(orderingFunction);
 
-                //if (PFilter.IsOrderAsc)
-                //    filteredData = filteredData.OrderBy(orderingFunction);
-                //else
-                //    filteredData = filteredData.OrderByDescending(orderingFunction);
+                objResult.TotalRecord = filteredData.Count();
 
-                //objResult.TotalRecord = filteredData.Count();
-
-                //if (IgnorePaging)
-                //    objResult.DataList = (from c in filteredData select c).ToList<object>();
-                //else
-                //{
-                //    var PageResult = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord);
-                //    objResult.DataList = (from c in PageResult select c).ToList<object>();
-                //}
+                if (IgnorePaging)
+                    objResult.DataList = (from c in filteredData select c).ToList<object>();
+                else
+                {
+                    var PageResult = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord);
+                    objResult.DataList = (from c in PageResult select c).ToList<object>();
+                }
             }
             catch (Exception ex)
             {

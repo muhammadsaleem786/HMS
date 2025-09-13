@@ -26,6 +26,9 @@
 <div class="col-sm-12">
     <h2 class="grid-heading margin-t-15 margin-b-0">Employee Information</h2>
 </div>
+<div class="col-sm-4 text-right flex-row flex-end">
+    <a class="btn btn-light mr-1" routerLink="/home/Employee">Back</a>
+</div>
 <div>
 
     <div class="m-content">
@@ -496,13 +499,13 @@
                                         <div class="row">
                                             <!-- Pay Type -->
                                             <!--<div class="col-sm-6">
-        <div class="form-group">
-            <label>Pay Type</label>
-            <select formControlName="PayTypeID" [(ngModel)]="model.PayTypeID" class="form-control m-input">
-                <option *ngFor="let item of Paytypes" [value]="item.ID">{{item.Value}}</option>
-            </select>
-        </div>
-    </div>-->
+                                                <div class="form-group">
+                                                    <label>Pay Type</label>
+                                                    <select formControlName="PayTypeID" [(ngModel)]="model.PayTypeID" class="form-control m-input">
+                                                        <option *ngFor="let item of Paytypes" [value]="item.ID">{{item.Value}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>-->
                                             <!-- Base Salary -->
                                             <div class="col-sm-6">
                                                 <div class="form-group">
@@ -560,7 +563,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Payment Method -->
                                             <div class="col-sm-12">
                                                 <div class="form-group">

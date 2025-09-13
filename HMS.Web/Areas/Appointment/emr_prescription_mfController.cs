@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.SqlServer;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -887,6 +888,17 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 int userid = Convert.ToInt32(Request.LoginID());
                 DateTime date = Convert.ToDateTime(DateTime.Now);
 
+
+                var vitalObj = _emr_vitalService.Queryable().Where(a => a.CompanyID == companyId && a.PatientId == patientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(result.CreatedDate)).Select(z => new
+                {
+                    z.ID,
+                    z.Date,
+                    z.Measure,
+                    z.VitalId,
+                    Name = z.sys_drop_down_value.Value,
+                    Unit = z.sys_drop_down_value.Unit
+                }).ToList();
+
                 var patientInfo = await _emr_patientService.Queryable()
     .Where(p => p.ID == patientId && p.CompanyId == companyId)
     .FirstOrDefaultAsync();
@@ -930,10 +942,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
         return new
         {
-            Id = cmp.ID,
+            id = cmp.ID,
             Complaint = pc?.Complaint ?? cmp.Complaint,
-            FavoriteId = fav?.ID,
-            IsFavorite = fav != null ? 1 : 0
+            favoriteId = fav?.ID,
+            Isfavorite = fav != null ? 1 : 0
         };
     })
     .Distinct()
@@ -964,10 +976,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
         return new
         {
-            Id = ob.ID,
+            id = ob.ID,
             Observation = po?.Observation ?? ob.Observation,
-            FavoriteId = fav?.ID,
-            IsFavorite = fav != null ? 1 : 0
+            favoriteId = fav?.ID,
+            Isfavorite = fav != null ? 1 : 0
         };
     })
     .Distinct()
@@ -995,10 +1007,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         var fav = investigationFavorites.FirstOrDefault(x => x.ReferenceId == inv.ID);
                         return new
                         {
-                            Id = inv.ID,
+                            id = inv.ID,
                             Investigation = pi?.Investigation ?? inv.Investigation,
-                            FavoriteId = fav?.ID,
-                            IsFavorite = fav != null ? 1 : 0
+                            favoriteId = fav?.ID,
+                            Isfavorite = fav != null ? 1 : 0
                         };
                     })
                     .Distinct()
@@ -1026,10 +1038,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         var fav = diagnosisFavorites.FirstOrDefault(x => x.ReferenceId == dia.ID);
                         return new
                         {
-                            Id = dia.ID,
+                            id = dia.ID,
                             Diagnos = pd?.Diagnos ?? dia.Diagnos,
-                            FavoriteId = fav?.ID,
-                            IsFavorite = fav != null ? 1 : 0
+                            favoriteId = fav?.ID,
+                            Isfavorite = fav != null ? 1 : 0
                         };
                     })
                     .Distinct()
@@ -1114,6 +1126,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     ObservationList = ObservationList,
                     InvestigationsList = InvestigationsList,
                     DiagnosisList = DiagnosisList,
+                    vitalList= vitalObj,
                 };
             }
             catch (Exception ex)
@@ -1164,6 +1177,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.DoctorId,
                         z.PatientId,
                         z.AppointmentDate,
+                        z.Notes,
                         PatientName = z.emr_patient_mf.PatientName,
                         ClinicIogo = z.adm_company.CompanyLogo,
                         Age = z.emr_patient_mf.Age,
@@ -1503,6 +1517,12 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal companyId = Request.CompanyID();
                 int userid = Convert.ToInt32(Request.LoginID());
 
+                var ht = new Hashtable();
+                ht.Add("@CompanyId", companyId);
+                ht.Add("@UserId", userid);
+                DataAccessManager dataAccessManager = new DataAccessManager();
+                var doctorData = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
+
                 var dropDownIds = new[] { 2, 17, 1 };
                 var allDropDownValues = await _sys_drop_down_valueService.Queryable()
     .Where(x => dropDownIds.Contains(x.DropDownID)
@@ -1575,6 +1595,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Distinct()
     .ToListAsync();
 
+
+
                 // Format AppointmentTime after query
                 var followUpsResult = followUps
                     .Select(f => new
@@ -1588,11 +1610,122 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         f.FollowUpDate
                     })
                     .ToList();
-                var ht = new Hashtable();
-                ht.Add("@CompanyId", companyId);
-                ht.Add("@UserId", userid);
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var doctorData = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
+                var doctorId = Convert.ToInt64(doctorData.Tables[0].Rows[0]["ID"]);
+                var prescriptionComplaints = new List<emr_prescription_complaint>();
+
+                var complaints = await _emr_complaintService.Queryable().Take(10).ToListAsync();
+                var favorites = await _emr_notes_favoriteService.Queryable()
+      .Where(ft => ft.ReferenceType == "C"
+                && ft.DoctorId == doctorId
+                && ft.CompanyId == companyId)
+      .ToListAsync();
+                var complaintList = complaints
+    .Select(cmp =>
+    {
+        var pc = prescriptionComplaints.FirstOrDefault(x => x.ComplaintId == cmp.ID);
+        var fav = favorites.FirstOrDefault(x => x.ReferenceId == cmp.ID);
+
+        return new
+        {
+            id = cmp.ID,
+            Complaint = pc?.Complaint ?? cmp.Complaint,
+            favoriteId = fav?.ID,
+            Isfavorite = fav != null ? 1 : 0
+        };
+    })
+    .Distinct()
+    .Take(10)
+    .ToList();
+
+                var prescriptionObservations = new List<emr_prescription_observation>();
+                var observations = await _emr_observationService.Queryable()
+     .Take(10)
+     .ToListAsync();
+                var favoritesObser = await _emr_notes_favoriteService.Queryable()
+.Where(ft => ft.ReferenceType == "O"
+&& ft.DoctorId == doctorId
+&& ft.CompanyId == companyId)
+.ToListAsync();
+
+
+                var observationList = observations
+    .Select(ob =>
+    {
+        var po = prescriptionObservations.FirstOrDefault(x => x.ObservationId == ob.ID);
+        var fav = favoritesObser.FirstOrDefault(x => x.ReferenceId == ob.ID);
+
+        return new
+        {
+            id = ob.ID,
+            Observation = po?.Observation ?? ob.Observation,
+            favoriteId = fav?.ID,
+            Isfavorite = fav != null ? 1 : 0
+        };
+    })
+    .Distinct()
+    .Take(10)
+    .ToList();
+                var prescriptionInvestigations = new List<emr_prescription_investigation>();
+                // 1. Base investigations
+                var investigations = await _emr_investigationService.Queryable()
+                    .Take(10)
+                    .ToListAsync();
+                // 3. Favorites
+                var investigationFavorites = await _emr_notes_favoriteService.Queryable()
+                    .Where(ft => ft.ReferenceType == "I"
+                              && ft.DoctorId == doctorId
+                              && ft.CompanyId == companyId)
+                    .ToListAsync();
+                // 4. Merge
+                var investigationList = investigations
+                    .Select(inv =>
+                    {
+                        var pi = prescriptionInvestigations.FirstOrDefault(x => x.InvestigationId == inv.ID);
+                        var fav = investigationFavorites.FirstOrDefault(x => x.ReferenceId == inv.ID);
+                        return new
+                        {
+                            id = inv.ID,
+                            Investigation = pi?.Investigation ?? inv.Investigation,
+                            favoriteId = fav?.ID,
+                            Isfavorite = fav != null ? 1 : 0
+                        };
+                    })
+                    .Distinct()
+                    .Take(10)
+                    .ToList();
+                // 1. Base diagnoses
+                var diagnoses = await _emr_diagnosService.Queryable()
+                    .Take(10)
+                    .ToListAsync();
+                // 2. Prescription diagnoses
+                var prescriptionDiagnoses = new List<emr_prescription_diagnos>();
+                // 3. Favorites
+                var diagnosisFavorites = await _emr_notes_favoriteService.Queryable()
+                    .Where(ft => ft.ReferenceType == "D"
+                              && ft.DoctorId == doctorId
+                              && ft.CompanyId == companyId)
+                    .ToListAsync();
+                // 4. Merge
+                var diagnosisList = diagnoses
+                    .Select(dia =>
+                    {
+                        var pd = prescriptionDiagnoses.FirstOrDefault(x => x.DiagnosId == dia.ID);
+                        var fav = diagnosisFavorites.FirstOrDefault(x => x.ReferenceId == dia.ID);
+                        return new
+                        {
+                            id = dia.ID,
+                            Diagnos = pd?.Diagnos ?? dia.Diagnos,
+                            favoriteId = fav?.ID,
+                            Isfavorite = fav != null ? 1 : 0
+                        };
+                    })
+                    .Distinct()
+                    .Take(10)
+                    .ToList();
+
+
+
+
                 var GenderType = genderList;
                 var DoctorList = doctorData.Tables[0];
                 decimal[] IdList = null;
@@ -1624,6 +1757,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     StatusList = StatusList,
                     Followuplist = Followuplist,
                     ReminderList = ReminderList,
+                    ComplaintList = complaintList,
+                    ObservationList = observationList,
+                    InvestigationsList = investigationList,
+                    DiagnosisList = diagnosisList,
                 };
             }
             catch (Exception ex)
@@ -1662,82 +1799,250 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
         [HttpGet]
         [ActionName("PrescriptionLoad")]
-        public ResponseInfo PrescriptionLoad(string id, string DocId, string Date)
+        public async Task<ResponseInfo> PrescriptionLoad(string id, string DocId, string Date)
         {
             var objResponse = new ResponseInfo();
             try
             {
-                decimal Doctorid = Convert.ToDecimal(DocId);
-                decimal CompanyID = Request.CompanyID();
+                decimal doctorId = Convert.ToDecimal(DocId);
+                decimal companyId = Request.CompanyID();
                 decimal patientid = Convert.ToDecimal(id);
                 int userid = Convert.ToInt32(Request.LoginID());
                 DateTime date = Convert.ToDateTime(Date);
 
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@PatientId", patientid);
-                ht.Add("@Doctorid", Doctorid);
-                ht.Add("@Date", date);
-                ht.Add("@UserId", userid);
-                var AllData = dataAccessManager.GetDataSet("SP_GetPrescriptionByPatientIdAndDoctorId", ht);
+                var reslt = await _emr_appointment_mfService.Queryable()
+    .Where(a => a.PatientId == patientid
+             && a.CompanyId == companyId
+             && a.DoctorId == doctorId)
+    .GroupBy(a => new { a.PatientId, Date = DbFunctions.TruncateTime(a.AppointmentDate) }) // group by patient + date only
+    .Select(g => new
+    {
+        g.Key.PatientId,
+        AppointmentDate = g.Key.Date
+    })
+    .OrderByDescending(x => x.AppointmentDate)
+    .ToListAsync();
+
+                // if you really need string format "yyyy-MM-dd"
+                var appointmentDates = reslt.Select(a => new
+                {
+                    a.PatientId,
+                    AppointmentDate = a.AppointmentDate.Value.ToString("yyyy-MM-dd")
+                }).ToList();
+                var result = _service.Queryable().Where(e => DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date) && e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).FirstOrDefault();
+
+                var prescriptionComplaints = new List<emr_prescription_complaint>();
+
+                var complaints = await _emr_complaintService.Queryable().Take(10).ToListAsync();
+                if (result != null)
+                {
+                    prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
+   .Where(pc => pc.PrescriptionId == result.ID && pc.CompanyID == companyId)
+   .ToListAsync();
+                }
+                var favorites = await _emr_notes_favoriteService.Queryable()
+                    .Where(ft => ft.ReferenceType == "C"
+                              && ft.DoctorId == doctorId
+                              && ft.CompanyId == companyId)
+                    .ToListAsync();
+                var complaintList = complaints
+    .Select(cmp =>
+    {
+        var pc = prescriptionComplaints.FirstOrDefault(x => x.ComplaintId == cmp.ID);
+        var fav = favorites.FirstOrDefault(x => x.ReferenceId == cmp.ID);
+
+        return new
+        {
+            id = cmp.ID,
+            Complaint = pc?.Complaint ?? cmp.Complaint,
+            favoriteId = fav?.ID,
+            Isfavorite = fav != null ? 1 : 0
+        };
+    })
+    .Distinct()
+    .Take(10)
+    .ToList();
+
+                var prescriptionObservations = new List<emr_prescription_observation>();
+                var observations = await _emr_observationService.Queryable()
+     .Take(10)
+     .ToListAsync();
+                if (result != null)
+                {
+                    prescriptionObservations = await _emr_prescription_observationService.Queryable()
+       .Where(po => po.CompanyID == companyId && po.PrescriptionId == result.ID)
+       .ToListAsync();
+                }
+                var favoritesObser = await _emr_notes_favoriteService.Queryable()
+    .Where(ft => ft.ReferenceType == "O"
+              && ft.DoctorId == doctorId
+              && ft.CompanyId == companyId)
+    .ToListAsync();
 
 
+                var observationList = observations
+    .Select(ob =>
+    {
+        var po = prescriptionObservations.FirstOrDefault(x => x.ObservationId == ob.ID);
+        var fav = favoritesObser.FirstOrDefault(x => x.ReferenceId == ob.ID);
 
-                var patientInfo = AllData.Tables[0];// _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == patientid).Include(a => a.emr_appointment_mf)
-                                                    //.Include(a => a.emr_prescription_mf)
-                                                    //.Select(z => new
-                                                    //{
-                                                    //    patientInfo = z,
-                                                    //    Doctorid = z.emr_appointment_mf.OrderByDescending(a => a.AppointmentDate).Where(a => a.PatientId == z.ID).FirstOrDefault().DoctorId,
-                                                    //    prescription_mf = z.emr_prescription_mf.Where(a => (a.PatientId == z.ID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(date))),
-                                                    //    prescription_treatment = z.emr_prescription_mf.Where(a => (a.PatientId == z.ID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(date))).SelectMany(a => a.emr_prescription_treatment),
-                                                    //    prescription_complaint = z.emr_prescription_mf.Where(a => (a.PatientId == z.ID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(date))).SelectMany(a => a.emr_prescription_complaint),
-                                                    //    prescription_diagnos = z.emr_prescription_mf.Where(a => (a.PatientId == z.ID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(date))).SelectMany(a => a.emr_prescription_diagnos),
-                                                    //    prescription_investigation = z.emr_prescription_mf.Where(a => (a.PatientId == z.ID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(date))).SelectMany(a => a.emr_prescription_investigation),
-                                                    //    prescription_observation = z.emr_prescription_mf.Where(a => (a.PatientId == z.ID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(date))).SelectMany(a => a.emr_prescription_observation)
-                                                    //}).FirstOrDefault();
+        return new
+        {
+            id = ob.ID,
+            Observation = po?.Observation ?? ob.Observation,
+            favoriteId = fav?.ID,
+            Isfavorite = fav != null ? 1 : 0
+        };
+    })
+    .Distinct()
+    .Take(10)
+    .ToList();
+                var prescriptionInvestigations = new List<emr_prescription_investigation>();
+                // 1. Base investigations
+                var investigations = await _emr_investigationService.Queryable()
+                    .Take(10)
+                    .ToListAsync();
+                // 2. Prescription investigations
+                if (result != null)
+                {
+                    prescriptionInvestigations = await _emr_prescription_investigationService.Queryable()
+                   .Where(pi => pi.CompanyID == companyId && pi.PrescriptionId == result.ID)
+                   .ToListAsync();
+                }
+                // 3. Favorites
+                var investigationFavorites = await _emr_notes_favoriteService.Queryable()
+                    .Where(ft => ft.ReferenceType == "I"
+                              && ft.DoctorId == doctorId
+                              && ft.CompanyId == companyId)
+                    .ToListAsync();
+                // 4. Merge
+                var investigationList = investigations
+                    .Select(inv =>
+                    {
+                        var pi = prescriptionInvestigations.FirstOrDefault(x => x.InvestigationId == inv.ID);
+                        var fav = investigationFavorites.FirstOrDefault(x => x.ReferenceId == inv.ID);
+                        return new
+                        {
+                            id = inv.ID,
+                            Investigation = pi?.Investigation ?? inv.Investigation,
+                            favoriteId = fav?.ID,
+                            Isfavorite = fav != null ? 1 : 0
+                        };
+                    })
+                    .Distinct()
+                    .Take(10)
+                    .ToList();
+                // 1. Base diagnoses
+                var diagnoses = await _emr_diagnosService.Queryable()
+                    .Take(10)
+                    .ToListAsync();
+                // 2. Prescription diagnoses
+                var prescriptionDiagnoses = new List<emr_prescription_diagnos>();
+                if (result != null)
+                {
+                    prescriptionDiagnoses = await _emr_prescription_diagnosService.Queryable()
+                    .Where(pd => pd.CompanyID == companyId && pd.PrescriptionId == result.ID)
+                    .ToListAsync();
+                }
+                // 3. Favorites
+                var diagnosisFavorites = await _emr_notes_favoriteService.Queryable()
+                    .Where(ft => ft.ReferenceType == "D"
+                              && ft.DoctorId == doctorId
+                              && ft.CompanyId == companyId)
+                    .ToListAsync();
+                // 4. Merge
+                var diagnosisList = diagnoses
+                    .Select(dia =>
+                    {
+                        var pd = prescriptionDiagnoses.FirstOrDefault(x => x.DiagnosId == dia.ID);
+                        var fav = diagnosisFavorites.FirstOrDefault(x => x.ReferenceId == dia.ID);
+                        return new
+                        {
+                            id = dia.ID,
+                            Diagnos = pd?.Diagnos ?? dia.Diagnos,
+                            favoriteId = fav?.ID,
+                            Isfavorite = fav != null ? 1 : 0
+                        };
+                    })
+                    .Distinct()
+                    .Take(10)
+                    .ToList();
+                var isBackDatedAppointment = await _adm_companyService.Queryable()
+    .Where(x => x.ID == companyId)
+    .Select(x => x.IsBackDatedAppointment)
+    .FirstOrDefaultAsync();
 
-                var CurntPrevDate = AllData.Tables[1];// _emr_appointment_mfService.Queryable().Where(a => a.CompanyId == CompanyID && a.PatientId == patientid && a.DoctorId.ToString() == DocId).Select(z => new
-                //{
-                //    PatientId = z.PatientId,
-                //    AppointmentDate = z.AppointmentDate,
-                //}).ToList();
+                var query = _emr_appointment_mfService.Queryable()
+                    .Where(mf => mf.CompanyId == companyId
+                              && DbFunctions.TruncateTime(mf.AppointmentDate) == DbFunctions.TruncateTime(date)
+                              && mf.DoctorId == doctorId
+                              && mf.PatientId == patientid)
+                    .Select(mf => new
+                    {
+                        mf.ID,
+                        DoctorName = mf.Doctor.Name,
+                        SlotTime = mf.Doctor.SlotTime,
+                        PatientName = mf.emr_patient_mf.PatientName,       // navigation to Patient
+                        mf.AppointmentDate,
+                        mf.AppointmentTime,
+                        mf.DoctorId,
+                        mf.StatusId,
+                        mf.PatientId,
+                        CNIC = mf.emr_patient_mf.CNIC,
+                        Note = mf.Notes,
+                        CreatedBy = mf.adm_user_mf.Name,          // navigation to CreatedByUser
+                        Color = mf.StatusId == 1 ? "#dddddd" :
+                                mf.StatusId == 2 ? "#fd8d64" :
+                                mf.StatusId == 5 ? "#fdca66" :
+                                mf.StatusId == 6 ? "#dd2626" :
+                                mf.StatusId == 7 ? "#65d3fd" :
+                                mf.StatusId == 8 ? "#6597ff" :
+                                mf.StatusId == 9 ? "#0bb8ab" :
+                                mf.StatusId == 10 ? "#fb64a7" :
+                                mf.StatusId == 25 ? "#6265fd" : ""
+                    })
+                    .ToList();
+                var appointmentList = query.Select(mf => new
+                {
+                    mf.ID,
+                    mf.DoctorName,
+                    mf.PatientName,
+                    mf.DoctorId,
+                    mf.StatusId,
+                    mf.CNIC,
+                    mf.PatientId,
+                    mf.CreatedBy,
+                    mf.Note,
+                    mf.Color,
+                    AppointmentDate = mf.AppointmentDate.ToString("yyyy-MM-dd"),
+                    AppointmentTime = mf.AppointmentTime.ToString(@"hh\:mm\:ss"),
+                    StartDate = mf.AppointmentDate
+                   .Add(mf.AppointmentTime)
+                   .ToString("yyyy-MM-ddTHH:mm:ss"),
+                    EndDate = mf.AppointmentDate
+                  .Add(mf.AppointmentTime)
+                  .Add(mf.SlotTime ?? TimeSpan.Zero)
+                  .ToString("yyyy-MM-ddTHH:mm:ss"),
+                }).ToList();
+                var patientInfo = _emr_patientService.Queryable().Where(a => a.ID == patientid && a.CompanyId == companyId).FirstOrDefault();
 
-                //var CurntPrevDateList = CurntPrevDate.AsEnumerable().Select(z => new
-                //{
-                //    AppointmentDate = z.AppointmentDate.Value.ToString("yyyy-MM-dd"),
-                //    PatientId = z.PatientId,
-                //}).OrderByDescending(a => a.AppointmentDate).ToList();
-
-                var AppointmentList = AllData.Tables[7];// AppointmentInfo(CompanyID);
-
-                //AppointmentList = AppointmentList.AsEnumerable().Where(a => a.DoctorId.ToString() == DocId).ToList();
-
-                // DataAccessManager dataAccessManager = new DataAccessManager();
-                //var Cquery = "SELECT  distinct top 10  cmp.Id as id,case when dt.Complaint is null then cmp.Complaint else dt.Complaint end as Complaint,ft.id as favoriteId,(case when ft.ReferenceId is null then 0 else 1 end) as Isfavorite FROM emr_complaint cmp inner join emr_prescription_complaint dt on dt.ComplaintId = cmp.Id and dt.CompanyID='" + CompanyID + "' left outer join emr_notes_favorite ft on ft.ReferenceId = cmp.Id and ft.ReferenceType = 'C' and ft.DoctorId = '" + Doctorid + "' where ft.CompanyID='" + CompanyID + "'";
-                var ComplaintList = AllData.Tables[2];//  dataAccessManager.GetDataTable(Cquery);
-
-                //var Oquery = "SELECT  distinct top 10  ob.Id as id,case when dt.Observation is null then ob.Observation else dt.Observation end as Observation ,ft.id as favoriteId,(case when ft.ReferenceId is null then 0 else 1 end) as Isfavorite FROM emr_observation ob inner join emr_prescription_observation dt on dt.ObservationId = ob.Id and dt.CompanyID='" + CompanyID + "' left outer join emr_notes_favorite ft on ft.ReferenceId = ob.Id and ft.ReferenceType = 'O' and ft.DoctorId = '" + Doctorid + "' where ft.CompanyID='" + CompanyID + "'";
-                var ObservationList = AllData.Tables[3]; //dataAccessManager.GetDataTable(Oquery);
-
-                //var Iquery = "SELECT  distinct top 10  inv.Id as id,case when dt.Investigation is null then inv.Investigation else dt.Investigation end as Investigation ,ft.id as favoriteId,(case when ft.ReferenceId is null then 0 else 1 end) as Isfavorite FROM emr_investigation inv inner join emr_prescription_investigation dt on dt.InvestigationId = inv.Id and dt.CompanyID='" + CompanyID + "' left outer join emr_notes_favorite ft on ft.ReferenceId = inv.Id and ft.ReferenceType = 'I' and ft.DoctorId = '" + Doctorid + "' where ft.CompanyID='" + CompanyID + "'";
-                var InvestigationsList = AllData.Tables[4]; //dataAccessManager.GetDataTable(Iquery);
-
-                //var Dquery = "SELECT  distinct top 10  dia.Id as id,case when dt.Diagnos is null then dia.Diagnos else dt.Diagnos end as Diagnos ,ft.id as favoriteId,(case when ft.ReferenceId is null then 0 else 1 end) as Isfavorite FROM emr_diagnos dia inner join emr_prescription_diagnos dt on dt.DiagnosId = dia.Id and dt.CompanyID='" + CompanyID + "' left outer join emr_notes_favorite ft on ft.ReferenceId = dia.Id and ft.ReferenceType = 'D' and ft.DoctorId ='" + Doctorid + "' where ft.CompanyID='" + CompanyID + "'";
-                var DiagnosisList = AllData.Tables[5]; //dataAccessManager.GetDataTable(Dquery);
-                var IsBackDated = AllData.Tables[6].Rows[0]["IsBackDatedAppointment"];
-                bool IsBackDatedAppointment = Convert.ToBoolean(IsBackDated); //_adm_companyService.Queryable().Where(a => a.ID == CompanyID).FirstOrDefault().IsBackDatedAppointment;
+                var CurntPrevDate = appointmentDates;
+                var AppointmentList = appointmentList;
+                var ComplaintList = complaintList;
+                var ObservationList = observationList;
+                var InvestigationsList = investigationList;
+                var DiagnosisList = diagnosisList;
+                bool IsBackDatedAppointment = isBackDatedAppointment;
                 objResponse.ResultSet = new
                 {
                     patientInfo = patientInfo,
-                    Doctorid = Doctorid,
-                    prescription_mf = AllData.Tables[8],
-                    prescription_treatment = AllData.Tables[9],
-                    prescription_complaint = AllData.Tables[10],
-                    prescription_diagnos = AllData.Tables[11],
-                    prescription_investigation = AllData.Tables[12],
-                    prescription_observation = AllData.Tables[13],
+                    Doctorid = doctorId,
+                    prescription_mf = result,
+                    prescription_treatment = result.emr_prescription_treatment,
+                    prescription_complaint = result.emr_prescription_complaint,
+                    prescription_diagnos = result.emr_prescription_diagnos,
+                    prescription_investigation = result.emr_prescription_investigation,
+                    prescription_observation = result.emr_prescription_observation,
                     CurntPrevDateList = CurntPrevDate,
                     AppointmentList = AppointmentList,
                     ComplaintList = ComplaintList,

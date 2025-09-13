@@ -1,20 +1,19 @@
 ﻿<div class="AddRoleWraper">
 
     <div class="row headSection paginationHead">
-        <div class="col-sm-8">
-            <div class="row">
-                <div class="col max-content">
-                    <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
-                        Update Patient
-                    </h3>
-                    <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
-                        Add New Patient
-                    </h3>
-                </div>
+        <div class="col-sm-8  no-padding">
+            <div class="col max-content">
+                <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
+                    Update Patient
+                </h3>
+                <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                    Add New Patient
+                </h3>
             </div>
 
         </div>
         <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-light mr-1" routerLink="/home/Patient">Back</a>          
         </div>
     </div>
 
@@ -93,7 +92,7 @@
                                                 <label class="form-control-label mt-2 pl-0 required" for="input-username"> Gender</label>
                                             </div>
                                             <div class="col-8">
-                                                <select class="form-control  form-control-alternative" formControlName="Gender"(change)="GenderChnage(model.Gender)" [(ngModel)]="model.Gender">
+                                                <select class="form-control  form-control-alternative" formControlName="Gender" (change)="GenderChnage(model.Gender)" [(ngModel)]="model.Gender">
                                                     <option *ngFor="let item of GenderList" [value]="item.ID">
                                                         {{item.Value}}
                                                     </option>
@@ -109,7 +108,7 @@
                                                 <label class="form-control-label mt-2 pl-0 required" for="input-username"> Mobile</label>
                                             </div>
                                             <div class="col-8">
-                                                <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile"appPhoneMask class="form-control  form-control-alternative" placeholder="Mobile" >
+                                                <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile" appPhoneMask class="form-control  form-control-alternative" placeholder="Mobile">
                                                 <small *ngIf="Form1.controls.Mobile.hasError('required') && submitted ">
                                                     This value is required.
                                                 </small>

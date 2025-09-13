@@ -4,19 +4,15 @@
         <div class="col-sm-8 no-padding">
             <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
                 Update Purchase
-                <a routerLink="/home/Invoice"><i class="fa fa-arrow-circle-left"></i></a>
 
             </h3>
             <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
                 Add New Purchase
-                <a routerLink="/home/Invoice"><i class="fa fa-arrow-circle-left"></i></a>
 
             </h3>
         </div>
         <div class="col-sm-4 text-right flex-row flex-end">
-            <span class="closeICon" routerLink="/home/Invoice">
-
-            </span>
+            <a class="btn btn-light mr-1" routerLink="/home/Invoice">Back</a>
         </div>
     </div>
     <div class="Cardview p-4">

@@ -64,7 +64,7 @@ export class TimeAttendanceComponentList {
         , public _router: Router, private encrypt: EncryptionService) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
-        this.ControlRights = this._CommonService.ScreenRights("58");
+        this.ControlRights = this._CommonService.ScreenRights("74");
     }
 
     ngOnInit() {

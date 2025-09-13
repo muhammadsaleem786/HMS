@@ -38,16 +38,11 @@
    </p>
    <p style="padding:0; margin:0px;font-size:14px; font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;">Regards,</p>
    <p style="padding:0; margin:0px;font-size:14px; font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;">HMS Team</p>
-   <p style="padding:0; margin:0px;font-size:14px;font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;"><a target="_blank" href="https://easyhms.com/" style="text-decoration: none;color:#2696eb; ">www.easyhms.com</a></p>
+   <p style="padding:0; margin:0px;font-size:14px;font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;"><a target="_blank" href="https://easyhms.com" style="text-decoration: none;color:#2696eb; ">www.easyhms.com</a></p>
    <p></p>
-   <p style="padding:0px 0 0px 0;font-size:14px;line-height:24px;font-family:Open Sans,Trebuchet MS,sans-serif;margin-bottom: 7px;">
-      <a style="color:#2696eb;text-decoration:none" href="mailto:support@HMS.pk" target="_blank">Contact us</a> for any queries.        <span class="mobile-link--footer">Office: <a href="tel:+92-333-3331225" style="font-family:Open Sans,Trebuchet MS,sans-serif; color: #333; text-decoration: none;">+92-333-3331225</a></span>                  
-   </p>
-   <div>
-      <a target="_blank" href="https://easyhms.com/" style="text-decoration: none;color:#757575; font-size:14px;font-family:Open Sans,Trebuchet MS,sans-serif;line-height: 20px;"><img alt="HMS" style="display: inline-block; max-width: 14px; position: relative; top: 2px;" src="https://hms.com/assets/img/md-images/ic_place_black_24dp.png"> office (PK): 384 E, Johar Town Lahore, Pakistan</a>
-   </div>
+  
 </div>
-<p style="text-align: center;color: #ccc;font-family:Open Sans,Trebuchet MS,sans-serif;">© 2020 HMS, All rights reserved | powered by <a style="color:#ccc;font-size:14px;" href="https://easyhms.com/">www.easyhms.com</a></p>
+<p style="text-align: center;color: #ccc;font-family:Open Sans,Trebuchet MS,sans-serif;">© 2025 HMS, All rights reserved | powered by <a style="color:#ccc;font-size:14px;" href="https://easyhms.com">www.easyhms.com</a></p>
       <br/>
    </body>
 </html>

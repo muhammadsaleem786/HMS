@@ -428,14 +428,7 @@ export class SaleComponentForm {
             this.CalculateSubTotal();
         }
     }
-    CalculateOverAllDiscount() {
-        if (this.model.DiscountType == 1) {
-            this.OverAllDiscountAmount = this.roundToTwoDecimal(this.SubTotal * (this.model.Discount / 100));
-        } else {
-            this.OverAllDiscountAmount = this.model.Discount;
-        }
-        this.Total = this.roundToTwoDecimal(this.SubTotal - this.OverAllDiscountAmount);
-    }
+    
     OverAllDiscountValue(value: any) {
         if (this.model.DiscountType == 1 && this.model.Discount > 100)
             this.model.Discount = 0;
@@ -812,6 +805,14 @@ export class SaleComponentForm {
     getTotalPages(totalRecord: number, recordPerPage: number): number {
         return Math.ceil(Math.max(totalRecord, 1) / Math.max(recordPerPage, 1));
     }
+    CalculateOverAllDiscount() {
+        if (this.model.DiscountType == 1) {
+            this.OverAllDiscountAmount = this.roundToTwoDecimal(this.SubTotal * (this.model.Discount / 100));
+        } else {
+            this.OverAllDiscountAmount = this.model.Discount;
+        }
+        this.Total = this.roundToTwoDecimal(this.SubTotal - this.OverAllDiscountAmount);
+    }
     PrintRxform(isValid: boolean): void {
         debugger
         this.PrintSale_itemdynamicArray = [];
@@ -824,6 +825,7 @@ export class SaleComponentForm {
         this.PSubTotal = this.SubTotal;
         this.PDiscountAmount = this.DiscountAmount;
         this.model.TaxAmount = 0;
+        this.CalculateOverAllDiscount();
         this.model.DiscountAmount = this.OverAllDiscountAmount;
         this.model.pur_sale_dt = this.Sale_itemdynamicArray;
         this.PrintSale_itemdynamicArray = this.Sale_itemdynamicArray;

@@ -125,7 +125,7 @@ export class TimeAttendanceComponentForm implements OnInit {
         , public _AttendanceService: TimeAttendanceService, public toastr: CommonToastrService
         , public _commonService: CommonService, private route: ActivatedRoute, private encrypt: EncryptionService) {
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
-        this.ControlRights = this._commonService.ScreenRights("58");
+        this.ControlRights = this._commonService.ScreenRights("74");
     }
 
     ngOnInit() {

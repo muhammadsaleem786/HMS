@@ -586,10 +586,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
         return new
         {
-            Id = cmp.ID,
+            id = cmp.ID,
             Complaint = pc?.Complaint ?? cmp.Complaint,
-            FavoriteId = fav?.ID,
-            IsFavorite = fav != null ? 1 : 0
+            favoriteId = fav?.ID,
+            Isfavorite = fav != null ? 1 : 0
         };
     })
     .Distinct()
@@ -620,10 +620,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
         return new
         {
-            Id = ob.ID,
+            id = ob.ID,
             Observation = po?.Observation ?? ob.Observation,
-            FavoriteId = fav?.ID,
-            IsFavorite = fav != null ? 1 : 0
+            favoriteId = fav?.ID,
+            Isfavorite = fav != null ? 1 : 0
         };
     })
     .Distinct()
@@ -651,10 +651,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         var fav = investigationFavorites.FirstOrDefault(x => x.ReferenceId == inv.ID);
                         return new
                         {
-                            Id = inv.ID,
+                            id = inv.ID,
                             Investigation = pi?.Investigation ?? inv.Investigation,
-                            FavoriteId = fav?.ID,
-                            IsFavorite = fav != null ? 1 : 0
+                            favoriteId = fav?.ID,
+                            Isfavorite = fav != null ? 1 : 0
                         };
                     })
                     .Distinct()
@@ -682,10 +682,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         var fav = diagnosisFavorites.FirstOrDefault(x => x.ReferenceId == dia.ID);
                         return new
                         {
-                            Id = dia.ID,
+                            id = dia.ID,
                             Diagnos = pd?.Diagnos ?? dia.Diagnos,
-                            FavoriteId = fav?.ID,
-                            IsFavorite = fav != null ? 1 : 0
+                            favoriteId = fav?.ID,
+                            Isfavorite = fav != null ? 1 : 0
                         };
                     })
                     .Distinct()

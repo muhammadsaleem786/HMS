@@ -26,6 +26,7 @@ namespace HMS.Entities.Models.Mapping
             this.ToTable("emr_prescription_treatment_template");
             this.Property(t => t.ID).HasColumnName("ID");
             this.Property(t => t.CompanyID).HasColumnName("CompanyID");
+            this.Property(t => t.IsActive).HasColumnName("IsActive");
             this.Property(t => t.TemplateName).HasColumnName("TemplateName");
             this.Property(t => t.PrescriptionId).HasColumnName("PrescriptionId");
             this.Property(t => t.CreatedBy).HasColumnName("CreatedBy");

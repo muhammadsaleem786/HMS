@@ -31,6 +31,9 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.Email).HasColumnName("Email");
             this.Property(t => t.Speciality).HasColumnName("Speciality");
             this.Property(t => t.Message).HasColumnName("Message");
+            this.Property(t => t.PriorityModule).HasColumnName("PriorityModule");
+            this.Property(t => t.FacilityType).HasColumnName("FacilityType");
+            this.Property(t => t.PreferredDate).HasColumnName("PreferredDate");
             this.Property(t => t.CreatedDate).HasColumnName("CreatedDate");
         }
     }

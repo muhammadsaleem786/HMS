@@ -15,6 +15,9 @@ namespace HMS.Entities.Models
         public string Phone { get; set; }
         public string Speciality { get; set; }
         public string Message { get; set; }
+        public string PreferredDate { get; set; }
+        public string FacilityType { get; set; }
+        public string PriorityModule { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

@@ -39,6 +39,9 @@ namespace HMS.Web.API.Controllers
                     ht.Add("@Email", Model.Email);
                     ht.Add("@Speciality", Model.Speciality);
                     ht.Add("@Message", Model.Message);
+                    ht.Add("@PreferredDate", Model.PreferredDate);
+                    ht.Add("@PriorityModule", Model.PriorityModule);
+                    ht.Add("@FacilityType", Model.FacilityType);
                     try
                     {
                         dataAccessManager.ExecuteNonQuery("SP_InsertContact", ht);

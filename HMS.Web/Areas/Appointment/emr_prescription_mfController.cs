@@ -886,10 +886,9 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal patientId = Convert.ToDecimal(result.PatientId);
                 decimal prescriptionId = Convert.ToDecimal(result.ID);
                 int userid = Convert.ToInt32(Request.LoginID());
-                DateTime date = Convert.ToDateTime(DateTime.Now);
 
 
-                var vitalObj = _emr_vitalService.Queryable().Where(a => a.CompanyID == companyId && a.PatientId == patientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(result.CreatedDate)).Select(z => new
+                var vitalObj = _emr_vitalService.Queryable().Where(a => a.CompanyID == companyId && a.PatientId == patientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(result.AppointmentDate)).Select(z => new
                 {
                     z.ID,
                     z.Date,
@@ -1810,6 +1809,16 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 int userid = Convert.ToInt32(Request.LoginID());
                 DateTime date = Convert.ToDateTime(Date);
 
+                var vitalObj = _emr_vitalService.Queryable().Where(a => a.CompanyID == companyId && a.PatientId == patientid && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(date)).Select(z => new
+                {
+                    z.ID,
+                    z.Date,
+                    z.Measure,
+                    z.VitalId,
+                    Name = z.sys_drop_down_value.Value,
+                    Unit = z.sys_drop_down_value.Unit
+                }).ToList();
+
                 var reslt = await _emr_appointment_mfService.Queryable()
     .Where(a => a.PatientId == patientid
              && a.CompanyId == companyId
@@ -2038,11 +2047,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     patientInfo = patientInfo,
                     Doctorid = doctorId,
                     prescription_mf = result,
-                    prescription_treatment = result.emr_prescription_treatment,
-                    prescription_complaint = result.emr_prescription_complaint,
-                    prescription_diagnos = result.emr_prescription_diagnos,
-                    prescription_investigation = result.emr_prescription_investigation,
-                    prescription_observation = result.emr_prescription_observation,
+                    prescription_treatment = result?.emr_prescription_treatment ?? new List<emr_prescription_treatment>(),
+                    prescription_complaint = result?.emr_prescription_complaint ?? new List<emr_prescription_complaint>(),
+                    prescription_diagnos = result?.emr_prescription_diagnos ?? new List<emr_prescription_diagnos>(),
+                    prescription_investigation = result?.emr_prescription_investigation ?? new List<emr_prescription_investigation>(),
+                    prescription_observation = result?.emr_prescription_observation ?? new List<emr_prescription_observation>(),
                     CurntPrevDateList = CurntPrevDate,
                     AppointmentList = AppointmentList,
                     ComplaintList = ComplaintList,
@@ -2050,6 +2059,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     InvestigationsList = InvestigationsList,
                     DiagnosisList = DiagnosisList,
                     IsBackDatedAppointment = IsBackDatedAppointment,
+                    vitalList = vitalObj,
                 };
             }
             catch (Exception ex)

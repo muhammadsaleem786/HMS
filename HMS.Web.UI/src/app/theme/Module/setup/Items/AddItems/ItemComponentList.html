@@ -10,7 +10,7 @@
                 <div class="col">
                     <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="RefreshList('')" maxlength="30" aria-describedby="basic-addon1" />
                 </div>
-                <div class="col">
+                <div class="col pl-0">
                     <div class="form-group">
                         <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
                             <option *ngFor="let item of CategoryList" [value]="item.ID">
@@ -23,7 +23,7 @@
         </div>
         <div class="col-sm-4 text-right flex-row flex-end">            
             <div class="btn-group">
-                <button type="button" class="btn btn-primary btn-md dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class="btn btn-danger btn-md dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Actions
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">

@@ -344,8 +344,6 @@ export class PrescriptionComponentForm implements OnInit {
                             this.MedicineList = m.ResultSet.MedicineList;
                             if (m.ResultSet.result.emr_prescription_treatment_template.length > 0)
                                 this.PrescriptionModel.TemplateName = m.ResultSet.result.emr_prescription_treatment_template[0].TemplateName;
-
-
                             this.ComplaintList = m.ResultSet.ComplaintList;
                             this.DiagnosisList = m.ResultSet.DiagnosisList;
                             this.InvestigationsList = m.ResultSet.InvestigationsList;
@@ -359,7 +357,6 @@ export class PrescriptionComponentForm implements OnInit {
                             this.BloodList = m.ResultSet.BloodList;
                             this.UnitList = m.ResultSet.UnitList;
                             this.MadicineTypeList = m.ResultSet.MadicineTypeList;
-                            debugger
                             if (this.PrescriptionModel.emr_prescription_complaint != null) {
                                 this.PrescriptionModel.emr_prescription_complaint.forEach((item, index) => {
                                     var list = m.ResultSet.ComplaintList.filter(a => a.id == item.ComplaintId);
@@ -534,6 +531,10 @@ export class PrescriptionComponentForm implements OnInit {
                     this.CurntPrevDateList.push({ "AppointmentDate": this._CommonService.GetFormatDate(new Date()) });
                     this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(new Date());
                 }
+                this.emr_vital_dynamicArray = [];
+                m.ResultSet.vitalList.forEach((item, index) => {
+                    this.emr_vital_dynamicArray.push(item);
+                });
                 this.loader.HideLoader();
             });
         } else {
@@ -581,6 +582,10 @@ export class PrescriptionComponentForm implements OnInit {
                 this.ObservationList = [];
                 this.InvestigationsList = [];
                 this.DiagnosisList = [];
+                this.emr_vital_dynamicArray = [];
+                m.ResultSet.vitalList.forEach((item, index) => {
+                    this.emr_vital_dynamicArray.push(item);
+                });
                 this.loadPrescriptionData(m.ResultSet);
                 m.ResultSet.prescription_treatment.forEach((item, index) => {
                     var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];

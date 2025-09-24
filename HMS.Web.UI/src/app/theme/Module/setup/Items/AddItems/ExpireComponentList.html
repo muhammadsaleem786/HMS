@@ -1,7 +1,7 @@
 ﻿<div class="row m-0">
     <div class="col-sm-8">
         <h2 class="grid-heading margin-t-15 mb-2"> Expire</h2>
-        <div class="form-group d-flex" style="width: 433px; padding-left: 92px; gap: 12px;">
+        <div class="form-group d-flex" style="width: 433px; padding-left: 92px; gap: 12px;position: absolute; top: 15px; left: 350px;">
             <label>Type</label>
             <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
                 <option *ngFor="let item of CategoryList" [value]="item.ID">

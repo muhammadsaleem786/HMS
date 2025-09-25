@@ -97,12 +97,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     return objResponse;
                 }
 
-                //decimal CompanyID = Request.CompanyID();
-                //if (string.IsNullOrEmpty(Model.Value))
-                //{
-                //    //var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
-                //    //Model.Value = DropDownValue.Value;
-                //}
+                decimal CompanyID = Request.CompanyID();
                 sys_drop_down_value Value = _sys_drop_down_valueService.Queryable()
                     .Where(x => x.DropDownID == Model.DropDownID && (Model.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID) && (x.Value).ToLower() == Model.Value.ToLower()).FirstOrDefault();
                 sys_drop_down_value Value1 = _sys_drop_down_valueService.Queryable().Where(a => a.ID == Model.DependedDropDownValueID).FirstOrDefault();
@@ -113,20 +108,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         ID = _sys_drop_down_valueService.Queryable().Where(x => x.DropDownID == Model.DropDownID).Max(e => e.ID) + 1;
 
                     Model.ID = ID;
-                    //Model.SystemGenerated = false;
+                    Model.CompanyID = Request.CompanyID();
                     Model.SystemGenerated = false;
-                    // Model.DependedDropDownID = Value1.DropDownID;
                     Model.ObjectState = ObjectState.Added;
                     _sys_drop_down_valueService.Insert(Model);
-
-                    //    Model.CompanyID = Request.CompanyID();
-                    //    Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.AllowanceCategory;
-                    //    Model.CreatedBy = Request.LoginID();
-                    //    Model.CreatedDate = Request.DateTimes();
-                    //    Model.ModifiedBy = Request.LoginID();
-                    //    Model.ModifiedDate = Request.DateTimes();
-                    //    Model.ObjectState = ObjectState.Added;
-                    //    _service.Insert(Model);
 
                     try
                     {
@@ -138,12 +123,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     }
                     catch (DbUpdateException)
                     {
-                        //if (ModelExists(Model.ID.ToString()))
-                        //{
-                        //    objResponse.IsSuccess = false;
-                        //    objResponse.ErrorMessage = MessageStatement.Conflict;
-                        //    return objResponse;
-                        //}
                         throw;
                     }
                 }
@@ -191,17 +170,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                    .Where(x => x.DropDownID == Model.DropDownID && (Model.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID) && x.ID != Model.ID && (x.Value).ToLower() == Model.Value.ToLower()).FirstOrDefault();
                 if (Value == null)
                 {
+                    Model.CompanyID = Request.CompanyID();
                     Model.ObjectState = ObjectState.Modified;
                     _sys_drop_down_valueService.Update(Model);
-
-                    //    Model.CompanyID = Request.CompanyID();
-                    //    Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.AllowanceCategory;
-                    //    Model.CreatedBy = Request.LoginID();
-                    //    Model.CreatedDate = Request.DateTimes();
-                    //    Model.ModifiedBy = Request.LoginID();
-                    //    Model.ModifiedDate = Request.DateTimes();
-                    //    Model.ObjectState = ObjectState.Added;
-                    //    _service.Insert(Model);
 
                     try
                     {
@@ -212,12 +183,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     }
                     catch (DbUpdateException)
                     {
-                        //if (ModelExists(Model.ID.ToString()))
-                        //{
-                        //    objResponse.IsSuccess = false;
-                        //    objResponse.ErrorMessage = MessageStatement.Conflict;
-                        //    return objResponse;
-                        //}
                         throw;
                     }
                 }
@@ -259,15 +224,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Model.ObjectState = ObjectState.Deleted;
                     _sys_drop_down_valueService.Delete(id);
 
-                    //    Model.CompanyID = Request.CompanyID();
-                    //    Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.AllowanceCategory;
-                    //    Model.CreatedBy = Request.LoginID();
-                    //    Model.CreatedDate = Request.DateTimes();
-                    //    Model.ModifiedBy = Request.LoginID();
-                    //    Model.ModifiedDate = Request.DateTimes();
-                    //    Model.ObjectState = ObjectState.Added;
-                    //    _service.Insert(Model);
-
                     try
                     {
                         await _unitOfWorkAsync.SaveChangesAsync();
@@ -277,12 +233,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     }
                     catch (DbUpdateException)
                     {
-                        //if (ModelExists(Model.ID.ToString()))
-                        //{
-                        //    objResponse.IsSuccess = false;
-                        //    objResponse.ErrorMessage = MessageStatement.Conflict;
-                        //    return objResponse;
-                        //}
                         throw;
                     }
                 }
@@ -327,13 +277,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 sys_drop_down_value model = new sys_drop_down_value();
                 var CompanyID = Request.CompanyID();
                 var MFDropDownList = _service.Queryable().ToList();
-                //var DTDropDownList = new List<sys_drop_down_value>();
                 if (MFDropDownList.Count() > 0)
                 {
                     model.DropDownID = MFDropDownList[0].ID;
-                    //objResponse.ResultSet = GetdropdowValues(model);
-                    //DTDropDownList = _sys_drop_down_valueService.Queryable()
-                    //   .Where(x => x.DropDownID == MFID).ToList();
                 }
 
                 objResponse.ResultSet = new
@@ -353,9 +299,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
         public List<sys_drop_down_value> GetValuesList(sys_drop_down_value Model)
         {
-            //var obj = _sys_drop_down_valueService.Queryable()
-            //                .Where(x => x.DropDownID == Model.DropDownID && (x.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID))
-            //                .ToList();
             return _sys_drop_down_valueService.Queryable()
                              .Where(x => x.DropDownID == Model.DropDownID && (Model.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID))
                              .ToList();

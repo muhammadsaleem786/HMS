@@ -591,7 +591,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     a.PatientId,
                     AppointmentDate = a.AppointmentDate.Value.ToString("yyyy-MM-dd")
                 }).ToList();
-                var complaints = await _emr_complaintService.Queryable().Take(10).ToListAsync();
+                var complaints = await _emr_complaintService.Queryable().Where(a=>a.CompanyID==companyId).Take(10).ToListAsync();
                 var prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
     .Where(pc => pc.CompanyID == companyId && pc.PatientId == patientid)
     .ToListAsync();
@@ -620,7 +620,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .ToList();
 
 
-                var observations = await _emr_observationService.Queryable()
+                var observations = await _emr_observationService.Queryable().Where(a => a.CompanyID == companyId)
      .Take(10)
      .ToListAsync();
 
@@ -653,7 +653,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Take(10)
     .ToList();
                 // 1. Base investigations
-                var investigations = await _emr_investigationService.Queryable()
+                var investigations = await _emr_investigationService.Queryable().Where(a => a.CompanyID == companyId)
                     .Take(10)
                     .ToListAsync();
                 // 2. Prescription investigations
@@ -684,7 +684,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     .Take(10)
                     .ToList();
                 // 1. Base diagnoses
-                var diagnoses = await _emr_diagnosService.Queryable()
+                var diagnoses = await _emr_diagnosService.Queryable().Where(a => a.CompanyID == companyId)
                     .Take(10)
                     .ToListAsync();
                 // 2. Prescription diagnoses
@@ -900,7 +900,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         }
         [HttpGet]
         [ActionName("AdmitPatientLoadById")]
-        public ResponseInfo AdmitPatientLoadById(string id, string AdmitId)
+        public async Task<ResponseInfo> AdmitPatientLoadById(string id, string AdmitId)
         {
             var objResponse = new ResponseInfo();
             try
@@ -911,9 +911,9 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 int userid = Convert.ToInt32(Request.LoginID());
                 DateTime todayDate = DateTime.Now;
                 int? stid = Convert.ToInt32(0);
-                var patientinfo = _emr_patientService.Queryable().Where(a => a.ID == patientid && a.CompanyId == companyId).FirstOrDefault();
+                var patientinfo = await _emr_patientService.Queryable().Where(a => a.ID == patientid && a.CompanyId == companyId).FirstOrDefaultAsync();
                 var dropDownIds = new[] { 2, 17, 22, 23 };
-                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+                var allDropDownValues = await _sys_drop_down_valueService.Queryable()
     .Where(x => dropDownIds.Contains(x.DropDownID)
                 && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
                 {
@@ -921,7 +921,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     z.Value,
                     z.DropDownID,
                 })
-    .ToList();
+    .ToListAsync();
                 var genderList = allDropDownValues
     .Where(d => d.DropDownID == 2)
     .Select(d => new { d.ID, d.Value })

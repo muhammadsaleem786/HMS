@@ -252,11 +252,9 @@ export class AdmitSummeryComponentList implements OnInit {
             this.PrimaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "P");
             this.SecondaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "S");
             this.AllergyList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "A");
-            this.model = {
-                ...m.ResultSet.patientInfo[0],
-                AdmissionNo: m.ResultSet.AdmissionNo,
-                DischargeDate: m.ResultSet.DischargeDate
-            };
+            this.model = m.ResultSet.patientInfo;
+            this.model.AdmissionNo= m.ResultSet.AdmissionNo;
+            this.model.DischargeDate= m.ResultSet.DischargeDate;
             this.NotesList = m.ResultSet.NotesList;
             this.InputOutputList = m.ResultSet.InputOutputList;
             this.MedicationLogList = m.ResultSet.MedicationLogList;

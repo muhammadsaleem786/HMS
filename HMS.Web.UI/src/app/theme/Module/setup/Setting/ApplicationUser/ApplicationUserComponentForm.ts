@@ -215,6 +215,9 @@ export class ApplicationUserComponentForm implements OnInit {
                 this.RoleList = m.ResultSet.role;
                 this.WorkingdayList = m.ResultSet.WorkingdayList;
                 this.GenderList = m.ResultSet.GenderList;
+                this.Form1.patchValue({
+                    GenderDropdown: this.GenderList.map(x => x.id)
+                });
                 this.SpecialtyList = m.ResultSet.dropdown.filter(a => a.DropDownID == 24);
             }
         });

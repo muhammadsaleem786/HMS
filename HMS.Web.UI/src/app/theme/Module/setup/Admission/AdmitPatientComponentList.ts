@@ -143,11 +143,8 @@ export class AdmitPatientComponentList implements OnInit {
             this.MedicineList = m.ResultSet.MedicineList;
             this.BillTypeList = m.ResultSet.BillTypeList;
             this.TittleList = m.ResultSet.TittleList;
-            this.model = {
-                ...m.ResultSet.patientInfo[0],
-                AdmissionNo: m.ResultSet.AdmissionNo,
-                DischargeDate: m.ResultSet.DischargeDate
-            };
+            this.model = m.ResultSet.patientInfo;
+            this.model.AdmissionNo= m.ResultSet.AdmissionNo;
             this.PrimaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "P");
             this.SecondaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "S");
             this.AllergyList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "A");

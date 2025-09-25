@@ -109,8 +109,8 @@ namespace HMS.Repository.Repositories.Admin
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<adm_user_mf, bool>> predicate = (e => FilterID == "2" ? e.IsActivated == true : FilterID == "3" ? e.IsActivated == false : e.IsActivated == e.IsActivated && e.adm_user_company.Any(x => x.CompanyID == CompanyID));
-               
+                Expression<Func<adm_user_mf, bool>> predicate = (e => FilterID == "2" ? e.IsActivated == true : FilterID == "3" ? e.IsActivated == false: true);
+
                 bool DisplayUserID, DisplayRoleID, DisplayEmail, DisplayLastLogin;
                 bool OrderByUserID, OrderByRoleID, OrderByEmail, OrderByLastLogin;
 

@@ -923,7 +923,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }).ToList();
 
 
-                var complaints = await _emr_complaintService.Queryable().Take(10).ToListAsync();
+                var complaints = await _emr_complaintService.Queryable().Where(a => a.CompanyID == companyId).Take(10).ToListAsync();
                 var prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
     .Where(pc => pc.PrescriptionId == prescriptionId && pc.CompanyID == companyId)
     .ToListAsync();
@@ -952,7 +952,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .ToList();
 
 
-                var observations = await _emr_observationService.Queryable()
+                var observations = await _emr_observationService.Queryable().Where(a => a.CompanyID == companyId)
      .Take(10)
      .ToListAsync();
 
@@ -985,7 +985,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Take(10)
     .ToList();
                 // 1. Base investigations
-                var investigations = await _emr_investigationService.Queryable()
+                var investigations = await _emr_investigationService.Queryable().Where(a => a.CompanyID == companyId)
                     .Take(10)
                     .ToListAsync();
                 // 2. Prescription investigations
@@ -1016,7 +1016,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     .Take(10)
                     .ToList();
                 // 1. Base diagnoses
-                var diagnoses = await _emr_diagnosService.Queryable()
+                var diagnoses = await _emr_diagnosService.Queryable().Where(a => a.CompanyID == companyId)
                     .Take(10)
                     .ToListAsync();
                 // 2. Prescription diagnoses
@@ -1612,7 +1612,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var doctorId = Convert.ToInt64(doctorData.Tables[0].Rows[0]["ID"]);
                 var prescriptionComplaints = new List<emr_prescription_complaint>();
 
-                var complaints = await _emr_complaintService.Queryable().Take(10).ToListAsync();
+                var complaints = await _emr_complaintService.Queryable().Where(a => a.CompanyID == companyId).Take(10).ToListAsync();
                 var favorites = await _emr_notes_favoriteService.Queryable()
       .Where(ft => ft.ReferenceType == "C"
                 && ft.DoctorId == doctorId
@@ -1637,7 +1637,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .ToList();
 
                 var prescriptionObservations = new List<emr_prescription_observation>();
-                var observations = await _emr_observationService.Queryable()
+                var observations = await _emr_observationService.Queryable().Where(a => a.CompanyID == companyId)
      .Take(10)
      .ToListAsync();
                 var favoritesObser = await _emr_notes_favoriteService.Queryable()
@@ -1666,7 +1666,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .ToList();
                 var prescriptionInvestigations = new List<emr_prescription_investigation>();
                 // 1. Base investigations
-                var investigations = await _emr_investigationService.Queryable()
+                var investigations = await _emr_investigationService.Queryable().Where(a => a.CompanyID == companyId)
                     .Take(10)
                     .ToListAsync();
                 // 3. Favorites
@@ -1693,7 +1693,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     .Take(10)
                     .ToList();
                 // 1. Base diagnoses
-                var diagnoses = await _emr_diagnosService.Queryable()
+                var diagnoses = await _emr_diagnosService.Queryable().Where(a => a.CompanyID == companyId)
                     .Take(10)
                     .ToListAsync();
                 // 2. Prescription diagnoses
@@ -1842,7 +1842,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                 var prescriptionComplaints = new List<emr_prescription_complaint>();
 
-                var complaints = await _emr_complaintService.Queryable().Take(10).ToListAsync();
+                var complaints = await _emr_complaintService.Queryable().Where(a => a.CompanyID == companyId).Take(10).ToListAsync();
                 if (result != null)
                 {
                     prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
@@ -1873,7 +1873,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .ToList();
 
                 var prescriptionObservations = new List<emr_prescription_observation>();
-                var observations = await _emr_observationService.Queryable()
+                var observations = await _emr_observationService.Queryable().Where(a => a.CompanyID == companyId)
      .Take(10)
      .ToListAsync();
                 if (result != null)
@@ -1908,7 +1908,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .ToList();
                 var prescriptionInvestigations = new List<emr_prescription_investigation>();
                 // 1. Base investigations
-                var investigations = await _emr_investigationService.Queryable()
+                var investigations = await _emr_investigationService.Queryable().Where(a => a.CompanyID == companyId)
                     .Take(10)
                     .ToListAsync();
                 // 2. Prescription investigations
@@ -1942,7 +1942,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     .Take(10)
                     .ToList();
                 // 1. Base diagnoses
-                var diagnoses = await _emr_diagnosService.Queryable()
+                var diagnoses = await _emr_diagnosService.Queryable().Where(a => a.CompanyID == companyId)
                     .Take(10)
                     .ToListAsync();
                 // 2. Prescription diagnoses

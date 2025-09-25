@@ -228,7 +228,11 @@ export class AdmitDocumentSummeryComponentList implements OnInit {
         this.IsList = false;
     }
     ViewDoc(id: any) {
-        window.open(id, '_blank');
+        if (id) {
+            window.open(id, '_blank');
+        } else {
+            this.toastr.Warning('Invalid document URL:')
+        }
     }
     UpdateDocRecord(id: any) {
         if (id > 0) {

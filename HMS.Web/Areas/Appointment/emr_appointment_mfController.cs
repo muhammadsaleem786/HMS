@@ -5,11 +5,13 @@ using HMS.Service;
 using HMS.Service.Services.Admin;
 using HMS.Service.Services.Admission;
 using HMS.Service.Services.Appointment;
+using HMS.Service.Services.Items;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
 using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
+using Org.BouncyCastle.Asn1.IsisMtt.X509;
 using Org.BouncyCastle.Cms;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
@@ -25,6 +27,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
@@ -60,8 +63,15 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iemr_notes_favoriteService _emr_notes_favoriteService;
         private readonly Iadm_companyService _adm_companyService;
         private readonly Iipd_diagnosisService _ipd_diagnosisService;
+        private readonly Iipd_admissionService _ipd_admissionService;
+        private readonly Iipd_admission_notesService _ipd_admission_notesService;
+        private readonly Iipd_input_outputService _ipd_input_outputService;
+        private readonly Iipd_medication_logService _ipd_medication_logService;
+        private readonly Iipd_admission_vitalService _ipd_admission_vitalService;
+        private readonly Iemr_documentService _emr_documentService;
         private readonly Iadm_reminder_mfService _adm_reminder_mf;
         private readonly Iadm_integrationService _adm_integrationService;
+        private readonly Iadm_itemService _adm_itemService;
         private readonly ISmsService _smsService;
         public emr_appointment_mfController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_service_mfService emr_service_mfService, Iemr_prescription_mfService emr_prescription_mfService, Iadm_userService adm_userService, Iemr_medicineService emr_medicineService, Iemr_patientService emr_patientService, Iemr_appointment_mfService service, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
@@ -78,7 +88,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
              Iemr_prescription_complaintService emr_prescription_complaintService,
             Iemr_prescription_diagnosService emr_prescription_diagnosService,
             Iemr_prescription_investigationService emr_prescription_investigationService,
-            Iemr_prescription_observationService emr_prescription_observationService
+            Iemr_prescription_observationService emr_prescription_observationService,
+            Iipd_admissionService ipd_admissionService,
+            Iipd_admission_notesService ipd_admission_notesService,
+            Iipd_input_outputService ipd_input_outputService,
+            Iipd_medication_logService ipd_medication_logService,
+            Iipd_admission_vitalService ipd_admission_vitalService,
+            Iemr_documentService emr_documentService,
+            Iadm_itemService adm_itemService
             )
         {
             _ipd_diagnosisService = ipd_diagnosisService;
@@ -108,6 +125,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _emr_prescription_diagnosService = emr_prescription_diagnosService;
             _emr_prescription_investigationService = emr_prescription_investigationService;
             _emr_prescription_observationService = emr_prescription_observationService;
+            _ipd_admissionService = ipd_admissionService;
+            _ipd_admission_notesService = ipd_admission_notesService;
+            _ipd_input_outputService = ipd_input_outputService;
+            _ipd_medication_logService = ipd_medication_logService;
+            _emr_documentService = emr_documentService;
+            _adm_itemService = adm_itemService;
+            _ipd_admission_vitalService = ipd_admission_vitalService;
         }
 
         [HttpPost]
@@ -335,7 +359,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
             }
         }
-
         public string WorkingHours(DateTime? TimeIn, decimal? DoctorId)
         {
             var slotTime = _adm_userService.Queryable().Where(a => a.ID == DoctorId).FirstOrDefault().SlotTime;
@@ -546,7 +569,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Where(a => a.CompanyId == companyId && a.ID == AppontId)
     .Select(a => a.DoctorId)
     .FirstOrDefaultAsync();
-                var prescription = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId && DbFunctions.TruncateTime(e.AppointmentDate) ==DbFunctions.TruncateTime(date)).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).FirstOrDefault();
+                var prescription = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId && DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date)).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).FirstOrDefault();
 
                 var reslt = await _service.Queryable()
      .Where(a => a.PatientId == patientid
@@ -805,7 +828,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResponse;
         }
-
         [HttpGet]
         [ActionName("PatientLoadById")]
         public ResponseInfo PatientLoadById(string id)
@@ -883,30 +905,193 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 decimal patientid = Convert.ToDecimal(id);
                 decimal AdmissionId = Convert.ToDecimal(AdmitId);
                 int userid = Convert.ToInt32(Request.LoginID());
                 DateTime todayDate = DateTime.Now;
                 int? stid = Convert.ToInt32(0);
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@PatientId", patientid);
-                ht.Add("@AdmissionId", AdmissionId);
-                var AllData = dataAccessManager.GetDataSet("SP_GetAdmitPatientSummaryByPatientId", ht);
-                var patientInfo = AllData.Tables[0];
-                var GenderType = AllData.Tables[1];
-                var MedicineList = AllData.Tables[2];
-                var BloodList = AllData.Tables[3];
-                var BillTypeList = AllData.Tables[4];
-                var TittleList = AllData.Tables[5];
-                var NotesList = AllData.Tables[9];
-                var ChartData = AllData.Tables[10];
-                var InputOutputList = AllData.Tables[11];
-                var MedicationLogList = AllData.Tables[12];
-                var DocumentList = AllData.Tables[13];
-                var prescriptionresult = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == CompanyID).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment)
+                var patientinfo = _emr_patientService.Queryable().Where(a => a.ID == patientid && a.CompanyId == companyId).FirstOrDefault();
+                var dropDownIds = new[] { 2, 17, 22, 23 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+                var genderList = allDropDownValues
+    .Where(d => d.DropDownID == 2)
+    .Select(d => new { d.ID, d.Value })
+    .ToList();
+                var medicines = _emr_medicineService.Queryable()
+                    .Where(m => m.CompanyID == companyId)
+                    .Select(m => new { Id = m.ID, Medicine = m.Medicine })
+                    .ToList();
+                var bloodList = allDropDownValues
+    .Where(d => d.DropDownID == 17)
+    .ToList();
+                var billTypeList = allDropDownValues
+   .Where(d => d.DropDownID == 22)
+   .ToList();
+                var tittleList = allDropDownValues
+   .Where(d => d.DropDownID == 23)
+   .ToList();
+                var paidAndOutAmount = _emr_prescription_mfService.Queryable()
+    .Where(p => p.PatientId == patientid && p.CompanyID == companyId)
+    .SelectMany(p => p.emr_patient_mf.emr_patient_bill)
+    .Sum(b => (decimal?)b.OutstandingBalance) ?? 0;
+                var ipdAdmissions = _ipd_admissionService.Queryable()
+                              .Where(a => a.PatientId == patientid && a.CompanyId == companyId
+                                    && a.ID == AdmissionId)
+                              .Select(a => new
+                              {
+                                  AdmissionNo = a.AdmissionNo,
+                                  DischargeDate = a.DischargeDate,
+                                  DischargeTime = a.DischargeTime
+                              }).FirstOrDefault();
+                var ipddiagnosis = _ipd_diagnosisService.Queryable().Where(a => a.CompanyID == companyId && a.AdmissionId == AdmissionId).ToList();
+                var notes = _ipd_admission_notesService.Queryable().Where(n => n.CompanyId == companyId
+            && n.PatientId == patientid
+            && n.AdmissionId == AdmissionId).AsEnumerable()
+   .Select(n => new
+   {
+       CreatedDate = n.CreatedDate.ToString("yyyy-MM-dd hh:mm tt"),
+       n.Note,
+       n.OnBehalfOf
+   })
+   .ToList();
+
+                var inputOutput = _ipd_input_outputService.Queryable()
+    .Where(io => io.CompanyId == companyId
+              && io.PatientId == patientid
+              && io.AdmissionId == AdmissionId)
+    .Select(io => new
+    {
+        Medicine = io.IntakeValue ?? io.Output,
+        io.Time,
+        io.Value,
+        io.Type
+    })
+    .OrderBy(io => io.Medicine)
+    .ThenBy(io => io.Time)
+    .ThenBy(io => io.Type)
+    .ToList();
+
+                var medicationLog = _ipd_medication_logService.Queryable()
+    .Where(md => md.CompanyId == companyId
+              && md.PatientId == patientid
+              && md.AdmissionId == AdmissionId)
+    .Select(md => new
+    {
+        md.Time,
+        Value = md.Dose,
+        md.Date,
+        Medicine = md.adm_item.Name,
+        md.RouteDropdownId,
+        md.RouteId
+    })
+    .ToList();
+                var routeDropdownIds = medicationLog.Select(m => m.RouteDropdownId).Distinct().ToList();
+                var routeIds = medicationLog.Select(m => m.RouteId).Distinct().ToList();
+                var sysValues = _sys_drop_down_valueService.Queryable()
+    .Where(sys => routeDropdownIds.Contains(sys.DropDownID)
+               && routeIds.Contains(sys.ID))
+    .ToList();
+
+
+                var medicationLogList = medicationLog
+    .Select(md =>
+    {
+        var sys = sysValues.FirstOrDefault(s => s.DropDownID == md.RouteDropdownId
+                                             && s.ID == md.RouteId);
+
+        return new
+        {
+            Medicine = md.Medicine,
+            RouteVal = sys?.Value,
+            md.Time,
+            Value = md.Value,
+            md.Date
+        };
+    })
+    .OrderBy(x => x.Medicine)
+    .ThenBy(x => x.RouteVal)
+    .ThenBy(x => x.Time)
+    .ThenBy(x => x.Value)
+    .ToList();
+                var documentsList = _emr_documentService.Queryable()
+    .Where(doc => doc.DocumentTypeId == 4
+               && doc.CompanyID == companyId
+               && doc.ReferenceNo == AdmissionId.ToString())
+    .Select(a => new
+    {
+        DocumentUpload = a.DocumentUpload,
+        Date = a.Date,
+        Uploaddate = a.CreatedDate,
+        Remarks = a.Remarks,
+        Tag = a.sys_drop_down_value.Value
+    })
+    .ToList();
+
+                var vitals = _ipd_admission_vitalService.Queryable()
+    .Where(v => v.CompanyId == companyId
+             && v.PatientId == patientid
+             && v.AdmissionId == AdmissionId)
+    .ToList();
+                var fever = vitals.Select(v => new object[]
+{
+    v.DateRecorded.ToString("yyyy-MM-dd") + "T" +
+    (DateTime.TryParse(v.TimeRecorded, out var t) ? t.ToString("HH:mm:ss") : "00:00:00"),
+    v.Temperature
+}).ToList();
+
+                var bp = vitals.Select(v => new object[]
+                {
+    v.DateRecorded.ToString("yyyy-MM-dd") + "T" +
+    (DateTime.TryParse(v.TimeRecorded, out var t) ? t.ToString("HH:mm:ss") : "00:00:00"),
+    v.BP ?? "0"
+                }).ToList();
+
+                var heartRate = vitals.Select(v => new object[]
+                {
+    v.DateRecorded.ToString("yyyy-MM-dd") + "T" +
+    (DateTime.TryParse(v.TimeRecorded, out var t) ? t.ToString("HH:mm:ss") : "00:00:00"),
+    v.HeartRate ?? "0"
+                }).ToList();
+
+                var SPO2 = vitals.Select(v => new object[]
+                {
+    v.DateRecorded.ToString("yyyy-MM-dd") + "T" +
+    (DateTime.TryParse(v.TimeRecorded, out var t) ? t.ToString("HH:mm:ss") : "00:00:00"),
+    v.SPO2 ?? "0"
+                }).ToList();
+
+                // Step 3: Build final ChartData object
+                var chartData = new
+                {
+                    fever,
+                    bp,
+                    heartRate,
+                    SPO2
+                };
+
+                // Step 4: Serialize to JSON (if needed)
+                var json = JsonSerializer.Serialize(chartData);
+                var patientInfo = patientinfo;
+                var GenderType = genderList;
+                var MedicineList = medicines;
+                var BloodList = bloodList;
+                var BillTypeList = billTypeList;
+                var TittleList = tittleList;
+                var NotesList = notes;
+                var ChartData = json;
+                var InputOutputList = inputOutput;
+                var MedicationLogList = medicationLogList;
+                var DocumentList = documentsList;
+                var prescriptionresult = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment)
                     .Select(z => new
                     {
                         z.ID,
@@ -919,10 +1104,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         PaidAmount = z.emr_patient_mf.emr_patient_bill.Where(c => c.PatientId == z.emr_patient_mf.ID && (decimal?)c.DoctorId == (decimal?)z.DoctorId).Sum(c => (decimal?)c.PaidAmount),
                         OutAmount = z.emr_patient_mf.emr_patient_bill.Where(c => c.PatientId == z.emr_patient_mf.ID && (decimal?)c.DoctorId == (decimal?)z.DoctorId).Sum(c => (decimal?)c.OutstandingBalance),
                     }).ToList();
-                var PaidAndOutamount = AllData.Tables[6].Rows[0]["PaidAndOutamount"];
-                var AdmissionNo = AllData.Tables[7].Rows[0]["AdmissionNo"];
-                var DischargeDate = AllData.Tables[7].Rows[0]["DischargeDate"];
-                var Diagnosislist = AllData.Tables[8];
+                var PaidAndOutamount = paidAndOutAmount;
+                var AdmissionNo = ipdAdmissions.AdmissionNo;
+                var DischargeDate = ipdAdmissions.DischargeDate;
+                var Diagnosislist = ipddiagnosis;
                 objResponse.ResultSet = new
                 {
                     patientInfo = patientInfo,
@@ -951,7 +1136,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResponse;
         }
-
         [HttpGet]
         [ActionName("PatientAppointmentLoad")]
         public ResponseInfo PatientAppointmentLoad(string id)
@@ -1414,7 +1598,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 userobj.ObjectState = ObjectState.Modified;
                 _adm_userService.Update(userobj);
                 _unitOfWorkAsync.SaveChanges();
-                int? finalAppointmentStatusId = (stid == 0) ? 1 : stid; 
+                int? finalAppointmentStatusId = (stid == 0) ? 1 : stid;
                 //Roleid
                 var roleId = _adm_user_companyService.Queryable().Where(u => u.UserID == userId)
                              .Select(u => u.RoleID).FirstOrDefault();

@@ -143,11 +143,14 @@ export class AdmitPatientComponentList implements OnInit {
             this.MedicineList = m.ResultSet.MedicineList;
             this.BillTypeList = m.ResultSet.BillTypeList;
             this.TittleList = m.ResultSet.TittleList;
-            this.model = m.ResultSet.patientInfo[0];
+            this.model = {
+                ...m.ResultSet.patientInfo[0],
+                AdmissionNo: m.ResultSet.AdmissionNo,
+                DischargeDate: m.ResultSet.DischargeDate
+            };
             this.PrimaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "P");
             this.SecondaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "S");
             this.AllergyList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "A");
-            this.model.AdmissionNo = m.ResultSet.AdmissionNo;
             if (this.model.Gender == 1)
                 this.GenderName = 'Male';
             if (this.model.Gender == 2)
@@ -166,9 +169,6 @@ export class AdmitPatientComponentList implements OnInit {
             this.emr_prescription_MedicineArray = [];
 
             this.emr_prescription_dynamicArray = m.ResultSet.prescriptionresult;
-            //this.IsPatient = true;
-            //this.IsVitals = false;
-            //this._router.navigate(['home/AdmitSummary/AdmitNote']);
             this.loader.HideLoader();
         });
     }

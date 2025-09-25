@@ -70,14 +70,8 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
-
-                    DataAccessManager dataAccessManager = new DataAccessManager();
-                    var ht = new Hashtable();
-                    ht.Add("@CompanyID", CompanyID);
-                    ht.Add("@PatientId", Model.PatientId);
-                    ht.Add("@AdmissionId", Model.AdmissionId);
-                    var AllData = dataAccessManager.GetDataSet("SP_GetAdmitPatientSummaryByPatientId", ht);
-                    var Diagnosislist = AllData.Tables[8];
+                    var ipddiagnosis = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.AdmissionId == Model.AdmissionId && a.PatientId == Model.PatientId).ToList();
+                    var Diagnosislist = ipddiagnosis;
                     objResponse.ResultSet = new
                     {
                         Diagnosislist = Diagnosislist,

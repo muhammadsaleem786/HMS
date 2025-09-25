@@ -249,12 +249,14 @@ export class AdmitSummeryComponentList implements OnInit {
         this.loader.ShowLoader();
         this._AppointmentService.AdmitPatientLoadById(this.PatientId, this.AdmitId).then(m => {
             this.IsPatient = true;
-            this.model = m.ResultSet.patientInfo[0];
             this.PrimaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "P");
             this.SecondaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "S");
             this.AllergyList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "A");
-            this.model.AdmissionNo = m.ResultSet.AdmissionNo;
-            this.model.DischargeDate = m.ResultSet.DischargeDate;
+            this.model = {
+                ...m.ResultSet.patientInfo[0],
+                AdmissionNo: m.ResultSet.AdmissionNo,
+                DischargeDate: m.ResultSet.DischargeDate
+            };
             this.NotesList = m.ResultSet.NotesList;
             this.InputOutputList = m.ResultSet.InputOutputList;
             this.MedicationLogList = m.ResultSet.MedicationLogList;
@@ -344,7 +346,7 @@ export class AdmitSummeryComponentList implements OnInit {
     }
 
     updateChartWithData(response: any) {
-        const rawData = response[0]['ChartData'];
+        const rawData = response;
         const data = JSON.parse(rawData);
         const feverData = Array.isArray(data.fever) ? data.fever.map((item: any) => [item[0], item[1]]) : [];
         const bpData = Array.isArray(data.bp) ? data.bp.map((item: any) => [item[0], item[1]]) : [];

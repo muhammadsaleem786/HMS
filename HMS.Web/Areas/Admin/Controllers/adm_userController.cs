@@ -200,7 +200,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         }
 
                         path = HttpContext.Current.Server.MapPath(path);
-                        objService.SendEmailCofirm(path, Model.Email, Model.Name, CompanyID, encrytoken, Request.LoginID(), "Erpisto | Verify your account");
+                        objService.SendEmailCofirm(path, Model.Email, Model.Name, CompanyID, encrytoken, Request.LoginID(), "EasyHMS | Verify your account");
 
 
                         //EmailService objService = new EmailService();

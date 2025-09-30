@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace HMS.Web.API.Areas.Appointment.Controllers
 {
@@ -73,6 +74,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iadm_integrationService _adm_integrationService;
         private readonly Iadm_itemService _adm_itemService;
         private readonly ISmsService _smsService;
+        private readonly Iemr_vitalService _emr_vitalService;
         public emr_appointment_mfController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_service_mfService emr_service_mfService, Iemr_prescription_mfService emr_prescription_mfService, Iadm_userService adm_userService, Iemr_medicineService emr_medicineService, Iemr_patientService emr_patientService, Iemr_appointment_mfService service, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
             Isys_notification_alertService sys_notification_alertService, Iipd_diagnosisService ipd_diagnosisService, Iemr_patient_billService emr_patient_billService,
@@ -95,7 +97,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             Iipd_medication_logService ipd_medication_logService,
             Iipd_admission_vitalService ipd_admission_vitalService,
             Iemr_documentService emr_documentService,
-            Iadm_itemService adm_itemService
+            Iadm_itemService adm_itemService,
+            Iemr_vitalService emr_vitalService
             )
         {
             _ipd_diagnosisService = ipd_diagnosisService;
@@ -132,6 +135,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _emr_documentService = emr_documentService;
             _adm_itemService = adm_itemService;
             _ipd_admission_vitalService = ipd_admission_vitalService;
+            _emr_vitalService = emr_vitalService;
         }
 
         [HttpPost]
@@ -569,7 +573,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Where(a => a.CompanyId == companyId && a.ID == AppontId)
     .Select(a => a.DoctorId)
     .FirstOrDefaultAsync();
-                var prescription = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId && DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date)).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).FirstOrDefault();
+                var prescription = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId && DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date)).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).OrderByDescending(a => a.ID).FirstOrDefault();
 
                 var reslt = await _service.Queryable()
      .Where(a => a.PatientId == patientid
@@ -591,7 +595,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     a.PatientId,
                     AppointmentDate = a.AppointmentDate.Value.ToString("yyyy-MM-dd")
                 }).ToList();
-                var complaints = await _emr_complaintService.Queryable().Where(a=>a.CompanyID==companyId).Take(10).ToListAsync();
+                var complaints = await _emr_complaintService.Queryable().Where(a => a.CompanyID == companyId).Take(10).ToListAsync();
                 var prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
     .Where(pc => pc.CompanyID == companyId && pc.PatientId == patientid)
     .ToListAsync();
@@ -800,6 +804,29 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var prescription_investigation = prescription?.emr_prescription_investigation ?? new List<emr_prescription_investigation>();
                 var prescription_observation = prescription?.emr_prescription_observation ?? new List<emr_prescription_observation>();
 
+                var ids = prescription?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine });
+                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name });
+                var MedicineList = medicineList.Union(itemList).ToList();
+                var vitalObj = new List<object>();
+                if (prescription != null)
+                {
+                    vitalObj = _emr_vitalService.Queryable()
+                        .Where(a => a.CompanyID == companyId
+                            && a.PatientId == patientid
+                            && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(prescription.AppointmentDate))
+                        .Select(z => new
+                        {
+                            z.ID,
+                            z.Date,
+                            z.Measure,
+                            z.VitalId,
+                            Name = z.sys_drop_down_value.Value,
+                            Unit = z.sys_drop_down_value.Unit
+                        })
+                        .ToList<object>();
+                }
+               
                 objResponse.ResultSet = new
                 {
                     patientInfo = patientinfo,
@@ -818,6 +845,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     AppointmentList = AppointmentList,
                     BillTypeList = BillTypeList,
                     TittleList = TittleList,
+                    MedicineList = MedicineList,
+                    vitallist = vitalObj,
                 };
             }
             catch (Exception ex)
@@ -1091,19 +1120,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var InputOutputList = inputOutput;
                 var MedicationLogList = medicationLogList;
                 var DocumentList = documentsList;
-                var prescriptionresult = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment)
-                    .Select(z => new
-                    {
-                        z.ID,
-                        z.AppointmentDate,
-                        z.emr_prescription_complaint,
-                        z.emr_prescription_diagnos,
-                        z.emr_prescription_investigation,
-                        z.emr_prescription_observation,
-                        z.emr_prescription_treatment,
-                        PaidAmount = z.emr_patient_mf.emr_patient_bill.Where(c => c.PatientId == z.emr_patient_mf.ID && (decimal?)c.DoctorId == (decimal?)z.DoctorId).Sum(c => (decimal?)c.PaidAmount),
-                        OutAmount = z.emr_patient_mf.emr_patient_bill.Where(c => c.PatientId == z.emr_patient_mf.ID && (decimal?)c.DoctorId == (decimal?)z.DoctorId).Sum(c => (decimal?)c.OutstandingBalance),
-                    }).ToList();
                 var PaidAndOutamount = paidAndOutAmount;
                 var AdmissionNo = ipdAdmissions.AdmissionNo;
                 var DischargeDate = ipdAdmissions.DischargeDate;
@@ -1117,7 +1133,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     TittleList = TittleList,
                     BloodList = BloodList,
                     MedicineList = MedicineList,
-                    prescriptionresult = prescriptionresult,
                     AdmissionNo = AdmissionNo,
                     DischargeDate = DischargeDate,
                     Diagnosislist = Diagnosislist,
@@ -1475,10 +1490,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 //doctor list
 
 
-                var medicines = await _emr_medicineService.Queryable()
-    .Where(m => m.CompanyID == CompanyID)
-    .Select(m => new { m.ID, m.Medicine })
-    .ToListAsync();
+
 
                 var companyInfo = await _adm_user_companyService.Queryable()
     .Where(uc => uc.UserID == userId)
@@ -1564,7 +1576,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 objResult.IsShowDoctorIds = isShowDoctorId;
                 objResult.ClinicList = companyInfo;
                 objResult.BloodList = bloodList;
-                objResult.MedicineList = medicines;
                 objResult.ServiceType = consultationService;
                 objResult.TokenNo = nextToken.ToString();
                 objResult.IsBackDatedAppointment = isBackDatedAppointment;
@@ -1771,11 +1782,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 //doctor list
 
 
-                var medicines = await _emr_medicineService.Queryable()
-    .Where(m => m.CompanyID == CompanyID)
-    .Select(m => new { m.ID, m.Medicine })
-    .ToListAsync();
-
                 var companyInfo = await _adm_user_companyService.Queryable()
     .Where(uc => uc.UserID == userId)
     .Select(uc => new
@@ -1860,7 +1866,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 objResult.IsShowDoctorIds = isShowDoctorId;
                 objResult.ClinicList = companyInfo;
                 objResult.BloodList = bloodList;
-                objResult.MedicineList = medicines;
                 objResult.ServiceType = consultationService;
                 objResult.TokenNo = nextToken.ToString();
                 objResult.IsBackDatedAppointment = isBackDatedAppointment;

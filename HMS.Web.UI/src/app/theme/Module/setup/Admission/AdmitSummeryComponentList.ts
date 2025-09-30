@@ -57,13 +57,7 @@ export class AdmitSummeryComponentList implements OnInit {
     public GenderIds: any;
     public IsCNICMandatory: any;
     public ClinicName: string = "";
-    public emr_prescription_dynamicArray = [];
-    public emr_prescription_complaint_dynamicArray = [];
-    public emr_prescription_diagnos_dynamicArray = [];
-    public emr_prescription_investigation_dynamicArray = [];
-    public emr_prescription_observation_dynamicArray = [];
     public emr_prescription_MedicineArray = [];
-    public emr_prescription_treatment_dynamicArray = [];
     public NotesList: any[] = [];
     public InputOutputList: any[] = [];
     public PrimaryList: any[] = [];
@@ -257,18 +251,17 @@ export class AdmitSummeryComponentList implements OnInit {
             this.model.DischargeDate= m.ResultSet.DischargeDate;
             this.NotesList = m.ResultSet.NotesList;
             this.InputOutputList = m.ResultSet.InputOutputList;
+            this.prepareTableData(this.InputOutputList);
+            this.initChart();
+            this.selectedVitals.add('Fever');
+            this.updateChartWithData(m.ResultSet.ChartData);
             this.MedicationLogList = m.ResultSet.MedicationLogList;
+            this.MedicationTableData(this.MedicationLogList);
             this.DocumentList = m.ResultSet.DocumentList;
             this.DocumentList.forEach(x => {
                 if (x.DocumentUpload != null && x.DocumentUpload != undefined && x.DocumentUpload != "")
                     x.DocumentImage = GlobalVariable.BASE_Temp_File_URL + '' + x.DocumentUpload;
             });
-            this.initChart();
-            this.selectedVitals.add('Fever');
-            this.updateChartWithData(m.ResultSet.ChartData);
-
-            this.prepareTableData(this.InputOutputList);
-            this.MedicationTableData(this.MedicationLogList);
             if (this.model.Gender == 1)
                 this.GenderName = 'Male';
             if (this.model.Gender == 2)
@@ -279,13 +272,7 @@ export class AdmitSummeryComponentList implements OnInit {
                 this.getPatientImageUrlName(this.model.Image);
                 this.IsNewPatientImage = false;
             } else this.IsNewPatientImage = true;
-            this.emr_prescription_dynamicArray = [];
-            this.emr_prescription_complaint_dynamicArray = [];
-            this.emr_prescription_observation_dynamicArray = [];
-            this.emr_prescription_investigation_dynamicArray = [];
-            this.emr_prescription_diagnos_dynamicArray = [];
             this.emr_prescription_MedicineArray = [];
-            this.emr_prescription_dynamicArray = m.ResultSet.prescriptionresult;
             this.loader.HideLoader();
         });
     }

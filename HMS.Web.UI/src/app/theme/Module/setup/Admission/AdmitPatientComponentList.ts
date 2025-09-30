@@ -46,13 +46,7 @@ export class AdmitPatientComponentList implements OnInit {
     public Rights: any;
     public ChargeRights: any;
     public PatientId: any;
-    public emr_prescription_dynamicArray = [];
-    public emr_prescription_complaint_dynamicArray = [];
-    public emr_prescription_diagnos_dynamicArray = [];
-    public emr_prescription_investigation_dynamicArray = [];
-    public emr_prescription_observation_dynamicArray = [];
     public emr_prescription_MedicineArray = [];
-    public emr_prescription_treatment_dynamicArray = [];
     public MedicineList: any[] = [];
     public BillTypeList: any[] = [];
     public TittleList: any[] = [];
@@ -158,14 +152,7 @@ export class AdmitPatientComponentList implements OnInit {
                 this.getPatientImageUrlName(this.model.Image);
                 this.IsNewPatientImage = false;
             } else this.IsNewPatientImage = true;
-            this.emr_prescription_dynamicArray = [];
-            this.emr_prescription_complaint_dynamicArray = [];
-            this.emr_prescription_observation_dynamicArray = [];
-            this.emr_prescription_investigation_dynamicArray = [];
-            this.emr_prescription_diagnos_dynamicArray = [];
             this.emr_prescription_MedicineArray = [];
-
-            this.emr_prescription_dynamicArray = m.ResultSet.prescriptionresult;
             this.loader.HideLoader();
         });
     }

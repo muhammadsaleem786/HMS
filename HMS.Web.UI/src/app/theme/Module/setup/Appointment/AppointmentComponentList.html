@@ -30,10 +30,10 @@
                                                     <button ngbDropdownItem (click)="FilterPatient(1)">Male only</button>
                                                     <button ngbDropdownItem (click)="FilterPatient(2)">Female Only</button>
                                                     <button ngbDropdownItem (click)="FilterPatient(3)">Tomorrow Patients</button>
-                                                    
+
                                                     <button ngbDropdownItem (click)="FilterPatient(4)">Today Patients</button>
                                                     <button ngbDropdownItem (click)="FilterPatient(5)">Last Day Patients</button>
-                                                    
+
                                                 </div>
                                             </div>
                                         </div>
@@ -73,7 +73,8 @@
                                                                                                         </span>
                                                                                                     </div>
                                                                                                     <div class="col-sm-10 pl-0">
-                                                                                                        <h5 class="card-title text-muted mb-0" (click)="showPatientDetail(item.PatientId,AppointmentDate,item.ID)">{{item.PatientName}}
+                                                                                                        <h5 class="card-title text-muted mb-0" (click)="showPatientDetail(item.PatientId,AppointmentDate,item.ID)">
+                                                                                                            {{item.PatientName}}
                                                                                                             <span>
                                                                                                                 ({{item.NewPatients}})
                                                                                                             </span>
@@ -177,7 +178,7 @@
                                             <div class="card-">
                                                 <div class="card-body p-2">
                                                     <div class="btn_calendar_right text-right" *ngIf="PatientDetailInfo==false">
-                                                        
+
                                                         <button class="btn btn-danger mb-2 mr-2" (click)="openAppointmentModal(longContent)" *ngIf="ControlRights.CreateRights">
                                                             <i class="icon icon-plus"></i> Appointment
                                                         </button>
@@ -201,9 +202,9 @@
                                                                                 <li class="nav-item" (click)="PrescriptionPage()" *ngIf="Rights.indexOf(21)>-1">
                                                                                     <a class="nav-link" data-toggle="tab" href="#Prescription">Prescription  </a>
                                                                                 </li>
-                                                                                <li class="nav-item" (click)="loadVital()" *ngIf="Rights.indexOf(24)>-1">
+                                                                                <!--<li class="nav-item" (click)="loadVital()" *ngIf="Rights.indexOf(24)>-1">
                                                                                     <a class="nav-link" data-toggle="tab" href="#Vital">Vital</a>
-                                                                                </li>
+                                                                                </li>-->
                                                                                 <li class="nav-item" (click)="PrescriptionPage()" *ngIf="Rights.indexOf(23)>-1">
                                                                                     <a class="nav-link" data-toggle="tab" href="#BasicInfo">Basic Info </a>
                                                                                 </li>
@@ -296,6 +297,58 @@
                                                                                         <div class="col-sm-12 p-0 CustomAccordion dark">
                                                                                             <ngb-accordion [closeOthers]="false" activeIds="prescription0">
                                                                                                 <ngb-panel id="prescription0">
+                                                                                                    <ng-template ngbPanelTitle>
+                                                                                                        <span>
+                                                                                                            <img src="../assets/app/media/img/icons/remakrs.png" class="img-fluid radius">
+                                                                                                            Vital
+                                                                                                        </span><i class="icon-chevron-right iconImage"></i>
+                                                                                                    </ng-template>
+                                                                                                    <ng-template ngbPanelContent>
+                                                                                                        <div class="row mt-12 dataTables_wrapper ">
+                                                                                                            <div class="col-lg-12">
+                                                                                                                <table class="table table-bordered">
+                                                                                                                    <thead>
+                                                                                                                        <tr>
+                                                                                                                            <th>
+                                                                                                                                Date
+                                                                                                                            </th>
+                                                                                                                            <th>
+                                                                                                                                Particulars
+                                                                                                                            </th>
+                                                                                                                            <th>
+                                                                                                                                Measure
+                                                                                                                            </th>
+                                                                                                                            <th>
+
+                                                                                                                                <span _ngcontent-c0="" class="btn btn-light btn-sm text-primary" style="text-transform: capitalize;" (click)="OpenVitalModal(VitalModal)" style="height: 28px;"><i _ngcontent-c0="" class="icon icon-plus-circle"></i> Add Vital </span>
+
+                                                                                                                            </th>
+                                                                                                                        </tr>
+                                                                                                                    </thead>
+                                                                                                                    <tbody>
+                                                                                                                        <tr *ngFor="let v of emr_vital_dynamicArray ; let i = index;">
+                                                                                                                            <td>
+                                                                                                                                {{v.Date |date: 'MM/dd/yyyy'}}
+                                                                                                                            </td>
+                                                                                                                            <td>
+                                                                                                                                {{v.Name}}
+                                                                                                                            </td>
+                                                                                                                            <td>
+                                                                                                                                {{v.Measure}}
+                                                                                                                                <span class="">{{v.Unit}}</span>
+                                                                                                                            </td>
+                                                                                                                            <td class="text-center">
+                                                                                                                                <span class="icon icon-cross text-danger" (click)="DeleteVital(v.ID,v.VitalId)" *ngIf="ControlRights.DeleteRights">
+                                                                                                                                </span>
+                                                                                                                            </td>
+                                                                                                                        </tr>
+                                                                                                                    </tbody>
+                                                                                                                </table>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </ng-template>
+                                                                                                </ngb-panel>
+                                                                                                <ngb-panel id="prescription-1">
                                                                                                     <ng-template ngbPanelTitle>
                                                                                                         <span>
                                                                                                             <img src="../assets/app/media/img/icons/clinic.png" class="img-fluid radius">
@@ -449,7 +502,7 @@
                                                                                                         </div>
                                                                                                     </ng-template>
                                                                                                 </ngb-panel>
-                                                                                                <ngb-panel id="prescription-1">
+                                                                                                <ngb-panel id="prescription2">
                                                                                                     <ng-template ngbPanelTitle>
                                                                                                         <span>
                                                                                                             <img src="../assets/app/media/img/icons/Medicines.png" class="img-fluid radius">
@@ -550,7 +603,7 @@
                                                                                                         </div>
                                                                                                     </ng-template>
                                                                                                 </ngb-panel>
-                                                                                                <ngb-panel id="prescription2">
+                                                                                                <ngb-panel id="prescription3">
                                                                                                     <ng-template ngbPanelTitle>
                                                                                                         <span>
                                                                                                             <img src="../assets/app/media/img/icons/remakrs.png" class="img-fluid radius">
@@ -1738,7 +1791,7 @@
                                     (click)="handlePrint('P')">
                                 <i class="icon icon-printer"></i> Print Coupon
                             </button>
-                           <button type="button"(click)="handlePrint('S')" class="btn btn-primary"*ngIf="ControlRights.CreateRights">Save</button>
+                            <button type="button" (click)="handlePrint('S')" class="btn btn-primary" *ngIf="ControlRights.CreateRights">Save</button>
                         </div>
                     </form>
                 </ng-template>
@@ -1892,7 +1945,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button"(click)="handlePrint('S')" class="btn btn-primary">Save</button>
+                            <button type="button" (click)="handlePrint('S')" class="btn btn-primary">Save</button>
                         </div>
                     </form>
                 </ng-template>
@@ -2028,8 +2081,90 @@
         <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
     </div>
 </ng-template>
+<!-- ============================   Vital  Modal ========= -->
+<ng-template #VitalModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon" />
+            Add Vital
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form10" novalidate (ngSubmit)="VitalSave(Form10.valid)">
+        <div class="modal-body">
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Blood Sugar</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control" formControlName="Name" [(ngModel)]="VitalModel.Name" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Blood Pressure</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control" formControlName="Name1" [(ngModel)]="VitalModel.Name1" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label>Pulse Rate</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="Name2" [(ngModel)]="VitalModel.Name2" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Respiratory Rate </label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="Name3" [(ngModel)]="VitalModel.Name3" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Body Temperature </label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="Name4" [(ngModel)]="VitalModel.Name4" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Weight </label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="Name5" [(ngModel)]="VitalModel.Name5" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> Height </label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="Name6" [(ngModel)]="VitalModel.Name6" autocomplete="off">
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4 text-right">
+                    <label> SPO2 </label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="Name7" [(ngModel)]="VitalModel.Name7" autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
 
-
+</ng-template>
 <!-- ============================   Rx Print  Modal ========= -->
 <ng-template #PrintRx let-modal class="RxPrintModal TemplateTwo">
     <style>

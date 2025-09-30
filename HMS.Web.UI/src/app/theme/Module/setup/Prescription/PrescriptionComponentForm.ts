@@ -501,8 +501,11 @@ export class PrescriptionComponentForm implements OnInit {
                             if (this.PrescriptionModel.emr_prescription_treatment != null) {
                                 this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
                                     var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
-                                    if (medicineName != null && medicineName != undefined)
+                                    if (medicineName != null && medicineName != undefined) {
                                         item.MedicineName = medicineName.Medicine;
+                                        item.MedicineType = medicineName.Type;
+                                        item.TypeId = medicineName.TypeId;
+                                    }
                                     else
                                         item.MedicineName = item.MedicineName;
                                     this.emr_prescription_treatment_dynamicArray.push(item);
@@ -568,6 +571,7 @@ export class PrescriptionComponentForm implements OnInit {
                 }
                 this.IsBackDatedAppointment = m.ResultSet.IsBackDatedAppointment;
                 this.patientInfo = m.ResultSet.patientInfo;
+                this.MedicineList = m.ResultSet.MedicineList;
                 this.CurntPrevDateList = [];
                 if (m.ResultSet.CurntPrevDateList.length == 0) {
                     this.CurntPrevDateList.push({ "AppointmentDate": this._CommonService.GetFormatDate(new Date()) });
@@ -589,8 +593,11 @@ export class PrescriptionComponentForm implements OnInit {
                 this.loadPrescriptionData(m.ResultSet);
                 m.ResultSet.prescription_treatment.forEach((item, index) => {
                     var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
-                    if (medicineName != null && medicineName != undefined)
+                    if (medicineName != null && medicineName != undefined) {
                         item.MedicineName = medicineName.Medicine;
+                        item.MedicineType = medicineName.Type;
+                        item.TypeId = medicineName.TypeId;
+                    }
                     else
                         item.MedicineName = item.MedicineName;
                     this.emr_prescription_treatment_dynamicArray.push(item);
@@ -779,7 +786,6 @@ export class PrescriptionComponentForm implements OnInit {
             this.emr_prescription_observation_dynamicArray = [];
             this.GenderList = m.ResultSet.GenderList;
             this.DoctorList = m.ResultSet.DoctorList;
-            debugger
             if (this.DoctorList.length == 1)
                 this.PrescriptionModel.DoctorId = this.DoctorList[0].ID;
             this.DoctorClanderList = m.ResultSet.DoctorList;
@@ -787,7 +793,6 @@ export class PrescriptionComponentForm implements OnInit {
             if (this.ClinicList.length == 1)
                 this.PrescriptionModel.ClinicId = this.ClinicList[0].CompanyID;
             this.StatusList = m.ResultSet.StatusList;
-            this.MedicineList = m.ResultSet.MedicineList;
             this.BloodList = m.ResultSet.BloodList;
             this.UnitList = m.ResultSet.UnitList;
             this.MadicineTypeList = m.ResultSet.MadicineTypeList;
@@ -1161,7 +1166,15 @@ export class PrescriptionComponentForm implements OnInit {
                         this.emr_prescription_treatment_dynamicArray[indx].Instructions = null;
                         this.emr_prescription_treatment_dynamicArray[indx].InstructionId = null;
                     }
-                    response(m.ResultSet.ItemInfo);
+                    const items = m.ResultSet.ItemInfo.map(item => ({
+                        label: item.label + " (qty:" + item.stock + ")",
+                        value: item.value,
+                        Instructions: item.Instructions,
+                        InstructionId: item.InstructionId,
+                        IsAllowNegativeStock: item.IsAllowNegativeStock,
+                        stock: item.stock,
+                    }));
+                    response(items);
                     this.loader.HideLoader();
                 });
             },
@@ -1748,9 +1761,7 @@ export class PrescriptionComponentForm implements OnInit {
             if (m.IsSuccess) {
                 this.modalService.dismissAll(this.MedicineTemplateContent);
                 this.MedicineList = m.ResultSet.MedicineList;
-                //this.PrescriptionModel = m.ResultSet.result;
-                //this.PrescriptionModel.PatientName = m.ResultSet.result.emr_patient_mf.PatientName;
-                this.PrescriptionModel.TemplateName = m.ResultSet.result.emr_prescription_treatment_template[0].TemplateName;
+                 this.PrescriptionModel.TemplateName = m.ResultSet.result.emr_prescription_treatment_template[0].TemplateName;
 
                 this.emr_prescription_complaint_dynamicArray = [];
                 this.emr_prescription_diagnos_dynamicArray = [];
@@ -1903,8 +1914,11 @@ export class PrescriptionComponentForm implements OnInit {
                 if (m.ResultSet.result.emr_prescription_treatment != null) {
                     m.ResultSet.result.emr_prescription_treatment.forEach((item, index) => {
                         var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
-                        if (medicineName != null && medicineName != undefined)
+                        if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
+                            item.MedicineType = medicineName.Type;
+                            item.TypeId = medicineName.TypeId;
+                        }
                         else
                             item.MedicineName = item.MedicineName;
                         this.emr_prescription_treatment_dynamicArray.push(item);
@@ -1958,8 +1972,8 @@ export class PrescriptionComponentForm implements OnInit {
                 this.emr_prescription_observation_dynamicArray = [];
                 this.emr_prescription_treatment_dynamicArray = [];
                 this.PatientVitalList = [];
-
                 this.PrescriptionModel = result.ResultSet.Model;
+                this.MedicineList = result.ResultSet.MedicineList;
                 if (result.ResultSet.patientInfo != null) {
                     this.PatientRXmodel = result.ResultSet.patientInfo;
                     this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
@@ -2097,12 +2111,14 @@ export class PrescriptionComponentForm implements OnInit {
                 if (this.PrescriptionModel.emr_prescription_treatment != null) {
 
                     this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
-                        let Does = "(" + item.Morning + "+" + item.AfterNoon + "+" + item.Evening + "+" + item.Night + ")";
                         var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
-                        if (medicineName != null && medicineName != undefined)
-                            item.MedicineName = medicineName.Medicine + " " + Does;
+                        if (medicineName != null && medicineName != undefined) {
+                            item.MedicineName = medicineName.Medicine;
+                            item.MedicineType = medicineName.Type;
+                            item.TypeId = medicineName.TypeId;
+                        }
                         else
-                            item.MedicineName = item.MedicineName + " " + Does;
+                            item.MedicineName = item.MedicineName;
                         this.emr_prescription_treatment_dynamicArray.push(item);
                     });
                 }

@@ -62,6 +62,7 @@ export class AppointmentComponentList implements OnInit {
     public Form7: FormGroup;
     public Form8: FormGroup;
     public Form9: FormGroup;
+    public Form10: FormGroup;
     public submitted: boolean;
     public ActiveToggle: boolean = false;
     public Id: string;
@@ -80,7 +81,7 @@ export class AppointmentComponentList implements OnInit {
     public FutureAppList: any[] = [];
     public PreviousAppList: any[] = [];
     public BillTypeList: any[] = [];
-    public TittleList: any[] = [];
+    public TittleList: any[] = []; public emr_vital_dynamicArray = [];
     previousPage: number = 1;
     nextPage: number = 1;
     totalPages: number = 0;
@@ -145,7 +146,6 @@ export class AppointmentComponentList implements OnInit {
     public emr_prescription_investigation_dynamicArray = [];
     public emr_prescription_observation_dynamicArray = [];
     public emr_prescription_treatment_dynamicArray = [];
-    public emr_vital_dynamicArray = [];
     public PrescriptionExist: boolean = false;
     public InvoiceBillModel: any[] = [];
     public SubTotal: number = 0;
@@ -473,6 +473,17 @@ export class AppointmentComponentList implements OnInit {
             DoctorId: [''],
             OutstandingBalance: ['']
         });
+        this.Form10 = this._fb.group({
+            Name: [''],
+            Name1: [''],
+            Name2: [''],
+            Name3: [''],
+            Name4: [''],
+            Name5: [''],
+            Name6: [''],
+            Name7: [''],
+
+        });
     }
 
     loadVital() {
@@ -500,6 +511,10 @@ export class AppointmentComponentList implements OnInit {
         let date = this._CommonService.GetFormatDate(new Date());
         let StatusID = '0';
         this.GetPatientList(date, StatusID);
+    }
+    OpenVitalModal(VitalModal) {
+        this.VitalModel = new emr_vital();
+        this.modalService.open(VitalModal, { size: 'md' });
     }
     GetPatientList(date: any, StatusID: any) {
         this.AppointmentDate = new Date(date);
@@ -534,10 +549,8 @@ export class AppointmentComponentList implements OnInit {
                 this.AllStatusList = m.AllStatusList;
                 this.ReminderList = m.Reminderlist;
                 this.Followuplist = m.Followuplist;
-                //this.PatientList = m.PatientInfo;
                 this.IsShowDoctorIds = m.IsShowDoctorIds;
                 this.ClinicList = m.ClinicList;
-                this.MedicineList = m.MedicineList;
                 this.BloodList = m.BloodList;
                 this.UnitList = m.UnitList;
                 this.MadicineTypeList = m.MadicineTypeList;
@@ -592,10 +605,8 @@ export class AppointmentComponentList implements OnInit {
                 this.AllStatusList = m.AllStatusList;
                 this.ReminderList = m.Reminderlist;
                 this.Followuplist = m.Followuplist;
-                //this.PatientList = m.PatientInfo;
                 this.IsShowDoctorIds = m.IsShowDoctorIds;
                 this.ClinicList = m.ClinicList;
-                this.MedicineList = m.MedicineList;
                 this.BloodList = m.BloodList;
                 this.UnitList = m.UnitList;
                 this.MadicineTypeList = m.MadicineTypeList;
@@ -830,7 +841,48 @@ export class AppointmentComponentList implements OnInit {
             }
         }
     }
-
+    VitalSave(isValid: boolean): void {
+        var obj = this.VitalModel;
+        this.VitalModel.Date = new Date();
+        var PatientId = this.PrescriptionModel.PatientId;
+        if (PatientId == null || PatientId == undefined) {
+            this.toastr.Error("Error", "Please selectPatient.");
+            return;
+        }
+        this.VitalModel.PatientId = PatientId;
+        if ((obj.Name == null || obj.Name == undefined)
+            && (obj.Name1 == null || obj.Name1 == undefined)
+            && (obj.Name2 == null || obj.Name2 == undefined)
+            && (obj.Name3 == null || obj.Name3 == undefined)
+            && (obj.Name4 == null || obj.Name4 == undefined)
+            && (obj.Name5 == null || obj.Name5 == undefined)
+            && (obj.Name6 == null || obj.Name6 == undefined)
+            && (obj.Name7 == null || obj.Name7 == undefined)
+        ) {
+            this.toastr.Error("Error", "Please enter at least one vital.");
+            return;
+        }
+        this.loader.ShowLoader();
+        this._AppointmentService.VitalPrescriptionSave(this.VitalModel).then(m => {
+            var result = JSON.parse(m._body);
+            if (result.IsSuccess) {
+                if (result.ResultSet.vitalObj.length > 0) {
+                    this.emr_vital_dynamicArray = [];
+                    result.ResultSet.vitalObj.forEach((item, index) => {
+                        this.emr_vital_dynamicArray.push(item);
+                    });
+                }
+                this.loader.HideLoader();
+            }
+            else {
+                this.toastr.Error('Error', result.ErrorMessage);
+                this.loader.HideLoader();
+            }
+            this.modalService.dismissAll();
+            this.VitalModel = new emr_vital();
+            this.VitalModel.Date = new Date();
+        });
+    }
     LoadMedicine(indx: any) {
         var id = ("#txtMedicine_" + indx);
         $(id).autocomplete({
@@ -844,7 +896,16 @@ export class AppointmentComponentList implements OnInit {
                         this.emr_prescription_treatment_dynamicArray[indx].Instructions = null;
                         this.emr_prescription_treatment_dynamicArray[indx].InstructionId = null;
                     }
-                    response(m.ResultSet.ItemInfo);
+
+                    const items = m.ResultSet.ItemInfo.map(item => ({
+                        label: item.label + " (qty:" + item.stock + ")",
+                        value: item.value,
+                        Instructions: item.Instructions,
+                        InstructionId: item.InstructionId,
+                        IsAllowNegativeStock: item.IsAllowNegativeStock,
+                        stock: item.stock,
+                    }));
+                    response(items);
                     this.loader.HideLoader();
                 });
             },
@@ -1644,10 +1705,8 @@ export class AppointmentComponentList implements OnInit {
                 this.AllStatusList = m.AllStatusList;
                 this.ReminderList = m.Reminderlist;
                 this.Followuplist = m.Followuplist;
-                //this.PatientList = m.PatientInfo;
                 this.IsShowDoctorIds = m.IsShowDoctorIds;
                 this.ClinicList = m.ClinicList;
-                this.MedicineList = m.MedicineList;
                 this.BloodList = m.BloodList;
                 this.UnitList = m.UnitList;
                 this.MadicineTypeList = m.MadicineTypeList;
@@ -2069,7 +2128,7 @@ export class AppointmentComponentList implements OnInit {
                 this.PrescriptionModel.PatientId = id;
                 this.PrescriptionModel.ClinicId = this.CompanyObj.CompanyID;
                 this.PrescriptionModel.DoctorId = m.ResultSet.Doctorid;
-
+                this.MedicineList = m.ResultSet.MedicineList;
                 var appointfind = m.ResultSet.AppointmentList.filter(a => a.ID == AppId);
                 if (appointfind.length > 0 && appointfind[0].AppointmentTime != null && this.PrescriptionModel.IsCreateAppointment == true)
                     this.PrescriptionModel.FollowUpTime = appointfind[0].AppointmentTime;
@@ -2086,6 +2145,10 @@ export class AppointmentComponentList implements OnInit {
                 this.ObservationList = [];
                 this.InvestigationsList = [];
                 this.DiagnosisList = [];
+                this.emr_vital_dynamicArray = [];
+                m.ResultSet.vitallist.forEach((item, index) => {
+                    this.emr_vital_dynamicArray.push(item);
+                });
                 m.ResultSet.prescription_complaint.forEach((item, index) => {
                     var list = m.ResultSet.ComplaintList.filter(a => a.id == item.ComplaintId);
                     if (list.length > 0 || item.ComplaintId == null) {
@@ -2227,6 +2290,25 @@ export class AppointmentComponentList implements OnInit {
             this.PatientImage = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
             this.PatientImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+        }
+    }
+    DeleteVital(id: any, VitalId: any) {
+        var result = confirm("Are you sure you want to delete selected record.");
+        if (result == true) {
+            this.loader.ShowLoader();
+            this._AppointmentService.DeleteVital(id, VitalId).then(m => {
+                if (m.ErrorMessage != null) {
+                    alert(m.ErrorMessage);
+                }
+                const index = this.emr_vital_dynamicArray.findIndex(
+                    x => x.ID === id && x.VitalId === VitalId
+                );
+
+                if (index !== -1) {
+                    this.emr_vital_dynamicArray.splice(index, 1);
+                }
+                this.loader.HideLoader();
+            });
         }
     }
     ShowCalander() {
@@ -2900,9 +2982,9 @@ export class AppointmentComponentList implements OnInit {
                 this.toastr.Success(result.Message);
                 this.emr_prescription_treatment_dynamicArray = [];
                 this.PatientVitalList = [];
-
                 this.PatientDetailInfo = !this.PatientDetailInfo;
                 this.PrescriptionModel = result.ResultSet.Model;
+                this.MedicineList = result.ResultSet.MedicineList;
                 if (result.ResultSet.patientInfo != null) {
                     this.PatientRXmodel = result.ResultSet.patientInfo;
                     if (this.PatientRXmodel.ClinicIogo != null)
@@ -3041,7 +3123,8 @@ export class AppointmentComponentList implements OnInit {
                     });
                 }
 
-
+                var list = this.MedicineList;
+                var listsd = this.PrescriptionModel.emr_prescription_treatment;
                 if (this.PrescriptionModel.emr_prescription_treatment != null) {
                     this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
                         var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];

@@ -315,6 +315,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     objResponse.Message = MessageStatement.Save;
                     objResponse.IsSuccess = true;
 
+                    var ids = Model?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
+                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
+                    var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                    var MedicineList = itemList.Union(medicineList).ToList();
                     var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
                         .Select(z => new
                         {
@@ -326,13 +330,19 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                     var doctorInfo = _emr_patientService.DoctorList(CompanyID, UserID);
                     var doctor = doctorInfo.DoctList.AsEnumerable().Where(a => a.ID == Model.PatientId).FirstOrDefault();
-
-
+                    var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(Model.AppointmentDate)).Select(a => new
+                    {
+                        Measure = a.Measure,
+                        Unit = a.sys_drop_down_value.Unit,
+                        Name = a.sys_drop_down_value.Value
+                    }).ToList();
                     objResponse.ResultSet = new
                     {
-                        doctor = doctor,
                         Model = Model,
                         patientInfo = patientInfo,
+                        doctor = doctor,
+                        vitallist = vitallist,
+                        MedicineList = MedicineList,
                     };
 
                 }
@@ -643,18 +653,25 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         }).FirstOrDefault();
                     var doctorInfo = _emr_patientService.DoctorList(CompanyID, userid);
                     var doctor = doctorInfo.DoctList.AsEnumerable().Where(a => a.ID == Model.DoctorId).FirstOrDefault();
-                    var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId).Select(a => new
+                    var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(Model.AppointmentDate)).Select(a => new
                     {
                         Measure = a.Measure,
                         Unit = a.sys_drop_down_value.Unit,
                         Name = a.sys_drop_down_value.Value
                     }).ToList();
+
+                    var ids = Model?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
+                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
+                    var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                    var MedicineList = itemList.Union(medicineList).ToList();
+
                     objResponse.ResultSet = new
                     {
                         Model = Model,
                         patientInfo = patientInfo,
                         doctor = doctor,
                         vitallist = vitallist,
+                        MedicineList = MedicineList,
                     };
                     //if (Model.Email != null && Model.Email != "")
                     //{
@@ -886,17 +903,29 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal patientId = Convert.ToDecimal(result.PatientId);
                 decimal prescriptionId = Convert.ToDecimal(result.ID);
                 int userid = Convert.ToInt32(Request.LoginID());
+                var ids = result?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
+                var medicine = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                var medicineList = itemList.Union(medicine).ToList();
 
-
-                var vitalObj = _emr_vitalService.Queryable().Where(a => a.CompanyID == companyId && a.PatientId == patientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(result.AppointmentDate)).Select(z => new
+                var vitalObj = new List<object>();
+                if (result != null)
                 {
-                    z.ID,
-                    z.Date,
-                    z.Measure,
-                    z.VitalId,
-                    Name = z.sys_drop_down_value.Value,
-                    Unit = z.sys_drop_down_value.Unit
-                }).ToList();
+                    vitalObj = _emr_vitalService.Queryable()
+                        .Where(a => a.CompanyID == companyId
+                            && a.PatientId == patientId
+                            && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(result.AppointmentDate))
+                        .Select(z => new
+                        {
+                            z.ID,
+                            z.Date,
+                            z.Measure,
+                            z.VitalId,
+                            Name = z.sys_drop_down_value.Value,
+                            Unit = z.sys_drop_down_value.Unit
+                        })
+                        .ToList<object>();
+                }
 
                 var patientInfo = await _emr_patientService.Queryable()
     .Where(p => p.ID == patientId && p.CompanyId == companyId)
@@ -1063,14 +1092,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Where(x => x.DropDownID == 15).ToList();
                 var doseList = allDropDownValues
     .Where(x => x.DropDownID == 16).ToList();
-                var medicineList = await _emr_medicineService.Queryable()
-    .Where(m => m.CompanyID == companyId)
-    .Select(m => new
-    {
-        m.ID,
-        m.Medicine
-    })
-    .ToListAsync();
+                
                 var genderList = allDropDownValues
     .Where(x => x.DropDownID == 2).ToList();
                 var bloodList = allDropDownValues
@@ -1125,7 +1147,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     ObservationList = ObservationList,
                     InvestigationsList = InvestigationsList,
                     DiagnosisList = DiagnosisList,
-                    vitalList= vitalObj,
+                    vitalList = vitalObj,
                 };
             }
             catch (Exception ex)
@@ -1145,8 +1167,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 var CompanyID = Request.CompanyID();
                 var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == CompanyID).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_patient_mf).FirstOrDefault();
-
-                var MedicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID).Select(a => new { Id = a.ID, Medicine = a.Medicine }).ToList();
+                var ids = result?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type=a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                var MedicineList = itemList.Union(medicineList).ToList();
                 objResponse.ResultSet = new
                 {
                     MedicineList = MedicineList,
@@ -1203,13 +1227,16 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.DesignationUrdu,
                         z.QualificationUrdu
                     }).FirstOrDefault();
-                var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == result.PatientId).Select(a => new
+                var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == result.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(result.AppointmentDate)).Select(a => new
                 {
                     Measure = a.Measure,
                     Unit = a.sys_drop_down_value.Unit,
                     Name = a.sys_drop_down_value.Value
                 }).ToList();
-                var MedicineList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID).Select(a => new { Id = a.ID, Medicine = a.Name, TypeId = a.CategoryID, Type = a.sys_drop_down_value1.Value }).ToList();
+                var ids = result?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, TypeId = a.TypeId, Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, TypeId = a.CategoryID, Type = a.sys_drop_down_value1.Value });
+                var MedicineList = itemList.Union(medicineList).ToList();
                 objResponse.ResultSet = new
                 {
                     doctor = doctor,
@@ -1545,10 +1572,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 .FirstOrDefaultAsync();
 
 
-                var medicineList = await _emr_medicineService.Queryable()
-    .Where(x => x.CompanyID == companyId)
-    .Select(x => new { x.ID, x.Medicine })
-    .ToListAsync();
+    //            var medicineList = await _emr_medicineService.Queryable()
+    //.Where(x => x.CompanyID == companyId)
+    //.Select(x => new { x.ID, x.Medicine })
+    //.ToListAsync();
                 var companyInfo = await _adm_user_companyService.Queryable()
     .Where(x => x.UserID == userid)
     .Select(x => new
@@ -1732,7 +1759,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 if (!string.IsNullOrWhiteSpace(isShowIds))
                     IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
                 var DoctorCalander = doctorData.Tables[0];
-                var MedicineList = medicineList;
+                //var MedicineList = medicineList;
                 var ClinicList = companyInfo;
                 var BloodList = bloodList;
                 var ServiceType = serviceType;
@@ -1750,7 +1777,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     IsShowDoctorIds = IdList,
                     ClinicList = ClinicList,
                     BloodList = BloodList,
-                    MedicineList = MedicineList,
+                    //MedicineList = MedicineList,
                     ServiceType = ServiceType,
                     TokenNo = TokenNo,
                     StatusList = StatusList,
@@ -2033,6 +2060,12 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                   .Add(mf.SlotTime ?? TimeSpan.Zero)
                   .ToString("yyyy-MM-ddTHH:mm:ss"),
                 }).ToList();
+
+                var ids = result?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                var MedicineList = itemList.Union(medicineList).ToList();
+
                 var patientInfo = _emr_patientService.Queryable().Where(a => a.ID == patientid && a.CompanyId == companyId).FirstOrDefault();
 
                 var CurntPrevDate = appointmentDates;
@@ -2060,6 +2093,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     DiagnosisList = DiagnosisList,
                     IsBackDatedAppointment = IsBackDatedAppointment,
                     vitalList = vitalObj,
+                    MedicineList= MedicineList,
                 };
             }
             catch (Exception ex)

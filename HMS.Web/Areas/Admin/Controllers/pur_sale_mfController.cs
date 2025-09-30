@@ -48,6 +48,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iemr_patientService _emr_patientService;
         private readonly Iadm_user_companyService _adm_user_companyService;
         private readonly Iadm_item_logService _adm_item_logService;
+        private readonly Iemr_medicineService _emr_medicineService;
         public pur_sale_mfController(IUnitOfWorkAsync unitOfWorkAsync,
          Ipur_sale_mfService Service,
          Ipur_sale_dtService pur_sale_dtService,
@@ -62,6 +63,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
          Iadm_item_logService adm_item_logService,
          Ipur_sale_hold_mfService pur_sale_hold_mfService,
         Ipur_sale_hold_dtService pur_sale_hold_dtService,
+        Iemr_medicineService emr_medicineService,
 
         IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iadm_companyService adm_companyService)
         {
@@ -81,6 +83,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _inv_stockService = inv_stockService;
             _emr_patientService = emr_patientService;
             _adm_item_logService = adm_item_logService;
+            _emr_medicineService = emr_medicineService;
         }
 
         [HttpGet]
@@ -188,7 +191,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     Instructions = z.emr_instruction.Instructions,
                     InstructionId = z.InstructionId,
-                    IsAllowNegativeStock=z.IsAllowNegativeStock,
+                    IsAllowNegativeStock = z.IsAllowNegativeStock,
                 }).ToList();
                 objResponse.ResultSet = new
                 {
@@ -213,17 +216,28 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-                var ItemInfo = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && (a.Name.Contains(term))).Select(z => new
+                var itemResult = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && (a.Name.Contains(term))).Select(z => new
                 {
                     value = z.ID,
                     label = z.Name,
                     Instructions = z.emr_instruction.Instructions,
                     InstructionId = z.InstructionId,
-                    IsAllowNegativeStock=z.IsAllowNegativeStock,
-                }).ToList();
+                    IsAllowNegativeStock = z.IsAllowNegativeStock,
+                    stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
+                });
+                var medicineResult = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && (a.Medicine.Contains(term))).Select(z => new
+                {
+                    value = z.ID,
+                    label = z.Medicine,
+                    Instructions = z.emr_instruction.Instructions,
+                    InstructionId = z.InstructionId,
+                    IsAllowNegativeStock = false,
+                    stock = 0m,
+                });
+                var combined = itemResult.Union(medicineResult).ToList();
                 objResponse.ResultSet = new
                 {
-                    ItemInfo = ItemInfo
+                    ItemInfo = combined
                 };
             }
             catch (Exception ex)
@@ -256,7 +270,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     GroupId = z.GroupId,
                     TrackInventory = z.TrackInventory,
-                    IsAllowNegativeStock= z.IsAllowNegativeStock,
+                    IsAllowNegativeStock = z.IsAllowNegativeStock,
                 }).ToList();
                 objResponse.ResultSet = new
                 {
@@ -290,7 +304,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Type = z.ItemTypeId,
                     TypeValue = z.sys_drop_down_value2.Value,
                     CategoryId = z.CategoryID,
-                    IsAllowNegativeStock=z.IsAllowNegativeStock,
+                    IsAllowNegativeStock = z.IsAllowNegativeStock,
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0
                 }).ToList();
                 objResponse.ResultSet = new
@@ -326,7 +340,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Type = z.ItemTypeId,
                     TypeValue = z.sys_drop_down_value2.Value,
                     CategoryId = z.CategoryID,
-                    IsAllowNegativeStock=z.IsAllowNegativeStock,
+                    IsAllowNegativeStock = z.IsAllowNegativeStock,
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     GroupId = z.GroupId
                 }).ToList();
@@ -399,7 +413,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Type = z.ItemTypeId,
                     TypeValue = z.sys_drop_down_value2.Value,
                     CategoryId = z.CategoryID,
-                    IsAllowNegativeStock=z.IsAllowNegativeStock,
+                    IsAllowNegativeStock = z.IsAllowNegativeStock,
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     GroupId = z.GroupId,
                 }).ToList();
@@ -471,7 +485,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
-                decimal CompanyID = Request.CompanyID();                
+                decimal CompanyID = Request.CompanyID();
                 List<pur_sale_dt> purorderitem = new List<pur_sale_dt>();
                 purorderitem.AddRange(Model.pur_sale_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();

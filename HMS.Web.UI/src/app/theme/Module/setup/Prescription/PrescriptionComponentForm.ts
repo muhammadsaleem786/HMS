@@ -1167,6 +1167,7 @@ export class PrescriptionComponentForm implements OnInit {
                         this.emr_prescription_treatment_dynamicArray[indx].InstructionId = null;
                     }
                     const items = m.ResultSet.ItemInfo.map(item => ({
+                        Name: item.label,
                         label: item.label + " (qty:" + item.stock + ")",
                         value: item.value,
                         Instructions: item.Instructions,
@@ -1181,7 +1182,7 @@ export class PrescriptionComponentForm implements OnInit {
             minLength: 3,
             select: (event, ui) => {
                 this.emr_prescription_treatment_dynamicArray[indx].MedicineId = ui.item.value;
-                this.emr_prescription_treatment_dynamicArray[indx].MedicineName = ui.item.label;
+                this.emr_prescription_treatment_dynamicArray[indx].MedicineName = ui.item.Name;
                 this.emr_prescription_treatment_dynamicArray[indx].Measure = ui.item.Measure;
                 this.emr_prescription_treatment_dynamicArray[indx].Instructions = ui.item.Instructions;
                 this.emr_prescription_treatment_dynamicArray[indx].InstructionId = ui.item.InstructionId;

@@ -178,7 +178,7 @@
                 </div>
                 <div style="width:140px; font-family: Arial, sans-serif;">
                     <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Weight: </label>
-                    <input type="text" readonly
+                    <input type="text" [(ngModel)]="PatientRXmodel.Weight" readonly
                            style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
                 </div>
                 <div style="width:140px; text-align:right; font-family: Arial, sans-serif;">
@@ -240,10 +240,10 @@
                                     </label>
                                     <label *ngIf="DoctorInfo.TemplateId==1" style="font-family: Arial, sans-serif;">
                                         (
-                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}</span>
-                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;">+ {{m.AfterNoon}}</span>
-                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;">+ {{m.Evening}}</span>
-                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;">+ {{m.Night}}</span>
+                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}+</span>
+                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;"> {{m.AfterNoon}}+</span>
+                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;"> {{m.Evening}}+</span>
+                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;"> {{m.Night}}</span>
                                         )
                                     </label>
                                 </td>

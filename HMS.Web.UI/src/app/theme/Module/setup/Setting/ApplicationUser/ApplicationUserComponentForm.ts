@@ -181,7 +181,7 @@ export class ApplicationUserComponentForm implements OnInit {
 
                         var result = m.ResultSet.UserObj.adm_user_company[0];
                         this.IsAdmin = result.UserID == result.AdminID ? true : false;
-                       
+
 
                         this.loader.HideLoader();
                     });
@@ -288,9 +288,12 @@ export class ApplicationUserComponentForm implements OnInit {
             this._ApplicationUserService.SaveOrUpdate(this.model).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
-                    localStorage.removeItem('currentUser');
-                    var user = JSON.stringify(result.ResultSet.Model);
-                    localStorage.setItem('currentUser', this.encrypt.encryptionAES(user));
+                    var RoleName = this.encrypt.decryptionAES(localStorage.getItem('RoleName'));
+                    if (RoleName != "Administrator") {
+                        localStorage.removeItem('currentUser');
+                        var user = JSON.stringify(result.ResultSet.Model);
+                        localStorage.setItem('currentUser', this.encrypt.encryptionAES(user));
+                    }
                     this.toastr.Success('Success', result.Message);
                     this._router.navigate(['home/aplicationUser']);
                 }
@@ -325,7 +328,7 @@ export class ApplicationUserComponentForm implements OnInit {
     phoneValidate() {
         const phoneControl: AbstractControl = this.Form1.controls['PhoneNo'];
         phoneControl.valueChanges.subscribe(data => {
-            
+
             let preInputValue: string = this.Form1.value.phone;
             let lastChar = preInputValue.length - 1;
             var newVal = data.replace(/\D/g, '');

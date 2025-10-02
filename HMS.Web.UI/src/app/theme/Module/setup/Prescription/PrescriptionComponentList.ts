@@ -159,9 +159,8 @@ export class PrescriptionComponentList {
                 this.emr_prescription_diagnos_dynamicArray = [];
                 this.emr_prescription_treatment_dynamicArray = [];
                 this.PatientVitalList = [];
-                if (m.ResultSet.doctor != null)
-                    this.DoctorInfo = m.ResultSet.doctor;
-
+                if (m.ResultSet.doctor.length > 0)
+                    this.DoctorInfo = m.ResultSet.doctor[0];
                 if (this.DoctorInfo == null || this.DoctorInfo == undefined) {
                     this.DoctorInfo.Name = "";
                     this.DoctorInfo.Designation = "";
@@ -171,6 +170,11 @@ export class PrescriptionComponentList {
                 }
                 this.PatientRXmodel.PatientName = m.ResultSet.result.PatientName;
                 this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
+                var Weight = m.ResultSet.vitallist.filter(a => a.Name == "Weight");
+                if (Weight.length == 0)
+                    this.PatientRXmodel.Weight = "";
+                else
+                    this.PatientRXmodel.Weight = Weight[0].Measure;
                 if (m.ResultSet.result.ClinicIogo != null)
                     this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result.ClinicIogo;
                 this.PatientRXmodel.Age = m.ResultSet.result.Age;

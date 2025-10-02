@@ -5,6 +5,7 @@ using HMS.Service;
 using HMS.Service.Services.Admin;
 using HMS.Service.Services.Admission;
 using HMS.Service.Services.Appointment;
+using HMS.Service.Services.Employee;
 using HMS.Service.Services.Items;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
@@ -75,6 +76,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iadm_itemService _adm_itemService;
         private readonly ISmsService _smsService;
         private readonly Iemr_vitalService _emr_vitalService;
+        private readonly Ipr_employee_mfService _pr_employee_mfService;
+
         public emr_appointment_mfController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_service_mfService emr_service_mfService, Iemr_prescription_mfService emr_prescription_mfService, Iadm_userService adm_userService, Iemr_medicineService emr_medicineService, Iemr_patientService emr_patientService, Iemr_appointment_mfService service, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
             Isys_notification_alertService sys_notification_alertService, Iipd_diagnosisService ipd_diagnosisService, Iemr_patient_billService emr_patient_billService,
@@ -98,7 +101,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             Iipd_admission_vitalService ipd_admission_vitalService,
             Iemr_documentService emr_documentService,
             Iadm_itemService adm_itemService,
-            Iemr_vitalService emr_vitalService
+            Iemr_vitalService emr_vitalService,
+            Ipr_employee_mfService pr_employee_mfService
             )
         {
             _ipd_diagnosisService = ipd_diagnosisService;
@@ -136,6 +140,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _adm_itemService = adm_itemService;
             _ipd_admission_vitalService = ipd_admission_vitalService;
             _emr_vitalService = emr_vitalService;
+            _pr_employee_mfService = pr_employee_mfService;
         }
 
         [HttpPost]
@@ -599,7 +604,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
     .Where(pc => pc.CompanyID == companyId && pc.PatientId == patientid)
     .ToListAsync();
+                if (prescriptionComplaints.Count > 0)
+                {
 
+                }
                 var favorites = await _emr_notes_favoriteService.Queryable()
                     .Where(ft => ft.ReferenceType == "C"
                               && ft.DoctorId == doctorId
@@ -610,7 +618,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     {
         var pc = prescriptionComplaints.FirstOrDefault(x => x.ComplaintId == cmp.ID);
         var fav = favorites.FirstOrDefault(x => x.ReferenceId == cmp.ID);
-
         return new
         {
             id = cmp.ID,
@@ -1890,8 +1897,63 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 int userid = Convert.ToInt32(Request.LoginID());
                 DateTime todayDate = Convert.ToDateTime(new DateTime());
                 var CompanyID = Request.CompanyID();
-                var DoctorList = _emr_patientService.DoctorList(CompanyID, userid);
-                var ServiceType = _emr_service_mfService.Queryable().Where(e => e.CompanyId == CompanyID && e.ServiceName == "Consultation")
+                var role = _adm_user_companyService.Queryable()
+ .Where(u => u.UserID == userid && u.CompanyID == CompanyID)
+ .Select(u => u.adm_role_mf.RoleName)
+ .FirstOrDefault();
+                var doctorUsers = _adm_user_companyService.Queryable()
+        .Where(u => u.CompanyID == CompanyID && u.adm_role_mf.RoleName == "Doctor")
+        .Select(u => u.adm_user_mf)
+        .OrderBy(u => u.ID)
+        .ToList();
+                var doctors = doctorUsers.Select(mf =>
+                {
+                    var emp = _pr_employee_mfService.Queryable().FirstOrDefault(e => e.ID == mf.EmployeeID);
+
+                    return (object)new
+                    {
+                        ID = mf.ID,
+                        Name = mf.Name,
+                        StartTime = emp != null ? emp.StartTime : null,
+                        EndTime = emp != null ? emp.EndTime : null,
+                        SlotTime = mf.SlotTime,
+                        WDSunday = emp?.WDSunday ?? false,
+                        WDMonday = emp?.WDMonday ?? false,
+                        WDTuesday = emp?.WDTuesday ?? false,
+                        WDWednesday = emp?.WDWednesday ?? false,
+                        WDThursday = emp?.WDThursday ?? false,
+                        WDFriday = emp?.WDFriday ?? false,
+                        WDSaturday = emp?.WDSaturday ?? false,
+                        IsShowDoctor = mf.IsShowDoctor,
+                        IsDoctor = false,
+                        Qualification = mf.Qualification,
+                        Designation = mf.Designation,
+                        PhoneNo = mf.PhoneNo,
+                        Footer = mf.RepotFooter,
+                        TemplateId = mf.TemplateId,
+                        QualificationUrdu = mf.QualificationUrdu,
+                        DesignationUrdu = mf.DesignationUrdu,
+                        NameUrdu = mf.NameUrdu,
+                        HeaderDescription = mf.HeaderDescription,
+                        IsOverLap = mf.IsOverLap
+                    };
+                }).ToList();
+                List<object> result;
+                if (role == "Administrator")
+                {
+                    result = doctors;
+                }
+                else if (role == "Doctor")
+                {
+                    result = doctors.Where(d => ((dynamic)d).ID == userid).ToList<object>();
+                }
+                else
+                {
+                    result = doctors;
+                }
+
+
+                  var ServiceType = _emr_service_mfService.Queryable().Where(e => e.CompanyId == CompanyID && e.ServiceName == "Consultation")
                    .Select(a => new { a.ID, a.ServiceName, a.Price }).FirstOrDefault();
                 decimal TokenNo = GetNextToken(CompanyID);
                 var StatusList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 1 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
@@ -1917,7 +1979,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {
-                    DoctorList = DoctorList.DoctList,
+                    DoctorList = result,
                     ServiceType = ServiceType,
                     TokenNo = TokenNo,
                     StatusList = StatusList,

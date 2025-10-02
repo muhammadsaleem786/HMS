@@ -2147,6 +2147,8 @@ export class AppointmentComponentList implements OnInit {
                 this.InvestigationsList = [];
                 this.DiagnosisList = [];
                 this.emr_vital_dynamicArray = [];
+                
+
                 m.ResultSet.vitallist.forEach((item, index) => {
                     this.emr_vital_dynamicArray.push(item);
                 });
@@ -2729,6 +2731,7 @@ export class AppointmentComponentList implements OnInit {
             }
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray.filter(a => a.MedicineName != null);
             this.PrescriptionModel.AppointmentId = this.AppointId;
+            
             this._AppointmentService.PrescriptionSave(this.PrescriptionModel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
@@ -2982,6 +2985,11 @@ export class AppointmentComponentList implements OnInit {
             if (result.IsSuccess) {
                 this.toastr.Success(result.Message);
                 this.emr_prescription_treatment_dynamicArray = [];
+                this.emr_prescription_complaint_dynamicArray = [];
+                this.emr_prescription_diagnos_dynamicArray = [];
+                this.emr_prescription_investigation_dynamicArray = [];
+                this.emr_prescription_observation_dynamicArray = [];
+                this.PrescriptionModel = new emr_prescription_mf();
                 this.PatientVitalList = [];
                 this.PatientDetailInfo = !this.PatientDetailInfo;
                 this.PrescriptionModel = result.ResultSet.Model;
@@ -2992,8 +3000,10 @@ export class AppointmentComponentList implements OnInit {
                         this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + result.ResultSet.patientInfo.ClinicIogo;
                     this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
                 }
-                if (result.ResultSet.doctor != null)
-                    this.DoctorInfo = result.ResultSet.doctor;
+
+                
+                if (result.ResultSet.doctor.length > 0)
+                    this.DoctorInfo = result.ResultSet.doctor[0];
 
                 if (this.DoctorInfo == null || this.DoctorInfo == undefined) {
                     this.DoctorInfo.Name = "";
@@ -3006,8 +3016,13 @@ export class AppointmentComponentList implements OnInit {
                     this.PatientRXmodel.Age = "";
                 }
                 this.PatientRXmodel.AppointmentDate = this._CommonService.GetFormatDate(this.PrescriptionModel.AppointmentDate);
+                
                 this.PatientVitalList = result.ResultSet.vitallist;
-
+                var Weight = result.ResultSet.vitallist.filter(a => a.Name == "Weight");
+                if (Weight.length == 0)
+                    this.PatientRXmodel.Weight = "";
+                else
+                    this.PatientRXmodel.Weight = Weight[0].Measure;
                 if (this.PrescriptionModel.emr_prescription_complaint != null) {
                     this.PrescriptionModel.emr_prescription_complaint.forEach((item, index) => {
                         var list = this.ComplaintList.filter(a => a.id == item.ComplaintId);
@@ -3020,23 +3035,23 @@ export class AppointmentComponentList implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_complaint_dynamicArray.push(item);
                     });
-                    this.ComplaintList.forEach((item, index) => {
-                        var list1 = this.PrescriptionModel.emr_prescription_complaint.filter(a => a.ComplaintId == item.id);
-                        if (list1.length == 0 || list1 == undefined) {
-                            item.IsSelected = false;
-                            item.ComplaintId = item.id;
-                            this.emr_prescription_complaint_dynamicArray.push(item);
-                        }
-                    });
-                } else {
-                    this.ComplaintList.forEach((item, index) => {
-
-                        item.IsSelected = false;
-                        item.ComplaintId = item.id;
-                        this.emr_prescription_complaint_dynamicArray.push(item);
-
-                    });
+                    //this.ComplaintList.forEach((item, index) => {
+                    //    var list1 = this.PrescriptionModel.emr_prescription_complaint.filter(a => a.ComplaintId == item.id);
+                    //    if (list1.length == 0 || list1 == undefined) {
+                    //        item.IsSelected = false;
+                    //        item.ComplaintId = item.id;
+                    //        this.emr_prescription_complaint_dynamicArray.push(item);
+                    //    }
+                    //});
                 }
+                //else {
+                //    this.ComplaintList.forEach((item, index) => {
+                //        item.IsSelected = false;
+                //        item.ComplaintId = item.id;
+                //        this.emr_prescription_complaint_dynamicArray.push(item);
+
+                //    });
+                //}
 
                 if (this.PrescriptionModel.emr_prescription_diagnos != null) {
                     this.PrescriptionModel.emr_prescription_diagnos.forEach((item, index) => {
@@ -3050,22 +3065,23 @@ export class AppointmentComponentList implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_diagnos_dynamicArray.push(item);
                     });
-                    this.DiagnosisList.forEach((item, index) => {
-                        var list1 = this.PrescriptionModel.emr_prescription_diagnos.filter(a => a.DiagnosId == item.id);
-                        if (list1.length == 0 || list1 == undefined) {
-                            item.IsSelected = false;
-                            item.DiagnosId = item.id;
-                            this.emr_prescription_diagnos_dynamicArray.push(item);
-                        }
-                    });
-                } else {
-                    this.DiagnosisList.forEach((item, index) => {
-                        item.IsSelected = false;
-                        item.DiagnosId = item.id;
-                        this.emr_prescription_diagnos_dynamicArray.push(item);
-
-                    });
+                    //this.DiagnosisList.forEach((item, index) => {
+                    //    var list1 = this.PrescriptionModel.emr_prescription_diagnos.filter(a => a.DiagnosId == item.id);
+                    //    if (list1.length == 0 || list1 == undefined) {
+                    //        item.IsSelected = false;
+                    //        item.DiagnosId = item.id;
+                    //        this.emr_prescription_diagnos_dynamicArray.push(item);
+                    //    }
+                    //});
                 }
+                //else {
+                //    this.DiagnosisList.forEach((item, index) => {
+                //        item.IsSelected = false;
+                //        item.DiagnosId = item.id;
+                //        this.emr_prescription_diagnos_dynamicArray.push(item);
+
+                //    });
+                //}
 
                 if (this.PrescriptionModel.emr_prescription_investigation != null) {
                     this.PrescriptionModel.emr_prescription_investigation.forEach((item, index) => {
@@ -3079,21 +3095,22 @@ export class AppointmentComponentList implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_investigation_dynamicArray.push(item);
                     });
-                    this.InvestigationsList.forEach((item, index) => {
-                        var list1 = this.PrescriptionModel.emr_prescription_investigation.filter(a => a.InvestigationId == item.id);
-                        if (list1.length == 0 || list1 == undefined) {
-                            item.IsSelected = false;
-                            item.InvestigationId = item.id;
-                            this.emr_prescription_investigation_dynamicArray.push(item);
-                        }
-                    });
-                } else {
-                    this.InvestigationsList.forEach((item, index) => {
-                        item.IsSelected = false;
-                        item.InvestigationId = item.id;
-                        this.emr_prescription_investigation_dynamicArray.push(item);
-                    });
+                    //this.InvestigationsList.forEach((item, index) => {
+                    //    var list1 = this.PrescriptionModel.emr_prescription_investigation.filter(a => a.InvestigationId == item.id);
+                    //    if (list1.length == 0 || list1 == undefined) {
+                    //        item.IsSelected = false;
+                    //        item.InvestigationId = item.id;
+                    //        this.emr_prescription_investigation_dynamicArray.push(item);
+                    //    }
+                    //});
                 }
+                //else {
+                //    this.InvestigationsList.forEach((item, index) => {
+                //        item.IsSelected = false;
+                //        item.InvestigationId = item.id;
+                //        this.emr_prescription_investigation_dynamicArray.push(item);
+                //    });
+                //}
 
                 if (this.PrescriptionModel.emr_prescription_observation != null) {
                     this.PrescriptionModel.emr_prescription_observation.forEach((item, index) => {
@@ -3107,25 +3124,24 @@ export class AppointmentComponentList implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_observation_dynamicArray.push(item);
                     });
-                    this.ObservationList.forEach((item, index) => {
-                        var list1 = this.PrescriptionModel.emr_prescription_observation.filter(a => a.ObservationId == item.id);
-                        if (list1.length == 0 || list1 == undefined) {
-                            item.IsSelected = false;
-                            item.ObservationId = item.id;
-                            this.emr_prescription_observation_dynamicArray.push(item);
-                        }
-                    });
-                } else {
-                    this.ObservationList.forEach((item, index) => {
-                        item.IsSelected = false;
-                        item.ObservationId = item.id;
-                        this.emr_prescription_observation_dynamicArray.push(item);
-
-                    });
+                    //this.ObservationList.forEach((item, index) => {
+                    //    var list1 = this.PrescriptionModel.emr_prescription_observation.filter(a => a.ObservationId == item.id);
+                    //    if (list1.length == 0 || list1 == undefined) {
+                    //        item.IsSelected = false;
+                    //        item.ObservationId = item.id;
+                    //        this.emr_prescription_observation_dynamicArray.push(item);
+                    //    }
+                    //});
                 }
+                //else {
+                //    this.ObservationList.forEach((item, index) => {
+                //        item.IsSelected = false;
+                //        item.ObservationId = item.id;
+                //        this.emr_prescription_observation_dynamicArray.push(item);
 
-                var list = this.MedicineList;
-                var listsd = this.PrescriptionModel.emr_prescription_treatment;
+                //    });
+                //}
+
                 if (this.PrescriptionModel.emr_prescription_treatment != null) {
                     this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
                         var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];

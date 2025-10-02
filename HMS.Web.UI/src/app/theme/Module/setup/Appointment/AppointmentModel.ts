@@ -118,6 +118,7 @@ export class patientInfo {
     AppointmentDate: string;
     ClinicIogo: string;
     Notes: string;
+    Weight: string;
 }
 export class DoctorInfo {
     Name: string;

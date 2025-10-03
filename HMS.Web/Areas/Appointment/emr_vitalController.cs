@@ -83,7 +83,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Save;
                     objResponse.IsSuccess = true;
-                    var vitalObj = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.VitalId == Model.VitalId).Select(z => new
+                    var vitalObj = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId).Select(z => new
                     {
                         z.ID,
                         z.Date,
@@ -91,7 +91,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.VitalId,
                         Name = z.sys_drop_down_value.Value,
                         Unit = z.sys_drop_down_value.Unit
-                    }).ToList();
+                    }).OrderByDescending(a => a.Date).ToList();
                     objResponse.ResultSet = new
                     {
                         vitalObj = vitalObj,
@@ -299,9 +299,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     z.Date,
                     z.Measure,
                     z.VitalId,
+                    z.PatientId,
                     Name = z.sys_drop_down_value.Value,
                     Unit = z.sys_drop_down_value.Unit
-                }).ToList();
+                }).OrderByDescending(a => a.Date).ToList();
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {
@@ -451,7 +452,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     z.Value,
                     z.Unit
                 }).ToList();
-                var vitalObj = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == PatId && a.VitalId == 67).Select(z => new
+                var vitalObj = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == PatId).Select(z => new
                 {
                     z.ID,
                     z.Date,
@@ -459,7 +460,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     z.VitalId,
                     Name = z.sys_drop_down_value.Value,
                     Unit = z.sys_drop_down_value.Unit
-                }).ToList();
+                }).OrderByDescending(a => a.Date).ToList();
                 objResponse.ResultSet = new
                 {
                     vitalObj = vitalObj,

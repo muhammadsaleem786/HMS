@@ -20,7 +20,7 @@ namespace HMS.Repository.Repositories.Appointment
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<emr_document, bool>> predicate = (e => e.CompanyID == CompanyID);
+                Expression<Func<emr_document, bool>> predicate = (e => e.CompanyID == CompanyID && DbFunctions.TruncateTime(e.Date) == DbFunctions.TruncateTime(DateTime.Now));
 
                 bool DisplayDate, DisplayRemarks;
                 bool OrderByDate, OrderByRemarks;
@@ -93,6 +93,84 @@ namespace HMS.Repository.Repositories.Appointment
             }
             return objResult;
         }
-      
+        public static PaginationResult DocPagination(this IRepository<emr_document> repository, decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, bool IgnorePaging = false)
+        {
+            var objResult = new PaginationResult();
+            try
+            {
+                var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
+                Expression<Func<emr_document, bool>> predicate = (e => e.CompanyID == CompanyID && DbFunctions.TruncateTime(e.Date) ==DbFunctions.TruncateTime(DateTime.Now));
+
+                bool DisplayDate, DisplayRemarks;
+                bool OrderByDate, OrderByRemarks;
+
+
+                if (!string.IsNullOrEmpty(PFilter.SearchText))
+                {
+                    DisplayDate = PFilter.VisibleColumnInfoList.IndexOf("Date") > -1;
+                    DisplayRemarks = PFilter.VisibleColumnInfoList.IndexOf("Remarks") > -1;
+                    predicate = (c => c.CompanyID == CompanyID &&
+                    (DisplayDate && c.Date.ToString().Contains(PFilter.SearchText.ToLower()) ||
+                    (DisplayRemarks && c.Remarks.ToString().Contains(PFilter.SearchText.ToLower())
+
+                    )));
+                }
+
+                IQueryable<emr_document> filteredData = repository.Queryable().Where(predicate);
+
+                if (string.IsNullOrEmpty(PFilter.OrderBy))
+                    PFilter.OrderBy = "ID";
+
+                OrderByDate = PFilter.OrderBy.IndexOf("Date") > -1;
+                OrderByRemarks = PFilter.OrderBy.IndexOf("Remarks") > -1;
+
+
+                Expression<Func<emr_document, string>> orderingFunction = (c =>
+                                                              OrderByDate ? c.Date.ToString() :
+                                                              OrderByRemarks ? c.Remarks.ToString() : ""
+                                                              );
+
+                if (PFilter.IsOrderAsc)
+                    filteredData = filteredData.OrderBy(orderingFunction);
+                else
+                    filteredData = filteredData.OrderByDescending(orderingFunction);
+
+                objResult.TotalRecord = filteredData.Count();
+
+                if (IgnorePaging)
+                {
+                    objResult.DataList = filteredData.Include(a => a.sys_drop_down_value)
+                        .Select(s => new
+                        {
+                            s.ID,
+                            Date = s.Date,
+                            Remarks = s.Remarks,
+                            DocumentUpload = s.DocumentUpload,
+                            Tag = s.sys_drop_down_value.Value,
+                            Uploaddate = s.CreatedDate,
+
+                        }).OrderByDescending(A => A.ID).ToList<object>();
+                }
+                else
+                {
+
+                    objResult.DataList = filteredData.Include(a => a.sys_drop_down_value).Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
+                       .Select(s => new
+                       {
+                           s.ID,
+                           Date = s.Date,
+                           Remarks = s.Remarks,
+                           DocumentUpload = s.DocumentUpload,
+                           Tag = s.sys_drop_down_value.Value,
+                           Uploaddate = s.CreatedDate,
+                       }).OrderByDescending(A => A.ID).ToList<object>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return objResult;
+        }
     }
 }

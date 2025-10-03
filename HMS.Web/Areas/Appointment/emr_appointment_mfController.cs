@@ -833,7 +833,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         })
                         .ToList<object>();
                 }
-               
+
                 objResponse.ResultSet = new
                 {
                     patientInfo = patientinfo,
@@ -871,30 +871,41 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal CompanyID = Request.CompanyID();
+                decimal companyId = Request.CompanyID();
                 decimal patientid = Convert.ToDecimal(id);
                 int userid = Convert.ToInt32(Request.LoginID());
                 DateTime todayDate = DateTime.Now;
                 int? stid = Convert.ToInt32(0);
+                var patientinfo = _emr_patientService.Queryable().Where(a => a.ID == patientid && a.CompanyId == companyId).FirstOrDefault();
+                var dropDownIds = new[] { 2, 17, 22, 23 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+                var genderList = allDropDownValues
+    .Where(d => d.DropDownID == 2)
+    .Select(d => new { d.ID, d.Value })
+    .ToList();
 
-                DataAccessManager dataAccessManager = new DataAccessManager();
-                var ht = new Hashtable();
-                ht.Add("@CompanyID", CompanyID);
-                ht.Add("@PatientId", patientid);
-
-                var AllData = dataAccessManager.GetDataSet("SP_GetPatientSummaryByPatientId", ht);
-
-                var patientInfo = AllData.Tables[0];
-                var GenderType = AllData.Tables[1];
-                var MedicineList = AllData.Tables[2];
-                var BloodList = AllData.Tables[3];
-
-                var BillTypeList = AllData.Tables[4];
-                var TittleList = AllData.Tables[5];
-
-                var DoctorList = AllData.Tables[4];
-
-                var prescriptionresult = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == CompanyID).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment)
+                var bloodList = allDropDownValues
+    .Where(d => d.DropDownID == 17)
+    .ToList();
+                var billTypeList = allDropDownValues
+   .Where(d => d.DropDownID == 22)
+   .ToList();
+                var tittleList = allDropDownValues
+   .Where(d => d.DropDownID == 23)
+   .ToList();
+                var paidAndOutAmount = _emr_prescription_mfService.Queryable()
+    .Where(p => p.PatientId == patientid && p.CompanyID == companyId)
+    .SelectMany(p => p.emr_patient_mf.emr_patient_bill)
+    .Sum(b => (decimal?)b.OutstandingBalance) ?? 0;
+                var prescriptionresult = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment)
                     .Select(z => new
                     {
                         z.ID,
@@ -906,24 +917,31 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.emr_prescription_treatment,
                         PaidAmount = z.emr_patient_mf.emr_patient_bill.Where(c => c.PatientId == z.emr_patient_mf.ID && (decimal?)c.DoctorId == (decimal?)z.DoctorId).Sum(c => (decimal?)c.PaidAmount),
                         OutAmount = z.emr_patient_mf.emr_patient_bill.Where(c => c.PatientId == z.emr_patient_mf.ID && (decimal?)c.DoctorId == (decimal?)z.DoctorId).Sum(c => (decimal?)c.OutstandingBalance),
-                    }).ToList();
-                string AdmissionNo = "0";
-                var PaidAndOutamount = AllData.Tables[6].Rows[0]["PaidAndOutamount"];
-                if (AllData.Tables[7].Rows.Count > 0)
-                {
-                    AdmissionNo = AllData.Tables[7].Rows[0]["AdmissionNo"].ToString();
-                }
+                    }).OrderByDescending(a => a.AppointmentDate).ToList();
+                var ids = prescriptionresult.SelectMany(p => p.emr_prescription_treatment).Select(t => t.MedicineId).Distinct().ToList();
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                var MedicineList = itemList.Union(medicineList).ToList();
+
+                var ipdAdmissions = _ipd_admissionService.Queryable()
+                                 .Where(a => a.PatientId == patientid && a.CompanyId == companyId)
+                                 .Select(a => new
+                                 {
+                                     AdmissionNo = a.AdmissionNo,
+                                     DischargeDate = a.DischargeDate,
+                                     DischargeTime = a.DischargeTime
+                                 }).FirstOrDefault();
                 objResponse.ResultSet = new
                 {
-                    patientInfo = patientInfo,
-                    GenderList = GenderType,
-                    PaidAndOutamount = PaidAndOutamount,
-                    BillTypeList = BillTypeList,
-                    TittleList = TittleList,
-                    BloodList = BloodList,
+                    patientInfo = patientinfo,
+                    GenderList = genderList,
+                    PaidAndOutamount = paidAndOutAmount,
+                    BillTypeList = billTypeList,
+                    TittleList = tittleList,
+                    BloodList = bloodList,
                     MedicineList = MedicineList,
                     prescriptionresult = prescriptionresult,
-                    AdmissionNo = AdmissionNo,
+                    AdmissionNo = ipdAdmissions == null ? 0 : Convert.ToInt32(ipdAdmissions.AdmissionNo),
                 };
             }
             catch (Exception ex)
@@ -1953,8 +1971,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
 
 
-                  var ServiceType = _emr_service_mfService.Queryable().Where(e => e.CompanyId == CompanyID && e.ServiceName == "Consultation")
-                   .Select(a => new { a.ID, a.ServiceName, a.Price }).FirstOrDefault();
+                var ServiceType = _emr_service_mfService.Queryable().Where(e => e.CompanyId == CompanyID && e.ServiceName == "Consultation")
+                 .Select(a => new { a.ID, a.ServiceName, a.Price }).FirstOrDefault();
                 decimal TokenNo = GetNextToken(CompanyID);
                 var StatusList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 1 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
                 {

@@ -217,6 +217,10 @@ export class AppointmentService {
         var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': false };
         return this.http.Get(this.DocurlToApi + '/Pagination', data).then(e => e);
     }
+    GetPatientDocList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string, PatientId: string): Promise<any> {
+        var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'PatientId': PatientId, 'IgnorePaging': false };
+        return this.http.Get(this.DocurlToApi + '/DocPagination', data).then(e => e);
+    }
     GetBillingList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string, PatientId: string): Promise<any> {
         var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'PatientId': PatientId, 'IgnorePaging': false };
         return this.http.Get(this.BillToApiAp + '/BillingPagination', data).then(e => e);
@@ -266,7 +270,6 @@ export class AppointmentService {
         var data = { 'Id': Id };
         return this.http.Get(this.PresurlToApiAp + '/PrintRXById', data).then(e => e);
     }
-
     GetAllVital(PatientId: string): Promise<any> {
         var data = { 'PatientId': PatientId };
         return this.http.Get(this.VitalToApiAp + '/Load', data).then(e => e);

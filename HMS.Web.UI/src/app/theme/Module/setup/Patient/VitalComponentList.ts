@@ -73,20 +73,17 @@ export class VitalComponentList implements OnInit {
         this.loader.ShowLoader();
         this._AppointmentService.VitalGetById(id).then(m => {
             if (m.IsSuccess) {
-                
-                if (m.ResultSet.vitalObj.length > 0) {
-                    m.ResultSet.vitalObj.forEach((item, index) => {
-                        this.emr_vital_dynamicArray.push(item);
-                    });
+                this.emr_vital_dynamicArray.push(
+                    ...m.ResultSet.vitalObj.filter(a => a.PatientId == this.PatientId)
+                );
+                var vital = this.VitalList.filter(a => a.ID == id)[0];
+                if (vital != null && vital != undefined) {
+                    this.VitalModel.Unit = vital.Unit;
+                    this.VitalModel.Name = vital.Value;
                 }
+                this.loader.HideLoader();
             } else
-                this.toastr.Error('Error', m.ErrorMessage);
-
-            var vital = this.VitalList.filter(a => a.ID == id)[0];
-            if (vital != null && vital != undefined) {
-                this.VitalModel.Unit = vital.Unit;
-                this.VitalModel.Name = vital.Value;
-            }
+                this.toastr.Error('Error', m.ErrorMessage);           
             this.loader.HideLoader();
         });
     }

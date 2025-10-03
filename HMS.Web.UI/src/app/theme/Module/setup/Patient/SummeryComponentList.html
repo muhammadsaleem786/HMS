@@ -196,7 +196,7 @@
                                                         {{p.PaidAmount}}
                                                         O/s:PKR {{p.OutAmount}}
                                                     </td>
-                                                    <td (click)="PrintRxform(p.Id)">
+                                                    <td (click)="PrintRxform(p.ID)">
                                                         <span class="icon icon-p text-danger">
                                                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="font-size:30px;" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 48 48"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 4a1 1 0 0 0-1 1v38a1 1 0 0 0 1 1h28a1 1 0 0 0 1-1V15a1 1 0 0 0-.293-.707l-10-10A1 1 0 0 0 28 4H10zm1 38V6h16v9a1 1 0 0 0 1 1h9v26H11zm24.586-28L29 7.414V14h6.586zM17 33h2v-7h1.586l5 5l-3.293 3.293l1.414 1.414L27 32.414l3.293 3.293l1.414-1.414L28.414 31l3.293-3.293l-1.414-1.414L27 29.586l-3.605-3.605A4 4 0 0 0 23 18h-5a1 1 0 0 0-1 1v14zm6-9h-4v-4h4a2 2 0 1 1 0 4z" fill="currentColor" /></g></svg>
                                                         </span>
@@ -295,6 +295,15 @@
                                                         <small *ngIf="Form7.controls.Mobile.hasError('pattern') && !Form7.controls.Mobile.hasError('required')">
                                                             Please enter valid Mobile(923001234567).
                                                         </small>
+                                                        <small class="text-danger"
+                                                               *ngIf="Form7.controls.Mobile.hasError('minlength') && !Form7.controls.Mobile.hasError('required')">
+                                                            Mobile number must be 12 digits.
+                                                        </small>
+
+                                                        <small class="text-danger"
+                                                               *ngIf="Form7.controls.Mobile.hasError('maxlength') && !Form7.controls.Mobile.hasError('required')">
+                                                            Mobile number must be 12 digits.
+                                                        </small>
                                                     </div>
                                                 </div>
 
@@ -313,12 +322,9 @@
                                                         <label class="form-control-label mt-2 pl-0 required" for="input-username"> CNIC</label>
                                                     </div>
                                                     <div class="col-8">
-                                                        <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC" class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X">
+                                                        <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC" class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X"maxlength="15"(input)=" formatCnic($event)">
                                                         <small class="text-danger" *ngIf="Form7.controls.CNIC.hasError('required') && submitted">
                                                             This value is required.
-                                                        </small>
-                                                        <small *ngIf="Form7.controls.CNIC.hasError('pattern') && !Form7.controls.CNIC.hasError('required')">
-                                                            CNIC No must follow the XXXXX-XXXXXXX-X format!"
                                                         </small>
                                                     </div>
                                                 </div>
@@ -854,7 +860,7 @@
                 </div>
                 <div style="width:140px; font-family: Arial, sans-serif;">
                     <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Weight: </label>
-                    <input type="text" readonly
+                    <input type="text" [(ngModel)]="PatientRXmodel.Weight" readonly
                            style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
                 </div>
                 <div style="width:140px; text-align:right; font-family: Arial, sans-serif;">
@@ -865,7 +871,7 @@
             </div>
 
             <!-- Content Split -->
-            <div style="display:flex; height:90%; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, sans-serif;">
+            <div style="display:flex; height:220mm; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, sans-serif;">
 
                 <!-- Left Sidebar -->
                 <div style="width:28%; padding-right:10px; font-size:13px; color:#d9534f; font-family: Arial, sans-serif;">
@@ -916,15 +922,15 @@
                                     </label>
                                     <label *ngIf="DoctorInfo.TemplateId==1" style="font-family: Arial, sans-serif;">
                                         (
-                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}</span>
-                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;">+ {{m.AfterNoon}}</span>
-                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;">+ {{m.Evening}}</span>
-                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;">+ {{m.Night}}</span>
+                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}+</span>
+                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;"> {{m.AfterNoon}}+</span>
+                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;"> {{m.Evening}}+</span>
+                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;"> {{m.Night}}</span>
                                         )
                                     </label>
                                 </td>
                                 <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">{{m.MedicineType}}</td>
-                                <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}}</td>
+                                <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
                                 <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==2">{{m.Duration}} {{ getDurationInUrdu(m.DurationValue) }}</td>
                                 <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">{{m.Instructions}}</td>
                             </tr>
@@ -940,7 +946,7 @@
         </div>
 
         <!-- FOOTER -->
-        <div style="padding:6px 10px; text-align:center; border-top:2px solid #5e72e4; font-family: Arial, sans-serif;">
+        <div style="padding:6px 10px; text-align:center; border-top:4px solid #5e72e4; font-family: Arial, sans-serif;">
             <p style="font-size:13px; margin:0; color:#444; font-family: Arial, sans-serif;">{{DoctorInfo.Footer}}</p>
         </div>
     </div>

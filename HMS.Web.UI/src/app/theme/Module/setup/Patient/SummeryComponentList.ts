@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Input, Output } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Input, Output } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from '../../../../CommonService/LoaderService';
 import { PatientService } from './PatientService';
@@ -96,8 +96,8 @@ export class SummeryComponentList implements OnInit {
             Age: ['', [Validators.required]],
             Email: [''],
             ContactNo:[''],
-            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(12), Validators.maxLength(12)]],
-            CNIC: ['', [Validators.required, Validators.pattern(ValidationVariables.CNICPattern)]],
+            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(11), Validators.maxLength(11)]],
+            CNIC: ['', [Validators.required]],
             Image: [''],
             Notes: [''],
             MRNO: [''],
@@ -149,14 +149,13 @@ export class SummeryComponentList implements OnInit {
         this.loader.ShowLoader();
         this._AppointmentService.PatientLoadById(this.PatientId).then(m => {
             this.IsPatient = true;
-            if (m.ResultSet.PaidAndOutamount.length > 0)
-                this.OutStdAmount = m.ResultSet.PaidAndOutamount[0].OutAmount;
+                this.OutStdAmount = m.ResultSet.PaidAndOutamount;
             this.BloodList = m.ResultSet.BloodList;
             this.GenderList = m.ResultSet.GenderList;
             this.MedicineList = m.ResultSet.MedicineList;
             this.BillTypeList = m.ResultSet.BillTypeList;
             this.TittleList = m.ResultSet.TittleList;
-            this.model = m.ResultSet.patientInfo[0];
+            this.model = m.ResultSet.patientInfo;
             if (this.model.Image != null || this.model.Image != undefined) {
                 this.getPatientImageUrlName(this.model.Image);
                 this.IsNewPatientImage = false;
@@ -166,10 +165,8 @@ export class SummeryComponentList implements OnInit {
             this.emr_prescription_observation_dynamicArray = [];
             this.emr_prescription_investigation_dynamicArray = [];
             this.emr_prescription_diagnos_dynamicArray = [];
-            this.emr_prescription_MedicineArray = [];
-            
+            this.emr_prescription_MedicineArray = []; 
             this.emr_prescription_dynamicArray = m.ResultSet.prescriptionresult;
-
             this.loader.HideLoader();
         });
     }
@@ -206,7 +203,16 @@ export class SummeryComponentList implements OnInit {
             });
         }
     }
-
+    formatCnic(event: any) {
+        let input = event.target.value.replace(/\D/g, ''); 
+        if (input.length > 5 && input.length <= 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5);
+        } else if (input.length > 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5, 12) + '-' + input.slice(12, 13);
+        }
+        event.target.value = input;
+        this.Form7.controls['CNIC'].setValue(input, { emitEvent: false });
+    }
     PrintRxform(id: any) {
         this.loader.ShowLoader();
         this._AppointmentService.PrintRXById(id).then(m => {
@@ -217,19 +223,22 @@ export class SummeryComponentList implements OnInit {
                 this.emr_prescription_diagnos_dynamicArray = [];
                 this.emr_prescription_treatment_dynamicArray = [];
                 this.PatientVitalList = [];
-
-                if (m.ResultSet.doctor != null)
-                    this.DoctorInfo = m.ResultSet.doctor;
-
+                if (m.ResultSet.doctor.length > 0)
+                    this.DoctorInfo = m.ResultSet.doctor[0];
                 if (this.DoctorInfo == null || this.DoctorInfo == undefined) {
                     this.DoctorInfo.Name = "";
                     this.DoctorInfo.Designation = "";
                     this.DoctorInfo.Qualification = "";
                     this.DoctorInfo.PhoneNo = "";
+                    this.DoctorInfo.TemplateId = "";
                 }
                 this.PatientRXmodel.PatientName = m.ResultSet.result.PatientName;
                 this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
-
+                var Weight = m.ResultSet.vitallist.filter(a => a.Name == "Weight");
+                if (Weight.length == 0)
+                    this.PatientRXmodel.Weight = "";
+                else
+                    this.PatientRXmodel.Weight = Weight[0].Measure;
                 if (m.ResultSet.result.ClinicIogo != null)
                     this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result.ClinicIogo;
                 this.PatientRXmodel.Age = m.ResultSet.result.Age;
@@ -257,11 +266,13 @@ export class SummeryComponentList implements OnInit {
                     });
                 }
                 if (m.ResultSet.result.emr_prescription_treatment != null) {
-
                     m.ResultSet.result.emr_prescription_treatment.forEach((item, index) => {
-                        var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
-                        if (medicineName != null && medicineName != undefined)
+                        var medicineName = m.ResultSet.MedicineList.filter(a => a.Id == item.MedicineId)[0];
+                        if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
+                            item.MedicineType = medicineName.Type;
+                            item.TypeId = medicineName.TypeId;
+                        }
                         else
                             item.MedicineName = item.MedicineName;
                         this.emr_prescription_treatment_dynamicArray.push(item);
@@ -272,6 +283,32 @@ export class SummeryComponentList implements OnInit {
                 this.toastr.Error('Error', m.ErrorMessage);
             this.loader.HideLoader();
         });
+    }
+    getDurationInUrdu(value: string): string {
+        switch (value) {
+            case 'Day (s)':
+                return 'دن';
+            case 'Week (s)':
+                return 'ہفتہ';
+            case 'Month (s)':
+                return 'مہینہ';
+            case 'Daily':
+                return 'روزانہ';
+            case 'Weekly':
+                return 'ہفتہ وار';
+            case 'Monthly':
+                return 'ماہانہ';
+            case 'Continuously':
+                return 'مسلسل';
+            case 'When Required':
+                return 'جب ضرورت ہو';
+            case 'STAT':
+                return 'فوری';
+            case 'PRN':
+                return 'حسبِ ضرورت';
+            default:
+                return value;
+        }
     }
 }
 

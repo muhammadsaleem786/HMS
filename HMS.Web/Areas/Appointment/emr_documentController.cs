@@ -240,6 +240,23 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             return objResult;
         }
         [HttpGet]
+        [ActionName("DocPagination")]
+        public PaginationResult DocPagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, bool IgnorePaging = false)
+        {
+            var objResult = new PaginationResult();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                objResult = _service.DocPagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, PatientId, IgnorePaging);
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace.Error(ex);
+            }
+            return objResult;
+        }
+
+        [HttpGet]
         [ActionName("ExportData")]
         public ResponseInfo ExportData(int ExportType, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText)
         {

@@ -9,7 +9,8 @@ namespace HMS.Service.Services.Appointment
 {
     public interface Iemr_documentService : IService<emr_document>
     {
-       
+        PaginationResult DocPagination(decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, bool IgnorePaging = false);
+
         PaginationResult Pagination(decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, bool IgnorePaging = false);
     }
 
@@ -26,6 +27,9 @@ namespace HMS.Service.Services.Appointment
         {
             return _repository.Pagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, IgnorePaging);
         }
-        
+        public PaginationResult DocPagination(decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, bool IgnorePaging = false)
+        {
+            return _repository.DocPagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, PatientId, IgnorePaging);
+        }
     }
 }

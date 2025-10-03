@@ -41,7 +41,7 @@ export class DocumentSummeryComponentList implements OnInit {
     public IsEdit: boolean = false; public IsVital: boolean = false;
     public CompanyInfo: any[] = [];
     public BillModel = new emr_patient_bill();
-    public DocumentList: any[] = []; public GenderList: any[] = [];  
+    public DocumentList: any[] = []; public GenderList: any[] = [];
     public VitalModel = new emr_vital(); public FutureAppList: any[] = []; public PreviousAppList: any[] = [];
     public Docmodel = new emr_document(); public IsNewPatientImage: boolean = true; public IsNewImage: boolean = true;
     public PatientId: any; public PatientImage: string = '';
@@ -127,8 +127,8 @@ export class DocumentSummeryComponentList implements OnInit {
 
         return Math.ceil(Math.max(totalRecord, 1) / Math.max(recordPerPage, 1));
     }
-   //Document
-   
+    //Document
+
     DocSaveOrUpdate(isValid: boolean): void {
         if (isValid) {
             this.submitted = false;
@@ -153,10 +153,9 @@ export class DocumentSummeryComponentList implements OnInit {
     }
     DocumentGridList() {
         this.PModel.VisibleColumnInfo = "Date#Date,Remarks#Remarks,Tag#Tag,Uploaddate#Uploaddate";
-            this.loader.ShowLoader();
+        this.loader.ShowLoader();
         this.Id = "0";
-        this._AppointmentService
-            .GetDocList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+        this._AppointmentService.GetDocList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.DocumentList = m.DataList;
                 this.DocumentList.forEach(x => {
@@ -168,7 +167,7 @@ export class DocumentSummeryComponentList implements OnInit {
             });
     }
     Delete(id: any) {
-         var result = confirm("Are you sure you want to delete selected record.");
+        var result = confirm("Are you sure you want to delete selected record.");
         if (result == true) {
             this.loader.ShowLoader();
             this._AppointmentService.DeleteDoc(id).then(m => {

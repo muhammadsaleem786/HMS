@@ -42,6 +42,7 @@ export class AdmitAppointSummeryComponentList implements OnInit {
     public IsEdit: boolean = false;
     public CompanyInfo: any[] = []; public FutureAppList: any[] = []; public PreviousAppList: any[] = [];
     public ClinicName: string = "";
+    public AdmitId: any;
     public PatientId: any; previousPage: number = 1;
     nextPage: number = 1;
     totalPages: number = 0;
@@ -55,7 +56,8 @@ export class AdmitAppointSummeryComponentList implements OnInit {
     public DisabledSlot: any;
     public Step: number = 30;
     public AppointmentModel = new emr_Appointment();
-    public DoctorList: any[] = [];
+    public DoctorList: any[] = []; public DischargeDate: any;
+
     public ReminderList: any[] = [];
     public StatusList: any[] = []; public CompanyObj: any;
     public DoctorClanderList: any[] = []; public AppointmentList: any[] = [];
@@ -101,6 +103,7 @@ export class AdmitAppointSummeryComponentList implements OnInit {
         this.ClinicName = this.CompanyObj.CompanyName;
     }
     ngOnInit() {
+        this.AdmitId = localStorage.getItem('AdmitId');
         this.PatientId = localStorage.getItem('PatientId');
         this.PModel.ShowSearch == true
         this.PModel.SortName = "";

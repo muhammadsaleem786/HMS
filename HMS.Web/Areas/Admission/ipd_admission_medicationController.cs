@@ -12,6 +12,7 @@ using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -34,9 +35,10 @@ namespace HMS.Web.API.Areas.Admission.Controllers
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iinv_stockService _inv_stockService;
         private readonly Iadm_item_logService _adm_item_logService;
+        private readonly Iipd_admissionService _ipd_admissionService;
 
         public ipd_admission_medicationController(IUnitOfWorkAsync unitOfWorkAsync, Iinv_stockService inv_stockService, Iipd_admission_medicationService service, Iemr_appointment_mfService emr_appointment_mfService,
-            Isys_drop_down_valueService sys_drop_down_valueService, Iadm_item_logService adm_item_logService)
+            Isys_drop_down_valueService sys_drop_down_valueService, Iadm_item_logService adm_item_logService, Iipd_admissionService ipd_admissionService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -44,6 +46,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             _inv_stockService = inv_stockService;
             _emr_appointment_mfService = emr_appointment_mfService;
             _adm_item_logService = adm_item_logService;
+            _ipd_admissionService = ipd_admissionService;
         }
         [HttpPost]
         [HttpGet]
@@ -247,7 +250,17 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
+                var ipdAdmissions = _ipd_admissionService.Queryable()
+              .Where(a => a.PatientId.ToString() == PatientId && a.CompanyId == CompanyID
+                    && a.ID.ToString() == AdmitId)
+              .Select(a => new
+              {
+                  AdmissionNo = a.AdmissionNo,
+                  DischargeDate = a.DischargeDate,
+                  DischargeTime = a.DischargeTime
+              }).FirstOrDefault();
                 objResult = _service.Pagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, AdmitId, PatientId, IgnorePaging);
+                objResult.OtherDataModel = ipdAdmissions;
             }
             catch (Exception ex)
             {

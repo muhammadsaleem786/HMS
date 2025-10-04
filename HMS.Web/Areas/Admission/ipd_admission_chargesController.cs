@@ -30,14 +30,16 @@ namespace HMS.Web.API.Areas.Admission.Controllers
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly Iadm_userService _adm_userService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
+        private readonly Iipd_admissionService _ipd_admissionService;
 
         public ipd_admission_chargesController(IUnitOfWorkAsync unitOfWorkAsync, Iipd_admission_chargesService service, Iemr_appointment_mfService emr_appointment_mfService,
-            Isys_drop_down_valueService sys_drop_down_valueService)
+            Isys_drop_down_valueService sys_drop_down_valueService, Iipd_admissionService ipd_admissionService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
             _sys_drop_down_valueService = sys_drop_down_valueService;
             _emr_appointment_mfService = emr_appointment_mfService;
+            _ipd_admissionService = ipd_admissionService;
         }
         [HttpPost]
         [HttpGet]
@@ -175,9 +177,19 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 decimal CompanyID = Request.CompanyID();
                 int AdmissionId = Convert.ToInt32(AdmitId);
                 var Result = _service.Queryable().Where(e => e.AdmissionId == AdmissionId && e.PatientId.ToString()==PatientId && e.CompanyId == CompanyID).FirstOrDefault();
+                var ipdAdmissions = _ipd_admissionService.Queryable()
+                              .Where(a => a.PatientId.ToString() == PatientId && a.CompanyId == CompanyID
+                                    && a.ID.ToString() == AdmitId)
+                              .Select(a => new
+                              {
+                                  AdmissionNo = a.AdmissionNo,
+                                  DischargeDate = a.DischargeDate,
+                                  DischargeTime = a.DischargeTime
+                              }).FirstOrDefault();
                 objResponse.ResultSet = new
                 {
                     Result = Result,
+                    dischargeInfo = ipdAdmissions
                 };
                 objResponse.IsSuccess = true;
                

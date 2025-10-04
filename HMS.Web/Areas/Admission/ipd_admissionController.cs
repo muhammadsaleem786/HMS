@@ -528,6 +528,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                     z.ID,
                     z.Value,
                     z.DropDownID,
+                    z.DependedDropDownValueID,
                 })
     .ToList();
                var wardList= allDropDownValues

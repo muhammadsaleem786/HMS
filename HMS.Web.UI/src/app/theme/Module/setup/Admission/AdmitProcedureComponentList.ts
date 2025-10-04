@@ -49,7 +49,7 @@ export class AdmitProcedureComponentList implements OnInit {
     public CPTCodeList: any[] = [];
     public CategoryList: any[] = [];
     public ClinicName: string;
-    public Rights: any;
+    public Rights: any; public DischargeDate: any;
     public ProeduresRights: any;
     public PatientId: any;
     nextPage: number = 1; public CompanyObj: any;
@@ -138,6 +138,7 @@ export class AdmitProcedureComponentList implements OnInit {
         this.Id = "0";
         this._AdmitService.GetProeduresList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.AdmitId, this.PatientId, '0').then(m => {
             this.PModel.TotalRecord = m.TotalRecord;
+            this.DischargeDate = m.OtherDataModel.DischargeDate;
             this.ProcedureList = m.DataList;
             this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
             this.loader.HideLoader();

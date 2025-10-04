@@ -46,7 +46,8 @@ export class AdmitImagingList implements OnInit {
     public ControlRights: any;
     pagesRange: number[] = []; previousPage: number = 1;
     nextPage: number = 1;
-    totalPages: number = 0;
+    totalPages: number = 0; public DischargeDate: any;
+
     public ImagingTypeList: any[] = []; public CompanyObj: any;
     public StatusList: any[] = []; public IsNewImage: boolean = true;
     public ResultList: any[] = []; ImagingImage: string = '';
@@ -128,6 +129,7 @@ export class AdmitImagingList implements OnInit {
         this.Id = "0";
         this._AdmitService.GetImagingList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.AdmitId, this.PatientId).then(m => {
             this.PModel.TotalRecord = m.TotalRecord;
+            this.DischargeDate = m.OtherDataModel.DischargeDate;
             this.ImagingList = m.DataList;
             this.ImagingList.forEach(x => {
                 if (x.Image != null && x.Image != undefined)

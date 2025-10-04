@@ -86,7 +86,7 @@ export class AdmitComponentForm implements OnInit {
             DOB: [''],
             Age: [''],
             Email: [''],
-            Mobile: [''],
+            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(12), Validators.maxLength(12)]],
             ContactNo: [''],
             CNIC: [''],
             Image: [''],
@@ -343,6 +343,16 @@ export class AdmitComponentForm implements OnInit {
                 }
             });
         }
+    }
+    formatCnic(event: any) {
+        let input = event.target.value.replace(/\D/g, '');
+        if (input.length > 5 && input.length <= 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5);
+        } else if (input.length > 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5, 12) + '-' + input.slice(12, 13);
+        }
+        event.target.value = input;
+        this.Form1.controls['CNIC'].setValue(input, { emitEvent: false });
     }
     Convert12TO24(time12h: any) {
         var hours = Number(time12h.match(/^(\d+)/)[1]);

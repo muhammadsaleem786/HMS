@@ -132,7 +132,7 @@
                             </ngb-panel>
                         </ngb-accordion>
                         <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
-                            <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="submit" class="btn btn-primary"[disabled]="DischargeDate != null">Add</button>
 
                         </div>
                     </form>

@@ -49,6 +49,7 @@ export class AdmitLabsComponentList implements OnInit {
     public ResultList: any[] = [];
     public patientInfo: any;
     pagesRange: number[] = []; previousPage: number = 1;
+    public DischargeDate: any;
     nextPage: number = 1;
     totalPages: number = 0; public CompanyObj: any;
     @ViewChild("OpenLabsModal") OpenLabsModal: TemplateRef<any>; 
@@ -129,6 +130,7 @@ export class AdmitLabsComponentList implements OnInit {
         this.Id = "0";
         this._AdmitService.GetLabList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.AdmitId, this.PatientId).then(m => {
             this.PModel.TotalRecord = m.TotalRecord;
+            this.DischargeDate = m.OtherDataModel.DischargeDate;
             this.LabList = m.DataList;
             this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
             this.loader.HideLoader();

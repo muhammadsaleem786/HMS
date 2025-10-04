@@ -75,7 +75,7 @@ export class PatientComponentForm implements OnInit {
             Age: ['', [Validators.required]],
             Email: [''],
             ContactNo: [''],
-            Mobile: ['', [Validators.required]],
+            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(12), Validators.maxLength(12)]],
             CNIC: [''],
             Image: [''],
             Notes: [''],
@@ -251,7 +251,16 @@ export class PatientComponentForm implements OnInit {
             });
         }
     }
-
+    formatCnic(event: any) {
+        let input = event.target.value.replace(/\D/g, '');
+        if (input.length > 5 && input.length <= 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5);
+        } else if (input.length > 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5, 12) + '-' + input.slice(12, 13);
+        }
+        event.target.value = input;
+        this.Form1.controls['CNIC'].setValue(input, { emitEvent: false });
+    }
     LoadDoctor() {
         $("#DoctorSearch").autocomplete({
             source: (request, response) => {

@@ -1,7 +1,7 @@
 ﻿<div class="tab-pane" id="Imaging">
 
     <div class="text-right mb-2"*ngIf="ControlRights.CreateRights">
-        <button class="btn btn-danger btn-sm" (click)="OpenImaging(Imaging)"><i class="icon icon-pulse"></i> New Imaging  </button>
+        <button class="btn btn-danger btn-sm" (click)="OpenImaging(Imaging)"[disabled]="DischargeDate != null"><i class="icon icon-pulse"></i> New Imaging  </button>
     </div>
     <div class="TableView">
         <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
@@ -56,7 +56,7 @@
                                 <span class="icon icon mr-3" (click)="Edit(item.ID)">
                                     <i class="icon icon-pencil2"></i>
                                 </span>
-                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights">
+                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)"[disabled]="DischargeDate != null" *ngIf="ControlRights.DeleteRights">
                                     <i class="icon icon-trash2 text-danger"></i>
                                 </button>
 
@@ -156,7 +156,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="submit" class="btn btn-primary"[disabled]="DischargeDate != null">Add</button>
         </div>
     </form>
 </ng-template>

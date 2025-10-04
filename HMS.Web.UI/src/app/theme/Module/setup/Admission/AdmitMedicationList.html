@@ -1,6 +1,6 @@
 ﻿<div class="tab-pane" id="Medication">
     <div class="text-right mb-2" *ngIf="ControlRights.CreateRights">
-        <button class="btn btn-danger btn-sm" (click)="OpenMedication(Medication)"><i class="icon icon-pulse"></i> New Medication  </button>
+        <button class="btn btn-danger btn-sm" (click)="OpenMedication(Medication)"[disabled]="DischargeDate != null"><i class="icon icon-pulse"></i> New Medication  </button>
     </div>
     <ngb-accordion [closeOthers]="true" activeIds="madicne-1">
         <ngb-panel id="madicne-1">
@@ -56,7 +56,7 @@
                                             <span class="icon icon mr-3" (click)="Edit(item.ID)">
                                                 <i class="icon icon-pencil2"></i>
                                             </span>
-                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights">
+                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights"[disabled]="DischargeDate != null">
                                                 <i class="icon icon-trash2 text-danger"></i>
                                             </button>
 
@@ -139,7 +139,7 @@
                                             <span class="icon icon mr-3" (click)="Edit(item.ID)">
                                                 <i class="icon icon-pencil2"></i>
                                             </span>
-                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights">
+                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights"[disabled]="DischargeDate != null">
                                                 <i class="icon icon-trash2 text-danger"></i>
                                             </button>
 
@@ -254,7 +254,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="submit" class="btn btn-primary"[disabled]="DischargeDate != null">Add</button>
         </div>
     </form>
 </ng-template>

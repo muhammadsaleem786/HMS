@@ -288,7 +288,7 @@
                                                         <label class="form-control-label mt-2 pl-0 required" for="input-username"> Mobile</label>
                                                     </div>
                                                     <div class="col-8">
-                                                        <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile" class="form-control  form-control-alternative" placeholder="923001234567">
+                                                        <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile" class="form-control  form-control-alternative" appPhoneMask placeholder="923001234567">
                                                         <small class="text-danger" *ngIf="Form7.controls.Mobile.hasError('required') && submitted">
                                                             This value is required.
                                                         </small>
@@ -322,7 +322,7 @@
                                                         <label class="form-control-label mt-2 pl-0 required" for="input-username"> CNIC</label>
                                                     </div>
                                                     <div class="col-8">
-                                                        <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC" class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X"maxlength="15"(input)=" formatCnic($event)">
+                                                        <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC" class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X" maxlength="15"(input)=" formatCnic($event)">
                                                         <small class="text-danger" *ngIf="Form7.controls.CNIC.hasError('required') && submitted">
                                                             This value is required.
                                                         </small>

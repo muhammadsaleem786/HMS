@@ -51,6 +51,7 @@ export class AdmitDetailComponentList implements OnInit {
     public Rights: any;
     public PatientId: any;
     public VisitRights: any;
+    public DischargeDate: any;
     public Step: any = 30;
     nextPage: number = 1; public CompanyObj: any;
     totalPages: number = 0; public InvoiceBillModel: any[] = [];
@@ -243,6 +244,7 @@ export class AdmitDetailComponentList implements OnInit {
             .AdmitAppointmentLoad(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PatientId, this.AdmitId).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.PatientLits = m.PatientList;
+                this.DischargeDate = m.OtherDataModel.DischargeDate;
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
                 this.loader.HideLoader();
             });

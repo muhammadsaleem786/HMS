@@ -2046,7 +2046,17 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
+                var ipdAdmissions = _ipd_admissionService.Queryable()
+              .Where(a => a.PatientId.ToString() == PatientId && a.CompanyId == CompanyID
+                    && a.ID.ToString() == AdmissionId)
+              .Select(a => new
+              {
+                  AdmissionNo = a.AdmissionNo,
+                  DischargeDate = a.DischargeDate,
+                  DischargeTime = a.DischargeTime
+              }).FirstOrDefault();
                 objResult = _service.AdmitAppointmentLoad(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, PatientId, AdmissionId, IgnorePaging);
+                objResult.OtherDataModel = ipdAdmissions;
             }
             catch (Exception ex)
             {

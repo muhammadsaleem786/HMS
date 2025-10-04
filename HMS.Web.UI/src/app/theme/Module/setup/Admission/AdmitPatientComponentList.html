@@ -543,7 +543,7 @@
                             </ngb-panel>
                         </ngb-accordion>
                         <div class="modal-footer" *ngIf="VisitRights.CreateRights">
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="submit" class="btn btn-primary"[disabled]="model.DischargeDate != null">Update</button>
                         </div>
                     </form>
                     <div class="tab-content">

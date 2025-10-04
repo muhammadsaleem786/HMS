@@ -120,9 +120,8 @@ export class AdmitNoteComponentList implements OnInit {
         this.Id = "0";
         this._AdmitService.GetNoteList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.AdmitId, this.PatientId, '0').then(m => {
             this.PModel.TotalRecord = m.TotalRecord;
-            this.NoteList = m.DataList;
-            //if (m.DataList.length != 0)
-            //    this.DischargeDate = m.DataList[0].DischargeDate;
+            this.NoteList = m.DataList; debugger
+            this.DischargeDate = m.OtherDataModel.DischargeDate;
             this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
             this.loader.HideLoader();
         });

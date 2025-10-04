@@ -3,7 +3,7 @@
         <div class="col">
             <div class="tab-pane active" id="Procedure">
                 <div class="text-right mb-2" *ngIf="ProeduresRights.CreateRights">
-                    <button class="btn btn-danger btn-sm" (click)="AddProedures(NewProcedure)"><i class="icon icon-plus"></i>Add Proedures </button>
+                    <button class="btn btn-danger btn-sm" (click)="AddProedures(NewProcedure)"[disabled]="DischargeDate != null"><i class="icon icon-plus"></i>Add Proedures </button>
                 </div>
                 <div class="TableView">
                     <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
@@ -48,7 +48,7 @@
                                             <span class="icon icon mr-3" (click)="Edit(item.ID)">
                                                 <i class="icon icon-pencil2"></i>
                                             </span>
-                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ProeduresRights.DeleteRights">
+                                            <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ProeduresRights.DeleteRights"[disabled]="DischargeDate != null">
                                                 <i class="icon icon-trash2 text-danger"></i>
                                             </button>
 
@@ -241,7 +241,7 @@
                         </tbody>
                     </table>
 
-                    <button type="button" (click)="Addprocedure_charged()" class="btn btn-sm btn-danger" style="height:24px;">Add Charged</button>
+                    <button type="button" (click)="Addprocedure_charged()" class="btn btn-sm btn-danger" style="height:24px;"[disabled]="DischargeDate != null">Add Charged</button>
                 </div>
             </div>
             <hr />
@@ -288,7 +288,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button type="button" (click)="Addprocedure_medication()" class="btn btn-sm btn-danger py-1" style="height:24px;">Add Medication</button>
+                    <button type="button" (click)="Addprocedure_medication()" class="btn btn-sm btn-danger py-1" style="height:24px;"[disabled]="DischargeDate != null">Add Medication</button>
                 </div>
             </div>
             <hr />
@@ -342,12 +342,12 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button type="button" (click)="Addprocedure_expense()" class="btn btn-sm btn-danger py-1" style="height:24px;">Add Expense</button>
+                    <button type="button" (click)="Addprocedure_expense()" class="btn btn-sm btn-danger py-1" style="height:24px;"[disabled]="DischargeDate != null">Add Expense</button>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="submit" class="btn btn-primary"[disabled]="DischargeDate != null">Add</button>
             <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
         </div>
     </form>

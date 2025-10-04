@@ -49,6 +49,7 @@ export class AdmitMedicationList implements OnInit {
     public PastMedicitionList: any[] = [];
     pagesRange: number[] = []; previousPage: number = 1;
     nextPage: number = 1;
+    public DischargeDate: any;
     totalPages: number = 0;
     public AdmitId: any; public CompanyObj: any;
     @ViewChild("Medication") Medication: TemplateRef<any>;
@@ -126,6 +127,7 @@ export class AdmitMedicationList implements OnInit {
         this.Id = "0";
         this._AdmitService.GetMedicationList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.AdmitId, this.PatientId).then(m => {
             this.PModel.TotalRecord = m.TotalRecord;
+            this.DischargeDate = m.OtherDataModel.DischargeDate;
             this.MedicitionList = m.DataList.filter(a => a.IsActive);
             this.PastMedicitionList = m.DataList.filter(a => !a.IsActive);
             this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);

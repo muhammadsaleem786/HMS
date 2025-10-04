@@ -345,7 +345,7 @@ export class AppointmentComponentList implements OnInit {
             DOB: [''],
             Age: ['', [Validators.required]],
             Email: [''],
-            Mobile: ['', [<any>Validators.required]],
+            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(12), Validators.maxLength(12)]],
             CNIC: [''],
             Image: [''],
             Notes: [''],
@@ -1139,6 +1139,16 @@ export class AppointmentComponentList implements OnInit {
         } else
             this.isDayClik = true;
 
+    }
+    formatCnic(event: any) {
+        let input = event.target.value.replace(/\D/g, '');
+        if (input.length > 5 && input.length <= 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5);
+        } else if (input.length > 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5, 12) + '-' + input.slice(12, 13);
+        }
+        event.target.value = input;
+        this.Form1.controls['CNIC'].setValue(input, { emitEvent: false });
     }
     OnClickAppointment(date: any, time: any, doctorId: any, appointmentId: any) {
         var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));

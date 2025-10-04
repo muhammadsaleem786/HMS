@@ -1,6 +1,6 @@
 ﻿<div class="tab-pane" id="Visit">
     <div class="text-right mb-2" *ngIf="VisitRights.CreateRights">
-        <button class="btn btn-danger btn-sm" (click)="OpenVisitModal(NewVisit)"><i class="icon icon-pulse"></i> Add Visit </button>
+        <button class="btn btn-danger btn-sm" (click)="OpenVisitModal(NewVisit)"[disabled]="DischargeDate != null"><i class="icon icon-pulse"></i> Add Visit </button>
     </div>
     <div class="row">
         <div class="col-sm-12 gra-bg light-bg">
@@ -38,7 +38,7 @@
                                     <td>{{ClinicName}}	</td>
                                     <td>Consultation</td>
                                     <td>
-                                        <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="VisitRights.DeleteRights">
+                                        <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="VisitRights.DeleteRights"[disabled]="DischargeDate != null">
                                             <i class="icon icon-trash2 text-danger"></i>
                                         </button>
                                     </td>
@@ -159,7 +159,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="submit" class="btn btn-primary"[disabled]="DischargeDate != null">Add</button>
         </div>
     </form>
 </ng-template>

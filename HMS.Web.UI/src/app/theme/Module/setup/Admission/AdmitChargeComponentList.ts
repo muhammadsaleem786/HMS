@@ -47,7 +47,8 @@ export class AdmitChargeComponentList implements OnInit {
     public PatientId: any;
     nextPage: number = 1; public CompanyObj: any;
     totalPages: number = 0; public InvoiceBillModel: any[] = [];
-    public invoiceModel: any;
+    public invoiceModel: any; public DischargeDate: any;
+
     public ProcedureItem: any[] = [];
     public ProcedureMedicine: any[] = [];
     pagesRange: number[] = []; previousPage: number = 1; public SubTotal: number = 0;
@@ -88,6 +89,7 @@ export class AdmitChargeComponentList implements OnInit {
         this._AdmitService.ChargeGetById(this.AdmitId, this.PatientId).then(m => {
             if (m.ResultSet.Result != null)
                 this.model = m.ResultSet.Result;
+            this.DischargeDate = m.ResultSet.dischargeInfo.DischargeDate
             this._router.navigate(['home/AdmitSummary/AdmitCharge/AdmitPro']);
             this.loader.HideLoader();
         });

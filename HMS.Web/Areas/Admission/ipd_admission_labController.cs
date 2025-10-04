@@ -32,17 +32,19 @@ namespace HMS.Web.API.Areas.Admission.Controllers
         private readonly Iemr_patientService _emr_patientService;
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
+        private readonly Iipd_admissionService _ipd_admissionService;
 
         public ipd_admission_labController(IUnitOfWorkAsync unitOfWorkAsync, Iipd_admission_labService service,
             Iemr_patientService emr_patientService,
             Iemr_appointment_mfService emr_appointment_mfService,
-            Isys_drop_down_valueService sys_drop_down_valueService)
+            Isys_drop_down_valueService sys_drop_down_valueService, Iipd_admissionService ipd_admissionService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
             _emr_patientService = emr_patientService;
             _sys_drop_down_valueService = sys_drop_down_valueService;
             _emr_appointment_mfService = emr_appointment_mfService;
+            _ipd_admissionService = ipd_admissionService;
         }
         [HttpPost]
         [HttpGet]
@@ -314,7 +316,17 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
+                var ipdAdmissions = _ipd_admissionService.Queryable()
+.Where(a => a.PatientId.ToString() == PatientId && a.CompanyId == CompanyID
+    && a.ID.ToString() == AdmitId)
+.Select(a => new
+{
+  AdmissionNo = a.AdmissionNo,
+  DischargeDate = a.DischargeDate,
+  DischargeTime = a.DischargeTime
+}).FirstOrDefault();
                 objResult = _service.Pagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, AdmitId, PatientId, IgnorePaging);
+                objResult.OtherDataModel = ipdAdmissions;
             }
             catch (Exception ex)
             {

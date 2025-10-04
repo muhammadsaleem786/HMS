@@ -95,10 +95,10 @@ export class emr_prescription_treatment {
     Instructions: string;
     InstructionId: string;
     Measure: string;
-    Morning: string;
-    Evening: string;
-    AfterNoon: string;
-    Night: string;
+    Morning: string="0";
+    Evening: string = "0";
+    AfterNoon: string = "0";
+    Night: string = "0";
     Futureusage: boolean;
     PatientId: number;
     MedicineType: string;

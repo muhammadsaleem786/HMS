@@ -47,16 +47,15 @@
 
                                             </div>
                                         </div>
-
-                                       
-
-
                                         <div class="row form-group">
                                             <div class="col-4 text-right">
                                                 <label class="form-control-label mt-2 pl-0" for="input-username"> CNIC</label>
                                             </div>
                                             <div class="col-8">
                                                 <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="CNIC" [(ngModel)]="modelAdmission.CNIC" placeholder="CNIC" autocomplete="off" readonly="readonly">
+                                                <small class="text-danger" *ngIf="Form1.controls.CNIC.hasError('required') && submitted">
+                                                    This value is required.
+                                                </small>
                                             </div>
                                         </div>
                                         <div class="row form-group">
@@ -64,8 +63,8 @@
                                                 <label class="form-control-label mt-2 pl-0" for="input-username"> Mobile</label>
                                             </div>
                                             <div class="col-8">
-                                                <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Mobile" [(ngModel)]="modelAdmission.Mobile"appPhoneMask placeholder="Mobile" autocomplete="off" readonly="readonly">
-
+                                                <input type="text" class="form-control form-control-sm form-control-alternative" formControlName="Mobile" [(ngModel)]="modelAdmission.Mobile" appPhoneMask placeholder="Mobile" autocomplete="off" readonly="readonly">
+                                                
                                             </div>
                                         </div>
 
@@ -627,9 +626,21 @@
                             <label class="form-control-label mt-2 pl-0 required" for="input-username"> Mobile</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile" class="form-control form-control-sm form-control-alternative" placeholder="Mobile">
+                            <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile" appPhoneMask class="form-control form-control-sm form-control-alternative" placeholder="Mobile">
                             <small class="text-danger" *ngIf="Form1.controls.Mobile.hasError('required') && submitted">
                                 This value is required.
+                            </small>
+                            <small *ngIf="Form1.controls.Mobile.hasError('pattern') && !Form1.controls.Mobile.hasError('required')">
+                                Please enter valid Mobile(923001234567).
+                            </small>
+                            <small class="text-danger"
+                                   *ngIf="Form1.controls.Mobile.hasError('minlength') && !Form1.controls.Mobile.hasError('required')">
+                                Mobile number must be 12 digits.
+                            </small>
+
+                            <small class="text-danger"
+                                   *ngIf="Form1.controls.Mobile.hasError('maxlength') && !Form1.controls.Mobile.hasError('required')">
+                                Mobile number must be 12 digits.
                             </small>
                         </div>
                     </div>
@@ -648,12 +659,9 @@
                             <label class="form-control-label mt-2 pl-0 required" for="input-username"> CNIC</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC" class="form-control form-control-sm form-control-alternative" placeholder="XXXXX-XXXXXXX-X">
+                            <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC" class="form-control form-control-sm form-control-alternative" placeholder="XXXXX-XXXXXXX-X"maxlength="15" (input)=" formatCnic($event)">
                             <small class="text-danger" *ngIf="Form1.controls.CNIC.hasError('required') && submitted">
                                 This value is required.
-                            </small>
-                            <small *ngIf="Form1.controls.CNIC.hasError('pattern') && !Form1.controls.CNIC.hasError('required')">
-                                CNIC No must follow the XXXXX-XXXXXXX-X format!"
                             </small>
                         </div>
                     </div>

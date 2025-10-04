@@ -51,7 +51,8 @@ export class AdmitDocumentSummeryComponentList implements OnInit {
     public DoctorInfo = new DoctorInfo();
     public PatientRXmodel = new patientInfo();
     public IsList: boolean = true;
-    public Form4: FormGroup;
+    public Form4: FormGroup; public DischargeDate: any;
+
     previousPage: number = 1;
     public AdmitId: any;
     nextPage: number = 1;
@@ -162,6 +163,7 @@ export class AdmitDocumentSummeryComponentList implements OnInit {
         this._AppointmentService
             .GetDocList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
+                //this.DischargeDate = m.OtherDataModel.DischargeDate;
                 if (m.DataList == null)
                     this.loader.HideLoader();
                 this.DocumentList = m.DataList;

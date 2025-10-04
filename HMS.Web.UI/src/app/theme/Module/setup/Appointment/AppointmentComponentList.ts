@@ -514,7 +514,7 @@ export class AppointmentComponentList implements OnInit {
     }
     OpenVitalModal(VitalModal) {
         this.VitalModel = new emr_vital();
-        this.modalService.open(VitalModal, { size: 'md' });
+        this.modalService.open(VitalModal, { size: 'md'});
     }
     GetPatientList(date: any, StatusID: any) {
         this.AppointmentDate = new Date(date);

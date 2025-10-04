@@ -404,7 +404,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     {
                         result = doctors;
                     }
-                      var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(Model.AppointmentDate)).Select(a => new
+                    var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(Model.AppointmentDate)).Select(a => new
                     {
                         Measure = a.Measure,
                         Unit = a.sys_drop_down_value.Unit,
@@ -1161,132 +1161,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     a.PatientId,
                     AppointmentDate = a.AppointmentDate.Value.ToString("yyyy-MM-dd")
                 }).ToList();
-
-
-                var complaints = await _emr_complaintService.Queryable().Where(a => a.CompanyID == companyId).Take(10).ToListAsync();
-                var prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
-    .Where(pc => pc.PrescriptionId == prescriptionId && pc.CompanyID == companyId)
-    .ToListAsync();
-
-                var favorites = await _emr_notes_favoriteService.Queryable()
-                    .Where(ft => ft.ReferenceType == "C"
-                              && ft.DoctorId == doctorId
-                              && ft.CompanyId == companyId)
-                    .ToListAsync();
-                var complaintList = complaints
-    .Select(cmp =>
-    {
-        var pc = prescriptionComplaints.FirstOrDefault(x => x.ComplaintId == cmp.ID);
-        var fav = favorites.FirstOrDefault(x => x.ReferenceId == cmp.ID);
-
-        return new
-        {
-            id = cmp.ID,
-            Complaint = pc?.Complaint ?? cmp.Complaint,
-            favoriteId = fav?.ID,
-            Isfavorite = fav != null ? 1 : 0
-        };
-    })
-    .Distinct()
-    .Take(10)
-    .ToList();
-
-
-                var observations = await _emr_observationService.Queryable().Where(a => a.CompanyID == companyId)
-     .Take(10)
-     .ToListAsync();
-
-                var prescriptionObservations = await _emr_prescription_observationService.Queryable()
-    .Where(po => po.CompanyID == companyId && po.PrescriptionId == prescriptionId)
-    .ToListAsync();
-
-                var favoritesObser = await _emr_notes_favoriteService.Queryable()
-    .Where(ft => ft.ReferenceType == "O"
-              && ft.DoctorId == doctorId
-              && ft.CompanyId == companyId)
-    .ToListAsync();
-
-
-                var observationList = observations
-    .Select(ob =>
-    {
-        var po = prescriptionObservations.FirstOrDefault(x => x.ObservationId == ob.ID);
-        var fav = favoritesObser.FirstOrDefault(x => x.ReferenceId == ob.ID);
-
-        return new
-        {
-            id = ob.ID,
-            Observation = po?.Observation ?? ob.Observation,
-            favoriteId = fav?.ID,
-            Isfavorite = fav != null ? 1 : 0
-        };
-    })
-    .Distinct()
-    .Take(10)
-    .ToList();
-                // 1. Base investigations
-                var investigations = await _emr_investigationService.Queryable().Where(a => a.CompanyID == companyId)
-                    .Take(10)
-                    .ToListAsync();
-                // 2. Prescription investigations
-                var prescriptionInvestigations = await _emr_prescription_investigationService.Queryable()
-                    .Where(pi => pi.CompanyID == companyId && pi.PrescriptionId == prescriptionId)
-                    .ToListAsync();
-                // 3. Favorites
-                var investigationFavorites = await _emr_notes_favoriteService.Queryable()
-                    .Where(ft => ft.ReferenceType == "I"
-                              && ft.DoctorId == doctorId
-                              && ft.CompanyId == companyId)
-                    .ToListAsync();
-                // 4. Merge
-                var investigationList = investigations
-                    .Select(inv =>
-                    {
-                        var pi = prescriptionInvestigations.FirstOrDefault(x => x.InvestigationId == inv.ID);
-                        var fav = investigationFavorites.FirstOrDefault(x => x.ReferenceId == inv.ID);
-                        return new
-                        {
-                            id = inv.ID,
-                            Investigation = pi?.Investigation ?? inv.Investigation,
-                            favoriteId = fav?.ID,
-                            Isfavorite = fav != null ? 1 : 0
-                        };
-                    })
-                    .Distinct()
-                    .Take(10)
-                    .ToList();
-                // 1. Base diagnoses
-                var diagnoses = await _emr_diagnosService.Queryable().Where(a => a.CompanyID == companyId)
-                    .Take(10)
-                    .ToListAsync();
-                // 2. Prescription diagnoses
-                var prescriptionDiagnoses = await _emr_prescription_diagnosService.Queryable()
-                    .Where(pd => pd.CompanyID == companyId && pd.PrescriptionId == prescriptionId)
-                    .ToListAsync();
-                // 3. Favorites
-                var diagnosisFavorites = await _emr_notes_favoriteService.Queryable()
-                    .Where(ft => ft.ReferenceType == "D"
-                              && ft.DoctorId == doctorId
-                              && ft.CompanyId == companyId)
-                    .ToListAsync();
-                // 4. Merge
-                var diagnosisList = diagnoses
-                    .Select(dia =>
-                    {
-                        var pd = prescriptionDiagnoses.FirstOrDefault(x => x.DiagnosId == dia.ID);
-                        var fav = diagnosisFavorites.FirstOrDefault(x => x.ReferenceId == dia.ID);
-                        return new
-                        {
-                            id = dia.ID,
-                            Diagnos = pd?.Diagnos ?? dia.Diagnos,
-                            favoriteId = fav?.ID,
-                            Isfavorite = fav != null ? 1 : 0
-                        };
-                    })
-                    .Distinct()
-                    .Take(10)
-                    .ToList();
-
+                var complaintList = await GetTopComplaintsAsync(companyId, doctorId, patientId);
+                var observationList = await GetTopObservationsAsync(companyId, doctorId, patientId);
+                var investigationList = await GetTopInvestigationsAsync(companyId, doctorId, patientId);
+                var diagnosisList = await GetTopDiagnosisAsync(companyId, doctorId, patientId);
                 var dropDownIds = new[] { 14, 15, 16, 2, 17 };
                 var allDropDownValues = await _sys_drop_down_valueService.Queryable()
     .Where(x => dropDownIds.Contains(x.DropDownID)
@@ -1368,6 +1246,230 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Logger.Trace.Error(ex);
             }
             return objResponse;
+        }
+        public async Task<List<object>> GetTopComplaintsAsync(
+    decimal companyId,
+    decimal doctorId,
+    decimal patientId)
+        {
+            // Step 1: Get favorite complaint IDs
+            var favorites = await _emr_notes_favoriteService.Queryable()
+                .Where(ft => ft.ReferenceType == "C"
+                          && ft.DoctorId == doctorId
+                          && ft.CompanyId == companyId)
+                .Select(ft => new { ft.ID, ft.ReferenceId })
+                .ToListAsync();
+            var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
+            // Step 2: Get up to 10 complaints (favorites first, then others)
+            var complaints = await _emr_complaintService.Queryable()
+        .Where(c => c.CompanyID == companyId)
+        .Select(c => new
+        {
+            c.ID,
+            c.Complaint,
+            Isfavorite = favoriteIds.Contains(c.ID) ? 1 : 0
+        })
+        .OrderByDescending(c => c.Isfavorite)
+        .ThenBy(c => c.ID)
+        .Take(10)
+        .ToListAsync();
+
+            // Step 3: Extract complaint IDs
+            var complaintIds = complaints.Select(c => (decimal?)c.ID).ToList();
+
+            // Step 4: Get related prescription complaints in one go
+            var prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
+        .Where(pc => pc.CompanyID == companyId
+                  && pc.PatientId == patientId
+                  && complaintIds.Contains(pc.ComplaintId))
+        .Select(pc => new { pc.ComplaintId, pc.Complaint })
+        .ToListAsync();
+
+            // Step 5: Merge in-memory
+            var complaintList = complaints
+        .Select(c =>
+        {
+            var fav = favorites.FirstOrDefault(f => f.ReferenceId == c.ID);
+            var pc = prescriptionComplaints.FirstOrDefault(x => x.ComplaintId == c.ID);
+            return new
+            {
+                id = c.ID,
+                Complaint = pc?.Complaint ?? c.Complaint,
+                Isfavorite = c.Isfavorite,
+                favoriteId = fav?.ID
+            };
+        })
+        .ToList<object>();
+
+            return complaintList;
+        }
+        public async Task<List<object>> GetTopObservationsAsync(
+   decimal companyId,
+   decimal doctorId,
+   decimal patientId)
+        {
+            // Step 1: Get favorite complaint IDs
+            var favorites = await _emr_notes_favoriteService.Queryable()
+                .Where(ft => ft.ReferenceType == "O"
+                          && ft.DoctorId == doctorId
+                          && ft.CompanyId == companyId)
+                .Select(ft => new { ft.ID, ft.ReferenceId })
+                .ToListAsync();
+            var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
+            // Step 2: Get up to 10 complaints (favorites first, then others)
+            var observations = await _emr_observationService.Queryable()
+        .Where(c => c.CompanyID == companyId)
+        .Select(c => new
+        {
+            c.ID,
+            c.Observation,
+            Isfavorite = favoriteIds.Contains(c.ID) ? 1 : 0
+        })
+        .OrderByDescending(c => c.Isfavorite)
+        .ThenBy(c => c.ID)
+        .Take(10)
+        .ToListAsync();
+
+            // Step 3: Extract complaint IDs
+            var observationIds = observations.Select(c => (decimal?)c.ID).ToList();
+
+            // Step 4: Get related prescription complaints in one go
+            var prescriptionComplaints = await _emr_prescription_observationService.Queryable()
+        .Where(pc => pc.CompanyID == companyId
+                  && pc.PatientId == patientId
+                  && observationIds.Contains(pc.ObservationId))
+        .Select(pc => new { pc.ObservationId, pc.Observation })
+        .ToListAsync();
+
+            // Step 5: Merge in-memory
+            var observationList = observations
+        .Select(c =>
+        {
+            var fav = favorites.FirstOrDefault(f => f.ReferenceId == c.ID);
+            var pc = prescriptionComplaints.FirstOrDefault(x => x.ObservationId == c.ID);
+            return new
+            {
+                id = c.ID,
+                Observation = pc?.Observation ?? c.Observation,
+                Isfavorite = c.Isfavorite,
+                favoriteId = fav?.ID
+            };
+        })
+        .ToList<object>();
+
+            return observationList;
+        }
+        public async Task<List<object>> GetTopInvestigationsAsync(
+   decimal companyId,
+   decimal doctorId,
+   decimal patientId)
+        {
+            // Step 1: Get favorite complaint IDs
+            var favorites = await _emr_notes_favoriteService.Queryable()
+                .Where(ft => ft.ReferenceType == "I"
+                          && ft.DoctorId == doctorId
+                          && ft.CompanyId == companyId)
+                .Select(ft => new { ft.ID, ft.ReferenceId })
+                .ToListAsync();
+            var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
+            // Step 2: Get up to 10 complaints (favorites first, then others)
+            var investigations = await _emr_investigationService.Queryable()
+        .Where(c => c.CompanyID == companyId)
+        .Select(c => new
+        {
+            c.ID,
+            c.Investigation,
+            Isfavorite = favoriteIds.Contains(c.ID) ? 1 : 0
+        })
+        .OrderByDescending(c => c.Isfavorite)
+        .ThenBy(c => c.ID)
+        .Take(10)
+        .ToListAsync();
+
+            // Step 3: Extract complaint IDs
+            var investigationIds = investigations.Select(c => (decimal?)c.ID).ToList();
+
+            // Step 4: Get related prescription complaints in one go
+            var prescriptionComplaints = await _emr_prescription_investigationService.Queryable()
+        .Where(pc => pc.CompanyID == companyId
+                  && pc.PatientId == patientId
+                  && investigationIds.Contains(pc.InvestigationId))
+        .Select(pc => new { pc.InvestigationId, pc.Investigation })
+        .ToListAsync();
+
+            // Step 5: Merge in-memory
+            var investigationList = investigations
+        .Select(c =>
+        {
+            var fav = favorites.FirstOrDefault(f => f.ReferenceId == c.ID);
+            var pc = prescriptionComplaints.FirstOrDefault(x => x.InvestigationId == c.ID);
+            return new
+            {
+                id = c.ID,
+                Investigation = pc?.Investigation ?? c.Investigation,
+                Isfavorite = c.Isfavorite,
+                favoriteId = fav?.ID
+            };
+        })
+        .ToList<object>();
+
+            return investigationList;
+        }
+        public async Task<List<object>> GetTopDiagnosisAsync(
+   decimal companyId,
+   decimal doctorId,
+   decimal patientId)
+        {
+            // Step 1: Get favorite complaint IDs
+            var favorites = await _emr_notes_favoriteService.Queryable()
+                .Where(ft => ft.ReferenceType == "D"
+                          && ft.DoctorId == doctorId
+                          && ft.CompanyId == companyId)
+                .Select(ft => new { ft.ID, ft.ReferenceId })
+                .ToListAsync();
+            var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
+            // Step 2: Get up to 10 complaints (favorites first, then others)
+            var diagnosis = await _emr_diagnosService.Queryable()
+        .Where(c => c.CompanyID == companyId)
+        .Select(c => new
+        {
+            c.ID,
+            c.Diagnos,
+            Isfavorite = favoriteIds.Contains(c.ID) ? 1 : 0
+        })
+        .OrderByDescending(c => c.Isfavorite)
+        .ThenBy(c => c.ID)
+        .Take(10)
+        .ToListAsync();
+
+            // Step 3: Extract complaint IDs
+            var diagnosisIds = diagnosis.Select(c => (decimal?)c.ID).ToList();
+
+            // Step 4: Get related prescription complaints in one go
+            var prescriptionComplaints = await _emr_prescription_diagnosService.Queryable()
+        .Where(pc => pc.CompanyID == companyId
+                  && pc.PatientId == patientId
+                  && diagnosisIds.Contains(pc.DiagnosId))
+        .Select(pc => new { pc.DiagnosId, pc.Diagnos })
+        .ToListAsync();
+
+            // Step 5: Merge in-memory
+            var diagnosisList = diagnosis
+        .Select(c =>
+        {
+            var fav = favorites.FirstOrDefault(f => f.ReferenceId == c.ID);
+            var pc = prescriptionComplaints.FirstOrDefault(x => x.DiagnosId == c.ID);
+            return new
+            {
+                id = c.ID,
+                Diagnos = pc?.Diagnos ?? c.Diagnos,
+                Isfavorite = c.Isfavorite,
+                favoriteId = fav?.ID
+            };
+        })
+        .ToList<object>();
+
+            return diagnosisList;
         }
         [HttpGet]
         [ActionName("TemplateLoadById")]
@@ -1822,10 +1924,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 .FirstOrDefaultAsync();
 
 
-                //            var medicineList = await _emr_medicineService.Queryable()
-                //.Where(x => x.CompanyID == companyId)
-                //.Select(x => new { x.ID, x.Medicine })
-                //.ToListAsync();
                 var companyInfo = await _adm_user_companyService.Queryable()
     .Where(x => x.UserID == userid)
     .Select(x => new

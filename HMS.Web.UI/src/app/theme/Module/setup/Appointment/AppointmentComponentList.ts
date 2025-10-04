@@ -843,7 +843,12 @@ export class AppointmentComponentList implements OnInit {
     }
     VitalSave(isValid: boolean): void {
         var obj = this.VitalModel;
-        this.VitalModel.Date = new Date();
+        var date = this.PrescriptionModel.AppointmentDate;
+        if (date == null || date == undefined) {
+            this.toastr.Error("Error", "Please select date.");
+            return;
+        }
+        this.VitalModel.Date = new Date(date);
         var PatientId = this.PrescriptionModel.PatientId;
         if (PatientId == null || PatientId == undefined) {
             this.toastr.Error("Error", "Please selectPatient.");

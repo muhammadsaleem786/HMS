@@ -2298,10 +2298,15 @@ export class PrescriptionComponentForm implements OnInit {
     }
     VitalSave(isValid: boolean): void {
         var obj = this.vitalModel;
-        this.vitalModel.Date = new Date();
+        var date = this.PrescriptionModel.AppointmentDate;
+        if (date == null || date == undefined) {
+            this.toastr.Error("Error", "Please select date.");
+            return;
+        }
+        this.vitalModel.Date = new Date(date);
         var PatientId = this.PrescriptionModel.PatientId;
         if (PatientId == null || PatientId == undefined) {
-            this.toastr.Error("Error", "Please selectPatient.");
+            this.toastr.Error("Error", "Please select Patient.");
             return;
         }
         this.vitalModel.PatientId = PatientId;

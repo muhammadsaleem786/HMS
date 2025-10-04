@@ -2107,72 +2107,52 @@
         </button>
     </div>
     <form [formGroup]="Form10" novalidate (ngSubmit)="VitalSave(Form10.valid)">
-        <div class="modal-body">
-            <div class="row form-group">
-                <div class="col-4 text-right">
-                    <label>Blood Sugar</label>
-                </div>
-                <div class="col-4">
-                    <input type="text" class="form-control" formControlName="Name" [(ngModel)]="VitalModel.Name" autocomplete="off">
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-4 text-right">
-                    <label>Blood Pressure</label>
-                </div>
-                <div class="col-4">
-                    <input type="text" class="form-control" formControlName="Name1" [(ngModel)]="VitalModel.Name1" autocomplete="off">
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-4 text-right">
-                    <label>Pulse Rate</label>
-                </div>
-                <div class="col-8">
-                    <input type="text" class="form-control" formControlName="Name2" [(ngModel)]="VitalModel.Name2" autocomplete="off">
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-4 text-right">
-                    <label> Respiratory Rate </label>
-                </div>
-                <div class="col-8">
-                    <input type="text" class="form-control" formControlName="Name3" [(ngModel)]="VitalModel.Name3" autocomplete="off">
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-4 text-right">
-                    <label> Body Temperature </label>
-                </div>
-                <div class="col-8">
-                    <input type="text" class="form-control" formControlName="Name4" [(ngModel)]="VitalModel.Name4" autocomplete="off">
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-4 text-right">
-                    <label> Weight </label>
-                </div>
-                <div class="col-8">
-                    <input type="text" class="form-control" formControlName="Name5" [(ngModel)]="VitalModel.Name5" autocomplete="off">
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-4 text-right">
-                    <label> Height </label>
-                </div>
-                <div class="col-8">
-                    <input type="text" class="form-control" formControlName="Name6" [(ngModel)]="VitalModel.Name6" autocomplete="off">
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-4 text-right">
-                    <label> SPO2 </label>
-                </div>
-                <div class="col-8">
-                    <input type="text" class="form-control" formControlName="Name7" [(ngModel)]="VitalModel.Name7" autocomplete="off">
-                </div>
-            </div>
-        </div>
+      <div class="modal-body">
+  <div class="row form-group">
+    <div class="col-md-6">
+      <label>Blood Sugar</label>
+      <input type="text" class="form-control" formControlName="Name" [(ngModel)]="VitalModel.Name" autocomplete="off">
+    </div>
+    <div class="col-md-6">
+      <label>Blood Pressure</label>
+      <input type="text" class="form-control" formControlName="Name1" [(ngModel)]="VitalModel.Name1" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="row form-group">
+    <div class="col-md-6">
+      <label>Pulse Rate</label>
+      <input type="text" class="form-control" formControlName="Name2" [(ngModel)]="VitalModel.Name2" autocomplete="off">
+    </div>
+    <div class="col-md-6">
+      <label>Respiratory Rate</label>
+      <input type="text" class="form-control" formControlName="Name3" [(ngModel)]="VitalModel.Name3" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="row form-group">
+    <div class="col-md-6">
+      <label>Body Temperature</label>
+      <input type="text" class="form-control" formControlName="Name4" [(ngModel)]="VitalModel.Name4" autocomplete="off">
+    </div>
+    <div class="col-md-6">
+      <label>Weight</label>
+      <input type="text" class="form-control" formControlName="Name5" [(ngModel)]="VitalModel.Name5" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="row form-group">
+    <div class="col-md-6 mb-3">
+      <label>Height</label>
+      <input type="text" class="form-control" formControlName="Name6" [(ngModel)]="VitalModel.Name6" autocomplete="off">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label>SPO2</label>
+      <input type="text" class="form-control" formControlName="Name7" [(ngModel)]="VitalModel.Name7" autocomplete="off">
+    </div>
+  </div>
+</div>
+
         <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Save</button>
         </div>

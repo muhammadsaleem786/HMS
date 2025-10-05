@@ -161,9 +161,9 @@ export class AdmitDocumentSummeryComponentList implements OnInit {
         this.loader.ShowLoader();
         this.Id = "0";
         this._AppointmentService
-            .GetDocList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+            .GetAdmitDocList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PatientId, this.AdmitId).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
-                //this.DischargeDate = m.OtherDataModel.DischargeDate;
+                this.DischargeDate = m.OtherDataModel.DischargeDate;
                 if (m.DataList == null)
                     this.loader.HideLoader();
                 this.DocumentList = m.DataList;

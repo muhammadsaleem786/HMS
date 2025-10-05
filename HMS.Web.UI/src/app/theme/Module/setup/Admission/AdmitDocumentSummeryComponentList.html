@@ -2,10 +2,10 @@
 <div class="tab-pane" id="Documents">
     <div class="row table_border">
         <div class="col text-right">
-            <button class="btn btn-danger btn-sm" style="position: absolute; top: 0px; right: 15px; z-index: 10;" (click)="openDocumentModal(DocumentContent)"*ngIf="ControlRights.CreateRights && IsEdit">
+            <button class="btn btn-danger btn-sm" style="position: absolute; top: 0px; right: 15px; z-index: 10;" (click)="openDocumentModal(DocumentContent)"*ngIf="ControlRights.CreateRights && IsEdit"[disabled]="DischargeDate != null">
                 <i class="icon icon-pulse"></i>    Update Document
             </button>
-            <button class="btn btn-danger btn-sm" style="position: absolute; top: 0px; right: 15px; z-index: 10;" (click)="openDocumentModal(DocumentContent)" *ngIf="ControlRights.CreateRights && IsEdit==false">
+            <button class="btn btn-danger btn-sm" style="position: absolute; top: 0px; right: 15px; z-index: 10;" (click)="openDocumentModal(DocumentContent)" *ngIf="ControlRights.CreateRights && IsEdit==false" [disabled]="DischargeDate != null">
                 <i class="icon icon-pulse"></i>    New Document
             </button>
             <div class="TableView">
@@ -43,9 +43,11 @@
                                             <span class="btn btn-light" (click)="ViewDoc(item.DocumentImage)">
                                                 <i class="icon icon-eye text-primary"></i>
                                             </span>
-                                            <a class="ml-2 btn btn-light" (click)="Delete(item.ID)"*ngIf="ControlRights.DeleteRights">
-                                                <i class="icon icon-trash2 text-danger"></i>
-                                            </a>
+                                            <span *ngIf="DischargeDate == null">
+                                                <a class="ml-2 btn btn-light" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights">
+                                                    <i class="icon icon-trash2 text-danger"></i>
+                                                </a>
+                                            </span>                                            
                                         </span>
                                     </td>
                                 </tr>
@@ -142,7 +144,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button id="saveSchedule" type="submit" class="btn btn-primary" *ngIf="!IsAdmin && ControlRights.CreateRights">Save</button>
+            <button id="saveSchedule" type="submit" class="btn btn-primary" *ngIf="!IsAdmin && ControlRights.CreateRights"[disabled]="DischargeDate != null">Save</button>
             <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
         </div>
     </form>

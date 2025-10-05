@@ -477,11 +477,11 @@ export class AdmitAppointSummeryComponentList implements OnInit {
         this.loader.ShowLoader();
         this.Id = "0";
         this._AppointmentService
-            .GetPreviousList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PatientId).then(m => {
+            .GetAdmitPreviousList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PatientId, this.AdmitId).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.PreviousAppList = m.DataList;
                 this.FutureAppList = m.OtherDataModel;
-
+                this.DischargeDate = m.OtherData2Model.DischargeDate;
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
                 this.loader.HideLoader();
             });

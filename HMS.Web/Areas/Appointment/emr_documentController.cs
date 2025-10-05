@@ -2,6 +2,7 @@
 using HMS.Entities.Enum;
 using HMS.Entities.Models;
 using HMS.Service.Services.Admin;
+using HMS.Service.Services.Admission;
 using HMS.Service.Services.Appointment;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
@@ -32,12 +33,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iadm_user_tokenService _adm_user_tokenService;
         private readonly Isys_notification_alertService _sys_notification_alertService;
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
+        private readonly Iipd_admissionService _ipd_admissionService;
         private readonly Iadm_userService _adm_userService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
 
         public emr_documentController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_documentService service, Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
-            Isys_notification_alertService sys_notification_alertService)
+            Isys_notification_alertService sys_notification_alertService, Iipd_admissionService ipd_admissionService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service; _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -47,6 +49,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _adm_role_mfService = adm_role_mfService;
             _adm_user_tokenService = adm_user_tokenService;
             _sys_notification_alertService = sys_notification_alertService;
+            _ipd_admissionService = ipd_admissionService;
         }
         [HttpPost]
         [HttpGet]
@@ -239,6 +242,33 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResult;
         }
+        [HttpGet]
+        [ActionName("AdmitDocPagination")]
+        public PaginationResult AdmitDocPagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, string admitId, bool IgnorePaging = false)
+        {
+            var objResult = new PaginationResult();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                var ipdAdmissions = _ipd_admissionService.Queryable()
+              .Where(a => a.PatientId.ToString() == PatientId && a.CompanyId == CompanyID
+                    && a.ID.ToString() == admitId)
+              .Select(a => new
+              {
+                  AdmissionNo = a.AdmissionNo,
+                  DischargeDate = a.DischargeDate,
+                  DischargeTime = a.DischargeTime
+              }).FirstOrDefault();
+                objResult = _service.Pagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, IgnorePaging);
+                objResult.OtherDataModel = ipdAdmissions;
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace.Error(ex);
+            }
+            return objResult;
+        }
+        
         [HttpGet]
         [ActionName("DocPagination")]
         public PaginationResult DocPagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, bool IgnorePaging = false)

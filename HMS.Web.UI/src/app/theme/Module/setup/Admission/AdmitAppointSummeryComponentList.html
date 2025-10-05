@@ -1,7 +1,7 @@
 ﻿<div class="tab-pane" id="Appointments">
 
     <div class="col-sm-12 text-right mt-2 mb-2" (click)="openAppointmentModal(longContent)"*ngIf="ControlRights.CreateRights">
-        <button type="button" class="btn btn-red btnDel">Add Appointment</button>
+        <button type="button" class="btn btn-red btnDel"[disabled]="DischargeDate != null">Add Appointment</button>
     </div>
     <div class="col-sm-12 CustomAccordion">
         <ngb-accordion [closeOthers]="true" activeIds="appointmenttab-1">
@@ -63,7 +63,7 @@
                                         </span>
                                     </td>
                                     <td (click)="Delete(f.ID)" *ngIf="ControlRights.DeleteRights">
-                                        <a class="ml-2 btn btn-light">
+                                        <a class="ml-2 btn btn-light" *ngIf="DischargeDate == null">
                                             <i class="icon icon-trash2 text-danger"></i>
                                         </a>
                                     </td>
@@ -441,10 +441,10 @@
                         <div class="modal-footer">
                             <button class="btn btn-light"
                                     type="button"
-                                    (click)="handlePrint('P')">
+                                    (click)="handlePrint('P')" [disabled]="DischargeDate != null">
                                 <i class="icon icon-printer"></i> Print Coupon
                             </button>
-                            <button type="button" (click)="handlePrint('S')" class="btn btn-primary"*ngIf="ControlRights.CreateRights">Save</button>
+                            <button type="button" (click)="handlePrint('S')" class="btn btn-primary"*ngIf="ControlRights.CreateRights"[disabled]="DischargeDate != null">Save</button>
                         </div>
                     </form>
                 </ng-template>
@@ -598,7 +598,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary"*ngIf="ControlRights.CreateRights">Save</button>
+                            <button type="submit" class="btn btn-primary"*ngIf="ControlRights.CreateRights"[disabled]="DischargeDate != null">Save</button>
                         </div>
                     </form>
                 </ng-template>

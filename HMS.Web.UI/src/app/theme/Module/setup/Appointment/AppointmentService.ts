@@ -217,6 +217,10 @@ export class AppointmentService {
         var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': false };
         return this.http.Get(this.DocurlToApi + '/Pagination', data).then(e => e);
     }
+    GetAdmitDocList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string, PatientId: string, admitId: string): Promise<any> {
+        var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'PatientId': PatientId, 'admitId': admitId, 'IgnorePaging': false };
+        return this.http.Get(this.DocurlToApi + '/AdmitDocPagination', data).then(e => e);
+    }
     GetPatientDocList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string, PatientId: string): Promise<any> {
         var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'PatientId': PatientId, 'IgnorePaging': false };
         return this.http.Get(this.DocurlToApi + '/DocPagination', data).then(e => e);
@@ -228,6 +232,10 @@ export class AppointmentService {
     GetPreviousList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string, PatientId: string): Promise<any> {
         var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'PatientId': PatientId, 'IgnorePaging': false };
         return this.http.Get(this.urlToApiAp + '/PreviousAppointmentLoad', data).then(e => e);
+    }
+    GetAdmitPreviousList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string, PatientId: string, admitId: string): Promise<any> {
+        var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'PatientId': PatientId, 'admitId': admitId, 'IgnorePaging': false };
+        return this.http.Get(this.urlToApiAp + '/AdmitPreviousAppointmentLoad', data).then(e => e);
     }
     AdmitAppointmentLoad(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string, PatientId: string, AdmitId: string): Promise<any> {
         var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'PatientId': PatientId, 'AdmissionId': AdmitId, 'IgnorePaging': false };

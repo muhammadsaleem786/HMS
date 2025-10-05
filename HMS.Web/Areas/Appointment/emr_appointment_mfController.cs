@@ -2225,6 +2225,33 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             return objResult;
         }
         [HttpGet]
+        [ActionName("AdmitPreviousAppointmentLoad")]
+        public PaginationResult AdmitPreviousAppointmentLoad(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId,string admitId, bool IgnorePaging = false)
+        {
+            var objResult = new PaginationResult();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                var ipdAdmissions = _ipd_admissionService.Queryable()
+                              .Where(a => a.PatientId.ToString() == PatientId && a.CompanyId == CompanyID
+                                    && a.ID.ToString() == admitId)
+                              .Select(a => new
+                              {
+                                  AdmissionNo = a.AdmissionNo,
+                                  DischargeDate = a.DischargeDate,
+                                  DischargeTime = a.DischargeTime
+                              }).FirstOrDefault();
+                objResult = _service.PreviousAppointmentLoad(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, PatientId, IgnorePaging);
+                objResult.OtherData2Model = ipdAdmissions;
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace.Error(ex);
+            }
+            return objResult;
+        }
+
+        [HttpGet]
         [ActionName("ExportData")]
         public ResponseInfo ExportData(int ExportType, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText)
         {

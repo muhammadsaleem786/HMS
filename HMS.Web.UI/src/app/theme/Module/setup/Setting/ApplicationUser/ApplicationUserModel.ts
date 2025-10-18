@@ -1,4 +1,5 @@
-﻿export class ApplicationUserModel {
+﻿import { SafeHtml } from '@angular/platform-browser';
+export class ApplicationUserModel {
     constructor() {
         let obj = new adm_user_company();
         this.adm_user_company.push(obj);
@@ -23,6 +24,9 @@
     DesignationUrdu: string;
     QualificationUrdu: string;
     HeaderDescription: string;
+    safeHeaderDescription: SafeHtml;
+    safeHeaderDescriptionUrdu: SafeHtml;
+    HeaderDescriptionUrdu: string;
     NameUrdu: string;
     IsActivated: boolean = false;
     Type: string;

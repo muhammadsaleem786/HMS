@@ -75,7 +75,7 @@ export class PatientComponentForm implements OnInit {
             Age: ['', [Validators.required]],
             Email: [''],
             ContactNo: [''],
-            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(12), Validators.maxLength(12)]],
+            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(11), Validators.maxLength(11)]],
             CNIC: [''],
             Image: [''],
             Notes: [''],

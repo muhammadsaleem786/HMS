@@ -95,11 +95,15 @@ export class ServiceComponentForm implements OnInit {
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true;
         if (isValid) {
+            
             this.submitted = false;
             this.loader.ShowLoader();
-            if (this.itemdynamicArray[0].ItemId != 0) {
-                this.model.emr_service_item = this.itemdynamicArray;
-            }
+            if (this.model.IsItem) {
+                if (this.itemdynamicArray[0].ItemId != 0) {
+                    this.model.emr_service_item = this.itemdynamicArray;
+                }
+            } else
+                this.model.emr_service_item = [];
             this._Service.SaveOrUpdate(this.model).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
@@ -149,7 +153,7 @@ export class ServiceComponentForm implements OnInit {
             },
             minLength: 3,
             select: (event, ui) => {
-                debugger
+                
                 if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
                     this.toastr.Error("Error", "The item is out of stock.");
                     ui.item.value = "";

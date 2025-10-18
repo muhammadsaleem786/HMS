@@ -78,6 +78,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.DesignationUrdu).HasColumnName("DesignationUrdu");
             this.Property(t => t.QualificationUrdu).HasColumnName("QualificationUrdu");
             this.Property(t => t.HeaderDescription).HasColumnName("HeaderDescription");
+            this.Property(t => t.HeaderDescriptionUrdu).HasColumnName("HeaderDescriptionUrdu");
             this.Property(t => t.NameUrdu).HasColumnName("NameUrdu");
             // Relationships
             this.HasOptional(t => t.sys_drop_down_value)

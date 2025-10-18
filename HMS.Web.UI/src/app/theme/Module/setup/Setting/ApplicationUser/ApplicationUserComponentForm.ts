@@ -1,4 +1,4 @@
-﻿import { Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, Renderer2 } from '@angular/core';
+﻿import { Component, AfterViewInit, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, Renderer2 } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ApplicationUserModel } from './ApplicationUserModel';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
@@ -13,6 +13,8 @@ import { debounce, filter } from 'rxjs/operators';
 import { GlobalVariable } from '../../../../../AngularConfig/global';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 declare var $: any;
 @Component({
     selector: 'setup-ApplicationUserComponentForm',
@@ -38,7 +40,7 @@ export class ApplicationUserComponentForm implements OnInit {
     public hide = true;
     public sub: any;
     public IsEdit: boolean = false;
-
+    htmlContent = '';
     public model = new ApplicationUserModel();
     @ViewChild('closeModal') closeModal: ElementRef;
     public WasInside: boolean = false;
@@ -75,25 +77,27 @@ export class ApplicationUserComponentForm implements OnInit {
         searchPlaceholder: 'Search...',
         defaultTitle: 'All',
     };
+    @ViewChild('editorHeaderDescription') editorHeaderDescription!: ElementRef;
+    @ViewChild('editorHeaderDescriptionUrdu') editorHeaderDescriptionUrdu!: ElementRef;
     constructor(public _CommonService: CommonService, public _fb: FormBuilder, public route: ActivatedRoute, public _router: Router
         , public loader: LoaderService, public _ApplicationUserService: ApplicationUserService
-        , public _AttendanceService: AttendanceService, public toastr: CommonToastrService, public commonservice: CommonService, private encrypt: EncryptionService, private renderer: Renderer2) {
+        , public _AttendanceService: AttendanceService, public toastr: CommonToastrService, public commonservice: CommonService, private encrypt: EncryptionService, private renderer: Renderer2, private sanitizer: DomSanitizer) {
         //this.Keywords = this.commonservice.GetKeywords("ApplicationUser");
         this.ControlRights = this._CommonService.ScreenRights("3");
     }
     ngOnInit() {
-        this.TemplateList = [
+              this.TemplateList = [
             { "ID": 1, "Name": "Standard" },
             { "ID": 2, "Name": "Urdu" }
         ];
         this.loadRole();
         this.Form1 = this._fb.group({
-            Name: ['', [Validators.required]],
+            Name: [''],
             UserID: [''],
             CompanyID: [''],
             RoleID: ['', [Validators.required]],
             Email: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.EmailPattern)]],
-            PhoneNo: ['', [Validators.required]],
+            PhoneNo: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(11), Validators.maxLength(11)]],
             AdminID: [''],
             IsDefault: [''],
             SlotTime: [''],
@@ -107,6 +111,7 @@ export class ApplicationUserComponentForm implements OnInit {
             DesignationUrdu: [''],
             QualificationUrdu: [''],
             HeaderDescription: [''],
+            HeaderDescriptionUrdu: [''],
             NameUrdu: [''],
             TemplateId: [''],
             Type: [''],
@@ -140,6 +145,8 @@ export class ApplicationUserComponentForm implements OnInit {
                         this.model = m.ResultSet.UserObj;
                         this.DisplayMember = "";
                         this.IsEmpFound = true;
+                        this.model.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescription);
+                        this.model.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescriptionUrdu);
 
                         if (m.ResultSet.employeeObj) {
                             this.DisplayMember = `${m.ResultSet.employeeObj.FirstName} ${m.ResultSet.employeeObj.LastName}`;
@@ -174,11 +181,14 @@ export class ApplicationUserComponentForm implements OnInit {
                         }
                         this.RoleList = m.ResultSet.role;
                         var findrole = this.RoleList.filter(a => a.ID == this.model.adm_user_company[0].RoleID && a.RoleName == "Doctor");
-                        if (findrole.length > 0)
+                        if (findrole.length > 0) {
                             this.IsDoctor = true;
+                            this.LoadEditor();
+                            this.LoadEditorUrdu();
+                        }
                         else
                             this.IsDoctor = false;
-
+                        
                         var result = m.ResultSet.UserObj.adm_user_company[0];
                         this.IsAdmin = result.UserID == result.AdminID ? true : false;
 
@@ -196,10 +206,51 @@ export class ApplicationUserComponentForm implements OnInit {
     }
     onRoleChange(event) {
         var findrole = this.RoleList.filter(a => a.ID == parseInt(event) && a.RoleName == "Doctor");
-        if (findrole.length > 0)
+        if (findrole.length > 0) {
             this.IsDoctor = true;
+            this.LoadEditor();
+            this.LoadEditorUrdu();
+        }
         else
             this.IsDoctor = false;
+    }
+    LoadEditor() {
+        setTimeout(() => {
+            const CKEDITOR = (window as any).CKEDITOR;
+            if (this.editorHeaderDescription && this.editorHeaderDescription.nativeElement) {
+                if (CKEDITOR.instances['editorHeaderDescription']) {
+                    CKEDITOR.instances['editorHeaderDescription'].destroy(true);
+                }
+                const editor = CKEDITOR.replace('editorHeaderDescription', {
+                    enterMode: (window as any).CKEDITOR.ENTER_BR,  
+                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,                   
+                });
+                editor.on('change', () => {
+                    const html = editor.getData();
+                    this.model.HeaderDescription = html;
+                    this.model.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(html);
+                });
+            }
+        }, 10);
+    }
+    LoadEditorUrdu() {
+        setTimeout(() => {
+            const CKEDITOR = (window as any).CKEDITOR;
+            if (this.editorHeaderDescriptionUrdu && this.editorHeaderDescriptionUrdu.nativeElement) {
+                if (CKEDITOR.instances['editorHeaderDescriptionUrdu']) {
+                    CKEDITOR.instances['editorHeaderDescriptionUrdu'].destroy(true);
+                }
+                const editor = CKEDITOR.replace('editorHeaderDescriptionUrdu', {
+                    enterMode: (window as any).CKEDITOR.ENTER_BR,
+                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
+                });
+                editor.on('change', () => {
+                    const html = editor.getData();
+                    this.model.HeaderDescriptionUrdu = html;
+                    this.model.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(html);
+                });
+            }
+        }, 10);
     }
     TemplateChange(id: any) {
         if (id == 1) {
@@ -207,7 +258,8 @@ export class ApplicationUserComponentForm implements OnInit {
             this.model.QualificationUrdu = "";
             this.model.HeaderDescription = "";
             this.model.NameUrdu = "";
-        }
+        } else
+            this.LoadEditorUrdu();
     }
     loadRole() {
         this._ApplicationUserService.GetRoles().then(m => {
@@ -226,6 +278,7 @@ export class ApplicationUserComponentForm implements OnInit {
         if (item) {
             this.model.EmployeeID = item.ID;
             this.DisplayMember = item.FirstName + ' ' + item.LastName;
+            this.model.Name = item.FirstName + ' ' + item.LastName;
             if (item.EmployeePic != null && item.EmployeePic != undefined && item.EmployeePic != "") {
                 this.getImageUrlName(item.EmployeePic);
                 this.IsNewImage = false;
@@ -267,12 +320,6 @@ export class ApplicationUserComponentForm implements OnInit {
         if (findrole.length > 0) {
             if (this.model.SlotTime == null || this.model.SlotTime == undefined)
                 return this.toastr.Error('Error', 'please select slot time.')
-
-            //if (this.model.AppStartTime == null || this.model.AppStartTime == undefined)
-            //    return this.toastr.Error('Error', 'please select start time.')
-
-            //if (this.model.AppEndTime == null || this.model.AppEndTime == undefined)
-            //    return this.toastr.Error('Error', 'please select end time.')
 
         }
         this.submitted = true; // set form submit to true

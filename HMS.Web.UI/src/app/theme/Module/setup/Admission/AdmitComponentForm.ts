@@ -86,7 +86,7 @@ export class AdmitComponentForm implements OnInit {
             DOB: [''],
             Age: [''],
             Email: [''],
-            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(12), Validators.maxLength(12)]],
+            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(11), Validators.maxLength(11)]],
             ContactNo: [''],
             CNIC: [''],
             Image: [''],

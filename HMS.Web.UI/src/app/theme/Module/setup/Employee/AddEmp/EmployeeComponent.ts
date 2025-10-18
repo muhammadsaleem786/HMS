@@ -2084,7 +2084,16 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         }
         return true;
     }
-
+    formatCnic(event: any) {
+        let input = event.target.value.replace(/\D/g, '');
+        if (input.length > 5 && input.length <= 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5);
+        } else if (input.length > 12) {
+            input = input.slice(0, 5) + '-' + input.slice(5, 12) + '-' + input.slice(12, 13);
+        }
+        event.target.value = input;
+        this.secondFormGroup.controls['NICNo'].setValue(input, { emitEvent: false });
+    }
 
 
 }

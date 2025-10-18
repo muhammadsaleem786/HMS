@@ -1,4 +1,5 @@
-﻿export class emr_patient {
+﻿import { SafeHtml } from '@angular/platform-browser';
+export class emr_patient {
     ID: number;
     PatientName: string;
     Gender: number;
@@ -127,6 +128,10 @@ export class DoctorInfo {
     Qualification: string;
     TemplateId: string;
     Footer: string;
+    HeaderDescription: string;
+    HeaderDescriptionUrdu: string;
+    safeHeaderDescription!: SafeHtml;
+    safeHeaderDescriptionUrdu!: SafeHtml;
 }
 export class InvoiceCompanyInfo {
     CompanyName: string;

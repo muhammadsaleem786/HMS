@@ -388,6 +388,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                             DesignationUrdu = mf.DesignationUrdu,
                             NameUrdu = mf.NameUrdu,
                             HeaderDescription = mf.HeaderDescription,
+                            HeaderDescriptionUrdu = mf.HeaderDescriptionUrdu,
                             IsOverLap = mf.IsOverLap
                         };
                     }).ToList();
@@ -1017,6 +1018,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                             DesignationUrdu = mf.DesignationUrdu,
                             NameUrdu = mf.NameUrdu,
                             HeaderDescription = mf.HeaderDescription,
+                            HeaderDescriptionUrdu = mf.HeaderDescriptionUrdu,
                             IsOverLap = mf.IsOverLap
                         };
                     }).ToList();
@@ -1563,6 +1565,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         DesignationUrdu = mf.DesignationUrdu,
                         NameUrdu = mf.NameUrdu,
                         HeaderDescription = mf.HeaderDescription,
+                        HeaderDescriptionUrdu=mf.HeaderDescriptionUrdu,
                         IsOverLap = mf.IsOverLap
                     };
                 }).ToList();

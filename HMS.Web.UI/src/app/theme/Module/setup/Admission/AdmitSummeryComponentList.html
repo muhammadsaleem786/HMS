@@ -811,10 +811,7 @@
 
             <!-- Left Doctor Info -->
             <div style="width:40%; text-align:left; font-family: Arial, sans-serif;">
-                <h2 style="margin:0; font-size:22px; font-weight:bold; color:#5e72e4; font-family: Arial, sans-serif;">{{DoctorInfo.Name}}</h2>
-                <p style="margin:2px 0; font-size:14px; color:#333; font-family: Arial, sans-serif;">{{DoctorInfo.Qualification}} {{DoctorInfo.Designation}}</p>
-                <p style="margin:2px 0; font-size:13px; font-weight:bold; color:#444; font-family: Arial, sans-serif;">{{DoctorInfo.Designation}}</p>
-                <p style="margin:2px 0; font-size:13px; color:#444; font-family: Arial, sans-serif;">Ph: {{DoctorInfo.PhoneNo}}</p>
+                <div [innerHTML]="DoctorInfo.safeHeaderDescription"></div>
             </div>
 
             <!-- Logo -->
@@ -830,14 +827,9 @@
 
             <!-- Urdu Doctor Info -->
             <div *ngIf="DoctorInfo.TemplateId==2" style="width:40%; text-align:right; direction:rtl; font-family: Arial, sans-serif;">
-                <h2 style="margin:0; font-size:22px; font-weight:bold; color:#5e72e4; font-family: Arial, sans-serif;">{{DoctorInfo.NameUrdu}}</h2>
-                <p style="margin:2px 0; font-size:14px; color:#333; font-family: Arial, sans-serif;">{{DoctorInfo.QualificationUrdu}} {{DoctorInfo.DesignationUrdu}}</p>
-                <p style="margin:2px 0; font-size:13px; font-weight:bold; color:#444; font-family: Arial, sans-serif;">{{DoctorInfo.DesignationUrdu}}</p>
-                <p style="margin:2px 0; font-size:13px; color:#444; font-family: Arial, sans-serif;">{{DoctorInfo.HeaderDescription}}</p>
+                <div [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu" style="margin:2px 0; font-size:13px; color:#444; font-family: Arial, sans-serif;"></div>
             </div>
-
         </div>
-
         <!-- BODY -->
         <div style="padding:12px; min-height:200mm; font-family: Arial, sans-serif;">
 
@@ -845,28 +837,24 @@
             <div style="display:flex; justify-content:space-between; border-bottom:1px solid #5e72e4; margin-bottom:8px; padding-bottom:6px; font-family: Arial, sans-serif;">
                 <div style="width:30%; font-family: Arial, sans-serif;">
                     <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">P/Name: </label>
-                    <input type="text" [(ngModel)]="PatientRXmodel.PatientName" readonly
-                           style="border: 0; border-bottom: 1px solid #aaa; width: 65%; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                    <label style="border: 0; border-bottom: 1px solid #aaa; width: 65%; font-size: 12px; outline: none; font-family: Arial, sans-serif;">{{PatientRXmodel.PatientName}}</label>
                 </div>
                 <div style="width:140px; font-family: Arial, sans-serif;">
                     <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Age/Sex: </label>
-                    <input type="text" [(ngModel)]="PatientRXmodel.Age" readonly
-                           style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                    <label style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">{{PatientRXmodel.Age}}</label>
                 </div>
                 <div style="width:140px; font-family: Arial, sans-serif;">
                     <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Weight: </label>
-                    <input type="text" readonly
-                           style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                    <label style="border: 0; border-bottom: 1px solid #aaa; width: 60px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">{{PatientRXmodel.Weight}}</label>
                 </div>
                 <div style="width:140px; text-align:right; font-family: Arial, sans-serif;">
                     <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Date: </label>
-                    <input type="text" [(ngModel)]="PatientRXmodel.AppointmentDate" readonly
-                           style="border: 0; border-bottom: 1px solid #aaa; width: 100px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">
+                    <label style="border: 0; border-bottom: 1px solid #aaa; width: 100px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">{{PatientRXmodel.AppointmentDate}}</label>
                 </div>
             </div>
 
             <!-- Content Split -->
-            <div style="display:flex; height:90%; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, sans-serif;">
+            <div style="display:flex; height:220mm; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, sans-serif;">
 
                 <!-- Left Sidebar -->
                 <div style="width:28%; padding-right:10px; font-size:13px; color:#d9534f; font-family: Arial, sans-serif;">
@@ -917,15 +905,15 @@
                                     </label>
                                     <label *ngIf="DoctorInfo.TemplateId==1" style="font-family: Arial, sans-serif;">
                                         (
-                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}</span>
-                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;">+ {{m.AfterNoon}}</span>
-                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;">+ {{m.Evening}}</span>
-                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;">+ {{m.Night}}</span>
+                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}+</span>
+                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;"> {{m.AfterNoon}}+</span>
+                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;"> {{m.Evening}}+</span>
+                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;"> {{m.Night}}</span>
                                         )
                                     </label>
                                 </td>
                                 <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">{{m.MedicineType}}</td>
-                                <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}}</td>
+                                <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
                                 <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;" *ngIf="DoctorInfo.TemplateId==2">{{m.Duration}} {{ getDurationInUrdu(m.DurationValue) }}</td>
                                 <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">{{m.Instructions}}</td>
                             </tr>
@@ -941,7 +929,7 @@
         </div>
 
         <!-- FOOTER -->
-        <div style="padding:6px 10px; text-align:center; border-top:2px solid #5e72e4; font-family: Arial, sans-serif;">
+        <div style="padding:6px 10px; text-align:center; border-top:4px solid #5e72e4; font-family: Arial, sans-serif;">
             <p style="font-size:13px; margin:0; color:#444; font-family: Arial, sans-serif;">{{DoctorInfo.Footer}}</p>
         </div>
     </div>

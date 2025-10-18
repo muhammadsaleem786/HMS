@@ -4530,3 +4530,7 @@ label.custom-control-label {
     background-color: #2f3479;
     color: #fff !important;
 }
+.cke_notification_warning,
+.cke_notification_info {
+    display: none !important;
+}

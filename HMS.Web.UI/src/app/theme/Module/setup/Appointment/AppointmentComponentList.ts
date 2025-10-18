@@ -1,5 +1,7 @@
 ﻿import { Component, OnInit, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 import { Router } from '@angular/router';
 import { AttendanceService } from '../Employee/Attendance/AttendanceService';
 import { AppointmentService } from './AppointmentService';
@@ -205,6 +207,7 @@ export class AppointmentComponentList implements OnInit {
     myControl = new FormControl();
     myNameControl = new FormControl();
     openAppointmentModal(longContent) {
+        
         this.AppointmentModel = new emr_Appointment();
         this.modalService.open(longContent, { size: 'lg' });
         setTimeout(() => {
@@ -284,7 +287,7 @@ export class AppointmentComponentList implements OnInit {
 
     }
     constructor(public _fb: FormBuilder, private encrypt: EncryptionService, public route: ActivatedRoute, public _PatientService: PatientService, public _BillingService: BillingService, private modalService: NgbModal, public _CommonService: CommonService, public loader: LoaderService, public _AppointmentService: AppointmentService
-        , public _router: Router,
+        , public _router: Router,private sanitizer: DomSanitizer,
         private cdr: ChangeDetectorRef, public _SaleService: SaleService,
         public toastr: CommonToastrService, public _ApplicationUserService: ApplicationUserService) {
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
@@ -345,7 +348,7 @@ export class AppointmentComponentList implements OnInit {
             DOB: [''],
             Age: ['', [Validators.required]],
             Email: [''],
-            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(12), Validators.maxLength(12)]],
+            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(11), Validators.maxLength(11)]],
             CNIC: [''],
             Image: [''],
             Notes: [''],
@@ -522,6 +525,7 @@ export class AppointmentComponentList implements OnInit {
         this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
         this._AppointmentService
             .GetPatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+                
                 this.PModel.TotalRecord = m.TotalRecord;
                 if (this.GenderIds != null && m.GenderList != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
@@ -1075,6 +1079,7 @@ export class AppointmentComponentList implements OnInit {
                     });
             },
             eventClick: (event) => {
+                ;
                 var dateTime = event.start.format();
                 var time = dateTime.split('T');
                 let CalendarDate = time[0];
@@ -1095,11 +1100,12 @@ export class AppointmentComponentList implements OnInit {
                 this.OnClickAppointment(CalendarDate, CalendarTime, event.resourceId, event.id);
             },
             dayClick: (date, jsEvent, view, resource) => {
-
+                
                 var dateTime = date.format();
                 var time = dateTime.split('T');
                 let CalendarDate = time[0];
                 let CalendarTime = time[1];
+
                 this.CheckDayClik(date, CalendarTime);
                 if (this.isDayClik) {
                     let dateDay = date._d.getDay();
@@ -1134,6 +1140,7 @@ export class AppointmentComponentList implements OnInit {
         });
     }
     CheckDayClik(date: any, time: any) {
+        
         let selectedDate = new Date(date);
         let currentDate = new Date();
         selectedDate.setHours(0, 0, 0, 0);
@@ -1156,6 +1163,7 @@ export class AppointmentComponentList implements OnInit {
         this.Form1.controls['CNIC'].setValue(input, { emitEvent: false });
     }
     OnClickAppointment(date: any, time: any, doctorId: any, appointmentId: any) {
+        
         var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));
         var Appobj = this.AppointmentList.filter(a => a.DoctorId == parseInt(doctorId) && a.StartDate.split("T")[1] == time && a.ID == appointmentId);
         var slotTime = new Date();
@@ -1499,6 +1507,7 @@ export class AppointmentComponentList implements OnInit {
         this.AppointmentDate = new Date(pndate);
     }
     AddAppointment(date: any, time: any, doctorId: any) {
+        
         if (this.ControlRights.CreateRights) {
             this.AppointmentModel = new emr_Appointment();
             var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));
@@ -1511,6 +1520,7 @@ export class AppointmentComponentList implements OnInit {
             timeB.setHours(doctorid[0].EndTime.split(":")[0], doctorid[0].EndTime.split(":")[1], doctorid[0].EndTime.split(":")[2]);
             if (timeA <= slotTime && timeB >= slotTime) {
                 if (this.Rights.indexOf(12) > -1) {
+                    
                     this.AppointmentModel.ServiceId = this.ServiceType.ID;
                     this.AppointmentModel.ServiceName = this.ServiceType.ServiceName;
                     this.AppointmentModel.Price = this.ServiceType.Price;
@@ -1694,6 +1704,7 @@ export class AppointmentComponentList implements OnInit {
         this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
         this._AppointmentService
             .GetUpdatePatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+                
                 this.PModel.TotalRecord = m.TotalRecord;
                 if (this.GenderIds != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
@@ -1726,6 +1737,7 @@ export class AppointmentComponentList implements OnInit {
                 this.BloodList = m.BloodList;
                 this.UnitList = m.UnitList;
                 this.MadicineTypeList = m.MadicineTypeList;
+                
                 this.ServiceType = m.ServiceType[0];
                 this.TokenNo = m.TokenNo;
                 if (m.ServiceType != null) {
@@ -3019,7 +3031,12 @@ export class AppointmentComponentList implements OnInit {
                 
                 if (result.ResultSet.doctor.length > 0)
                     this.DoctorInfo = result.ResultSet.doctor[0];
-
+                if (this.DoctorInfo.HeaderDescription) {
+                    this.DoctorInfo.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescription);
+                }
+                if (this.DoctorInfo.HeaderDescriptionUrdu) {
+                    this.DoctorInfo.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescriptionUrdu);
+                }
                 if (this.DoctorInfo == null || this.DoctorInfo == undefined) {
                     this.DoctorInfo.Name = "";
                     this.DoctorInfo.Designation = "";

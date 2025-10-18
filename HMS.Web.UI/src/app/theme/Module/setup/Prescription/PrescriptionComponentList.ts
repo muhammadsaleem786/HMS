@@ -1,4 +1,5 @@
 ﻿import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { PrescriptionService } from './PrescriptionService';
 import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo } from './../Appointment/AppointmentModel';
@@ -45,7 +46,7 @@ export class PrescriptionComponentList {
     public PatientRXmodel = new patientInfo();
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
     constructor(public _CommonService: CommonService, private encrypt: EncryptionService, public _AppointmentService: AppointmentService, private modalService: NgbModal, public loader: LoaderService, public _PrescriptionService: PrescriptionService
-        , public _router: Router, public toastr: CommonToastrService,) {
+        , public _router: Router, public toastr: CommonToastrService, private sanitizer: DomSanitizer) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("21");
@@ -161,6 +162,12 @@ export class PrescriptionComponentList {
                 this.PatientVitalList = [];
                 if (m.ResultSet.doctor.length > 0)
                     this.DoctorInfo = m.ResultSet.doctor[0];
+                if (this.DoctorInfo.HeaderDescription) {
+                    this.DoctorInfo.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescription);
+                }
+                if (this.DoctorInfo.HeaderDescriptionUrdu) {
+                    this.DoctorInfo.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescriptionUrdu);
+                }
                 if (this.DoctorInfo == null || this.DoctorInfo == undefined) {
                     this.DoctorInfo.Name = "";
                     this.DoctorInfo.Designation = "";

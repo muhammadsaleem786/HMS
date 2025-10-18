@@ -73,7 +73,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
                 List<emr_service_item> Objemr_service_item = new List<emr_service_item>();
-                Objemr_service_item.AddRange(Model.emr_service_item);
+                if (Model.emr_service_item.Count()>0)
+                {
+                    Objemr_service_item.AddRange(Model.emr_service_item);
+                }
 
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
@@ -89,6 +92,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.ObjectState = ObjectState.Added;
                 Model.emr_service_item = null;
                 Model.emr_patient_bill = null;
+                Model.ipd_procedure_mf = null;
                 _service.Insert(Model);
                 //insert item
                 decimal seviceID = 1;

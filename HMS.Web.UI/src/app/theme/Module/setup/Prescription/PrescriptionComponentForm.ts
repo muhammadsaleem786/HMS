@@ -1,5 +1,6 @@
 ﻿import { Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, Directive, ChangeDetectorRef, TemplateRef } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'; import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo, InvoiceCompanyInfo, emr_notes_favorite } from './../Appointment/AppointmentModel';
 import { emr_prescription_mf, emr_prescription_complaint, emr_prescription_diagnos, emr_prescription_investigation, emr_prescription_observation, emr_prescription_treatment, emr_medicine } from './PrescriptionModel';
 import { LoaderService } from '../../../../CommonService/LoaderService';
@@ -176,7 +177,7 @@ export class PrescriptionComponentForm implements OnInit {
         });
     }
     constructor(public _CommonService: CommonService, public _fb: FormBuilder, public loader: LoaderService
-        , public _PrescriptionService: PrescriptionService, public commonservice: CommonService, private modalService: NgbModal
+        , private sanitizer: DomSanitizer , public _PrescriptionService: PrescriptionService, public commonservice: CommonService, private modalService: NgbModal
         , public toastr: CommonToastrService, private encrypt: EncryptionService, public route: ActivatedRoute, public _router: Router, public _AppointmentService: AppointmentService, public _SaleService: SaleService) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
@@ -1985,7 +1986,12 @@ export class PrescriptionComponentForm implements OnInit {
                 }
                 if (result.ResultSet.doctor.length > 0)
                     this.DoctorInfo = result.ResultSet.doctor[0];
-
+                if (this.DoctorInfo.HeaderDescription) {
+                    this.DoctorInfo.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescription);
+                }
+                if (this.DoctorInfo.HeaderDescriptionUrdu) {
+                    this.DoctorInfo.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescriptionUrdu);
+                }
                 if (this.DoctorInfo == null || this.DoctorInfo == undefined) {
                     this.DoctorInfo.Name = "";
                     this.DoctorInfo.Designation = "";

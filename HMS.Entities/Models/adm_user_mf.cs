@@ -153,6 +153,7 @@ namespace HMS.Entities.Models
         public string DesignationUrdu { get; set; }
         public string QualificationUrdu { get; set; }
         public string HeaderDescription { get; set; }
+        public string HeaderDescriptionUrdu { get; set; }
         public string NameUrdu { get; set; }
         public Nullable<System.DateTime> ActivationTokenDate { get; set; }
         public Nullable<System.DateTime> ActivatedDate { get; set; }

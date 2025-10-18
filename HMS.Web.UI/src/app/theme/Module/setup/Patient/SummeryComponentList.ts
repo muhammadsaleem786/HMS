@@ -17,6 +17,7 @@ import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng
 import { filter } from 'rxjs/operators';
 import { IMyDateModel } from 'mydatepicker';
 import { CommonService } from '../../../../CommonService/CommonService';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { GlobalVariable } from '../../../../AngularConfig/global';
 @Component({
     templateUrl: './SummeryComponentList.html',
@@ -77,7 +78,7 @@ export class SummeryComponentList implements OnInit {
     constructor(public _fb: FormBuilder,
         public loader: LoaderService
         , public _PatientService: PatientService,
-        public commonservice: CommonService
+        public commonservice: CommonService, private sanitizer: DomSanitizer
         , public toastr: CommonToastrService, private encrypt: EncryptionService, public _CommonService: CommonService, public route: ActivatedRoute, public _router: Router, public _AppointmentService: AppointmentService, private modalService: NgbModal) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
@@ -96,7 +97,7 @@ export class SummeryComponentList implements OnInit {
             Age: ['', [Validators.required]],
             Email: [''],
             ContactNo:[''],
-            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(12), Validators.maxLength(12)]],
+            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(11), Validators.maxLength(11)]],
             CNIC: ['', [Validators.required]],
             Image: [''],
             Notes: [''],
@@ -225,6 +226,12 @@ export class SummeryComponentList implements OnInit {
                 this.PatientVitalList = [];
                 if (m.ResultSet.doctor.length > 0)
                     this.DoctorInfo = m.ResultSet.doctor[0];
+                if (this.DoctorInfo.HeaderDescription) {
+                    this.DoctorInfo.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescription);
+                }
+                if (this.DoctorInfo.HeaderDescriptionUrdu) {
+                    this.DoctorInfo.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescriptionUrdu);
+                }
                 if (this.DoctorInfo == null || this.DoctorInfo == undefined) {
                     this.DoctorInfo.Name = "";
                     this.DoctorInfo.Designation = "";

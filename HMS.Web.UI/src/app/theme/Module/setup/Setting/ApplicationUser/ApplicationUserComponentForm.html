@@ -88,33 +88,19 @@
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="form-group">
-                                            <input type="text" formControlName="PhoneNo" [(ngModel)]="model.PhoneNo" class="form-control">
+                                            <input type="text" formControlName="PhoneNo" [(ngModel)]="model.PhoneNo" appPhoneMask class="form-control">
                                             <small *ngIf="Form1.controls.PhoneNo.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4 text-right">
-                                        <label>Name</label>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="form-group">
-                                            <input type="text" formControlName="Name" [(ngModel)]="model.Name" class="form-control" maxlength="250">
-                                            <small *ngIf="Form1.controls.Name.hasError('required') && submitted">
-                                                This value is required.
+                                            <small class="text-danger"
+                                                   *ngIf="Form1.controls.PhoneNo.hasError('minlength') && !Form1.controls.PhoneNo.hasError('required')">
+                                                Mobile number must be 11 digits.
                                             </small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" *ngIf="model.TemplateId==2">
-                                    <div class="col-sm-4 text-right">
-                                        <label>Name Urdu</label>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="form-group">
-                                            <input type="text" formControlName="NameUrdu" [(ngModel)]="model.NameUrdu" class="form-control" maxlength="250">
+
+                                            <small class="text-danger"
+                                                   *ngIf="Form1.controls.PhoneNo.hasError('maxlength') && !Form1.controls.PhoneNo.hasError('required')">
+                                                Mobile number must be 11 digits.
+                                            </small>
                                         </div>
                                     </div>
                                 </div>
@@ -148,7 +134,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row mt-4">
                                     <div class="col-sm-4 text-right">
                                         <label> IsActive </label>
@@ -233,22 +219,10 @@
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="form-group">
-
                                             <input type="text" formControlName="Qualification" [(ngModel)]="model.Qualification" class="form-control">
                                             <small *ngIf="Form1.controls.Qualification.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" *ngIf="model.TemplateId==2">
-                                    <div class="col-sm-4 text-right">
-                                        <label>Qualification Urdu</label>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="form-group">
-
-                                            <input type="text" formControlName="QualificationUrdu" [(ngModel)]="model.QualificationUrdu" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -265,17 +239,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" *ngIf="model.TemplateId==2">
-                                    <div class="col-sm-4 text-right">
-                                        <label>Designation Urdu</label>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="form-group">
-                                            <input type="text" formControlName="DesignationUrdu" [(ngModel)]="model.DesignationUrdu" class="form-control">
-
-                                        </div>
-                                    </div>
-                                </div>
+                               
                                 <div class="row">
                                     <div class="col-sm-4 text-right">
                                         <label>Specialty</label>
@@ -290,13 +254,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" *ngIf="model.TemplateId==2">
+                                <div class="row">
                                     <div class="col-sm-4 text-right">
                                         <label>Header Description</label>
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="form-group">
-                                            <input type="text" formControlName="HeaderDescription" [(ngModel)]="model.HeaderDescription" class="form-control">
+                                            <textarea #editorHeaderDescription id="editorHeaderDescription" name="editor1" [(ngModel)]="model.HeaderDescription" formControlName="HeaderDescription"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="model.TemplateId==2">
+                                    <div class="col-sm-4 text-right">
+                                        <label>Header Description Urdu</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <textarea #editorHeaderDescriptionUrdu id="editorHeaderDescriptionUrdu" name="editor1" [(ngModel)]="model.HeaderDescriptionUrdu" formControlName="HeaderDescriptionUrdu"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -312,7 +286,6 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-4 text-right">
-
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="form-group">
@@ -355,14 +328,8 @@
                                 <div class="RxPrintModal TemplateTwo templateView float-right" *ngIf="model.TemplateId==2">
                                     <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
                                         <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
-                                            <div class="col-8">
-                                                <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;"> {{model.Name}} </h3>
-                                                <p style="margin:0 0 5px;font-size:14px;line-height: normal;">{{model.Qualification}}{{model.Designation}}</p>
-                                                <strong style="margin:0;font-size:13px;line-height: normal;">
-                                                    {{model.Designation}}
-                                                </strong>
-                                                <p style="margin: 0; font-size: 14px; line-height: normal;">Ph: {{model.PhoneNo}}</p>
-                                            </div>
+                                            <div [innerHTML]="model.safeHeaderDescription" class="col-8">
+                                                  </div>
                                             <div class="col-4 text-right">
                                                 <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 70px;">
                                             </div>

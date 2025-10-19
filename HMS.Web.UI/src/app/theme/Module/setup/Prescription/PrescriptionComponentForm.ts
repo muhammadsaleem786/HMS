@@ -501,7 +501,7 @@ export class PrescriptionComponentForm implements OnInit {
                             }
                             if (this.PrescriptionModel.emr_prescription_treatment != null) {
                                 this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
-                                    var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
+                                    var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                                     if (medicineName != null && medicineName != undefined) {
                                         item.MedicineName = medicineName.Medicine;
                                         item.MedicineType = medicineName.Type;
@@ -593,7 +593,7 @@ export class PrescriptionComponentForm implements OnInit {
                 });
                 this.loadPrescriptionData(m.ResultSet);
                 m.ResultSet.prescription_treatment.forEach((item, index) => {
-                    var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
+                    var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                     if (medicineName != null && medicineName != undefined) {
                         item.MedicineName = medicineName.Medicine;
                         item.MedicineType = medicineName.Type;
@@ -1915,7 +1915,7 @@ export class PrescriptionComponentForm implements OnInit {
                 }
                 if (m.ResultSet.result.emr_prescription_treatment != null) {
                     m.ResultSet.result.emr_prescription_treatment.forEach((item, index) => {
-                        var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
+                        var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
                             item.MedicineType = medicineName.Type;
@@ -2021,23 +2021,7 @@ export class PrescriptionComponentForm implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_complaint_dynamicArray.push(item);
                     });
-                    //this.ComplaintList.forEach((item, index) => {
-                    //    var list1 = this.PrescriptionModel.emr_prescription_complaint.filter(a => a.ComplaintId == item.id);
-                    //    if (list1.length == 0 || list1 == undefined) {
-                    //        item.IsSelected = false;
-                    //        item.ComplaintId = item.id;
-                    //        this.emr_prescription_complaint_dynamicArray.push(item);
-                    //    }
-                    //});
                 }
-                //else {
-                //    this.ComplaintList.forEach((item, index) => {
-                //        item.IsSelected = false;
-                //        item.ComplaintId = item.id;
-                //        this.emr_prescription_complaint_dynamicArray.push(item);
-
-                //    });
-                //}
                 if (this.PrescriptionModel.emr_prescription_diagnos != null) {
                     this.PrescriptionModel.emr_prescription_diagnos.forEach((item, index) => {
                         var list = this.DiagnosisList.filter(a => a.id == item.DiagnosId);
@@ -2050,23 +2034,7 @@ export class PrescriptionComponentForm implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_diagnos_dynamicArray.push(item);
                     });
-                    //this.DiagnosisList.forEach((item, index) => {
-                    //    var list1 = this.PrescriptionModel.emr_prescription_diagnos.filter(a => a.DiagnosId == item.id);
-                    //    if (list1.length == 0 || list1 == undefined) {
-                    //        item.IsSelected = false;
-                    //        item.DiagnosId = item.id;
-                    //        this.emr_prescription_diagnos_dynamicArray.push(item);
-                    //    }
-                    //});
                 }
-                //else {
-                //    this.DiagnosisList.forEach((item, index) => {
-                //        item.IsSelected = false;
-                //        item.DiagnosId = item.id;
-                //        this.emr_prescription_diagnos_dynamicArray.push(item);
-
-                //    });
-                //}
                 if (this.PrescriptionModel.emr_prescription_investigation != null) {
                     this.PrescriptionModel.emr_prescription_investigation.forEach((item, index) => {
                         var list = this.InvestigationsList.filter(a => a.id == item.InvestigationId);
@@ -2079,22 +2047,7 @@ export class PrescriptionComponentForm implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_investigation_dynamicArray.push(item);
                     });
-                    //this.InvestigationsList.forEach((item, index) => {
-                    //    var list1 = this.PrescriptionModel.emr_prescription_investigation.filter(a => a.InvestigationId == item.id);
-                    //    if (list1.length == 0 || list1 == undefined) {
-                    //        item.IsSelected = false;
-                    //        item.InvestigationId = item.id;
-                    //        this.emr_prescription_investigation_dynamicArray.push(item);
-                    //    }
-                    //});
                 }
-                //else {
-                //    this.InvestigationsList.forEach((item, index) => {
-                //        item.IsSelected = false;
-                //        item.InvestigationId = item.id;
-                //        this.emr_prescription_investigation_dynamicArray.push(item);
-                //    });
-                //}
                 if (this.PrescriptionModel.emr_prescription_observation != null) {
                     this.PrescriptionModel.emr_prescription_observation.forEach((item, index) => {
                         var list = this.ObservationList.filter(a => a.id == item.ObservationId);
@@ -2107,29 +2060,11 @@ export class PrescriptionComponentForm implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_observation_dynamicArray.push(item);
                     });
-                    //this.ObservationList.forEach((item, index) => {
-                    //    var list1 = this.PrescriptionModel.emr_prescription_observation.filter(a => a.ObservationId == item.id);
-                    //    if (list1.length == 0 || list1 == undefined) {
-                    //        item.IsSelected = false;
-                    //        item.ObservationId = item.id;
-                    //        this.emr_prescription_observation_dynamicArray.push(item);
-                    //    }
-                    //});
                 }
-
-                //else {
-                //    this.ObservationList.forEach((item, index) => {
-                //        item.IsSelected = false;
-                //        item.ObservationId = item.id;
-                //        this.emr_prescription_observation_dynamicArray.push(item);
-
-                //    });
-                //}
-
                 if (this.PrescriptionModel.emr_prescription_treatment != null) {
 
                     this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
-                        var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
+                        var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
                             item.MedicineType = medicineName.Type;

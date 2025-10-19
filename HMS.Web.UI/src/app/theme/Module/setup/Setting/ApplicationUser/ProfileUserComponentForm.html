@@ -307,13 +307,8 @@
                         <div class="RxPrintModal TemplateTwo templateView float-right">
                             <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
                                 <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
-                                    <div class="col-8">
-                                        <h3 style="font-size: 26px; margin: 0; line-height: normal; color: #5e72e4; font-weight: bold;"> {{model.Name}} </h3>
-                                        <p style="margin:0 0 5px;font-size:14px;line-height: normal;">{{model.Qualification}}{{model.Designation}}</p>
-                                        <strong style="margin:0;font-size:13px;line-height: normal;">
-                                            {{model.Designation}}
-                                        </strong>
-                                        <p style="margin: 0; font-size: 14px; line-height: normal;">Ph: {{model.PhoneNo}}</p>
+                                    <div [innerHTML]="model.safeHeaderDescription" class="col-8">
+                                       
                                     </div>
                                     <div class="col-4 text-right">
                                         <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 70px;">

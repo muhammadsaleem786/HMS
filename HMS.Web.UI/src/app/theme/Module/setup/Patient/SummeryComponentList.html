@@ -854,7 +854,7 @@
                 </div>
                 <div style="width:140px; text-align:right; font-family: Arial, sans-serif;">
                     <label style="font-size:12px; font-weight:bold; font-family: Arial, sans-serif;">Date: </label>
-                    <label style="border: 0; border-bottom: 1px solid #aaa; width: 100px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">{{PatientRXmodel.AppointmentDate}}</label>
+                    <label style="border: 0; border-bottom: 1px solid #aaa; width: 100px; font-size: 12px; outline: none; font-family: Arial, sans-serif;">{{PatientRXmodel.AppointmentDate| date: 'dd-MMM-yyyy' | uppercase}}</label>
                 </div>
             </div>
 
@@ -900,7 +900,7 @@
                             <tr *ngFor="let m of emr_prescription_treatment_dynamicArray" style="font-family: Arial, sans-serif;">
                                 <td style="padding:5px; border-bottom:1px solid #eee; font-size:12px; line-height:normal; font-family: Arial, sans-serif;">
                                     {{m.MedicineName}}
-                                    <label *ngIf="DoctorInfo.TemplateId==2" style="font-family: Arial, sans-serif;">
+                                    <label *ngIf="DoctorInfo.TemplateId==2 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)" style="font-family: Arial, sans-serif;">
                                         (
                                         <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }} {{m.Morning}}</span>
                                         <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;">+ {{ m.TypeId == 39 ? 'گولی دوپہر' : 'دوپہر' }} {{m.AfterNoon}}</span>
@@ -908,12 +908,12 @@
                                         <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;">+ {{ m.TypeId == 39 ? 'گولی رات' : 'رات' }} {{m.Night}}</span>
                                         )
                                     </label>
-                                    <label *ngIf="DoctorInfo.TemplateId==1" style="font-family: Arial, sans-serif;">
+                                    <label *ngIf="DoctorInfo.TemplateId==1 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)" style="font-family: Arial, sans-serif;">
                                         (
-                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}+</span>
-                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;"> {{m.AfterNoon}}+</span>
-                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;"> {{m.Evening}}+</span>
-                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;"> {{m.Night}}</span>
+                                        <span *ngIf="m.Morning > 0" style="font-family: Arial, sans-serif;">{{m.Morning}}</span>
+                                        <span *ngIf="m.AfterNoon > 0" style="font-family: Arial, sans-serif;"> +{{m.AfterNoon}}</span>
+                                        <span *ngIf="m.Evening > 0" style="font-family: Arial, sans-serif;">+ {{m.Evening}}</span>
+                                        <span *ngIf="m.Night > 0" style="font-family: Arial, sans-serif;">+ {{m.Night}}</span>
                                         )
                                     </label>
                                 </td>

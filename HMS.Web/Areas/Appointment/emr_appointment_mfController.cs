@@ -819,7 +819,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     BloodList = bloodList,
                     MedicineList = MedicineList,
                     prescriptionresult = prescriptionresult,
-                    AdmissionNo = ipdAdmissions == null ? 0 : Convert.ToInt32(ipdAdmissions.AdmissionNo),
+                    AdmissionNo = ipdAdmissions == null ? "0" : ipdAdmissions.AdmissionNo,
                 };
             }
             catch (Exception ex)

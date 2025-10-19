@@ -2287,7 +2287,7 @@ export class AppointmentComponentList implements OnInit {
                     }
                 });
                 m.ResultSet.prescription_treatment.forEach((item, index) => {
-                    var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
+                    var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                     if (medicineName != null && medicineName != undefined)
                         item.MedicineName = medicineName.Medicine;
                     else
@@ -2953,7 +2953,7 @@ export class AppointmentComponentList implements OnInit {
 
                 if (m.ResultSet.result.emr_prescription_treatment != null) {
                     m.ResultSet.result.emr_prescription_treatment.forEach((item, index) => {
-                        var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
+                        var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined)
                             item.MedicineName = medicineName.Medicine;
                         else
@@ -3176,7 +3176,7 @@ export class AppointmentComponentList implements OnInit {
 
                 if (this.PrescriptionModel.emr_prescription_treatment != null) {
                     this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
-                        var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId)[0];
+                        var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
                             item.MedicineType = medicineName.Type;

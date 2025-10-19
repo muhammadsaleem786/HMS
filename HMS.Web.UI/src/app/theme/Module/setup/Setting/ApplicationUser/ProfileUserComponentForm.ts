@@ -11,6 +11,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
 import { GlobalVariable } from '../../../../../AngularConfig/global';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 declare var $: any;
 @Component({
     selector: 'setup-ApplicationUserComponentForm',
@@ -77,7 +79,7 @@ export class ProfileUserComponentForm implements OnInit {
     };
     constructor(public _CommonService: CommonService, public _fb: FormBuilder, public route: ActivatedRoute, public _router: Router
         , public loader: LoaderService, public _ApplicationUserService: ApplicationUserService
-        , public toastr: CommonToastrService, public commonservice: CommonService) {
+        , public toastr: CommonToastrService, public commonservice: CommonService, private sanitizer: DomSanitizer) {
         //this.Keywords = this.commonservice.GetKeywords("ApplicationUser");
         this.ControlRights = this._CommonService.ScreenRights("4");
     }
@@ -120,19 +122,13 @@ export class ProfileUserComponentForm implements OnInit {
                     this.loader.ShowLoader();
                     this._ApplicationUserService.GetById(this.id).then(m => {
                         this.model = m.ResultSet.UserObj;
+                        this.model.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescription);
+                        this.model.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescriptionUrdu);
+
                         if (this.model.UserImage != null || this.model.UserImage != undefined) {
                             this.getImageUrlName(this.model.UserImage);
                             this.IsNewImage = false;
-                        } else this.IsNewImage = true;
-                        //if (m.ResultSet.UserObj.StartTime != null)
-                        //    this.model.AppStartTime = m.ResultSet.UserObj.StartTime;
-                        //if (m.ResultSet.UserObj.EndTime != null)
-                        //    this.model.AppEndTime = m.ResultSet.UserObj.EndTime;
-                        //var days = m.ResultSet.UserObj.OffDay;
-                        //if (days != null) {
-                        //    const daysArray = days.split(',').map(Number);
-                        //    this.model.DocWorkingDay = daysArray;
-                        //}                       
+                        } else this.IsNewImage = true;                   
                         var GenderList = m.ResultSet.UserObj.IsGenderDropdown;
                         if (GenderList != null) {
                             const numArray = GenderList.split(',').map(Number);

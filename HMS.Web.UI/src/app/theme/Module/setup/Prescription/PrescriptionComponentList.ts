@@ -210,7 +210,7 @@ export class PrescriptionComponentList {
                 }
                 if (m.ResultSet.result.emr_prescription_treatment != null) {
                     m.ResultSet.result.emr_prescription_treatment.forEach((item, index) => {
-                        var medicineName = m.ResultSet.MedicineList.filter(a => a.Id == item.MedicineId)[0];
+                        var medicineName = m.ResultSet.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
                             item.MedicineType = medicineName.Type;

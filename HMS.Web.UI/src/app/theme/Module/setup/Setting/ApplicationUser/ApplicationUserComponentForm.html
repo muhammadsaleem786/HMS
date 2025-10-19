@@ -256,36 +256,6 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-4 text-right">
-                                        <label>Header Description</label>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="form-group">
-                                            <textarea #editorHeaderDescription id="editorHeaderDescription" name="editor1" [(ngModel)]="model.HeaderDescription" formControlName="HeaderDescription"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" *ngIf="model.TemplateId==2">
-                                    <div class="col-sm-4 text-right">
-                                        <label>Header Description Urdu</label>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="form-group">
-                                            <textarea #editorHeaderDescriptionUrdu id="editorHeaderDescriptionUrdu" name="editor1" [(ngModel)]="model.HeaderDescriptionUrdu" formControlName="HeaderDescriptionUrdu"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4 text-right">
-                                        <label>Footer</label>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="form-group">
-                                            <input type="text" formControlName="RepotFooter" [(ngModel)]="model.RepotFooter" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4 text-right">
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="form-group">
@@ -334,6 +304,40 @@
                                     <div class="modal-footer bg-secondary" style="padding: 5px 0 0px;text-align:center;">
                                         <div class="col">
                                             <p style="font-size: 13px;margin-bottom:0px; border-bottom:1px solid #efefef;">{{model.RepotFooter}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                    
+                                <div class="row">
+                                    <div class="col-sm-2 text-right">
+                                        <label>Header Description</label>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <div class="form-group">
+                                            <textarea #editorHeaderDescription id="editorHeaderDescription" name="editor1" [(ngModel)]="model.HeaderDescription" formControlName="HeaderDescription"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="model.TemplateId==2">
+                                    <div class="col-sm-2 text-right">
+                                        <label>Header Description Urdu</label>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <div class="form-group">
+                                            <textarea #editorHeaderDescriptionUrdu id="editorHeaderDescriptionUrdu" name="editor1" [(ngModel)]="model.HeaderDescriptionUrdu" formControlName="HeaderDescriptionUrdu"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-2 text-right">
+                                        <label>Footer</label>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <div class="form-group">
+                                            <input type="text" formControlName="RepotFooter" [(ngModel)]="model.RepotFooter" class="form-control">
                                         </div>
                                     </div>
                                 </div>

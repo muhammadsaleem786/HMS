@@ -241,6 +241,10 @@ export class SummeryComponentList implements OnInit {
                 }
                 this.PatientRXmodel.PatientName = m.ResultSet.result.PatientName;
                 this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
+                this.PatientRXmodel.Gender = m.ResultSet.result.Gender;
+                this.PatientRXmodel.Mobile = m.ResultSet.result.Mobile;
+                this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
+                this.PatientRXmodel.FollowUpDate = m.ResultSet.result.FollowUpDate;
                 var Weight = m.ResultSet.vitallist.filter(a => a.Name == "Weight");
                 if (Weight.length == 0)
                     this.PatientRXmodel.Weight = "";

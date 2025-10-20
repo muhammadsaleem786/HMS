@@ -26,6 +26,7 @@ import { debug } from 'util'; import { filter } from 'rxjs/operators';
 import { forEach } from '@angular/router/src/utils/collection';
 import { interval, Subscription } from 'rxjs';
 import { SaleService } from '../Items/Sale/SaleService'
+import { PrescriptionService } from '../Prescription/PrescriptionService';
 declare var $: any;
 import swal from 'sweetalert';
 import { debounce } from 'lodash';
@@ -34,7 +35,7 @@ import { EncryptionService } from '../../../../CommonService/encryption.service'
 @Component({
     moduleId: module.id,
     templateUrl: 'AppointmentComponentList.html',
-    providers: [AppointmentService, ApplicationUserService, BillingService, PatientService, SaleService],
+    providers: [AppointmentService, PrescriptionService, ApplicationUserService, BillingService, PatientService, SaleService],
 })
 export class AppointmentComponentList implements OnInit {
     mySubscription: Subscription;
@@ -207,7 +208,7 @@ export class AppointmentComponentList implements OnInit {
     myControl = new FormControl();
     myNameControl = new FormControl();
     openAppointmentModal(longContent) {
-        
+
         this.AppointmentModel = new emr_Appointment();
         this.modalService.open(longContent, { size: 'lg' });
         setTimeout(() => {
@@ -287,9 +288,9 @@ export class AppointmentComponentList implements OnInit {
 
     }
     constructor(public _fb: FormBuilder, private encrypt: EncryptionService, public route: ActivatedRoute, public _PatientService: PatientService, public _BillingService: BillingService, private modalService: NgbModal, public _CommonService: CommonService, public loader: LoaderService, public _AppointmentService: AppointmentService
-        , public _router: Router,private sanitizer: DomSanitizer,
+        , public _router: Router, private sanitizer: DomSanitizer,
         private cdr: ChangeDetectorRef, public _SaleService: SaleService,
-        public toastr: CommonToastrService, public _ApplicationUserService: ApplicationUserService) {
+        public toastr: CommonToastrService, public _PrescriptionService: PrescriptionService, public _ApplicationUserService: ApplicationUserService) {
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.DoctAddRights = this._CommonService.ScreenRights("3");
         this.ControlRights = this._CommonService.ScreenRights("13");
@@ -517,7 +518,7 @@ export class AppointmentComponentList implements OnInit {
     }
     OpenVitalModal(VitalModal) {
         this.VitalModel = new emr_vital();
-        this.modalService.open(VitalModal, { size: 'md'});
+        this.modalService.open(VitalModal, { size: 'md' });
     }
     GetPatientList(date: any, StatusID: any) {
         this.AppointmentDate = new Date(date);
@@ -525,7 +526,7 @@ export class AppointmentComponentList implements OnInit {
         this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
         this._AppointmentService
             .GetPatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-                
+
                 this.PModel.TotalRecord = m.TotalRecord;
                 if (this.GenderIds != null && m.GenderList != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
@@ -1100,7 +1101,7 @@ export class AppointmentComponentList implements OnInit {
                 this.OnClickAppointment(CalendarDate, CalendarTime, event.resourceId, event.id);
             },
             dayClick: (date, jsEvent, view, resource) => {
-                
+
                 var dateTime = date.format();
                 var time = dateTime.split('T');
                 let CalendarDate = time[0];
@@ -1140,7 +1141,7 @@ export class AppointmentComponentList implements OnInit {
         });
     }
     CheckDayClik(date: any, time: any) {
-        
+
         let selectedDate = new Date(date);
         let currentDate = new Date();
         selectedDate.setHours(0, 0, 0, 0);
@@ -1163,7 +1164,7 @@ export class AppointmentComponentList implements OnInit {
         this.Form1.controls['CNIC'].setValue(input, { emitEvent: false });
     }
     OnClickAppointment(date: any, time: any, doctorId: any, appointmentId: any) {
-        
+
         var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));
         var Appobj = this.AppointmentList.filter(a => a.DoctorId == parseInt(doctorId) && a.StartDate.split("T")[1] == time && a.ID == appointmentId);
         var slotTime = new Date();
@@ -1507,7 +1508,7 @@ export class AppointmentComponentList implements OnInit {
         this.AppointmentDate = new Date(pndate);
     }
     AddAppointment(date: any, time: any, doctorId: any) {
-        
+
         if (this.ControlRights.CreateRights) {
             this.AppointmentModel = new emr_Appointment();
             var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));
@@ -1520,7 +1521,7 @@ export class AppointmentComponentList implements OnInit {
             timeB.setHours(doctorid[0].EndTime.split(":")[0], doctorid[0].EndTime.split(":")[1], doctorid[0].EndTime.split(":")[2]);
             if (timeA <= slotTime && timeB >= slotTime) {
                 if (this.Rights.indexOf(12) > -1) {
-                    
+
                     this.AppointmentModel.ServiceId = this.ServiceType.ID;
                     this.AppointmentModel.ServiceName = this.ServiceType.ServiceName;
                     this.AppointmentModel.Price = this.ServiceType.Price;
@@ -1704,7 +1705,7 @@ export class AppointmentComponentList implements OnInit {
         this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
         this._AppointmentService
             .GetUpdatePatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-                
+
                 this.PModel.TotalRecord = m.TotalRecord;
                 if (this.GenderIds != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
@@ -1737,7 +1738,7 @@ export class AppointmentComponentList implements OnInit {
                 this.BloodList = m.BloodList;
                 this.UnitList = m.UnitList;
                 this.MadicineTypeList = m.MadicineTypeList;
-                
+
                 this.ServiceType = m.ServiceType[0];
                 this.TokenNo = m.TokenNo;
                 if (m.ServiceType != null) {
@@ -2156,6 +2157,7 @@ export class AppointmentComponentList implements OnInit {
                 this.PrescriptionModel.PatientId = id;
                 this.PrescriptionModel.ClinicId = this.CompanyObj.CompanyID;
                 this.PrescriptionModel.DoctorId = m.ResultSet.Doctorid;
+                this.PrescriptionModel.Notes = m.ResultSet.Instruction;
                 this.MedicineList = m.ResultSet.MedicineList;
                 var appointfind = m.ResultSet.AppointmentList.filter(a => a.ID == AppId);
                 if (appointfind.length > 0 && appointfind[0].AppointmentTime != null && this.PrescriptionModel.IsCreateAppointment == true)
@@ -2174,7 +2176,7 @@ export class AppointmentComponentList implements OnInit {
                 this.InvestigationsList = [];
                 this.DiagnosisList = [];
                 this.emr_vital_dynamicArray = [];
-                
+
 
                 m.ResultSet.vitallist.forEach((item, index) => {
                     this.emr_vital_dynamicArray.push(item);
@@ -2758,7 +2760,7 @@ export class AppointmentComponentList implements OnInit {
             }
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray.filter(a => a.MedicineName != null);
             this.PrescriptionModel.AppointmentId = this.AppointId;
-            
+
             this._AppointmentService.PrescriptionSave(this.PrescriptionModel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
@@ -2964,7 +2966,6 @@ export class AppointmentComponentList implements OnInit {
                 }
             } else
                 this.toastr.Error('Error', m.ErrorMessage);
-            //this.AppointId = null;
             this.loader.HideLoader();
         });
     }
@@ -3026,9 +3027,12 @@ export class AppointmentComponentList implements OnInit {
                     if (this.PatientRXmodel.ClinicIogo != null)
                         this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + result.ResultSet.patientInfo.ClinicIogo;
                     this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
+                    this.PrescriptionModel.Gender = result.ResultSet.patientInfo.Gender;
+                    this.PrescriptionModel.Mobile = result.ResultSet.patientInfo.Mobile;
                 }
+                this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
+                this.PatientRXmodel.FollowUpDate = result.ResultSet.Model.FollowUpDate;
 
-                
                 if (result.ResultSet.doctor.length > 0)
                     this.DoctorInfo = result.ResultSet.doctor[0];
                 if (this.DoctorInfo.HeaderDescription) {
@@ -3048,7 +3052,7 @@ export class AppointmentComponentList implements OnInit {
                     this.PatientRXmodel.Age = "";
                 }
                 this.PatientRXmodel.AppointmentDate = this._CommonService.GetFormatDate(this.PrescriptionModel.AppointmentDate);
-                
+
                 this.PatientVitalList = result.ResultSet.vitallist;
                 var Weight = result.ResultSet.vitallist.filter(a => a.Name == "Weight");
                 if (Weight.length == 0)
@@ -3067,23 +3071,7 @@ export class AppointmentComponentList implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_complaint_dynamicArray.push(item);
                     });
-                    //this.ComplaintList.forEach((item, index) => {
-                    //    var list1 = this.PrescriptionModel.emr_prescription_complaint.filter(a => a.ComplaintId == item.id);
-                    //    if (list1.length == 0 || list1 == undefined) {
-                    //        item.IsSelected = false;
-                    //        item.ComplaintId = item.id;
-                    //        this.emr_prescription_complaint_dynamicArray.push(item);
-                    //    }
-                    //});
                 }
-                //else {
-                //    this.ComplaintList.forEach((item, index) => {
-                //        item.IsSelected = false;
-                //        item.ComplaintId = item.id;
-                //        this.emr_prescription_complaint_dynamicArray.push(item);
-
-                //    });
-                //}
 
                 if (this.PrescriptionModel.emr_prescription_diagnos != null) {
                     this.PrescriptionModel.emr_prescription_diagnos.forEach((item, index) => {
@@ -3097,23 +3085,7 @@ export class AppointmentComponentList implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_diagnos_dynamicArray.push(item);
                     });
-                    //this.DiagnosisList.forEach((item, index) => {
-                    //    var list1 = this.PrescriptionModel.emr_prescription_diagnos.filter(a => a.DiagnosId == item.id);
-                    //    if (list1.length == 0 || list1 == undefined) {
-                    //        item.IsSelected = false;
-                    //        item.DiagnosId = item.id;
-                    //        this.emr_prescription_diagnos_dynamicArray.push(item);
-                    //    }
-                    //});
                 }
-                //else {
-                //    this.DiagnosisList.forEach((item, index) => {
-                //        item.IsSelected = false;
-                //        item.DiagnosId = item.id;
-                //        this.emr_prescription_diagnos_dynamicArray.push(item);
-
-                //    });
-                //}
 
                 if (this.PrescriptionModel.emr_prescription_investigation != null) {
                     this.PrescriptionModel.emr_prescription_investigation.forEach((item, index) => {
@@ -3127,22 +3099,7 @@ export class AppointmentComponentList implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_investigation_dynamicArray.push(item);
                     });
-                    //this.InvestigationsList.forEach((item, index) => {
-                    //    var list1 = this.PrescriptionModel.emr_prescription_investigation.filter(a => a.InvestigationId == item.id);
-                    //    if (list1.length == 0 || list1 == undefined) {
-                    //        item.IsSelected = false;
-                    //        item.InvestigationId = item.id;
-                    //        this.emr_prescription_investigation_dynamicArray.push(item);
-                    //    }
-                    //});
                 }
-                //else {
-                //    this.InvestigationsList.forEach((item, index) => {
-                //        item.IsSelected = false;
-                //        item.InvestigationId = item.id;
-                //        this.emr_prescription_investigation_dynamicArray.push(item);
-                //    });
-                //}
 
                 if (this.PrescriptionModel.emr_prescription_observation != null) {
                     this.PrescriptionModel.emr_prescription_observation.forEach((item, index) => {
@@ -3156,23 +3113,7 @@ export class AppointmentComponentList implements OnInit {
                             item.IsSelected = false;
                         this.emr_prescription_observation_dynamicArray.push(item);
                     });
-                    //this.ObservationList.forEach((item, index) => {
-                    //    var list1 = this.PrescriptionModel.emr_prescription_observation.filter(a => a.ObservationId == item.id);
-                    //    if (list1.length == 0 || list1 == undefined) {
-                    //        item.IsSelected = false;
-                    //        item.ObservationId = item.id;
-                    //        this.emr_prescription_observation_dynamicArray.push(item);
-                    //    }
-                    //});
                 }
-                //else {
-                //    this.ObservationList.forEach((item, index) => {
-                //        item.IsSelected = false;
-                //        item.ObservationId = item.id;
-                //        this.emr_prescription_observation_dynamicArray.push(item);
-
-                //    });
-                //}
 
                 if (this.PrescriptionModel.emr_prescription_treatment != null) {
                     this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
@@ -3196,6 +3137,20 @@ export class AppointmentComponentList implements OnInit {
 
             this.loader.HideLoader();
         });
+    }
+    OnChangeDoctor() {
+        this.loader.ShowLoader();
+        if (this.PrescriptionModel.PatientName == null || this.PrescriptionModel.PatientName == "")
+            this.PrescriptionModel.PatientId = null;
+        if (this.PrescriptionModel.PatientId != null && this.PrescriptionModel.DoctorId != null) {
+            var selectdate = this._CommonService.GetFormatDate(new Date());
+            this._PrescriptionService.PrescriptionLoad(this.PrescriptionModel.PatientId.toString(), this.PrescriptionModel.DoctorId.toString(), selectdate).then(m => {
+               this.PrescriptionModel.Notes = m.ResultSet.Instruction;
+                this.loader.HideLoader();
+            });
+        } else {
+            this.loader.HideLoader();
+        }
     }
     AddFavorite(val: any, Type: any) {
         if (val != undefined && val != null) {

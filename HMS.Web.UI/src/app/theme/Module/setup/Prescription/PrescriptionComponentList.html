@@ -180,15 +180,11 @@
         <div style="display:flex; justify-content:space-between; border-bottom:1px solid #5e72e4; margin-bottom:8px; padding-bottom:6px;">
             <div style="width:30%;">
                 <label style="font-size:12px; font-weight:bold;">P/Name: </label>
-                <label style="border:0; border-bottom:1px solid #aaa; width:65%; font-size:12px; outline:none;">{{PatientRXmodel.PatientName}}</label>
+                <label style="border:0; border-bottom:1px solid #aaa; width:65%; font-size:12px; outline:none;">{{PatientRXmodel.PatientName}} <span>({{PatientRXmodel.Mobile}})</span></label>
             </div>
             <div style="width:140px;">
                 <label style="font-size:12px; font-weight:bold;">Age/Sex: </label>
-                <label style="border:0; border-bottom:1px solid #aaa; width:60px; font-size:12px; outline:none;">{{PatientRXmodel.Age}}</label>
-            </div>
-            <div style="width:140px;">
-                <label style="font-size:12px; font-weight:bold;">Weight: </label>
-                <label style="border:0; border-bottom:1px solid #aaa; width:60px; font-size:12px; outline:none;">{{ PatientRXmodel.Weight ? PatientRXmodel.Weight : '-' }}</label>
+                <label style="border:0; border-bottom:1px solid #aaa; width:60px; font-size:12px; outline:none;">{{PatientRXmodel.Age}}<span> /{{PatientRXmodel.Gender}}</span></label>
             </div>
             <div style="width:140px; text-align:right;">
                 <label style="font-size:12px; font-weight:bold;">Date: </label>
@@ -201,29 +197,26 @@
 
             <!-- Left Sidebar -->
             <div style="width:28%; padding-right:10px; font-size:13px; color:#343434;">
-                <div style="margin-bottom:12px;" *ngIf="PatientVitalList.length > 0">
-                    <strong style="font-size:18px;">Vitals:</strong>
-                    <div *ngFor="let d of PatientVitalList">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
-                </div>
-
-                <div style="margin-bottom:12px;" *ngIf="emr_prescription_diagnos_dynamicArray.length > 0">
-                    <strong style="font-size:18px;">Diagnoses:</strong>
-                    <div *ngFor="let d of emr_prescription_diagnos_dynamicArray">{{d.Diagnos}}</div>
-                </div>
-
                 <div style="margin-bottom:12px;" *ngIf="emr_prescription_complaint_dynamicArray.length > 0">
                     <strong style="font-size:18px;">Complaint:</strong>
                     <div *ngFor="let d of emr_prescription_complaint_dynamicArray">{{d.Complaint}}</div>
                 </div>
 
+                <div style="margin-bottom:12px;" *ngIf="PatientVitalList.length > 0">
+                    <strong style="font-size:18px;">Vitals:</strong>
+                    <div *ngFor="let d of PatientVitalList">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
+                </div>
+                <div style="margin-bottom:12px;" *ngIf="emr_prescription_observation_dynamicArray.length > 0">
+                    <strong style="font-size:18px;">Examination:</strong>
+                    <div *ngFor="let d of emr_prescription_observation_dynamicArray">{{d.Observation}}</div>
+                </div>
                 <div style="margin-bottom:12px;" *ngIf="emr_prescription_investigation_dynamicArray.length > 0">
                     <strong style="font-size:18px;">Investigation:</strong>
                     <div *ngFor="let d of emr_prescription_investigation_dynamicArray">{{d.Investigation}}</div>
                 </div>
-
-                <div style="margin-bottom:12px;" *ngIf="emr_prescription_observation_dynamicArray.length > 0">
-                    <strong style="font-size:18px;">Examination:</strong>
-                    <div *ngFor="let d of emr_prescription_observation_dynamicArray">{{d.Observation}}</div>
+                <div style="margin-bottom:12px;" *ngIf="emr_prescription_diagnos_dynamicArray.length > 0">
+                    <strong style="font-size:18px;">Diagnoses:</strong>
+                    <div *ngFor="let d of emr_prescription_diagnos_dynamicArray">{{d.Diagnos}}</div>
                 </div>
             </div>
 
@@ -271,7 +264,12 @@
                 <div style="font-size:12px; margin:0; line-height:normal;">
                     <span>{{PatientRXmodel.Notes}}</span>
                 </div>
+                <div>
+                    <label>Follow Up:</label>
+                    <label>{{PatientRXmodel.FollowUpDate| date:'dd-MMM-yyyy'}}</label>
+                </div>
             </div>
+            
         </div>
     </div>
 

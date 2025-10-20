@@ -122,6 +122,7 @@ export class ApplicationUserComponentForm implements OnInit {
             IsActivated: [''],
             UserImage: [''],
             RepotFooter: [''],
+            Instruction: [''],
             Pwd: ['', [Validators.required, <any>Validators.minLength(6)]],
         });
         $(".toggle-password").click(function () {

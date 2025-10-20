@@ -12,6 +12,7 @@ using HMS.Web.API.Interface;
 using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using NPOI.Util;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
@@ -349,6 +350,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                             z.Mobile,
                             z.Age,
                             ClinicIogo = z.adm_company.CompanyLogo,
+                            Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
                         }).FirstOrDefault();
                     var role = _adm_user_companyService.Queryable()
                      .Where(u => u.UserID == UserID && u.CompanyID == CompanyID)
@@ -440,260 +442,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResponse;
         }
-        //[HttpPost]
-        //[HttpGet]
-        //[ActionName("Save")]
-        //public async Task<ResponseInfo> Save(emr_prescription_mf Model)
-        //{
-        //    var objResponse = new ResponseInfo();
-        //    try
-        //    {
-        //        //if (!ModelState.IsValid)
-        //        //{
-        //        //    objResponse.IsSuccess = false;
-        //        //    objResponse.ErrorMessage = MessageStatement.BadRequest;
-        //        //    return objResponse;
-        //        //}
-        //        decimal CompanyID = Request.CompanyID();
-        //        decimal UserID = Request.LoginID();
-
-        //        List<emr_prescription_complaint> emr_prescription_complaint = new List<emr_prescription_complaint>();
-        //        // emr_prescription_complaint.AddRange(Model.emr_prescription_complaint);
-
-        //        List<emr_prescription_diagnos> emr_prescription_diagnos = new List<emr_prescription_diagnos>();
-        //        //emr_prescription_diagnos.AddRange(Model.emr_prescription_diagnos);
-
-        //        List<emr_prescription_investigation> emr_prescription_investigation = new List<emr_prescription_investigation>();
-        //        //emr_prescription_investigation.AddRange(Model.emr_prescription_investigation);
-
-        //        List<emr_prescription_observation> emr_prescription_observation = new List<emr_prescription_observation>();
-        //        //emr_prescription_observation.AddRange(Model.emr_prescription_observation);
-
-        //        List<emr_prescription_treatment> emr_prescription_treatment = new List<emr_prescription_treatment>();
-        //        List<emr_prescription_treatment_template> emr_prescription_treatment_template = new List<emr_prescription_treatment_template>();
-
-        //        // emr_prescription_treatment.AddRange(Model.emr_prescription_treatment);
-
-        //        DataAccessManager dataAccessManager = new DataAccessManager();
-        //        var ht = new Hashtable();
-        //        ht.Add("@CompanyID", CompanyID);
-        //        ht.Add("@PatientId", Model.PatientId);
-        //        var AllData = dataAccessManager.GetDataSet("SP_GetPrescriptionMaxIds", ht);
-
-        //        var findPatient = AllData.Tables[0];//_emr_appointment_mfService.Queryable().Where(a => a.CompanyId == CompanyID && a.PatientId == Model.PatientId).FirstOrDefault();
-
-        //        decimal ID = Convert.ToDecimal(AllData.Tables[1].Rows[0]["ID"].ToString());
-        //        //if (_service.Queryable().Count() > 0)
-        //        //    ID = _service.Queryable().Max(e => e.ID) + 1;
-        //        Model.ID = ID;
-        //        Model.CompanyID = Request.CompanyID();
-        //        Model.CreatedBy = Request.LoginID();
-        //        Model.CreatedDate = Request.DateTimes();
-        //        Model.ModifiedBy = Request.LoginID();
-        //        Model.ModifiedDate = Request.DateTimes();
-        //        if (findPatient == null)
-        //        {
-        //            if (Model.FollowUpTime == null)
-        //                Model.FollowUpTime = DateTime.Now.TimeOfDay;
-        //        }
-        //        decimal complaintID = Convert.ToDecimal(AllData.Tables[2].Rows[0]["complaintID"].ToString());
-
-        //        foreach (emr_prescription_complaint item in Model.emr_prescription_complaint)
-        //        {
-        //            emr_prescription_complaint obj = new emr_prescription_complaint();
-        //            obj.ID = complaintID;
-        //            obj.PrescriptionId = ID;
-        //            obj.PatientId = Model.PatientId;
-        //            obj.CompanyID = CompanyID;
-        //            obj.Complaint = item.Complaint;
-        //            obj.ComplaintId = item.ComplaintId;
-        //            obj.CreatedBy = Request.LoginID();
-        //            obj.CreatedDate = Request.DateTimes();
-        //            obj.ModifiedBy = Request.LoginID();
-        //            obj.ModifiedDate = Request.DateTimes();
-        //            emr_prescription_complaint.Add(obj);
-        //            complaintID++;
-        //        }
-        //        Model.emr_prescription_complaint = null;
-        //        Model.emr_prescription_complaint = emr_prescription_complaint;
-        //        //insert diagnos
-        //        decimal diagnosID = Convert.ToDecimal(AllData.Tables[3].Rows[0]["diagnosID"].ToString());
-
-        //        foreach (emr_prescription_diagnos item in Model.emr_prescription_diagnos)
-        //        {
-        //            item.ID = diagnosID;
-        //            item.PrescriptionId = ID;
-        //            item.PatientId = Model.PatientId;
-        //            item.CompanyID = CompanyID;
-        //            item.Diagnos = item.Diagnos;
-        //            item.DiagnosId = item.DiagnosId;
-        //            item.CreatedBy = Request.LoginID();
-        //            item.CreatedDate = Request.DateTimes();
-        //            item.ModifiedBy = Request.LoginID();
-        //            item.ModifiedDate = Request.DateTimes();
-        //            emr_prescription_diagnos.Add(item);
-        //            diagnosID++;
-        //        }
-        //        Model.emr_prescription_diagnos = null;
-        //        Model.emr_prescription_diagnos = emr_prescription_diagnos;
-        //        //insert investigation
-        //        decimal investigationID = Convert.ToDecimal(AllData.Tables[4].Rows[0]["investigationID"].ToString());
-        //        foreach (emr_prescription_investigation item in Model.emr_prescription_investigation)
-        //        {
-        //            item.ID = investigationID;
-        //            item.PrescriptionId = ID;
-        //            item.PatientId = Model.PatientId;
-        //            item.CompanyID = CompanyID;
-        //            item.Investigation = item.Investigation;
-        //            item.InvestigationId = item.InvestigationId;
-        //            item.CreatedBy = Request.LoginID();
-        //            item.CreatedDate = Request.DateTimes();
-        //            item.ModifiedBy = Request.LoginID();
-        //            item.ModifiedDate = Request.DateTimes();
-        //            emr_prescription_investigation.Add(item);
-        //            investigationID++;
-        //        }
-        //        Model.emr_prescription_investigation = null;
-        //        Model.emr_prescription_investigation = emr_prescription_investigation;
-        //        //insert Observation
-        //        decimal observationID = Convert.ToDecimal(AllData.Tables[5].Rows[0]["observationID"].ToString());
-        //        foreach (emr_prescription_observation item in Model.emr_prescription_observation)
-        //        {
-        //            item.ID = observationID;
-        //            item.PrescriptionId = ID;
-        //            item.PatientId = Model.PatientId;
-        //            item.CompanyID = CompanyID;
-        //            item.Observation = item.Observation;
-        //            item.ObservationId = item.ObservationId;
-        //            item.CreatedBy = Request.LoginID();
-        //            item.CreatedDate = Request.DateTimes();
-        //            item.ModifiedBy = Request.LoginID();
-        //            item.ModifiedDate = Request.DateTimes();
-        //            emr_prescription_observation.Add(item);
-        //            observationID++;
-        //        }
-        //        Model.emr_prescription_observation = null;
-        //        Model.emr_prescription_observation = emr_prescription_observation;
-        //        //insert treatment
-        //        decimal treatmentID = Convert.ToDecimal(AllData.Tables[6].Rows[0]["treatmentID"].ToString());
-
-        //        foreach (emr_prescription_treatment item in Model.emr_prescription_treatment)
-        //        {
-        //            item.ID = treatmentID;
-        //            item.PrescriptionId = ID;
-        //            item.PatientId = Model.PatientId;
-        //            item.CompanyID = CompanyID;
-        //            item.MedicineId = item.MedicineId;
-        //            item.CreatedBy = Request.LoginID();
-        //            item.CreatedDate = Request.DateTimes();
-        //            item.ModifiedBy = Request.LoginID();
-        //            item.ModifiedDate = Request.DateTimes();
-        //            emr_prescription_treatment.Add(item);
-        //            treatmentID++;
-        //        }
-        //        Model.emr_prescription_treatment = null;
-        //        Model.emr_prescription_treatment_template = null;
-        //        Model.emr_prescription_treatment = emr_prescription_treatment;
-        //        if (Model.IsTemplate)
-        //        {
-        //            decimal TemplateID = Convert.ToDecimal(AllData.Tables[7].Rows[0]["TemplateID"].ToString());
-        //            emr_prescription_treatment_template obj = new emr_prescription_treatment_template();
-        //            obj.ID = TemplateID;
-        //            obj.TemplateName = Model.TemplateName;
-        //            obj.PrescriptionId = ID;
-        //            obj.CompanyID = Request.CompanyID();
-        //            obj.CreatedBy = Request.LoginID();
-        //            obj.CreatedDate = Request.DateTimes();
-        //            obj.ModifiedBy = Request.LoginID();
-        //            obj.ModifiedDate = Request.DateTimes();
-        //            emr_prescription_treatment_template.Add(obj);
-        //            Model.emr_prescription_treatment_template = emr_prescription_treatment_template;
-        //        }
-        //        emr_appointment_mf appObj = new emr_appointment_mf();
-        //        if (Model.IsCreateAppointment || findPatient == null)
-        //        {
-        //            decimal AppID = Convert.ToDecimal(AllData.Tables[8].Rows[0]["AppID"].ToString());
-        //            appObj.ID = AppID;
-        //            appObj.StatusId = (int)sys_dropdown_mfEnum.StatusId;
-        //            appObj.CompanyId = Request.CompanyID();
-        //            appObj.PatientId = Model.PatientId;
-        //            appObj.DoctorId = Model.DoctorId;
-        //            appObj.AppointmentDate = Model.AppointmentDate;
-
-        //            appObj.AppointmentTime = (TimeSpan)Model.FollowUpTime;
-        //            appObj.Notes = Model.Notes;
-        //            appObj.CreatedBy = Request.LoginID();
-        //            appObj.CreatedDate = Request.DateTimes();
-        //            appObj.ModifiedBy = Request.LoginID();
-        //            appObj.ModifiedDate = Request.DateTimes();
-        //        }
-
-
-        //        string appointment_mfData = JsonConvert.SerializeObject(appObj, new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });
-
-        //        string JsonData = JsonConvert.SerializeObject(Model, new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });
-
-        //        try
-        //        {
-        //            Hashtable ht1 = new Hashtable();
-        //            ht1.Add("@json", JsonData);
-        //            ht1.Add("@AppmfData", appointment_mfData);
-        //            dataAccessManager.ExecuteNonQuery("SP_InsertPrescription", ht1);
-
-        //            //await _unitOfWorkAsync.SaveChangesAsync();
-        //            objResponse.Message = MessageStatement.Save;
-        //            objResponse.IsSuccess = true;
-
-        //            var ids = Model?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
-        //            var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-        //            var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
-        //            var MedicineList = itemList.Union(medicineList).ToList();
-        //            var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
-        //                .Select(z => new
-        //                {
-        //                    z.PatientName,
-        //                    z.Mobile,
-        //                    z.Age,
-        //                    ClinicIogo = z.adm_company.CompanyLogo,
-        //                }).FirstOrDefault();
-
-        //            var doctorInfo = _emr_patientService.DoctorList(CompanyID, UserID);
-        //            var doctor = doctorInfo.DoctList.AsEnumerable().Where(a => a.ID == Model.PatientId).FirstOrDefault();
-        //            var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(Model.AppointmentDate)).Select(a => new
-        //            {
-        //                Measure = a.Measure,
-        //                Unit = a.sys_drop_down_value.Unit,
-        //                Name = a.sys_drop_down_value.Value
-        //            }).ToList();
-        //            objResponse.ResultSet = new
-        //            {
-        //                Model = Model,
-        //                patientInfo = patientInfo,
-        //                doctor = doctor,
-        //                vitallist = vitallist,
-        //                MedicineList = MedicineList,
-        //            };
-
-        //        }
-        //        catch (DbUpdateException)
-        //        {
-        //            if (ModelExists(Model.ID.ToString()))
-        //            {
-        //                objResponse.IsSuccess = false;
-        //                objResponse.ErrorMessage = MessageStatement.Conflict;
-        //                return objResponse;
-        //            }
-        //            throw;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        objResponse.IsSuccess = false;
-        //        objResponse.ErrorMessage = ex.Message;
-        //        Logger.Trace.Error(ex);
-        //    }
-        //    return objResponse;
-        //}
         public string WorkingHours(DateTime? TimeIn, decimal? DoctorId)
         {
             var slotTime = _adm_userService.Queryable().Where(a => a.ID == DoctorId).FirstOrDefault().SlotTime;
@@ -979,6 +727,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                             z.Age,
                             Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
                             ClinicIogo = z.adm_company.CompanyLogo,
+                            z.Mobile,
                         }).FirstOrDefault();
                     var role = _adm_user_companyService.Queryable()
                      .Where(u => u.UserID == userid && u.CompanyID == CompanyID)
@@ -1516,7 +1265,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.PatientId,
                         z.AppointmentDate,
                         z.Notes,
+                        z.FollowUpDate,
+                        z.FollowUpTime,
                         PatientName = z.emr_patient_mf.PatientName,
+                        Mobile = z.emr_patient_mf.Mobile,
+                        Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",
                         ClinicIogo = z.adm_company.CompanyLogo,
                         Age = z.emr_patient_mf.Age,
                         z.emr_prescription_complaint,
@@ -1565,7 +1318,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         DesignationUrdu = mf.DesignationUrdu,
                         NameUrdu = mf.NameUrdu,
                         HeaderDescription = mf.HeaderDescription,
-                        HeaderDescriptionUrdu=mf.HeaderDescriptionUrdu,
+                        HeaderDescriptionUrdu = mf.HeaderDescriptionUrdu,
                         IsOverLap = mf.IsOverLap
                     };
                 }).ToList();
@@ -2201,7 +1954,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Where(a => a.PatientId == patientid
              && a.CompanyId == companyId
              && a.DoctorId == doctorId)
-    .GroupBy(a => new { a.PatientId, Date = DbFunctions.TruncateTime(a.AppointmentDate) }) // group by patient + date only
+    .GroupBy(a => new { a.PatientId, Date = DbFunctions.TruncateTime(a.AppointmentDate)}) // group by patient + date only
     .Select(g => new
     {
         g.Key.PatientId,
@@ -2214,8 +1967,9 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var appointmentDates = reslt.Select(a => new
                 {
                     a.PatientId,
-                    AppointmentDate = a.AppointmentDate.Value.ToString("yyyy-MM-dd")
+                    AppointmentDate = a.AppointmentDate.Value.ToString("yyyy-MM-dd"),
                 }).ToList();
+                var userObj = _adm_userService.Queryable().Where(a => a.ID == doctorId).FirstOrDefault();
                 var result = _service.Queryable().Where(e => DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date) && e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).FirstOrDefault();
 
                 var prescriptionComplaints = new List<emr_prescription_complaint>();
@@ -2445,6 +2199,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     IsBackDatedAppointment = IsBackDatedAppointment,
                     vitalList = vitalObj,
                     MedicineList = MedicineList,
+                    Instruction = userObj == null ? "" : userObj.Instruction,
                 };
             }
             catch (Exception ex)

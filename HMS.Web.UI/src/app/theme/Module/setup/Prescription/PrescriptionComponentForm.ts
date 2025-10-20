@@ -535,6 +535,8 @@ export class PrescriptionComponentForm implements OnInit {
                     this.CurntPrevDateList.push({ "AppointmentDate": this._CommonService.GetFormatDate(new Date()) });
                     this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(new Date());
                 }
+
+                this.PrescriptionModel.Notes = m.ResultSet.Instruction;
                 this.emr_vital_dynamicArray = [];
                 m.ResultSet.vitalList.forEach((item, index) => {
                     this.emr_vital_dynamicArray.push(item);
@@ -787,8 +789,10 @@ export class PrescriptionComponentForm implements OnInit {
             this.emr_prescription_observation_dynamicArray = [];
             this.GenderList = m.ResultSet.GenderList;
             this.DoctorList = m.ResultSet.DoctorList;
-            if (this.DoctorList.length == 1)
+            if (this.DoctorList.length == 1) {
                 this.PrescriptionModel.DoctorId = this.DoctorList[0].ID;
+                this.PrescriptionModel.Notes = this.DoctorList[0].Instruction;
+            }
             this.DoctorClanderList = m.ResultSet.DoctorList;
             this.ClinicList = m.ResultSet.ClinicList;
             if (this.ClinicList.length == 1)
@@ -1980,10 +1984,14 @@ export class PrescriptionComponentForm implements OnInit {
                 this.MedicineList = result.ResultSet.MedicineList;
                 if (result.ResultSet.patientInfo != null) {
                     this.PatientRXmodel = result.ResultSet.patientInfo;
-                    this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
+                    this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;  
+                    this.PatientRXmodel.Gender = result.ResultSet.patientInfo.Gender;
+                    this.PatientRXmodel.Mobile = result.ResultSet.patientInfo.Mobile;                  
                     if (this.PatientRXmodel.ClinicIogo != null)
                         this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + result.ResultSet.patientInfo.ClinicIogo;
                 }
+                this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
+                this.PatientRXmodel.FollowUpDate = result.ResultSet.Model.FollowUpDate;
                 if (result.ResultSet.doctor.length > 0)
                     this.DoctorInfo = result.ResultSet.doctor[0];
                 if (this.DoctorInfo.HeaderDescription) {

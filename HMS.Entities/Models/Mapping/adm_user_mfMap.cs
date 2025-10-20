@@ -80,6 +80,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.HeaderDescription).HasColumnName("HeaderDescription");
             this.Property(t => t.HeaderDescriptionUrdu).HasColumnName("HeaderDescriptionUrdu");
             this.Property(t => t.NameUrdu).HasColumnName("NameUrdu");
+            this.Property(t => t.Instruction).HasColumnName("Instruction");
             // Relationships
             this.HasOptional(t => t.sys_drop_down_value)
                 .WithMany(t => t.adm_user_mf)

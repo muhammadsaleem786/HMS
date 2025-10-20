@@ -579,20 +579,19 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Select(a => a.DoctorId)
     .FirstOrDefaultAsync();
                 var prescription = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId && DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date)).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).OrderByDescending(a => a.ID).FirstOrDefault();
-
                 var reslt = await _service.Queryable()
      .Where(a => a.PatientId == patientid
               && a.CompanyId == companyId)
      .GroupBy(a => new { a.ID, a.PatientId, Date = DbFunctions.TruncateTime(a.AppointmentDate) }) // group by patient + date only
      .Select(g => new
      {
+
          g.Key.ID,
          g.Key.PatientId,
          AppointmentDate = g.Key.Date
      })
      .OrderByDescending(x => x.AppointmentDate)
      .ToListAsync();
-
                 // if you really need string format "yyyy-MM-dd"
                 var appointmentDates = reslt.Select(a => new
                 {
@@ -647,7 +646,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             : mf.StatusId == 25 ? "#6265fd"
             : ""
    }).ToListAsync();
-
                 var pagedEvents = rawEventsQuery?.Select(mf => new
                 {
                     mf.ID,
@@ -671,7 +669,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                   .ToString("yyyy-MM-ddTHH:mm:ss"),
                 }).ToList();
                 var patientinfo = _emr_patientService.Queryable().Where(a => a.ID == patientid && a.CompanyId == companyId).FirstOrDefault();
-
                 var CurntPrevDateList = appointmentDates;
                 var ComplaintList = complaintList;
                 var ObservationList = observationList;
@@ -688,11 +685,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var prescription_diagnos = prescription?.emr_prescription_diagnos ?? new List<emr_prescription_diagnos>();
                 var prescription_investigation = prescription?.emr_prescription_investigation ?? new List<emr_prescription_investigation>();
                 var prescription_observation = prescription?.emr_prescription_observation ?? new List<emr_prescription_observation>();
-
                 var ids = prescription?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
                 var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine });
                 var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name });
                 var MedicineList = medicineList.Union(itemList).ToList();
+                var userobj = _adm_userService.Queryable().Where(a => a.ID == doctorId).FirstOrDefault();
                 var vitalObj = new List<object>();
                 if (prescription != null)
                 {
@@ -711,7 +708,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         })
                         .ToList<object>();
                 }
-
                 objResponse.ResultSet = new
                 {
                     patientInfo = patientinfo,
@@ -732,6 +728,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     TittleList = TittleList,
                     MedicineList = MedicineList,
                     vitallist = vitalObj,
+                    Instruction = userobj == null ? "" : userobj.Instruction,
                 };
             }
             catch (Exception ex)
@@ -800,7 +797,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
                 var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
                 var MedicineList = itemList.Union(medicineList).ToList();
-
                 var ipdAdmissions = _ipd_admissionService.Queryable()
                                  .Where(a => a.PatientId == patientid && a.CompanyId == companyId)
                                  .Select(a => new
@@ -2227,7 +2223,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         }
         [HttpGet]
         [ActionName("AdmitPreviousAppointmentLoad")]
-        public PaginationResult AdmitPreviousAppointmentLoad(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId,string admitId, bool IgnorePaging = false)
+        public PaginationResult AdmitPreviousAppointmentLoad(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, string admitId, bool IgnorePaging = false)
         {
             var objResult = new PaginationResult();
             try

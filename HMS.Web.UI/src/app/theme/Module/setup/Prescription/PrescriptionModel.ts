@@ -24,6 +24,8 @@
     DoctorId: number;
     ClinicId: number;
     PatientName: string;
+    Gender: string;
+    Mobile: string;
     FollowUpDate: Date;
     FollowUpNotes: string;
     FollowUpTime: string;

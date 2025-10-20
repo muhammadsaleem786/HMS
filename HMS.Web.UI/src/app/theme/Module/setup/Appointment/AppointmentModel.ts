@@ -116,9 +116,11 @@ export class patientInfo {
     PatientName: string;
     Age: string;
     Gender: string;
+    Mobile: string;
     AppointmentDate: string;
     ClinicIogo: string;
     Notes: string;
+    FollowUpDate: string;
     Weight: string;
 }
 export class DoctorInfo {

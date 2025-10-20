@@ -147,6 +147,7 @@ namespace HMS.Entities.Models
         public string UserImage { get; set; }
         public string RepotFooter { get; set; }
         public string ActivationToken { get; set; }
+        public string Instruction { get; set; }
         public string Qualification { get; set; }
         public string Designation { get; set; }
 

@@ -209,10 +209,6 @@
                                     </div>
                                 </div>
 
-
-
-
-
                                 <div class="row">
                                     <div class="col-sm-4 text-right">
                                         <label>Qualification</label>
@@ -239,7 +235,7 @@
                                         </div>
                                     </div>
                                 </div>
-                               
+
                                 <div class="row">
                                     <div class="col-sm-4 text-right">
                                         <label>Specialty</label>
@@ -251,6 +247,16 @@
                                                     {{item.name}}
                                                 </option>
                                             </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4 text-right">
+                                        <label>Instruction</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <input type="text" formControlName="Instruction" [(ngModel)]="model.Instruction" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -275,7 +281,7 @@
                                     <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
                                         <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
                                             <div [innerHTML]="model.safeHeaderDescription" class="col-8">
-                                                </div>
+                                            </div>
                                             <div class="col-4 text-right">
                                                 <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 70px;">
                                             </div>
@@ -293,7 +299,7 @@
                                     <div class="modal-header" style="font-size:12px;line-height:normal;padding: 0 15px; color:#fff;">
                                         <div class="row" style="color: #5e72e4; width: 100%; margin: 0; padding: 15px 0;">
                                             <div [innerHTML]="model.safeHeaderDescriptionUrdu" class="col-8">
-                                                  </div>
+                                            </div>
                                             <div class="col-4 text-right">
                                                 <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 70px;">
                                             </div>
@@ -310,7 +316,7 @@
                             </div>
 
                             <div class="col-sm-12">
-                                    
+
                                 <div class="row">
                                     <div class="col-sm-2 text-right">
                                         <label>Header Description</label>

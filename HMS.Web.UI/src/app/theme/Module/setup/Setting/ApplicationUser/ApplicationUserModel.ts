@@ -27,6 +27,7 @@ export class ApplicationUserModel {
     safeHeaderDescription: SafeHtml;
     safeHeaderDescriptionUrdu: SafeHtml;
     HeaderDescriptionUrdu: string;
+    Instruction: string;
     NameUrdu: string;
     IsActivated: boolean = false;
     Type: string;

@@ -12,6 +12,7 @@ import { filter } from 'rxjs/operators';
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
 import { GlobalVariable } from '../../../../../AngularConfig/global';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { EncryptionService } from '../../../../../CommonService/encryption.service';
 
 declare var $: any;
 @Component({
@@ -79,8 +80,7 @@ export class ProfileUserComponentForm implements OnInit {
     };
     constructor(public _CommonService: CommonService, public _fb: FormBuilder, public route: ActivatedRoute, public _router: Router
         , public loader: LoaderService, public _ApplicationUserService: ApplicationUserService
-        , public toastr: CommonToastrService, public commonservice: CommonService, private sanitizer: DomSanitizer) {
-        //this.Keywords = this.commonservice.GetKeywords("ApplicationUser");
+        , public toastr: CommonToastrService, private sanitizer: DomSanitizer, private encrypt: EncryptionService) {
         this.ControlRights = this._CommonService.ScreenRights("4");
     }
     ngOnInit() {
@@ -196,7 +196,10 @@ export class ProfileUserComponentForm implements OnInit {
             this._ApplicationUserService.SaveOrUpdate(this.model).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
-                    this.toastr.Success(result.Message);
+                    this.toastr.Success(result.Message);               
+                    localStorage.removeItem('currentUser');
+                    var user = JSON.stringify(result.ResultSet.Model);
+                    localStorage.setItem('currentUser', this.encrypt.encryptionAES(user));
                     this._router.navigate(['home/setup']);
                 }
                 else

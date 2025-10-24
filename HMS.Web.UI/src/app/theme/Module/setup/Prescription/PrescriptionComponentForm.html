@@ -1089,7 +1089,7 @@
             }
         }
     </style>
-  <div id="print-RxPrintModal"
+<div id="print-RxPrintModal"
      style="width:210mm;
             min-height:297mm;
             margin:0 auto;
@@ -1104,8 +1104,8 @@
 
     <!-- HEADER -->
     <div style="display:flex; justify-content:space-between; align-items:start; border-bottom:3px solid #5e72e4; padding:15px;">
-        <div style="width:40%; text-align:left;">
-            <div [innerHTML]="DoctorInfo.safeHeaderDescription"></div>
+        <div style="width:40%; text-align:left; font-family: Arial, Helvetica, sans-serif;">
+            <div [innerHTML]="DoctorInfo.safeHeaderDescription" style="font-family: Arial, Helvetica, sans-serif;"></div>
         </div>
 
         <div style="width:20%; text-align:right; display:flex; align-items:center; justify-content:flex-end;">
@@ -1124,7 +1124,7 @@
     </div>
 
     <!-- BODY -->
-    <div style="padding:12px; box-sizing:border-box;">
+    <div style="padding:12px; box-sizing:border-box; font-family: Arial, Helvetica, sans-serif;">
 
         <!-- Patient Info -->
         <div style="display:flex; justify-content:space-between; border-bottom:1px solid #5e72e4; margin-bottom:8px; padding-bottom:6px;">
@@ -1147,7 +1147,7 @@
         </div>
 
         <!-- CONTENT SPLIT -->
-        <div style="display:flex; border-top:2px solid #5e72e4; padding-top:10px;">
+        <div style="display:flex; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, Helvetica, sans-serif;">
 
             <!-- LEFT SIDEBAR -->
             <div style="width:28%; padding-right:10px; font-size:13px; color:#343434;">
@@ -1180,6 +1180,10 @@
             <!-- RIGHT MAIN -->
            <!-- RIGHT MAIN -->
    <div style="width:72%; border-left:1px solid #5e72e4; padding-left:12px;">
+              <img
+                 src="../assets/app/media/img/icons/Rx.png"
+                 style="max-width:55px; max-height:55px; object-fit:contain; ">
+
                 <table style="width:100%; border-collapse:collapse; font-size:12px; line-height:normal; margin-top:5px;">
                     <thead>
                         <tr style="background:#f2f5fa;">
@@ -1191,24 +1195,66 @@
                     </thead>
                     <tbody *ngFor="let m of emr_prescription_treatment_dynamicArray" style="border-bottom:1px solid #eee;">
                         <tr>
-                            <td style="padding:2px 5px 0;">
-                                {{m.MedicineName}}
+                            <td style="padding:2px 5px 0; vertical-align: middle;">
+                               <strong style="font-size:14px;">
+                                 {{m.MedicineName}}
+                               </strong>
                               
                             </td>
-                            <td style="padding: 5px;">{{m.MedicineType}}</td>
-                            <td style="padding:0 5px;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
-                            <td style="padding:0 5px;text-align: right;" *ngIf="DoctorInfo.TemplateId==2"> <strong>{{ getDurationInUrdu(m.DurationValue) }} {{m.Duration}} </strong></td>
+                            <td style="padding: 5px;  vertical-align: middle;">{{m.MedicineType}}</td>
+                            <td style="padding:0 5px;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
+                            <td style="padding:0 5px;text-align: right;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==2"> <strong>{{ getDurationInUrdu(m.DurationValue) }} {{m.Duration}} </strong></td>
                            
                         </tr>
                         <tr>
-                            <td>
-                                  <label *ngIf="DoctorInfo.TemplateId==2 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)">
-                                    (
-                                    <span *ngIf="m.Morning > 0">{{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }} {{m.Morning}}</span>
-                                    <span *ngIf="m.AfterNoon > 0">+ {{ m.TypeId == 39 ? 'گولی دوپہر' : 'دوپہر' }} {{m.AfterNoon}}</span>
-                                    <span *ngIf="m.Evening > 0">+ {{ m.TypeId == 39 ? 'گولی شام' : 'شام' }} {{m.Evening}}</span>
-                                    <span *ngIf="m.Night > 0">+ {{ m.TypeId == 39 ? 'گولی رات' : 'رات' }} {{m.Night}}</span>
-                                    )
+                            <td style=" vertical-align: middle;">
+                                  <label *ngIf="DoctorInfo.TemplateId==2 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)" style="max-width:320px ;">
+                                    <table style="max-width:320px">
+                                        <tbody>
+                                             <tr>
+                                    <!-- Night -->
+                                    <td>
+                                        <span *ngIf="m.Night > 0" style="white-space: nowrap;">
+                                         {{ m.TypeId == 39 ? ' گولی رات' : ' رات' }}
+                                        </span>
+                                    </td>
+                                    <td *ngIf="m.Night > 0" style="width:10px;max-width:10px;text-align: left;">
+                                        {{ m.Night }}
+                                    </td>
+
+                                    <!-- Evening -->
+                                    <td>
+                                        <span *ngIf="m.Evening > 0" style="white-space: nowrap;">
+                                        + {{ m.TypeId == 39 ? ' گولی شام' : ' شام' }}
+                                        </span>
+                                    </td>
+                                    <td  *ngIf="m.Evening > 0" style="width:10px;max-width:10px;text-align: left;">
+                                        {{ m.Evening }}
+                                    </td>
+
+                                    <!-- Afternoon -->
+                                    <td>
+                                        <span *ngIf="m.AfterNoon > 0" style="white-space: nowrap;">
+                                        + {{ m.TypeId == 39 ? ' گولی دوپہر' : ' دوپہر' }}
+                                        </span>
+                                    </td>
+                                    <td *ngIf="m.AfterNoon > 0" style="width:10px;max-width:10px;text-align: left;">
+                                        {{ m.AfterNoon }}
+                                    </td>
+
+                                    <!-- Morning -->
+                                    <td>
+                                        <span *ngIf="m.Morning > 0" style="white-space: nowrap;">
+                                      +  {{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }}
+                                        </span>
+                                    </td>
+                                    <td *ngIf="m.Morning > 0" style="width:10px;max-width:10px;text-align: left;">
+                                        {{ m.Morning }}
+                                    </td>
+                                    </tr>
+
+                                        </tbody>
+                                    </table>
                                 </label>
                                 <label *ngIf="DoctorInfo.TemplateId==1 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)">
                                     (
@@ -1219,14 +1265,17 @@
                                     )
                                 </label>
                             </td>
-                                <td  colspan="3" style="padding:0 5px 2px; text-align: right;">{{m.Instructions}}</td>
+                                <td  colspan="3" style="padding:0 5px 2px; text-align: right; vertical-align: middle;">{{m.Instructions}}</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">Instructions</h3>
                 <div style="font-size:12px; margin:0; line-height:normal;">
-                    <span>{{PatientRXmodel.Notes}}</span>
+             <p>   
+            {{ PatientRXmodel.Notes }}
+            </p>
+
                 </div>
 
             </div>

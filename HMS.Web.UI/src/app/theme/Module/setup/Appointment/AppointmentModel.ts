@@ -120,6 +120,7 @@ export class patientInfo {
     AppointmentDate: string;
     ClinicIogo: string;
     Notes: string;
+    safeClinicalNote: SafeHtml;
     FollowUpDate: string;
     Weight: string;
 }

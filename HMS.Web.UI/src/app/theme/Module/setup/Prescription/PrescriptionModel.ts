@@ -1,4 +1,5 @@
-﻿export class emr_prescription_mf {
+﻿import { SafeHtml } from '@angular/platform-browser';
+export class emr_prescription_mf {
     constructor() {
         let objemr_prescription_complaint = new emr_prescription_complaint();
         this.emr_prescription_complaint.push(objemr_prescription_complaint);
@@ -35,6 +36,8 @@
     TemplateName: string;
     Email: string;
     Day: string;
+    ClinicalNote: string;
+    safeClinicalNote: SafeHtml;
     emr_prescription_complaint: Array<emr_prescription_complaint> = [];
     emr_prescription_diagnos: Array<emr_prescription_diagnos> = [];
     emr_prescription_investigation: Array<emr_prescription_investigation> = [];

@@ -300,8 +300,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     _emr_prescription_treatment_templateService.Insert(obj);
                 }
 
-                var appinfo = _emr_appointment_mfService.Queryable().Where(a => a.ID == Model.AppointmentId).FirstOrDefault();
-                if (Model.IsCreateAppointment && appinfo == null)
+                var appinfo = _emr_appointment_mfService.Queryable().Where(a => a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(Model.FollowUpDate)).FirstOrDefault();
+                if (Model.IsCreateAppointment && appinfo == null && Model.FollowUpDate != null)
                 {
                     emr_appointment_mf appObj = new emr_appointment_mf();
                     decimal AppID = 0;
@@ -312,7 +312,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     appObj.CompanyId = Request.CompanyID();
                     appObj.PatientId = Model.PatientId;
                     appObj.DoctorId = Model.DoctorId;
-                    appObj.AppointmentDate = Model.AppointmentDate;
+                    appObj.AppointmentDate =Convert.ToDateTime(Model.FollowUpDate);
                     appObj.AppointmentTime = (TimeSpan)Model.FollowUpTime;
                     appObj.Notes = Model.Notes;
                     appObj.CreatedBy = Request.LoginID();
@@ -682,7 +682,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     _emr_prescription_treatment_templateService.Insert(obj);
                 }
 
-                var appinfo = _emr_appointment_mfService.Queryable().Where(a => a.ID == Model.AppointmentId).FirstOrDefault();
+                var appinfo = _emr_appointment_mfService.Queryable().Where(a => a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(Model.FollowUpDate)).FirstOrDefault();
                 if (Model.IsCreateAppointment && appinfo == null && Model.FollowUpDate != null)
                 {
                     emr_appointment_mf appObj = new emr_appointment_mf();
@@ -1267,6 +1267,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.Notes,
                         z.FollowUpDate,
                         z.FollowUpTime,
+                        z.ClinicalNote,
                         PatientName = z.emr_patient_mf.PatientName,
                         Mobile = z.emr_patient_mf.Mobile,
                         Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",

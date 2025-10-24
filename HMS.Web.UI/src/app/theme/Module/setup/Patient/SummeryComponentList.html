@@ -870,6 +870,10 @@
 
                 <!-- LEFT SIDEBAR -->
                 <div style="width:28%; padding-right:10px; font-size:13px; color:#343434;">
+                    <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safeClinicalNote!= null">
+                        <strong style="font-size:18px; color: #d9534f;">Clinical History:</strong>
+                        <div [innerHTML]="PatientRXmodel.safeClinicalNote"></div>
+                    </div>
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_complaint_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Complaint:</strong>
                         <div *ngFor="let d of emr_prescription_complaint_dynamicArray">{{d.Complaint}}</div>
@@ -937,33 +941,33 @@
                                                         </span>
                                                     </td>
                                                     <td *ngIf="m.Night > 0" style="width:10px;max-width:10px;text-align: left;">
-                                                        {{ m.Night }}
+                                                        {{ m.Night }}<ng-container *ngIf="m.AfterNoon > 0|| m.Evening > 0|| m.Morning > 0"> + </ng-container>
                                                     </td>
 
                                                     <!-- Evening -->
                                                     <td>
                                                         <span *ngIf="m.Evening > 0" style="white-space: nowrap;">
-                                                            + {{ m.TypeId == 39 ? ' گولی شام' : ' شام' }}
+                                                            {{ m.TypeId == 39 ? ' گولی شام' : ' شام' }}
                                                         </span>
                                                     </td>
                                                     <td *ngIf="m.Evening > 0" style="width:10px;max-width:10px;text-align: left;">
-                                                        {{ m.Evening }}
+                                                        {{ m.Evening }}<ng-container *ngIf="m.AfterNoon > 0 || m.Morning > 0"> + </ng-container>
                                                     </td>
 
                                                     <!-- Afternoon -->
                                                     <td>
                                                         <span *ngIf="m.AfterNoon > 0" style="white-space: nowrap;">
-                                                            + {{ m.TypeId == 39 ? ' گولی دوپہر' : ' دوپہر' }}
+                                                            {{ m.TypeId == 39 ? ' گولی دوپہر' : ' دوپہر' }}
                                                         </span>
                                                     </td>
                                                     <td *ngIf="m.AfterNoon > 0" style="width:10px;max-width:10px;text-align: left;">
-                                                        {{ m.AfterNoon }}
+                                                        {{ m.AfterNoon }}<ng-container *ngIf="m.Morning > 0"> + </ng-container>
                                                     </td>
 
                                                     <!-- Morning -->
                                                     <td>
                                                         <span *ngIf="m.Morning > 0" style="white-space: nowrap;">
-                                                            +  {{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }}
+                                                            {{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }}
                                                         </span>
                                                     </td>
                                                     <td *ngIf="m.Morning > 0" style="width:10px;max-width:10px;text-align: left;">

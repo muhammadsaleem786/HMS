@@ -204,6 +204,7 @@ export class AppointmentComponentList implements OnInit {
     @ViewChild("Confirmation") ModelConfirmation: TemplateRef<any>;
     @ViewChild("MedicineTemplate") MedicineTemplateContent: TemplateRef<any>;
     @ViewChild("MedicinePresModal") MedicinePresModal: TemplateRef<any>;
+    @ViewChild('editorClinicalNote') editorClinicalNote!: ElementRef;
     myControl = new FormControl();
     myNameControl = new FormControl();
     openAppointmentModal(longContent) {
@@ -414,7 +415,8 @@ export class AppointmentComponentList implements OnInit {
             SelectedObservation: [''],
             SelectedDiagnos: [''],
             Day: [''],
-            FollowUpNotes: ['']
+            FollowUpNotes: [''],
+            ClinicalNote:['']
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -488,7 +490,25 @@ export class AppointmentComponentList implements OnInit {
 
         });
     }
-
+    LoadEditor() {
+        setTimeout(() => {
+            const CKEDITOR = (window as any).CKEDITOR;
+            if (this.editorClinicalNote && this.editorClinicalNote.nativeElement) {
+                if (CKEDITOR.instances['editorClinicalNote']) {
+                    CKEDITOR.instances['editorClinicalNote'].destroy(true);
+                }
+                const editor = CKEDITOR.replace('editorClinicalNote', {
+                    enterMode: (window as any).CKEDITOR.ENTER_BR,
+                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
+                });
+                editor.on('change', () => {
+                    const html = editor.getData();
+                    this.PrescriptionModel.ClinicalNote = html;
+                    this.PrescriptionModel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(html);
+                });
+            }
+        }, 10);
+    }
     loadVital() {
         this.IsPatient = false;
         this._router.navigate(['home/Appoint/VitalPres'], { queryParams: { id: this.PatientId } });
@@ -3040,7 +3060,9 @@ export class AppointmentComponentList implements OnInit {
                 }
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
                 this.PatientRXmodel.FollowUpDate = result.ResultSet.Model.FollowUpDate;
-
+                if (result.ResultSet.Model.ClinicalNote) {
+                    this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.ClinicalNote);
+                }
                 if (result.ResultSet.doctor.length > 0)
                     this.DoctorInfo = result.ResultSet.doctor[0];
                 if (this.DoctorInfo.HeaderDescription) {

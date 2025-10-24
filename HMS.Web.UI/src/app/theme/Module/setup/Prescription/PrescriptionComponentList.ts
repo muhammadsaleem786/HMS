@@ -159,6 +159,7 @@ export class PrescriptionComponentList {
                 this.emr_prescription_investigation_dynamicArray = [];
                 this.emr_prescription_diagnos_dynamicArray = [];
                 this.emr_prescription_treatment_dynamicArray = [];
+                this.PatientRXmodel = new patientInfo();
                 this.PatientVitalList = [];
                 if (m.ResultSet.doctor.length > 0)
                     this.DoctorInfo = m.ResultSet.doctor[0];
@@ -180,6 +181,9 @@ export class PrescriptionComponentList {
                 this.PatientRXmodel.Mobile = m.ResultSet.result.Mobile;
                 this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
                 this.PatientRXmodel.FollowUpDate = m.ResultSet.result.FollowUpDate;
+                if (m.ResultSet.result.ClinicalNote) {
+                    this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(m.ResultSet.result.ClinicalNote);
+                }
                 var Weight = m.ResultSet.vitallist.filter(a => a.Name == "Weight");
                 if (Weight.length == 0)
                     this.PatientRXmodel.Weight = "";

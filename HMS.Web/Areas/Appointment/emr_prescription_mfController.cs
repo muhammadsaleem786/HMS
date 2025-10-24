@@ -683,7 +683,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
 
                 var appinfo = _emr_appointment_mfService.Queryable().Where(a => a.ID == Model.AppointmentId).FirstOrDefault();
-                if (Model.IsCreateAppointment && appinfo == null)
+                if (Model.IsCreateAppointment && appinfo == null && Model.FollowUpDate != null)
                 {
                     emr_appointment_mf appObj = new emr_appointment_mf();
                     decimal AppID = 0;
@@ -694,7 +694,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     appObj.CompanyId = Request.CompanyID();
                     appObj.PatientId = Model.PatientId;
                     appObj.DoctorId = Model.DoctorId;
-                    appObj.AppointmentDate = Model.AppointmentDate;
+                    appObj.AppointmentDate = Convert.ToDateTime(Model.FollowUpDate);
                     appObj.AppointmentTime = (TimeSpan)Model.FollowUpTime;
                     appObj.Notes = Model.Notes;
                     appObj.CreatedBy = Request.LoginID();
@@ -1954,7 +1954,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Where(a => a.PatientId == patientid
              && a.CompanyId == companyId
              && a.DoctorId == doctorId)
-    .GroupBy(a => new { a.PatientId, Date = DbFunctions.TruncateTime(a.AppointmentDate)}) // group by patient + date only
+    .GroupBy(a => new { a.PatientId, Date = DbFunctions.TruncateTime(a.AppointmentDate) }) // group by patient + date only
     .Select(g => new
     {
         g.Key.PatientId,

@@ -2206,8 +2206,8 @@
             }
         }
     </style>
-<div id="print-RxPrintModal"
-     style="width:210mm;
+    <div id="print-RxPrintModal"
+         style="width:210mm;
             min-height:297mm;
             margin:0 auto;
             background:#fff;
@@ -2219,197 +2219,196 @@
             box-sizing:border-box;
             padding-bottom:70px;">
 
-    <!-- HEADER -->
-    <div style="display:flex; justify-content:space-between; align-items:start; border-bottom:3px solid #5e72e4; padding:15px;">
-        <div style="width:40%; text-align:left; font-family: Arial, Helvetica, sans-serif;">
-            <div [innerHTML]="DoctorInfo.safeHeaderDescription" style="font-family: Arial, Helvetica, sans-serif;"></div>
+        <!-- HEADER -->
+        <div style="display:flex; justify-content:space-between; align-items:start; border-bottom:3px solid #5e72e4; padding:15px;">
+            <div style="width:40%; text-align:left; font-family: Arial, Helvetica, sans-serif;">
+                <div [innerHTML]="DoctorInfo.safeHeaderDescription" style="font-family: Arial, Helvetica, sans-serif;"></div>
+            </div>
+
+            <div style="width:20%; text-align:right; display:flex; align-items:center; justify-content:flex-end;">
+                <img *ngIf="PatientRXmodel.ClinicIogo"
+                     [src]="PatientRXmodel.ClinicIogo"
+                     style="max-width:180px; max-height:80px; object-fit:contain;">
+                <img *ngIf="!PatientRXmodel.ClinicIogo"
+                     src="../assets/app/media/img/icons/doctor-logo.png"
+                     style="max-width:180px; max-height:80px; object-fit:contain;">
+            </div>
+
+            <div *ngIf="DoctorInfo.TemplateId==2"
+                 style="width:40%; text-align:right; direction:rtl;">
+                <div [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu" style="margin:2px 0; font-size:13px; color:#444;"></div>
+            </div>
         </div>
 
-        <div style="width:20%; text-align:right; display:flex; align-items:center; justify-content:flex-end;">
-            <img *ngIf="PatientRXmodel.ClinicIogo"
-                 [src]="PatientRXmodel.ClinicIogo"
-                 style="max-width:180px; max-height:80px; object-fit:contain;">
-            <img *ngIf="!PatientRXmodel.ClinicIogo"
-                 src="../assets/app/media/img/icons/doctor-logo.png"
-                 style="max-width:180px; max-height:80px; object-fit:contain;">
+        <!-- BODY -->
+        <div style="padding:12px; box-sizing:border-box; font-family: Arial, Helvetica, sans-serif;">
+
+            <!-- Patient Info -->
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #5e72e4; margin-bottom:8px; padding-bottom:6px;">
+                <div style="width:35%;">
+                    <label style="font-size:12px; font-weight:bold;">P/Name: </label>
+                    <span style="font-size:12px;">{{PatientRXmodel.PatientName}} ({{ PatientRXmodel.Mobile?.slice(0, -3) + '***' }})</span>
+                </div>
+                <div style="width:20%;">
+                    <label style="font-size:12px; font-weight:bold;">Age: </label>
+                    <span style="font-size:12px;">{{PatientRXmodel.Age}}</span>
+                </div>
+                <div style="width:15%;">
+                    <label style="font-size:12px; font-weight:bold;">Sex: </label>
+                    <span style="font-size:12px;">{{PatientRXmodel.Gender}}</span>
+                </div>
+                <div style="width:20%; text-align:right;">
+                    <label style="font-size:12px; font-weight:bold;">Date: </label>
+                    <span style="font-size:12px;">{{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy' | uppercase}}</span>
+                </div>
+            </div>
+
+            <!-- CONTENT SPLIT -->
+            <div style="display:flex; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, Helvetica, sans-serif;">
+
+                <!-- LEFT SIDEBAR -->
+                <div style="width:28%; padding-right:10px; font-size:13px; color:#343434;">
+                    <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_complaint_dynamicArray.length > 0">
+                        <strong style="font-size:18px; color: #d9534f;">Complaint:</strong>
+                        <div *ngFor="let d of emr_prescription_complaint_dynamicArray">{{d.Complaint}}</div>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientVitalList.length > 0">
+                        <strong style="font-size:18px; color: #d9534f;">Vitals:</strong>
+                        <div *ngFor="let d of PatientVitalList">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_observation_dynamicArray.length > 0">
+                        <strong style="font-size:18px; color: #d9534f;">Examination:</strong>
+                        <div *ngFor="let d of emr_prescription_observation_dynamicArray">{{d.Observation}}</div>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_investigation_dynamicArray.length > 0">
+                        <strong style="font-size:18px; color: #d9534f;">Investigation:</strong>
+                        <div *ngFor="let d of emr_prescription_investigation_dynamicArray">{{d.Investigation}}</div>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_diagnos_dynamicArray.length > 0">
+                        <strong style="font-size:18px; color: #d9534f;">Diagnoses:</strong>
+                        <div *ngFor="let d of emr_prescription_diagnos_dynamicArray">{{d.Diagnos}}</div>
+                    </div>
+                </div>
+
+                <!-- RIGHT MAIN -->
+                <!-- RIGHT MAIN -->
+                <div style="width:72%; border-left:1px solid #5e72e4; padding-left:12px;">
+                    <img src="../assets/app/media/img/icons/Rx.png"
+                         style="max-width:55px; max-height:55px; object-fit:contain; ">
+
+                    <table style="width:100%; border-collapse:collapse; font-size:12px; line-height:normal; margin-top:5px;">
+                        <thead>
+                            <tr style="background:#f2f5fa;">
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Medicine</th>
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Type</th>
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; text-align: right;">Days</th>
+                                <!-- <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Instruction</th> -->
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let m of emr_prescription_treatment_dynamicArray" style="border-bottom:1px solid #eee;">
+                            <tr>
+                                <td style="padding:2px 5px 0; vertical-align: middle;">
+                                    <strong style="font-size:14px;">
+                                        {{m.MedicineName}}
+                                    </strong>
+
+                                </td>
+                                <td style="padding: 5px;  vertical-align: middle;">{{m.MedicineType}}</td>
+                                <td style="padding:0 5px;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
+                                <td style="padding:0 5px;text-align: right;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==2"> <strong>{{ getDurationInUrdu(m.DurationValue) }} {{m.Duration}} </strong></td>
+
+                            </tr>
+                            <tr>
+                                <td style=" vertical-align: middle;">
+                                    <label *ngIf="DoctorInfo.TemplateId==2 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)" style="max-width:320px ;">
+                                        <table style="max-width:320px">
+                                            <tbody>
+                                                <tr>
+                                                    <!-- Night -->
+                                                    <td>
+                                                        <span *ngIf="m.Night > 0" style="white-space: nowrap;">
+                                                            {{ m.TypeId == 39 ? ' گولی رات' : ' رات' }}
+                                                        </span>
+                                                    </td>
+                                                    <td *ngIf="m.Night > 0" style="width:10px;max-width:10px;text-align: left;">
+                                                        {{ m.Night }}
+                                                    </td>
+
+                                                    <!-- Evening -->
+                                                    <td>
+                                                        <span *ngIf="m.Evening > 0" style="white-space: nowrap;">
+                                                            + {{ m.TypeId == 39 ? ' گولی شام' : ' شام' }}
+                                                        </span>
+                                                    </td>
+                                                    <td *ngIf="m.Evening > 0" style="width:10px;max-width:10px;text-align: left;">
+                                                        {{ m.Evening }}
+                                                    </td>
+
+                                                    <!-- Afternoon -->
+                                                    <td>
+                                                        <span *ngIf="m.AfterNoon > 0" style="white-space: nowrap;">
+                                                            + {{ m.TypeId == 39 ? ' گولی دوپہر' : ' دوپہر' }}
+                                                        </span>
+                                                    </td>
+                                                    <td *ngIf="m.AfterNoon > 0" style="width:10px;max-width:10px;text-align: left;">
+                                                        {{ m.AfterNoon }}
+                                                    </td>
+
+                                                    <!-- Morning -->
+                                                    <td>
+                                                        <span *ngIf="m.Morning > 0" style="white-space: nowrap;">
+                                                            +  {{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }}
+                                                        </span>
+                                                    </td>
+                                                    <td *ngIf="m.Morning > 0" style="width:10px;max-width:10px;text-align: left;">
+                                                        {{ m.Morning }}
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </label>
+                                    <label *ngIf="DoctorInfo.TemplateId==1 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)">
+                                        (
+                                        <span *ngIf="m.Morning > 0">{{m.Morning}}</span>
+                                        <span *ngIf="m.AfterNoon > 0"> +{{m.AfterNoon}}</span>
+                                        <span *ngIf="m.Evening > 0">+ {{m.Evening}}</span>
+                                        <span *ngIf="m.Night > 0">+ {{m.Night}}</span>
+                                        )
+                                    </label>
+                                </td>
+                                <td colspan="3" style="padding:0 5px 2px; text-align: right; vertical-align: middle;">{{m.Instructions}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">Instructions</h3>
+                    <div style="font-size:12px; margin:0; line-height:normal;">
+                        <p *ngIf="DoctorInfo.TemplateId==2" style="direction: rtl; text-align: right;">
+                            {{ PatientRXmodel.Notes }}
+                        </p>
+                        <p *ngIf="DoctorInfo.TemplateId==1">
+                            {{ PatientRXmodel.Notes }}
+                        </p>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
-        <div *ngIf="DoctorInfo.TemplateId==2"
-             style="width:40%; text-align:right; direction:rtl;">
-            <div [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu" style="margin:2px 0; font-size:13px; color:#444;"></div>
+        <!-- FOOTER -->
+        <div style="position:absolute; bottom:0; left:0; width:100%; padding:6px 10px; text-align:center; border-top:4px solid #5e72e4; background:#fff;">
+            <div style="text-align: left; position: absolute; top: -50px; padding:6px 2px ">
+                <strong><i>Follow Up: </i></strong>
+                <i>{{PatientRXmodel.FollowUpDate| date:'dd-MMM-yyyy'}}</i>
+            </div>
+            <p style="font-size:13px; margin:0; color:#444;">{{DoctorInfo.Footer}}</p>
         </div>
     </div>
-
-    <!-- BODY -->
-    <div style="padding:12px; box-sizing:border-box; font-family: Arial, Helvetica, sans-serif;">
-
-        <!-- Patient Info -->
-        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #5e72e4; margin-bottom:8px; padding-bottom:6px;">
-            <div style="width:35%;">
-                <label style="font-size:12px; font-weight:bold;">P/Name: </label>
-                <span style="font-size:12px;">{{PatientRXmodel.PatientName}} ({{ PatientRXmodel.Mobile?.slice(0, -3) + '***' }})</span>
-            </div>
-            <div style="width:20%;">
-                <label style="font-size:12px; font-weight:bold;">Age: </label>
-                <span style="font-size:12px;">{{PatientRXmodel.Age}}</span>
-            </div>
-            <div style="width:15%;">
-                <label style="font-size:12px; font-weight:bold;">Sex: </label>
-                <span style="font-size:12px;">{{PatientRXmodel.Gender}}</span>
-            </div>
-            <div style="width:20%; text-align:right;">
-                <label style="font-size:12px; font-weight:bold;">Date: </label>
-                <span style="font-size:12px;">{{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy' | uppercase}}</span>
-            </div>
-        </div>
-
-        <!-- CONTENT SPLIT -->
-        <div style="display:flex; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, Helvetica, sans-serif;">
-
-            <!-- LEFT SIDEBAR -->
-            <div style="width:28%; padding-right:10px; font-size:13px; color:#343434;">
-                <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_complaint_dynamicArray.length > 0">
-                    <strong style="font-size:18px; color: #d9534f;">Complaint:</strong>
-                    <div *ngFor="let d of emr_prescription_complaint_dynamicArray">{{d.Complaint}}</div>
-                </div>
-
-                <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientVitalList.length > 0">
-                    <strong style="font-size:18px; color: #d9534f;">Vitals:</strong>
-                    <div *ngFor="let d of PatientVitalList">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
-                </div>
-
-                <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_observation_dynamicArray.length > 0">
-                    <strong style="font-size:18px; color: #d9534f;">Examination:</strong>
-                    <div *ngFor="let d of emr_prescription_observation_dynamicArray">{{d.Observation}}</div>
-                </div>
-
-                <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_investigation_dynamicArray.length > 0">
-                    <strong style="font-size:18px; color: #d9534f;">Investigation:</strong>
-                    <div *ngFor="let d of emr_prescription_investigation_dynamicArray">{{d.Investigation}}</div>
-                </div>
-
-                <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_diagnos_dynamicArray.length > 0">
-                    <strong style="font-size:18px; color: #d9534f;">Diagnoses:</strong>
-                    <div *ngFor="let d of emr_prescription_diagnos_dynamicArray">{{d.Diagnos}}</div>
-                </div>
-            </div>
-
-            <!-- RIGHT MAIN -->
-           <!-- RIGHT MAIN -->
-   <div style="width:72%; border-left:1px solid #5e72e4; padding-left:12px;">
-              <img
-                 src="../assets/app/media/img/icons/Rx.png"
-                 style="max-width:55px; max-height:55px; object-fit:contain; ">
-
-                <table style="width:100%; border-collapse:collapse; font-size:12px; line-height:normal; margin-top:5px;">
-                    <thead>
-                        <tr style="background:#f2f5fa;">
-                            <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Medicine</th>
-                            <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Type</th>
-                            <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; text-align: right;">Days</th>
-                            <!-- <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Instruction</th> -->
-                        </tr>
-                    </thead>
-                    <tbody *ngFor="let m of emr_prescription_treatment_dynamicArray" style="border-bottom:1px solid #eee;">
-                        <tr>
-                            <td style="padding:2px 5px 0; vertical-align: middle;">
-                               <strong style="font-size:14px;">
-                                 {{m.MedicineName}}
-                               </strong>
-                              
-                            </td>
-                            <td style="padding: 5px;  vertical-align: middle;">{{m.MedicineType}}</td>
-                            <td style="padding:0 5px;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
-                            <td style="padding:0 5px;text-align: right;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==2"> <strong>{{ getDurationInUrdu(m.DurationValue) }} {{m.Duration}} </strong></td>
-                           
-                        </tr>
-                        <tr>
-                            <td style=" vertical-align: middle;">
-                                  <label *ngIf="DoctorInfo.TemplateId==2 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)" style="max-width:320px ;">
-                                    <table style="max-width:320px">
-                                        <tbody>
-                                             <tr>
-                                    <!-- Night -->
-                                    <td>
-                                        <span *ngIf="m.Night > 0" style="white-space: nowrap;">
-                                         {{ m.TypeId == 39 ? ' گولی رات' : ' رات' }}
-                                        </span>
-                                    </td>
-                                    <td *ngIf="m.Night > 0" style="width:10px;max-width:10px;text-align: left;">
-                                        {{ m.Night }}
-                                    </td>
-
-                                    <!-- Evening -->
-                                    <td>
-                                        <span *ngIf="m.Evening > 0" style="white-space: nowrap;">
-                                        + {{ m.TypeId == 39 ? ' گولی شام' : ' شام' }}
-                                        </span>
-                                    </td>
-                                    <td  *ngIf="m.Evening > 0" style="width:10px;max-width:10px;text-align: left;">
-                                        {{ m.Evening }}
-                                    </td>
-
-                                    <!-- Afternoon -->
-                                    <td>
-                                        <span *ngIf="m.AfterNoon > 0" style="white-space: nowrap;">
-                                        + {{ m.TypeId == 39 ? ' گولی دوپہر' : ' دوپہر' }}
-                                        </span>
-                                    </td>
-                                    <td *ngIf="m.AfterNoon > 0" style="width:10px;max-width:10px;text-align: left;">
-                                        {{ m.AfterNoon }}
-                                    </td>
-
-                                    <!-- Morning -->
-                                    <td>
-                                        <span *ngIf="m.Morning > 0" style="white-space: nowrap;">
-                                      +  {{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }}
-                                        </span>
-                                    </td>
-                                    <td *ngIf="m.Morning > 0" style="width:10px;max-width:10px;text-align: left;">
-                                        {{ m.Morning }}
-                                    </td>
-                                    </tr>
-
-                                        </tbody>
-                                    </table>
-                                </label>
-                                <label *ngIf="DoctorInfo.TemplateId==1 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)">
-                                    (
-                                    <span *ngIf="m.Morning > 0">{{m.Morning}}</span>
-                                    <span *ngIf="m.AfterNoon > 0"> +{{m.AfterNoon}}</span>
-                                    <span *ngIf="m.Evening > 0">+ {{m.Evening}}</span>
-                                    <span *ngIf="m.Night > 0">+ {{m.Night}}</span>
-                                    )
-                                </label>
-                            </td>
-                                <td  colspan="3" style="padding:0 5px 2px; text-align: right; vertical-align: middle;">{{m.Instructions}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">Instructions</h3>
-                <div style="font-size:12px; margin:0; line-height:normal;">
-             <p>   
-            {{ PatientRXmodel.Notes }}
-            </p>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <div style="position:absolute; bottom:0; left:0; width:100%; padding:6px 10px; text-align:center; border-top:4px solid #5e72e4; background:#fff;">
-                 <div style="text-align: left; position: absolute; top: -50px; padding:6px 2px ">
-                    <strong><i>Follow Up: </i></strong>
-                    <i>{{PatientRXmodel.FollowUpDate| date:'dd-MMM-yyyy'}}</i>
-                </div>
-        <p style="font-size:13px; margin:0; color:#444;">{{DoctorInfo.Footer}}</p>
-    </div>
-</div>
-
-
 
 
     <!-- PRINT + CLOSE BUTTONS -->

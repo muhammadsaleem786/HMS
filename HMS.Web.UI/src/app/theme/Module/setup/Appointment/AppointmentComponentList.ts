@@ -1,7 +1,6 @@
 ﻿import { Component, OnInit, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
 import { Router } from '@angular/router';
 import { AttendanceService } from '../Employee/Attendance/AttendanceService';
 import { AppointmentService } from './AppointmentService';
@@ -2084,6 +2083,13 @@ export class AppointmentComponentList implements OnInit {
             this.GetPatientList(date, 0);
         }
     }
+    convertTo12HourFormat(time: string): string {
+        let [hours, minutes] = time.split(':').map(Number);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12; // convert 0 → 12
+        return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    }
+
     onAppointDateChange(event: any) {
         if (event.target.selectedIndex != null) {
             var reslt = this.CurntPrevDateList[event.target.selectedIndex];
@@ -2157,12 +2163,14 @@ export class AppointmentComponentList implements OnInit {
                 this.PrescriptionModel.PatientId = id;
                 this.PrescriptionModel.ClinicId = this.CompanyObj.CompanyID;
                 this.PrescriptionModel.DoctorId = m.ResultSet.Doctorid;
-                this.PrescriptionModel.Notes = m.ResultSet.Instruction;
                 this.MedicineList = m.ResultSet.MedicineList;
                 var appointfind = m.ResultSet.AppointmentList.filter(a => a.ID == AppId);
-                if (appointfind.length > 0 && appointfind[0].AppointmentTime != null && this.PrescriptionModel.IsCreateAppointment == true)
-                    this.PrescriptionModel.FollowUpTime = appointfind[0].AppointmentTime;
-
+                if (appointfind.length > 0 && appointfind[0].AppointmentTime != null && this.PrescriptionModel.IsCreateAppointment == true) {
+                    debugger
+                    var followUpTime = this.convertTo12HourFormat(appointfind[0].AppointmentTime);
+                   
+                    this.PrescriptionModel.FollowUpTime = followUpTime;
+                }
                 this.CurntPrevDateList = [];
                 this.CurntPrevDateList = m.ResultSet.CurntPrevDateList;
 
@@ -3145,7 +3153,7 @@ export class AppointmentComponentList implements OnInit {
         if (this.PrescriptionModel.PatientId != null && this.PrescriptionModel.DoctorId != null) {
             var selectdate = this._CommonService.GetFormatDate(new Date());
             this._PrescriptionService.PrescriptionLoad(this.PrescriptionModel.PatientId.toString(), this.PrescriptionModel.DoctorId.toString(), selectdate).then(m => {
-               this.PrescriptionModel.Notes = m.ResultSet.Instruction;
+                this.PrescriptionModel.Notes = m.ResultSet.Instruction;
                 this.loader.HideLoader();
             });
         } else {

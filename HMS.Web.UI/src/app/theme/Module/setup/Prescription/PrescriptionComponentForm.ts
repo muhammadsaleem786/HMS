@@ -115,6 +115,7 @@ export class PrescriptionComponentForm implements OnInit {
     };
     @ViewChild("content") PatientContent: TemplateRef<any>;
     @ViewChild("MedicinePresModal") MedicinePresModal: TemplateRef<any>;
+    @ViewChild('editorClinicalNote') editorClinicalNote!: ElementRef;
     public ServiceType: any; public TokenNo: any; public patientInfo: any;
     @ViewChild("MedicineTemplate") MedicineTemplateContent: TemplateRef<any>; @ViewChild("longContent") ModelContent: TemplateRef<any>;
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
@@ -177,7 +178,7 @@ export class PrescriptionComponentForm implements OnInit {
         });
     }
     constructor(public _CommonService: CommonService, public _fb: FormBuilder, public loader: LoaderService
-        , private sanitizer: DomSanitizer , public _PrescriptionService: PrescriptionService, public commonservice: CommonService, private modalService: NgbModal
+        , private sanitizer: DomSanitizer, public _PrescriptionService: PrescriptionService, public commonservice: CommonService, private modalService: NgbModal
         , public toastr: CommonToastrService, private encrypt: EncryptionService, public route: ActivatedRoute, public _router: Router, public _AppointmentService: AppointmentService, public _SaleService: SaleService) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
@@ -262,7 +263,8 @@ export class PrescriptionComponentForm implements OnInit {
             SelectedObservation: [''],
             SelectedDiagnos: [''],
             Day: [''],
-            FollowUpNotes: ['']
+            FollowUpNotes: [''],
+            ClinicalNote: ['']
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -333,7 +335,6 @@ export class PrescriptionComponentForm implements OnInit {
                             this.PrescriptionModel.emr_prescription_diagnos = [];
                             this.PrescriptionModel.emr_prescription_investigation = [];
                             this.PrescriptionModel.emr_prescription_observation = [];
-
                             this.emr_prescription_treatment_dynamicArray = [];
                             this.PrescriptionModel = m.ResultSet.result;
                             this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(m.ResultSet.result.AppointmentDate);
@@ -512,12 +513,14 @@ export class PrescriptionComponentForm implements OnInit {
                                     this.emr_prescription_treatment_dynamicArray.push(item);
                                 });
                             }
+                            this.LoadEditor();
                             this.loader.HideLoader();
                         }
                         else
                             this.loader.HideLoader();
                     });
                 } else {
+                    this.LoadEditor();
                     this.Refresh();
                     this.Addtreatment();
                 }
@@ -534,7 +537,9 @@ export class PrescriptionComponentForm implements OnInit {
                 if (m.ResultSet.CurntPrevDateList.length == 0) {
                     this.CurntPrevDateList.push({ "AppointmentDate": this._CommonService.GetFormatDate(new Date()) });
                     this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(new Date());
-                }
+                } else
+                    this.PrescriptionModel.AppointmentDate = m.ResultSet.CurntPrevDateList[0].AppointmentDate;
+
 
                 this.PrescriptionModel.Notes = m.ResultSet.Instruction;
                 this.emr_vital_dynamicArray = [];
@@ -779,6 +784,25 @@ export class PrescriptionComponentForm implements OnInit {
         if (this.AppointmentModel.Price == undefined || this.AppointmentModel.Price == null)
             this.AppointmentModel.Price = 0;
         this.AppointmentModel.OutstandingBalance = this.AppointmentModel.Price - this.AppointmentModel.Discount - this.AppointmentModel.PaidAmount;
+    }
+    LoadEditor() {
+        setTimeout(() => {
+            const CKEDITOR = (window as any).CKEDITOR;
+            if (this.editorClinicalNote && this.editorClinicalNote.nativeElement) {
+                if (CKEDITOR.instances['editorClinicalNote']) {
+                    CKEDITOR.instances['editorClinicalNote'].destroy(true);
+                }
+                const editor = CKEDITOR.replace('editorClinicalNote', {
+                    enterMode: (window as any).CKEDITOR.ENTER_BR,
+                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
+                });
+                editor.on('change', () => {
+                    const html = editor.getData();
+                    this.PrescriptionModel.ClinicalNote = html;
+                    this.PrescriptionModel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(html);
+                });
+            }
+        }, 10);
     }
     Refresh() {
         this.loader.ShowLoader();
@@ -1971,7 +1995,7 @@ export class PrescriptionComponentForm implements OnInit {
         this._AppointmentService.PrescriptionSave(this.PrescriptionModel).then(m => {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
-                
+
                 this.toastr.Success(result.Message);
                 this.emr_prescription_complaint_dynamicArray = [];
                 this.emr_prescription_diagnos_dynamicArray = [];
@@ -1984,13 +2008,16 @@ export class PrescriptionComponentForm implements OnInit {
                 this.MedicineList = result.ResultSet.MedicineList;
                 if (result.ResultSet.patientInfo != null) {
                     this.PatientRXmodel = result.ResultSet.patientInfo;
-                    this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;  
+                    this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
                     this.PatientRXmodel.Gender = result.ResultSet.patientInfo.Gender;
-                    this.PatientRXmodel.Mobile = result.ResultSet.patientInfo.Mobile;                  
+                    this.PatientRXmodel.Mobile = result.ResultSet.patientInfo.Mobile;
                     if (this.PatientRXmodel.ClinicIogo != null)
                         this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + result.ResultSet.patientInfo.ClinicIogo;
                 }
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
+                if (result.ResultSet.Model.ClinicalNote) {
+                    this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.ClinicalNote);
+                }
                 this.PatientRXmodel.FollowUpDate = result.ResultSet.Model.FollowUpDate;
                 if (result.ResultSet.doctor.length > 0)
                     this.DoctorInfo = result.ResultSet.doctor[0];

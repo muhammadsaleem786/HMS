@@ -88,56 +88,74 @@
                                 <span>
                                     <img src="../assets/app/media/img/icons/remakrs.png" class="img-fluid radius">
                                     Vital
-                              
+
                                 </span><i class="icon-chevron-right iconImage"></i>
-                              
+
                             </ng-template>
                             <ng-template ngbPanelContent>
-                              <div class="row mt-12 dataTables_wrapper ">
-                                        <div class="col-lg-12">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>
-                                                            Date
-                                                        </th>
-                                                        <th>
-                                                            Particulars
-                                                        </th>
-                                                        <th>
-                                                            Measure
-                                                        </th>
-                                                        <th>
+                                <div class="row mt-12 dataTables_wrapper ">
+                                    <div class="col-lg-12">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Date
+                                                    </th>
+                                                    <th>
+                                                        Particulars
+                                                    </th>
+                                                    <th>
+                                                        Measure
+                                                    </th>
+                                                    <th>
 
-                                                            <span _ngcontent-c0="" class="btn btn-light btn-sm text-primary"  style="text-transform: capitalize;" (click)="OpenVitalModal(VitalModal)" style="height: 28px;"><i _ngcontent-c0="" class="icon icon-plus-circle"></i> Add Vital </span>
-                                                      
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr *ngFor="let v of emr_vital_dynamicArray ; let i = index;">
-                                                        <td>
-                                                            {{v.Date |date: 'MM/dd/yyyy'}}
-                                                        </td>
-                                                        <td>
-                                                            {{v.Name}}
-                                                        </td>
-                                                        <td>
-                                                            {{v.Measure}}
-                                                            <span class="">{{v.Unit}}</span>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <span class="icon icon-cross text-danger" (click)="DeleteVital(v.ID,v.VitalId)" *ngIf="ControlRights.DeleteRights">
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                        <span _ngcontent-c0="" class="btn btn-light btn-sm text-primary" style="text-transform: capitalize;" (click)="OpenVitalModal(VitalModal)" style="height: 28px;"><i _ngcontent-c0="" class="icon icon-plus-circle"></i> Add Vital </span>
+
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let v of emr_vital_dynamicArray ; let i = index;">
+                                                    <td>
+                                                        {{v.Date |date: 'MM/dd/yyyy'}}
+                                                    </td>
+                                                    <td>
+                                                        {{v.Name}}
+                                                    </td>
+                                                    <td>
+                                                        {{v.Measure}}
+                                                        <span class="">{{v.Unit}}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="icon icon-cross text-danger" (click)="DeleteVital(v.ID,v.VitalId)" *ngIf="ControlRights.DeleteRights">
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
+                                </div>
                             </ng-template>
                         </ngb-panel>
                         <ngb-panel id="prescription-1">
+                            <ng-template ngbPanelTitle>
+                                <div (click)="LoadEditor()">
+                                    <span>
+                                        <img src="../assets/app/media/img/icons/remakrs.png" class="img-fluid radius">
+                                        Clinical History
+
+                                    </span><i class="icon-chevron-right iconImage"></i>
+                                </div>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <div class="row mt-2">
+                                    <div class="col-sm-12 mt-2">
+                                        <textarea #editorClinicalNote id="editorClinicalNote" name="editor1" [(ngModel)]="PrescriptionModel.ClinicalNote" formControlName="ClinicalNote"></textarea>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngb-panel>
+                        <ngb-panel id="prescription2">
                             <ng-template ngbPanelTitle>
                                 <span>
                                     <img src="../assets/app/media/img/icons/clinic.png" class="img-fluid radius">
@@ -293,7 +311,7 @@
                                 </div>
                             </ng-template>
                         </ngb-panel>
-                        <ngb-panel id="prescription2">
+                        <ngb-panel id="prescription3">
                             <ng-template ngbPanelTitle>
                                 <span>
                                     <img src="../assets/app/media/img/icons/Medicines.png" class="img-fluid radius">
@@ -394,7 +412,7 @@
                                 </div>
                             </ng-template>
                         </ngb-panel>
-                        <ngb-panel id="prescription3">
+                        <ngb-panel id="prescription4">
                             <ng-template ngbPanelTitle>
                                 <span>
                                     <img src="../assets/app/media/img/icons/remakrs.png" class="img-fluid radius">
@@ -496,51 +514,51 @@
         </button>
     </div>
     <form [formGroup]="Form8" novalidate (ngSubmit)="VitalSave(Form8.valid)">
-       <div class="modal-body">
-  <div class="row form-group">
-    <div class="col-md-6">
-      <label>Blood Sugar</label>
-      <input type="text" class="form-control" formControlName="Name" [(ngModel)]="vitalModel.Name" autocomplete="off">
-    </div>
-    <div class="col-md-6">
-      <label>Blood Pressure</label>
-      <input type="text" class="form-control" formControlName="Name1" [(ngModel)]="vitalModel.Name1" autocomplete="off">
-    </div>
-  </div>
+        <div class="modal-body">
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label>Blood Sugar</label>
+                    <input type="text" class="form-control" formControlName="Name" [(ngModel)]="vitalModel.Name" autocomplete="off">
+                </div>
+                <div class="col-md-6">
+                    <label>Blood Pressure</label>
+                    <input type="text" class="form-control" formControlName="Name1" [(ngModel)]="vitalModel.Name1" autocomplete="off">
+                </div>
+            </div>
 
-  <div class="row form-group">
-    <div class="col-md-6">
-      <label>Pulse Rate</label>
-      <input type="text" class="form-control" formControlName="Name2" [(ngModel)]="vitalModel.Name2" autocomplete="off">
-    </div>
-    <div class="col-md-6">
-      <label>Respiratory Rate</label>
-      <input type="text" class="form-control" formControlName="Name3" [(ngModel)]="vitalModel.Name3" autocomplete="off">
-    </div>
-  </div>
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label>Pulse Rate</label>
+                    <input type="text" class="form-control" formControlName="Name2" [(ngModel)]="vitalModel.Name2" autocomplete="off">
+                </div>
+                <div class="col-md-6">
+                    <label>Respiratory Rate</label>
+                    <input type="text" class="form-control" formControlName="Name3" [(ngModel)]="vitalModel.Name3" autocomplete="off">
+                </div>
+            </div>
 
-  <div class="row form-group">
-    <div class="col-md-6">
-      <label>Body Temperature</label>
-      <input type="text" class="form-control" formControlName="Name4" [(ngModel)]="vitalModel.Name4" autocomplete="off">
-    </div>
-    <div class="col-md-6">
-      <label>Weight</label>
-      <input type="text" class="form-control" formControlName="Name5" [(ngModel)]="vitalModel.Name5" autocomplete="off">
-    </div>
-  </div>
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label>Body Temperature</label>
+                    <input type="text" class="form-control" formControlName="Name4" [(ngModel)]="vitalModel.Name4" autocomplete="off">
+                </div>
+                <div class="col-md-6">
+                    <label>Weight</label>
+                    <input type="text" class="form-control" formControlName="Name5" [(ngModel)]="vitalModel.Name5" autocomplete="off">
+                </div>
+            </div>
 
-  <div class="row form-group">
-    <div class="col-md-6">
-      <label>Height</label>
-      <input type="text" class="form-control" formControlName="Name6" [(ngModel)]="vitalModel.Name6" autocomplete="off">
-    </div>
-    <div class="col-md-6">
-      <label>SPO2</label>
-      <input type="text" class="form-control" formControlName="Name7" [(ngModel)]="vitalModel.Name7" autocomplete="off">
-    </div>
-  </div>
-</div>
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label>Height</label>
+                    <input type="text" class="form-control" formControlName="Name6" [(ngModel)]="vitalModel.Name6" autocomplete="off">
+                </div>
+                <div class="col-md-6">
+                    <label>SPO2</label>
+                    <input type="text" class="form-control" formControlName="Name7" [(ngModel)]="vitalModel.Name7" autocomplete="off">
+                </div>
+            </div>
+        </div>
 
         <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Save</button>
@@ -1151,6 +1169,10 @@
 
                 <!-- LEFT SIDEBAR -->
                 <div style="width:28%; padding-right:10px; font-size:13px; color:#343434;">
+                    <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safeClinicalNote!= null">
+                        <strong style="font-size:18px; color: #d9534f;">Clinical History:</strong>
+                        <div [innerHTML]="PatientRXmodel.safeClinicalNote"></div>
+                    </div>
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_complaint_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Complaint:</strong>
                         <div *ngFor="let d of emr_prescription_complaint_dynamicArray">{{d.Complaint}}</div>
@@ -1218,33 +1240,33 @@
                                                         </span>
                                                     </td>
                                                     <td *ngIf="m.Night > 0" style="width:10px;max-width:10px;text-align: left;">
-                                                        {{ m.Night }}
+                                                        {{ m.Night }}<ng-container *ngIf="m.AfterNoon > 0|| m.Evening > 0|| m.Morning > 0"> + </ng-container>
                                                     </td>
 
                                                     <!-- Evening -->
                                                     <td>
                                                         <span *ngIf="m.Evening > 0" style="white-space: nowrap;">
-                                                            + {{ m.TypeId == 39 ? ' گولی شام' : ' شام' }}
+                                                            {{ m.TypeId == 39 ? ' گولی شام' : ' شام' }}
                                                         </span>
                                                     </td>
                                                     <td *ngIf="m.Evening > 0" style="width:10px;max-width:10px;text-align: left;">
-                                                        {{ m.Evening }}
+                                                        {{ m.Evening }}<ng-container *ngIf="m.AfterNoon > 0 || m.Morning > 0"> + </ng-container>
                                                     </td>
 
                                                     <!-- Afternoon -->
                                                     <td>
                                                         <span *ngIf="m.AfterNoon > 0" style="white-space: nowrap;">
-                                                            + {{ m.TypeId == 39 ? ' گولی دوپہر' : ' دوپہر' }}
+                                                            {{ m.TypeId == 39 ? ' گولی دوپہر' : ' دوپہر' }}
                                                         </span>
                                                     </td>
                                                     <td *ngIf="m.AfterNoon > 0" style="width:10px;max-width:10px;text-align: left;">
-                                                        {{ m.AfterNoon }}
+                                                        {{ m.AfterNoon }}<ng-container *ngIf="m.Morning > 0"> + </ng-container>
                                                     </td>
 
                                                     <!-- Morning -->
                                                     <td>
                                                         <span *ngIf="m.Morning > 0" style="white-space: nowrap;">
-                                                            +  {{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }}
+                                                            {{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }}
                                                         </span>
                                                     </td>
                                                     <td *ngIf="m.Morning > 0" style="width:10px;max-width:10px;text-align: left;">

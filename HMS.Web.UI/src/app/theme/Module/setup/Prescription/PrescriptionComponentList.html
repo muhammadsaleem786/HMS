@@ -230,7 +230,6 @@
                                 <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Medicine</th>
                                 <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Type</th>
                                 <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; text-align: right;">Days</th>
-                                <!-- <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Instruction</th> -->
                             </tr>
                         </thead>
                         <tbody *ngFor="let m of emr_prescription_treatment_dynamicArray" style="border-bottom:1px solid #eee;">
@@ -243,9 +242,16 @@
                                 </td>
                                 <td style="padding: 5px;  vertical-align: middle;">{{m.MedicineType}}</td>
                                 <td style="padding:0 5px;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
-                                <td style="padding:0 5px;text-align: right;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==2"> <strong>{{ getDurationInUrdu(m.DurationValue) }} {{m.Duration}} </strong></td>
-
+                                <td style="padding:0 5px;text-align: right;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==2">
+                                    <strong>
+                                        {{ getDurationInUrdu(m.DurationValue) }}
+                                    </strong>
+                                    <strong style="direction:ltr; unicode-bidi: bidi-override;">
+                                        {{m.Duration}}
+                                    </strong>
+                                </td>
                             </tr>
+
                             <tr>
                                 <td style=" vertical-align: middle;">
                                     <label *ngIf="DoctorInfo.TemplateId==2 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)" style="max-width:320px ;">
@@ -255,40 +261,60 @@
                                                     <!-- Night -->
                                                     <td>
                                                         <span *ngIf="m.Night > 0" style="white-space: nowrap;">
-                                                            {{ m.TypeId == 39 ? ' گولی رات' : ' رات' }}
+                                                            {{
+                                                                (m.TypeId == 39 || m.TypeId == 2) ? 'گولی رات'
+                                                                :
+                                                                (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ رات'
+                                                                : 'رات'
+                                                            }}
                                                         </span>
                                                     </td>
-                                                    <td *ngIf="m.Night > 0" style="width:10px;max-width:10px;text-align: left;">
+                                                    <td *ngIf="m.Night > 0" style="text-align: left;">
                                                         {{ m.Night }}<ng-container *ngIf="m.AfterNoon > 0|| m.Evening > 0|| m.Morning > 0"> + </ng-container>
                                                     </td>
 
                                                     <!-- Evening -->
                                                     <td>
                                                         <span *ngIf="m.Evening > 0" style="white-space: nowrap;">
-                                                            {{ m.TypeId == 39 ? ' گولی شام' : ' شام' }}
+                                                            {{
+                                                                (m.TypeId == 39 || m.TypeId == 2) ? 'گولی شام'
+                                                                :
+                                                                (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ شام'
+                                                                : 'شام'
+                                                            }}
                                                         </span>
                                                     </td>
-                                                    <td *ngIf="m.Evening > 0" style="width:10px;max-width:10px;text-align: left;">
+                                                    <td *ngIf="m.Evening > 0" style="text-align: left;">
                                                         {{ m.Evening }}<ng-container *ngIf="m.AfterNoon > 0 || m.Morning > 0"> + </ng-container>
                                                     </td>
 
                                                     <!-- Afternoon -->
                                                     <td>
                                                         <span *ngIf="m.AfterNoon > 0" style="white-space: nowrap;">
-                                                            {{ m.TypeId == 39 ? ' گولی دوپہر' : ' دوپہر' }}
+                                                            {{
+                                                                (m.TypeId == 39 || m.TypeId == 2) ? 'گولی دوپہر'
+                                                                :
+                                                                (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ دوپہر'
+                                                                : 'دوپہر'
+                                                            }}
                                                         </span>
                                                     </td>
-                                                    <td *ngIf="m.AfterNoon > 0" style="width:10px;max-width:10px;text-align: left;">
+                                                    <td *ngIf="m.AfterNoon > 0" style="text-align: left;">
                                                         {{ m.AfterNoon }}<ng-container *ngIf="m.Morning > 0"> + </ng-container>
                                                     </td>
 
                                                     <!-- Morning -->
                                                     <td>
                                                         <span *ngIf="m.Morning > 0" style="white-space: nowrap;">
-                                                            {{ m.TypeId == 39 ? 'گولی صبح' : 'صبح' }}
+                                                            {{
+                                                            (m.TypeId == 39 || m.TypeId == 2) ? 'گولی صبح'
+                                                            :
+                                                            (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ صبح'
+                                                            : 'صبح'
+                                                            }}
                                                         </span>
                                                     </td>
-                                                    <td *ngIf="m.Morning > 0" style="width:10px;max-width:10px;text-align: left;">
+                                                    <td *ngIf="m.Morning > 0" style="text-align: left;">
                                                         {{ m.Morning }}
                                                     </td>
                                                 </tr>
@@ -297,12 +323,12 @@
                                         </table>
                                     </label>
                                     <label *ngIf="DoctorInfo.TemplateId==1 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)">
-                                        (
+
                                         <span *ngIf="m.Morning > 0">{{m.Morning}}</span>
-                                        <span *ngIf="m.AfterNoon > 0"> +{{m.AfterNoon}}</span>
-                                        <span *ngIf="m.Evening > 0">+ {{m.Evening}}</span>
-                                        <span *ngIf="m.Night > 0">+ {{m.Night}}</span>
-                                        )
+                                        <span *ngIf="m.AfterNoon > 0"><span *ngIf="m.Morning > 0"> +</span>{{m.AfterNoon}}</span>
+                                        <span *ngIf="m.Evening > 0"><span *ngIf="m.AfterNoon > 0 || m.Morning > 0"> +</span>{{m.Evening}}</span>
+                                        <span *ngIf="m.Night > 0"><span *ngIf="m.AfterNoon > 0|| m.Evening > 0|| m.Morning > 0"> +</span>{{m.Night}}</span>
+
                                     </label>
                                 </td>
                                 <td colspan="3" style="padding:0 5px 2px; text-align: right; vertical-align: middle;">{{m.Instructions}}</td>

@@ -416,7 +416,7 @@ export class AppointmentComponentList implements OnInit {
             SelectedDiagnos: [''],
             Day: [''],
             FollowUpNotes: [''],
-            ClinicalNote:['']
+            ClinicalNote: ['']
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -2168,8 +2168,10 @@ export class AppointmentComponentList implements OnInit {
                     this.PrescriptionModel.Notes = m.ResultSet.prescription_mf.Notes;
                     this.PrescriptionModel.IsCreateAppointment = m.ResultSet.prescription_mf.IsCreateAppointment;
                     this.PrescriptionModel.IsTemplate = m.ResultSet.prescription_mf.IsTemplate;
-
-
+                } else {
+                    if (!this.PrescriptionModel.Notes || this.PrescriptionModel.Notes.trim() === '') {
+                        this.PrescriptionModel.Notes = m.ResultSet.Instruction;
+                    }
                 }
                 localStorage.setItem("PatientName", this.model.PatientName);
                 if (this.model.Image != null && this.model.Image != undefined && this.model.Image != "") {
@@ -2186,9 +2188,7 @@ export class AppointmentComponentList implements OnInit {
                 this.MedicineList = m.ResultSet.MedicineList;
                 var appointfind = m.ResultSet.AppointmentList.filter(a => a.ID == AppId);
                 if (appointfind.length > 0 && appointfind[0].AppointmentTime != null && this.PrescriptionModel.IsCreateAppointment == true) {
-                    debugger
                     var followUpTime = this.convertTo12HourFormat(appointfind[0].AppointmentTime);
-                   
                     this.PrescriptionModel.FollowUpTime = followUpTime;
                 }
                 this.CurntPrevDateList = [];
@@ -2328,6 +2328,7 @@ export class AppointmentComponentList implements OnInit {
                 this.DiagnosisList = m.ResultSet.DiagnosisList;
                 this.InvestigationsList = m.ResultSet.InvestigationsList;
                 this.ObservationList = m.ResultSet.ObservationList;
+                this.LoadEditor();
                 this.loader.HideLoader();
             });
         }

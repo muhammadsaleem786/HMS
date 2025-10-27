@@ -578,7 +578,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Where(a => a.CompanyId == companyId && a.ID == AppontId)
     .Select(a => a.DoctorId)
     .FirstOrDefaultAsync();
-                var prescription = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId && DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date)).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).OrderByDescending(a => a.ID).FirstOrDefault();
+                 var prescription = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId && DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date)).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).OrderByDescending(a => a.ID).FirstOrDefault();
                 var reslt = await _service.Queryable()
      .Where(a => a.PatientId == patientid
               && a.CompanyId == companyId)

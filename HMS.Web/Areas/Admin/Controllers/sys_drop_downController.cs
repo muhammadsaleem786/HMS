@@ -210,14 +210,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = MessageStatement.BadRequest;
-                    return objResponse;
-                }
-
-
                 sys_drop_down_value id = _sys_drop_down_valueService.Queryable().Where(x => x.DropDownID == Model.DropDownID && (Model.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID) && x.ID == Model.ID).FirstOrDefault();
                 if (id != null)
                 {
@@ -297,11 +289,19 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             return objResponse;
         }
 
-        public List<sys_drop_down_value> GetValuesList(sys_drop_down_value Model)
+        public List<DropDownValueDto> GetValuesList(sys_drop_down_value Model)
         {
             return _sys_drop_down_valueService.Queryable()
                              .Where(x => x.DropDownID == Model.DropDownID && (Model.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID))
-                             .ToList();
+                             .Select(x => new DropDownValueDto
+                             {
+                                 ID = x.ID,
+                                 DropDownID = x.DropDownID,
+                                 Value = x.Value,
+                                 SystemGenerated = (x.SystemGenerated ?? false) ? "Yes" : "No",
+                                 CompanyID = x.CompanyID,
+                                 Unit = x.Unit
+                             }).ToList();
         }
 
         [HttpPost]

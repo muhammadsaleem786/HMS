@@ -41,7 +41,7 @@
                             </div>
 
 
-                            <div class="input-group-prepend" *ngIf="model.ID != 0 && !model.SystemGenerated">
+                            <div class="input-group-prepend" *ngIf="model.ID != 0 && (model?.SystemGenerated === false || model?.SystemGenerated === 'No')">
                                 <button type="button" class="btn btn-danger btnDel dropdownbtndelete" style="margin-left:0px;" (click)="Delete()">Delete</button>
                             </div>
 

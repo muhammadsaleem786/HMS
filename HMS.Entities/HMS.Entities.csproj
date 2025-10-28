@@ -88,6 +88,7 @@
     <Compile Include="CustomModel\DashboardPrEmployeeModel.cs" />
     <Compile Include="CustomModel\DashboardSummaryDto.cs" />
     <Compile Include="CustomModel\DoctorList.cs" />
+    <Compile Include="CustomModel\DropDownValueDto.cs" />
     <Compile Include="CustomModel\EmailModel.cs" />
     <Compile Include="CustomModel\EmpBulkUpdateModel.cs" />
     <Compile Include="CustomModel\EmployeeImportModel.cs" />

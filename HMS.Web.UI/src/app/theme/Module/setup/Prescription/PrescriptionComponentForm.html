@@ -1122,27 +1122,27 @@
 
         <!-- HEADER -->
         <div style="display:flex; justify-content:space-between; align-items:start; border-bottom:3px solid #5e72e4; padding:15px;">
-            <div style="width:40%; text-align:left; font-family: Arial, Helvetica, sans-serif;">
+            <div style="width:46%; text-align:left; font-family: Arial, Helvetica, sans-serif;word-break: break-word;">
                 <div [innerHTML]="DoctorInfo.safeHeaderDescription" style="font-family: Arial, Helvetica, sans-serif;"></div>
             </div>
 
-            <div style="width:20%; text-align:right; display:flex; align-items:center; justify-content:flex-end;">
+            <div style="width:120px; text-align:right; display:flex; align-items:center; justify-content:center;">
                 <img *ngIf="PatientRXmodel.ClinicIogo"
                      [src]="PatientRXmodel.ClinicIogo"
-                     style="max-width:180px; max-height:80px; object-fit:contain;">
+                     style="max-width:120px; max-height:80px; object-fit:contain;">
                 <img *ngIf="!PatientRXmodel.ClinicIogo"
                      src="../assets/app/media/img/icons/doctor-logo.png"
-                     style="max-width:180px; max-height:80px; object-fit:contain;">
+                     style="max-width:120px; max-height:80px; object-fit:contain;">
             </div>
 
             <div *ngIf="DoctorInfo.TemplateId==2"
-                 style="width:40%; text-align:right; direction:rtl;">
+                 style="width:46%; text-align:right; direction:rtl;word-break: break-word;">
                 <div [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu" style="margin:2px 0; font-size:13px; color:#444;"></div>
             </div>
         </div>
 
         <!-- BODY -->
-        <div style="padding:12px; box-sizing:border-box; font-family: Arial, Helvetica, sans-serif;">
+        <div style="padding:6px 12px 12px; box-sizing:border-box; font-family: Arial, Helvetica, sans-serif;">
 
             <!-- Patient Info -->
             <div style="display:flex; justify-content:space-between; border-bottom:1px solid #5e72e4; margin-bottom:8px; padding-bottom:6px;">
@@ -1168,34 +1168,34 @@
             <div style="display:flex; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, Helvetica, sans-serif;">
 
                 <!-- LEFT SIDEBAR -->
-                <div style="width:28%; padding-right:10px; font-size:13px; color:#343434;">
+                <div style="width:28%; padding-right:10px; font-size:13px; color:#000;">
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safeClinicalNote!= null">
                         <strong style="font-size:18px; color: #d9534f;">Clinical History:</strong>
-                        <div [innerHTML]="PatientRXmodel.safeClinicalNote"></div>
+                        <div [innerHTML]="PatientRXmodel.safeClinicalNote" style="color:#000;"></div>
                     </div>
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_complaint_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Complaint:</strong>
-                        <div *ngFor="let d of emr_prescription_complaint_dynamicArray">{{d.Complaint}}</div>
+                        <div *ngFor="let d of emr_prescription_complaint_dynamicArray"  style="color:#000;">{{d.Complaint}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientVitalList.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Vitals:</strong>
-                        <div *ngFor="let d of PatientVitalList">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
+                        <div *ngFor="let d of PatientVitalList"  style="color:#000;">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_observation_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Examination:</strong>
-                        <div *ngFor="let d of emr_prescription_observation_dynamicArray">{{d.Observation}}</div>
+                        <div *ngFor="let d of emr_prescription_observation_dynamicArray"  style="color:#000;">{{d.Observation}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_investigation_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Investigation:</strong>
-                        <div *ngFor="let d of emr_prescription_investigation_dynamicArray">{{d.Investigation}}</div>
+                        <div *ngFor="let d of emr_prescription_investigation_dynamicArray"  style="color:#000;">{{d.Investigation}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_diagnos_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Diagnoses:</strong>
-                        <div *ngFor="let d of emr_prescription_diagnos_dynamicArray">{{d.Diagnos}}</div>
+                        <div *ngFor="let d of emr_prescription_diagnos_dynamicArray"  style="color:#000;">{{d.Diagnos}}</div>
                     </div>
                 </div>
 
@@ -1206,24 +1206,24 @@
                          style="max-width:55px; max-height:55px; object-fit:contain; ">
 
                     <table style="width:100%; border-collapse:collapse; font-size:12px; line-height:normal; margin-top:5px;">
-                        <thead>
+                        <thead style="border-bottom: 4px solid #fff;">
                             <tr style="background:#f2f5fa;">
-                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Medicine</th>
-                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">Type</th>
-                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; text-align: right;">Days</th>
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">MEDICINE</th>
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc;">TYPE</th>
+                                <th style="text-align:left; padding:5px; border-bottom:1px solid #ccc; text-align: right;">DAY'S</th>
                             </tr>
                         </thead>
                         <tbody *ngFor="let m of emr_prescription_treatment_dynamicArray" style="border-bottom:1px solid #eee;">
                             <tr>
                                 <td style="padding:2px 5px 0; vertical-align: middle;">
-                                    <strong style="font-size:14px;">
+                                    <strong style="font-size:12px;">
                                         {{m.MedicineName}}
                                     </strong>
 
                                 </td>
-                                <td style="padding: 5px;  vertical-align: middle;">{{m.MedicineType}}</td>
-                                <td style="padding:0 5px;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
-                                <td style="padding:0 5px;text-align: right;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==2">
+                                <td style="padding:2px 5px 0;vertical-align: middle;">{{m.MedicineType}}</td>
+                                <td style="padding:2px 5px 0; vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
+                                <td style="padding:2px 5px 0;text-align: right;  vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==2">
                                     <strong>
                                         {{ getDurationInUrdu(m.DurationValue) }}
                                     </strong>
@@ -1234,8 +1234,8 @@
                             </tr>
 
                             <tr>
-                                <td style=" vertical-align: middle;">
-                                    <label *ngIf="DoctorInfo.TemplateId==2 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)" style="max-width:320px ;">
+                                <td style="padding:2px 5px; vertical-align: middle;">
+                                    <label *ngIf="DoctorInfo.TemplateId==2 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)" style="max-width:320px;margin-bottom:0px;">
                                         <table style="max-width:320px">
                                             <tbody>
                                                 <tr>
@@ -1312,7 +1312,7 @@
 
                                     </label>
                                 </td>
-                                <td colspan="3" style="padding:0 5px 2px; text-align: right; vertical-align: middle;">{{m.Instructions}}</td>
+                                <td colspan="3" style="padding:2px 5px; text-align: right; vertical-align: middle;">{{m.Instructions}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1340,7 +1340,6 @@
             <p style="font-size:13px; margin:0; color:#444;">{{DoctorInfo.Footer}}</p>
         </div>
     </div>
-
 
     <!-- PRINT + CLOSE BUTTONS -->
     <div style="position:fixed; right:20px; bottom:20px; font-family: Arial, sans-serif;">

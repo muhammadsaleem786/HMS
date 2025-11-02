@@ -9,6 +9,7 @@ import { DashboardMenuService } from '../../../CommonService/DashboardMenuServic
 import { PatientDetailComponentForm } from '../../../theme/Module/HTMLReports/PatientReport/PatientDetailComponentForm';
 import { FeeComponentForm } from '../../../theme/Module/HTMLReports/PatientReport/FeeComponentForm';
 import { ProcedureComponentRptForm } from '../../../theme/Module/HTMLReports/PatientReport/ProcedureComponentRptForm';
+import { ProcedureServiceComponentRptForm } from '../../../theme/Module/HTMLReports/PatientReport/ProcedureServiceComponentRptForm';
 import { AppointmentComponentReportForm } from '../../../theme/Module/HTMLReports/PatientReport/AppointmentComponentReportForm';
 import { BirthdayComponentRptForm } from '../../../theme/Module/HTMLReports/PatientReport/BirthdayComponentRptForm';
 import { DetailedPatientComponentRptForm } from '../../../theme/Module/HTMLReports/PatientReport/DetailedPatientComponentRptForm';
@@ -38,7 +39,7 @@ import { ProfitLossRptForm } from '../../../theme/Module/HTMLReports/FinancialRe
         CashFlowRptForm, MedicinewiseRptForm, OutstandingIncomeRptForm, PaymentSummaryRptForm, TreatmentwiseRptForm,
         BirthdayComponentRptForm, DetailedPatientComponentRptForm, FollowupComponentRptForm, OutstandingComponentRptForm, PaymentComponentRptForm,
         ClinicwiseComponentRptForm, DoctorswisePaymentComponentRptForm, DoctorswiseComponentRptForm, DoctorPaymentSummaryComponentRptForm,
-        PatientDetailComponentForm, ProfitLossRptForm, CurrentStockRptForm, SaleByPatientRptForm, ProcedureComponentRptForm, FeeComponentForm, AppointmentComponentReportForm, PurchaseRptForm
+        PatientDetailComponentForm, ProfitLossRptForm, CurrentStockRptForm, SaleByPatientRptForm, ProcedureServiceComponentRptForm, ProcedureComponentRptForm, FeeComponentForm, AppointmentComponentReportForm, PurchaseRptForm
     ],
     providers: [
         CookieService,

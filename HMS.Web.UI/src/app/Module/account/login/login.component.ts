@@ -77,7 +77,7 @@ export class LoginComponent implements OnInit {
                 if (result.IsSuccess) {
                     this.loader.HideLoader();
                     let userObj = result.ResultSet.User;
-                    if (result.IsSuccess && (userObj.Email == "saleem4292@gmail.com" || userObj.Email == "mohsinshahbaz@gmail.com")) {
+                    if (result.IsSuccess && (userObj.Email == "saleem4292@gmail.com")) {
                         this._router.navigate(['/home/dashboard']);
                     }
                     else if (result.IsSuccess && userObj.ExpiryDate == null) {

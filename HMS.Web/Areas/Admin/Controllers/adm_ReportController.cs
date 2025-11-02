@@ -187,6 +187,46 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 return objResponse;
             }
         }
+        [HttpPost]
+        [ActionName("ProcedureServiceRpt")]
+        public ResponseInfo ProcedureServiceRpt(ReportModel model)
+        {
+            {
+                var objResponse = new ResponseInfo();
+                try
+                {
+                    decimal CompanyID = Request.CompanyID();
+                    int userid = Convert.ToInt32(Request.LoginID());
+                    DataAccessManager dataAccessManager = new DataAccessManager();
+                    var ht = new Hashtable();
+                    if (model.ProcedureId != null && model.ProcedureId != 0)
+                    {
+                        ht.Add("@ProcedureId", model.ProcedureId);
+                    }
+                    else
+                    {
+                        ht.Add("@ProcedureId", DBNull.Value);
+                    }
+                    ht.Add("@CompanyId", CompanyID);
+                    ht.Add("@FromeDate", Convert.ToDateTime(model.FromDate));
+                    ht.Add("@ToDate", Convert.ToDateTime(model.ToDate));
+                    ht.Add("@UserId", userid);
+                    var result = dataAccessManager.GetDataSet("SP_Procedure_Service_Rpt", ht);
+                    objResponse.IsSuccess = true;
+                    objResponse.ResultSet = new
+                    {
+                        FeeList = result,
+                    };
+                }
+                catch (Exception ex)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = ex.Message;
+                    Logger.Trace.Error(ex);
+                }
+                return objResponse;
+            }
+        }
 
         [HttpPost]
         [ActionName("ItemRpt")]

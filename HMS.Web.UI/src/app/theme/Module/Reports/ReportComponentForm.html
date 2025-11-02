@@ -86,6 +86,12 @@
                                         <span class="title">Procedure Report</span>
                                     </a>
                                 </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(71)>-1">
+                                    <a class="report_block" routerLink="/home/ProserviceRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">Procedure Service Report</span>
+                                    </a>
+                                </div>
                                 <div class="col-sm-3" *ngIf="Rights.indexOf(16)>-1">
                                     <a class="report_block" routerLink="/home/FeeRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
@@ -132,13 +138,13 @@
                                     </a>
                                 </div>
                                 <!--<div class="col-sm-3" *ngIf="Rights.indexOf(34)>-1">
-                                    <a class="report_block" routerLink="/home/DetailedPatientRpt">
-                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
-                                        <span class="title">
-                                            Detailed Patient wise Fees Report
-                                        </span>
-                                    </a>
-                                </div>-->
+        <a class="report_block" routerLink="/home/DetailedPatientRpt">
+            <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+            <span class="title">
+                Detailed Patient wise Fees Report
+            </span>
+        </a>
+    </div>-->
 
                             </div>
                         </div>

@@ -18,8 +18,8 @@
             </h6>
             <hr>
         </div>
-        <a *ngIf="Email=='saleem4292@gmail.com' || Email=='mohsinshahbaz@gmail.com'" class="dropdown-item" routerLink="/home/Admin">Payment</a>
-        <a *ngIf="Email=='saleem4292@gmail.com' || Email=='mohsinshahbaz@gmail.com'" class="dropdown-item" routerLink="/home/Admin/Subscriber">Subscriber</a>
+        <a *ngIf="Email=='saleem4292@gmail.com'" class="dropdown-item" routerLink="/home/Admin">Payment</a>
+        <a *ngIf="Email=='saleem4292@gmail.com'" class="dropdown-item" routerLink="/home/Admin/Subscriber">Subscriber</a>
         <a class="dropdown-item" (click)="AddProfile()">View Profile</a>
         <a class="dropdown-item" routerLink="/home/changepassword">Change Password</a>
         <a class="dropdown-item" (click)="Logout()">Logout</a>
@@ -107,12 +107,12 @@
                                 <span class="title">Purchases</span>
                             </a>
                         </li>
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Modules.indexOf(5)>-1">
+                        <!--<li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Modules.indexOf(5)>-1">
                             <a routerLink="/home/session">
                                 <span><i class="icon-chart-settings iconImage"></i></span>
                                 <span class="title">Session</span>
                             </a>
-                        </li>
+                        </li>-->
 
                         <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Modules.indexOf(5)>-1">
                             <a routerLink="/home/report">

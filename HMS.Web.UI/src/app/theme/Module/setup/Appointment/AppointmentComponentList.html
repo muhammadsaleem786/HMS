@@ -6,18 +6,20 @@
                     <div class="Cardview m-0 mt-2">
                         <div class="header bg-gradient-danger  pt-2 pt-md-8 AppointmentHeader">
                             <div class="row AppointmentActionBlock m-0 pb-2 border-bottom">
-                                <div class="col-sm-6">
+                                <div class="col-md-3 col-lg-6">
                                     <h3 class="page_title">Appointment</h3>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="input-group searchWraper">
-                                        <div class="input-group-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="currentColor"><path d="M11 5a6 6 0 1 0 0 12a6 6 0 0 0 0-12zm-8 6a8 8 0 1 1 14.32 4.906l3.387 3.387a1 1 0 0 1-1.414 1.414l-3.387-3.387A8 8 0 0 1 3 11z" /></g></svg>
-                                        </div>
-                                        <div class="form-group mb-0 col-sm-4  border-left">
-                                            <Datetime-Component placeholder="DD/MM/YYYY" (DateChangeValue)="RefershCalendar($event)" [(ngModel)]="AppointmentDate">
-                                            </Datetime-Component>
-                                        </div>
+                                <div class="col-md-9 col-lg-6">
+                                    <div class="input-group searchWraper row">
+                                     
+                                            <div class="input-group-icon d-none d-sm-block">
+                                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="currentColor"><path d="M11 5a6 6 0 1 0 0 12a6 6 0 0 0 0-12zm-8 6a8 8 0 1 1 14.32 4.906l3.387 3.387a1 1 0 0 1-1.414 1.414l-3.387-3.387A8 8 0 0 1 3 11z" /></g></svg>
+                                            </div>
+                                            <div class="form-group mb-0 col-sm-4  d-xs-none border-left">
+                                                <Datetime-Component placeholder="DD/MM/YYYY" (DateChangeValue)="RefershCalendar($event)" [(ngModel)]="AppointmentDate">
+                                                </Datetime-Component>
+                                            </div>
+                                    
                                         <div class="form-group mb-0 col border-right border-left">
                                             <input type="text" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName" (focusout)="onFocusOutEvent(PatientName,SearhPatientId)" id="PatientNameSearch" placeholder="Search by mobile no">
                                         </div>
@@ -37,14 +39,15 @@
                                                 </div>
                                             </div>
                                         </div>
+                                      
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="header-body" [ngClass]="{ShowpatientDetail: PatientDetailInfo == true ? true : false}">
                             <!-- Card stats -->
-                            <div class="row flex-nowrap m-0">
-                                <div class="col AppointmentLeftCol p-0">
+                            <div class="row m-0">
+                                <div class="AppointmentLeftCol p-0">
                                     <div class="card- h100">
                                         <div class="card-body py-0 px-2">
                                             <div class="row h100">
@@ -172,7 +175,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col colFullCalendar p-0">
+                                <div class="colFullCalendar p-0 flex-grow-1">
                                     <div class="row">
                                         <div class="col pl-1">
                                             <div class="card-">

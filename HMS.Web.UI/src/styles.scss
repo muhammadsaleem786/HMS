@@ -2695,7 +2695,7 @@ html:not(.auth-layout) {
     // }
     // Appoint other Section Style
 
-    .col.AppointmentLeftCol {
+    .AppointmentLeftCol {
         max-width: 260px;
         border-right: 1px solid #dee2e6;
         margin-right: 10px;
@@ -2835,6 +2835,9 @@ html:not(.auth-layout) {
             border: 1px solid transparent;
             background: #f8f9fe;
         }
+    }
+    .colFullCalendar{
+        max-width: calc(100% - 280px);
     }
 
     .PatientDetailBox {
@@ -4502,6 +4505,32 @@ label.custom-control-label {
     .loginRow #loginRightContent{
         display: none;
     }
+
+    .appointmentWraper {
+            
+            .AppointmentLeftCol,
+            .colFullCalendar{
+                max-width: 100%;
+                width: 100% !important;
+                flex-grow: 1;
+            }
+             .calendarMainWrap{
+                flex-wrap: wrap;
+             }
+             .btn_calendar_right {
+                position: relative;
+                right: -5px;
+                top: 6px;
+                z-index: 10;
+            }
+            .fc-center{
+                h2{
+                    font-size: 12px;
+                    margin-top: 10px;
+                }
+            }
+        }
+   
 }
 
 
@@ -4533,4 +4562,10 @@ label.custom-control-label {
 .cke_notification_warning,
 .cke_notification_info {
     display: none !important;
+}
+
+
+.dataTables_wrapper .uk-overflow-container {
+    width: 100%;
+    overflow: auto;
 }

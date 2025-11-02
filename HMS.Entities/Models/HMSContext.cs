@@ -104,6 +104,7 @@ namespace HMS.Entities.Models
         public DbSet<adm_integration> adm_integration { get; set; }
         public DbSet<pr_attendance> pr_attendance { get; set; }
         public DbSet<pr_time_log> pr_time_log { get; set; }
+        public DbSet<adm_user_session> adm_user_session { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new contactMap());
@@ -192,6 +193,7 @@ namespace HMS.Entities.Models
             modelBuilder.Configurations.Add(new adm_integrationMap());
             modelBuilder.Configurations.Add(new pr_attendanceMap());
             modelBuilder.Configurations.Add(new pr_time_logMap());
+            modelBuilder.Configurations.Add(new adm_user_sessionMap());
         }
     }
 }

@@ -4563,3 +4563,9 @@ label.custom-control-label {
 .cke_notification_info {
     display: none !important;
 }
+
+
+.dataTables_wrapper .uk-overflow-container {
+    width: 100%;
+    overflow: auto;
+}

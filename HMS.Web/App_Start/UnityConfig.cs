@@ -137,6 +137,7 @@ namespace HMS.Web.API
                   .RegisterType<IRepositoryAsync<adm_integration>, Repository<adm_integration>>()
                   .RegisterType<IRepositoryAsync<pr_attendance>, Repository<pr_attendance>>()
                   .RegisterType<IRepositoryAsync<pr_time_log>, Repository<pr_time_log>>()
+                  .RegisterType<IRepositoryAsync<adm_user_session>, Repository<adm_user_session>>()
 
 
                         // Add services  
@@ -229,6 +230,7 @@ namespace HMS.Web.API
                 .RegisterType<Iadm_integrationService, adm_integrationService>()
                 .RegisterType<Ipr_attendanceService, pr_attendanceService>()
                 .RegisterType<Ipr_time_logService, pr_time_logService>()
+                .RegisterType<Iadm_user_sessionService, adm_user_sessionService>()
                 .RegisterType<IERPStoredProcedures, HMSContext>(new PerRequestLifetimeManager())
                 .RegisterType<IStoredProcedureService, StoredProcedureService>();
 

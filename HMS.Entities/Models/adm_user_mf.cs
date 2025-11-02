@@ -125,6 +125,8 @@ namespace HMS.Entities.Models
 
             this.pr_attendance = new List<pr_attendance>();
             this.pr_attendance1 = new List<pr_attendance>();
+            this.adm_user_session = new List<adm_user_session>();
+            this.adm_user_session1 = new List<adm_user_session>();
         }
         public decimal ID { get; set; }
         public string Email { get; set; }
@@ -348,6 +350,8 @@ namespace HMS.Entities.Models
         public virtual ICollection<adm_integration> adm_integration1 { get; set; }
         public virtual ICollection<pr_attendance> pr_attendance { get; set; }
         public virtual ICollection<pr_attendance> pr_attendance1 { get; set; }
+        public virtual ICollection<adm_user_session> adm_user_session { get; set; }
+        public virtual ICollection<adm_user_session> adm_user_session1 { get; set; }
 
     }
 }

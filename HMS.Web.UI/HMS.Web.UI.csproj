@@ -276,6 +276,8 @@
     <Content Include="src\app\theme\Module\setup\Patient\PatientComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Prescription\PrescriptionComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Prescription\PrescriptionComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\UserSession\SessionComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\UserSession\SessionComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Reminder\ReminderComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Reminder\ReminderComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Service\ServiceComponentForm.html" />
@@ -653,6 +655,10 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Prescription\PrescriptionComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Prescription\PrescriptionModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Prescription\PrescriptionService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserSession\SessionComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserSession\SessionComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserSession\SessionModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserSession\SessionService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Reminder\ReminderComponentForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Reminder\ReminderComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Reminder\ReminderModel.ts" />

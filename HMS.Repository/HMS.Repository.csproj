@@ -79,6 +79,7 @@
     <Compile Include="Repositories\Admin\adm_reminder_mfRepository.cs" />
     <Compile Include="Repositories\Admin\adm_integrationRepository.cs" />
     <Compile Include="Repositories\Admin\adm_role_mfRepository.cs" />
+    <Compile Include="Repositories\Admin\adm_user_sessionRepository.cs" />
     <Compile Include="Repositories\Admin\contactRepository.cs" />
     <Compile Include="Repositories\Admin\user_paymentRepository.cs" />
     <Compile Include="Repositories\Admin\adm_user_mfRepository.cs" />

@@ -148,7 +148,7 @@
                                 </ng-template>
                                 <ng-template ngbPanelContent>
                                     <div class="TableView">
-                                        <div class="text-right mb-2">
+                                        <div class="text-right mb-2"*ngIf="PaymentRights.CreateRights">
                                             <button class="btn btn-danger btn-sm" (click)="AddNewPayment(NewPayment)" [disabled]="DischargeDate != null"><i class="icon icon-plus"></i>Add Payment </button>
                                         </div>
                                         <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
@@ -180,10 +180,10 @@
                                                                 {{item.Notes}}
                                                             </td>
                                                             <td>
-                                                                <span class="icon icon mr-3" (click)="Edit(item.ID)">
+                                                                <span class="icon icon mr-3" (click)="Edit(item.ID)"*ngIf="PaymentRights.EditRights">
                                                                     <i class="icon icon-pencil2"></i>
                                                                 </span>
-                                                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" [disabled]="DischargeDate != null">
+                                                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="PaymentRights.DeleteRights"[disabled]="DischargeDate != null">
                                                                     <i class="icon icon-trash2 text-danger"></i>
                                                                 </button>
 
@@ -271,7 +271,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
+        <div class="modal-footer" *ngIf="PaymentRights.CreateRights">
             <button type="submit" class="btn btn-primary" [disabled]="DischargeDate != null">Add</button>
         </div>
     </form>

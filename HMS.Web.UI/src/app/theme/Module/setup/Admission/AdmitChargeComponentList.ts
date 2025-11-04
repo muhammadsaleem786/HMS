@@ -46,6 +46,7 @@ export class AdmitChargeComponentList implements OnInit {
     public ClinicName: string;
     public Rights: any;
     public ChargeRights: any;
+    public PaymentRights: any;
     public PatientId: any;
     nextPage: number = 1; public CompanyObj: any;
     totalPages: number = 0; public InvoiceBillModel: any[] = [];
@@ -66,6 +67,7 @@ export class AdmitChargeComponentList implements OnInit {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ChargeRights = this._CommonService.ScreenRights("47");
+        this.PaymentRights = this._CommonService.ScreenRights("75");
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
         this.ClinicName = this.CompanyObj.CompanyName;
         this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));

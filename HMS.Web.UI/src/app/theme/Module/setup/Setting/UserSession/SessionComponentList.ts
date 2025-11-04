@@ -46,7 +46,7 @@ export class SessionComponentList {
         private compiler: Compiler, private modalService: NgbModal, public _AsidebarService: AsidebarService, public toastr: CommonToastrService) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
-        this.ControlRights = this._CommonService.ScreenRights("67");
+        this.ControlRights = this._CommonService.ScreenRights("76");
         this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
     }
     ngOnInit() {

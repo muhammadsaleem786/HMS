@@ -107,7 +107,7 @@
                             </small>
                         </div>
                         <div class="col-4">
-                            <input type="text" formControlName="StartTime" [(ngModel)]="model.StartTime" (click)="SelectTime()"readonly class="form-control" id="TimeRecorded" autocomplete="off">
+                            <input type="text" formControlName="StartTime" [(ngModel)]="model.StartTime" (click)="SelectTime()" readonly class="form-control" id="TimeRecorded" autocomplete="off">
                             <small class="text-danger" *ngIf="Form1.controls.StartTime.hasError('required') && submitted">
                                 This value is required.
                             </small>
@@ -162,9 +162,6 @@
                     </div>
                     <div class="col-4">
                         <input type="text" formControlName="ShiftStartTime" [value]="model.ShiftStartTime | date:'dd/MM/yyyy'" readonly class="form-control" autocomplete="off">
-
-                        <!--<Datetime-Component formControlName="ShiftStartTime" placeholder="DD/MM/YYYY" [(ngModel)]="model.ShiftStartTime" [readonly]="true">
-                        </Datetime-Component>-->
                         <small class="text-danger" *ngIf="Form1.controls.ShiftStartTime.hasError('required') && submitted">
                             This value is required.
                         </small>

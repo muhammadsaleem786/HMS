@@ -20,6 +20,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -49,6 +50,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iadm_user_companyService _adm_user_companyService;
         private readonly Iadm_item_logService _adm_item_logService;
         private readonly Iemr_medicineService _emr_medicineService;
+        private readonly Iadm_user_sessionService _adm_user_sessionService;
+
         public pur_sale_mfController(IUnitOfWorkAsync unitOfWorkAsync,
          Ipur_sale_mfService Service,
          Ipur_sale_dtService pur_sale_dtService,
@@ -64,6 +67,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
          Ipur_sale_hold_mfService pur_sale_hold_mfService,
         Ipur_sale_hold_dtService pur_sale_hold_dtService,
         Iemr_medicineService emr_medicineService,
+        Iadm_user_sessionService adm_user_sessionService,
 
         IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iadm_companyService adm_companyService)
         {
@@ -84,6 +88,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _emr_patientService = emr_patientService;
             _adm_item_logService = adm_item_logService;
             _emr_medicineService = emr_medicineService;
+            _adm_user_sessionService = adm_user_sessionService;
         }
 
         [HttpGet]
@@ -474,6 +479,24 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         {
             throw new NotImplementedException();
         }
+        private bool IsUserShiftOpen(decimal userID, decimal companyID, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            var sessionOpen = _adm_user_sessionService.Queryable()
+                .FirstOrDefault(a => a.UserId == userID
+                                  && a.CompanyId == companyID
+                                  && a.ShiftEndTime == null);
+
+            if (sessionOpen == null)
+            {
+                errorMessage = "Please start your shift before performing this operation. The system will not work if your shift is not open.";
+                return false;
+            }
+
+            return true;
+        }
+
         public async Task<ResponseInfo> Save(pur_sale_mf Model)
         {
             var objResponse = new ResponseInfo();
@@ -486,6 +509,14 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     return objResponse;
                 }
                 decimal CompanyID = Request.CompanyID();
+                decimal userID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(userID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 List<pur_sale_dt> purorderitem = new List<pur_sale_dt>();
                 purorderitem.AddRange(Model.pur_sale_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
@@ -625,6 +656,15 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(UserID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 pur_sale_mf saleobj = _service.Queryable().Where(a => a.ID == Model.ID).FirstOrDefault();
                 if (saleobj != null && saleobj.Total < Model.Total)
                 {
@@ -633,7 +673,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     return objResponse;
                 }
                 decimal ReturnInvoiceId = Model.ID;
-                decimal CompanyID = Request.CompanyID();
+               
                 List<pur_sale_dt> purorderitem = new List<pur_sale_dt>();
                 purorderitem.AddRange(Model.pur_sale_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
@@ -766,7 +806,14 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 decimal CompanyID = Request.CompanyID();
                 decimal[] IdList = Id.Split(',').Select(decimal.Parse).ToArray();
                 decimal id = Convert.ToInt64(Id);
-
+                decimal userID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(userID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 pur_sale_mf Model = _service.Queryable().Where(e => e.ID == id && e.CompanyID == CompanyID).FirstOrDefault();
 
                 if (Model == null)

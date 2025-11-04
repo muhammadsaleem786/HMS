@@ -376,6 +376,7 @@
     <Compile Include="Areas\Admission\ipd_admission_imagingController.cs" />
     <Compile Include="Areas\Admission\ipd_admission_chargesController.cs" />
     <Compile Include="Areas\Admission\ipd_admissionController.cs" />
+    <Compile Include="Areas\Admission\ipd_paymentController.cs" />
     <Compile Include="Areas\Appointment\emr_appointment_mfController.cs" />
     <Compile Include="Areas\Appointment\emr_prescription_templateController.cs" />
     <Compile Include="Areas\Appointment\emr_service_mfController.cs" />

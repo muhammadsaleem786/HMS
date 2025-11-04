@@ -43,6 +43,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iinv_stockService _inv_stockService;
         private readonly Iemr_patientService _emr_patientService;
         private readonly Iadm_user_companyService _adm_user_companyService;
+        private readonly Iadm_user_sessionService _adm_user_sessionService;
         private readonly Iadm_item_logService _adm_item_logService;
         public pur_sale_hold_mfController(IUnitOfWorkAsync unitOfWorkAsync,
          Ipur_sale_hold_mfService Service,
@@ -55,7 +56,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
          Iadm_user_companyService adm_user_companyService,
          Iinv_stockService inv_stockService,
          Iemr_patientService emr_patientService,
-         Iadm_item_logService adm_item_logService,
+         Iadm_item_logService adm_item_logService,Iadm_user_sessionService adm_user_sessionService,
         IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iadm_companyService adm_companyService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
@@ -72,6 +73,24 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _inv_stockService = inv_stockService;
             _emr_patientService = emr_patientService;
             _adm_item_logService = adm_item_logService;
+            _adm_item_logService = adm_item_logService;
+        }
+        private bool IsUserShiftOpen(decimal userID, decimal companyID, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            var sessionOpen = _adm_user_sessionService.Queryable()
+                .FirstOrDefault(a => a.UserId == userID
+                                  && a.CompanyId == companyID
+                                  && a.ShiftEndTime == null);
+
+            if (sessionOpen == null)
+            {
+                errorMessage = "Please start your shift before performing this operation. The system will not work if your shift is not open.";
+                return false;
+            }
+
+            return true;
         }
 
         [HttpGet]
@@ -456,6 +475,15 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     return objResponse;
                 }
                 decimal CompanyID = Request.CompanyID();
+                decimal userID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(userID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
+
                 List<pur_sale_hold_dt> purorderitem = new List<pur_sale_hold_dt>();
                 purorderitem.AddRange(Model.pur_sale_hold_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
@@ -543,6 +571,15 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
+                decimal CompanyID = Request.CompanyID();
+                decimal userID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(userID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 pur_sale_hold_mf saleobj = _service.Queryable().Where(a => a.ID == Model.ID).FirstOrDefault();
                 if (saleobj != null && saleobj.Total < Model.Total)
                 {
@@ -551,7 +588,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     return objResponse;
                 }
                 decimal ReturnInvoiceId = Model.ID;
-                decimal CompanyID = Request.CompanyID();
                 List<pur_sale_hold_dt> purorderitem = new List<pur_sale_hold_dt>();
                 purorderitem.AddRange(Model.pur_sale_hold_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
@@ -634,6 +670,15 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
+                decimal CompanyID = Request.CompanyID();
+                decimal userID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(userID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 pur_sale_hold_mf saleobj = _service.Queryable().Where(a => a.ID.ToString() == Id).FirstOrDefault();
                 saleobj.HoldStatus = false;
                 saleobj.ObjectState = ObjectState.Modified;
@@ -670,6 +715,15 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
+                decimal userID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(userID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
+
                 var models = await _service.Queryable().Where(e => e.HoldStatus == false || DbFunctions.TruncateTime(e.CreatedDate) < DbFunctions.TruncateTime(DateTime.Now) && e.CompanyID == CompanyID).ToListAsync();
                 if (models == null || !models.Any())
                 {
@@ -721,6 +775,15 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
+                decimal userID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(userID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
+
                 decimal[] IdList = Id.Split(',').Select(decimal.Parse).ToArray();
                 decimal id = Convert.ToInt64(Id);
 

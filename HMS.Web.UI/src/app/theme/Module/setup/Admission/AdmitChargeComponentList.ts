@@ -6,7 +6,7 @@ import { CommonToastrService } from '../../../../CommonService/CommonToastrServi
 import { EncryptionService } from '../../../../CommonService/encryption.service';
 import { BillingService } from './../Billing/BillingService';
 
-import { emr_patient, ipd_admission_vital, ipd_admission_charges } from './AdmitModel';
+import { emr_patient, ipd_admission_vital, ipd_admission_charges, ipd_payment } from './AdmitModel';
 import { Observable } from 'rxjs';
 import { AdmitService } from './AdmitService';
 import { PaginationModel, PaginationConfig } from '../../../../CommonComponent/PaginationComponentConfig';
@@ -25,6 +25,7 @@ import { GlobalVariable } from '../../../../AngularConfig/global';
 
 export class AdmitChargeComponentList implements OnInit {
     public Form1: FormGroup;
+    public Form2: FormGroup;
     public submitted: boolean;
     @Input() ScreenName: string;
     @Input() id: number;
@@ -35,6 +36,7 @@ export class AdmitChargeComponentList implements OnInit {
     public ID: number = 10;
     public IsAdmin: boolean = false;
     public model = new ipd_admission_charges();
+    public paymentmodel = new ipd_payment();
     public PayrollRegion: string; public PModel = new PaginationModel(); public PConfig = new PaginationConfig();
     public Keywords: any[] = [];
     public AdmitId: any;
@@ -48,12 +50,15 @@ export class AdmitChargeComponentList implements OnInit {
     nextPage: number = 1; public CompanyObj: any;
     totalPages: number = 0; public InvoiceBillModel: any[] = [];
     public invoiceModel: any; public DischargeDate: any;
-
+    public ipd_payment_dynamicArray = [];
     public ProcedureItem: any[] = [];
     public ProcedureMedicine: any[] = [];
+    public PaymentList: any[] = [];
     pagesRange: number[] = []; previousPage: number = 1; public SubTotal: number = 0;
     public valueForUser: any;
     public Total: number = 0; public TotalDiscount: number = 0;
+    @ViewChild("NewPayment") NewPayment: TemplateRef<any>;
+
     constructor(public _fb: FormBuilder,
         public loader: LoaderService,
         public commonservice: CommonService
@@ -69,7 +74,6 @@ export class AdmitChargeComponentList implements OnInit {
         this.AdmitId = localStorage.getItem('AdmitId');
         this.PatientId = localStorage.getItem('PatientId');
         this.GetCharge();
-
         this.Form1 = this._fb.group({
             AdmissionId: [''],
             AnnualPE: [''],
@@ -81,8 +85,13 @@ export class AdmitChargeComponentList implements OnInit {
             RIP: [''],
             OtherAllCharges: [''],
         });
-
-
+        this.Form2 = this._fb.group({
+            AdmissionId: [''],
+            PatientId: [''],
+            PaymentDate: [''],
+            Amount: [''],
+            Notes: ['']
+        });
     }
     GetCharge() {
         this.loader.ShowLoader();
@@ -94,6 +103,7 @@ export class AdmitChargeComponentList implements OnInit {
             this.loader.HideLoader();
         });
     }
+
     ChargeSaveOrUpdate(isValid: boolean): void {
         if (isValid) {
             this.submitted = false;
@@ -113,6 +123,7 @@ export class AdmitChargeComponentList implements OnInit {
             });
         }
     }
+
     openInvoiceModal(InvoiceModal: any) {
         this.loader.ShowLoader();
         let patientid = localStorage.getItem('PatientId');
@@ -133,5 +144,96 @@ export class AdmitChargeComponentList implements OnInit {
                 this.loader.HideLoader();
         });
     }
-
+    AddNewPayment(NewPayment) {
+        debugger
+        this.loader.ShowLoader();
+        this.ipd_payment_dynamicArray = [];
+        this.paymentmodel = new ipd_payment();
+        this.paymentmodel.ID = 0;
+        this.modalService.open(NewPayment, { size: 'lg' });
+        this.loader.HideLoader();
+    }
+    LoadPayment() {
+        this.loader.ShowLoader();
+        this._AdmitService.PaymentList(this.AdmitId, this.PatientId).then(m => {
+            if (m.ResultSet.result != null) {
+                this.PaymentList = [];
+                this.PaymentList = m.ResultSet.result;
+                this._router.navigate(['home/AdmitSummary/AdmitCharge/AdmitPro']);
+            }
+            this.loader.HideLoader();
+        });
+    }
+    Delete(id: any) {
+        var result = confirm("Are you sure you want to delete selected record.");
+        if (result == true) {
+            this.loader.ShowLoader();
+            this._AdmitService.DeletePayment(id).then(m => {
+                if (m.ErrorMessage != null) {
+                    alert(m.ErrorMessage);
+                }
+                this.LoadPayment();
+                this.loader.HideLoader();
+            });
+        }
+    }
+    Edit(id: any) {
+        this.ipd_payment_dynamicArray = [];
+        this.paymentmodel = new ipd_payment();
+        this.loader.ShowLoader();
+        this._AdmitService.EditPaymentById(id).then(m => {
+            if (m.IsSuccess) {
+                this.paymentmodel = m.ResultSet.payment;
+                this.ipd_payment_dynamicArray.push(m.ResultSet.payment);
+                this.modalService.open(this.NewPayment, { size: 'lg' });
+            }
+            this.loader.HideLoader();
+        });
+    }
+    AddPayment() {
+        var obj = new ipd_payment();
+        obj.PaymentDate = new Date();
+        this.ipd_payment_dynamicArray.push(obj);
+    }
+    Remove_payment_row(rowno: any) {
+        this.ipd_payment_dynamicArray.splice(rowno, 1);
+    }
+    PaymentSaveOrUpdate(isValid: boolean): void {
+        if (isValid) {
+            this.submitted = false;
+            this.loader.ShowLoader();
+            let paymentArray: ipd_payment[] = [];
+            this.ipd_payment_dynamicArray.forEach((item, index) => {
+                const newPayment = new ipd_payment();
+                if (item.PaymentDate == null || item.PaymentDate == undefined) {
+                    isValid = false;
+                    this.toastr.Error("Payment date is required at the row no. " + index++);
+                    return true;
+                } else {
+                    newPayment.ID = item.ID;
+                    newPayment.CompanyId = item.CompanyId;
+                    newPayment.AdmissionId = this.AdmitId;
+                    newPayment.PatientId = this.PatientId;
+                    newPayment.PaymentDate = item.PaymentDate ? new Date(item.PaymentDate) : null;
+                    newPayment.Amount = item.Amount;
+                    newPayment.Notes = item.Notes;
+                    paymentArray.push(newPayment);
+                }
+            })
+            this._AdmitService.PaymentSaveOrUpdateList(paymentArray).then(m => {
+                var result = JSON.parse(m._body);
+                if (result.IsSuccess) {
+                    this.toastr.Success(result.Message);
+                    this.loader.HideLoader();
+                    this.LoadPayment();
+                }
+                else {
+                    this.toastr.Error('Error', result.ErrorMessage);
+                    this.loader.HideLoader();
+                }
+            });
+            this.loader.HideLoader();
+            this.modalService.dismissAll();
+        }
+    }
 }

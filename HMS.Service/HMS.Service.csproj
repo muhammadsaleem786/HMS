@@ -101,6 +101,7 @@
     <Compile Include="Services\Admission\ipd_procedure_mfService.cs" />
     <Compile Include="Services\Admission\ipd_admissionService.cs" />
     <Compile Include="Services\Admission\ipd_admission_dischargeService.cs" />
+    <Compile Include="Services\Admission\ipd_paymentService.cs" />
     <Compile Include="Services\Appointment\emr_notes_favoriteService.cs" />
     <Compile Include="Services\Appointment\emr_patient_bill_paymentService.cs" />
     <Compile Include="Services\Appointment\emr_service_itemService.cs" />

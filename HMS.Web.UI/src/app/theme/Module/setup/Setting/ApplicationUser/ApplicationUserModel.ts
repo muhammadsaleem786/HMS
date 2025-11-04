@@ -14,10 +14,13 @@ export class ApplicationUserModel {
     Pwd: string;
     MultilingualId: number;
     SlotTime: any;
+    Charges: number=0;
+    TotalUser: number = 0;
     //AppStartTime: string;
     //AppEndTime: string;
     //OffDay: string;
     IsOverLap: boolean;
+    ActivatedDate: Date;
     IsShowDoctor: string;
     Qualification: string;
     Designation: string;    
@@ -51,6 +54,7 @@ export class user_payment {
     Remarks: string;
     Date: Date;
 }
+
 export class adm_user_company {
     ID: number = 0;
     UserID: number = 0;

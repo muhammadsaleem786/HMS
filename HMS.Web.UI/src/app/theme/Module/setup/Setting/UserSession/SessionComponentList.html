@@ -13,7 +13,6 @@
             </div>
         </div>
         <div class="col-sm-4 text-right flex-row flex-end">
-            <!--<a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>-->
             <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Session</a>
         </div>
     </div>
@@ -36,10 +35,10 @@
                         <tbody>
                             <tr *ngFor="let item of SessionList" index as i>
                                 <td (click)="AddRecord(item.ID)">
-                                    {{item.ShiftStart}}
+                                    {{item.ShiftStart | date:'dd/MM/yyyy  hh:mm a' }}
                                 </td>
                                 <td (click)="AddRecord(item.ID)">
-                                    {{item.ShiftEnd}}
+                                    {{item.ShiftEnd | date:'dd/MM/yyyy hh:mm a' }}
                                 </td>
                                 <td (click)="AddRecord(item.ID)">
                                     {{item.OpeningComments}}

@@ -87,7 +87,12 @@ namespace HMS.Web.API.Controllers
                 try
                 {
                     user = _service.Queryable().Where(e => e.Email == Model.Email && e.Pwd == Model.Pwd && e.IsActivated == true && e.UserLock == false).FirstOrDefault();
-
+                    if (user == null)
+                    {
+                        objResponse.IsSuccess = false;
+                        objResponse.ErrorMessage = "User Name or Password is incorrect.";
+                        return objResponse;
+                    }
                     if (user != null)
                     {
                         //if (user.IsActivated)
@@ -171,6 +176,7 @@ namespace HMS.Web.API.Controllers
                     else
                     {
                         user = _service.Queryable().Where(e => e.Email == Model.Email).FirstOrDefault();
+                       
                         user.LoginFailureNo += 1;
                         if (user.LoginFailureNo > 5)
                             user.UserLock = true;
@@ -777,7 +783,7 @@ namespace HMS.Web.API.Controllers
                     encrytoken = HttpServerUtility.UrlTokenEncode(Encoding.ASCII.GetBytes(encrytoken));
                     Model.ActivationToken = guid;
                     Model.ActivationTokenDate = Request.DateTimes();
-                    Model.ActivatedDate = null;
+                    Model.ActivatedDate = Request.DateTimes();
                     Model.LastSignIn = Request.DateTimes();
                     Model.LoginFailureNo = 0;
                     Model.IsActivated = false;

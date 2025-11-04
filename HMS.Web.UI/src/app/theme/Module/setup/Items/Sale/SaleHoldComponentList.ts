@@ -111,7 +111,6 @@ export class SaleHoldComponentList {
         }
         this._AsidebarService.SetSaleHoldValue(id);
         this.loader.ShowLoader();
-        debugger
         this._SaleService.UpdateSaleHoldStatus(id).then(m => {
             if (m.IsSuccess) {
                 this.Id = id;

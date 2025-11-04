@@ -102,6 +102,10 @@ export class SessionComponentForm {
             this.toastr.Error("Shift start time is required.");
             return;
         }
+        if (this.model.ID != 0 && this.model.TotalCollection != this.model.ClosingBalance) {
+            this.toastr.Error("Closing balance must be equal to total revenue.");
+            return;
+        }
         this.submitted = true;
         if (isValid) {
             this.submitted = false;

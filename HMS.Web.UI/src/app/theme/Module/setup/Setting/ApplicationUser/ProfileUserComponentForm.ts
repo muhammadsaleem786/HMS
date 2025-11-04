@@ -40,6 +40,10 @@ export class ProfileUserComponentForm implements OnInit {
     public sub: any;
     public IsEdit: boolean = false;
     public model = new ApplicationUserModel();
+    public Charges: any;
+    public ExpiryDate: any;
+    public ActivatedDate:any;
+    public TotalUser: any;
     @ViewChild('closeModal') closeModal: ElementRef;
     public UserProfileImage: string = '';
     public GenderList = [];
@@ -122,6 +126,7 @@ export class ProfileUserComponentForm implements OnInit {
                     this.loader.ShowLoader();
                     this._ApplicationUserService.GetById(this.id).then(m => {
                         this.model = m.ResultSet.UserObj;
+                       
                         this.model.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescription);
                         this.model.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescriptionUrdu);
 

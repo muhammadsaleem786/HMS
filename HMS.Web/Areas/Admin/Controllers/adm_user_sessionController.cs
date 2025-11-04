@@ -177,7 +177,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 result.Refunds = _pur_sale_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.SaleTypeID == 2).Sum(a => (decimal?)a.Total) ?? 0;
                 result.IPDBalance = _ipd_procedure_mfService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.PaidAmount) ?? 0;
                 result.ExpensesAmount = _emr_expenseService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.Amount) ?? 0;
-                result.OtherIncome = _emr_incomeService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.CategoryId != 67).Sum(a => (decimal?)a.ReceivedAmount) ?? 0; ;
+                result.OtherIncome = _emr_incomeService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.ReceivedAmount) ?? 0; ;
                 result.TotalCollection = (result.StartingCash + result.OPDBalance + result.PharmacyBalance + result.IPDBalance + result.OtherIncome) - result.Refunds - result.ExpensesAmount;
                 objResponse.ResultSet = result;
                 objResponse.IsSuccess = true;

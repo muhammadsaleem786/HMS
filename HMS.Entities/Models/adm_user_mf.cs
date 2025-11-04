@@ -103,6 +103,9 @@ namespace HMS.Entities.Models
             this.pur_sale_mf1 = new List<pur_sale_mf>();
             this.pur_payment = new List<pur_payment>();
             this.pur_payment1 = new List<pur_payment>();
+            this.ipd_payment = new List<ipd_payment>();
+            this.ipd_payment1 = new List<ipd_payment>();
+
             this.ipd_input_output = new List<ipd_input_output>();
             this.ipd_input_output1 = new List<ipd_input_output>();
             this.ipd_medication_log = new List<ipd_medication_log>();
@@ -184,6 +187,8 @@ namespace HMS.Entities.Models
         public string IsShowDoctor { get; set; }
         public Nullable<decimal> MultilingualId { get; set; }
         public Nullable<decimal> TemplateId { get; set; }
+        public Nullable<int> TotalUser { get; set; } = 0;
+        public Nullable<int> Charges { get; set; } = 0;
 
         /// <summary> Company table
         [NotMapped]
@@ -332,6 +337,8 @@ namespace HMS.Entities.Models
         public virtual ICollection<pur_payment> pur_payment { get; set; }
         public virtual ICollection<pur_payment> pur_payment1 { get; set; }
 
+        public virtual ICollection<ipd_payment> ipd_payment { get; set; }
+        public virtual ICollection<ipd_payment> ipd_payment1 { get; set; }
         public virtual ICollection<ipd_input_output> ipd_input_output { get; set; }
         public virtual ICollection<ipd_input_output> ipd_input_output1 { get; set; }
         public virtual ICollection<ipd_medication_log> ipd_medication_log { get; set; }

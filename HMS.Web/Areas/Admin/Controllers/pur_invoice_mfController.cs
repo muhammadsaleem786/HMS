@@ -39,6 +39,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iinv_stockService _inv_stockService;
         private readonly Iadm_item_logService _adm_item_logService;
         private readonly Iadm_user_companyService _adm_user_companyService;
+        private readonly Iadm_user_sessionService _adm_user_sessionService;
+
         public pur_invoice_mfController(IUnitOfWorkAsync unitOfWorkAsync,
         Ipur_invoice_mfService Service,
            Ipur_invoice_dtService pur_invoice_dtService,
@@ -48,7 +50,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
           Ipur_vendorService pur_vendorService,
              Iadm_user_companyService adm_user_companyService,
               Iinv_stockService inv_stockService,
-              Iadm_item_logService adm_item_logService,
+              Iadm_item_logService adm_item_logService, Iadm_user_sessionService adm_user_sessionService,
         IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iadm_companyService adm_companyService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
@@ -62,6 +64,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _adm_userService = adm_userService;
             _adm_user_companyService = adm_user_companyService;
             _inv_stockService = inv_stockService;
+            _adm_user_sessionService = adm_user_sessionService;
             _adm_item_logService = adm_item_logService;
 
         }
@@ -276,6 +279,23 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Logger.Trace.Error(ex);
             }
             return objResponse;
+        }
+        private bool IsUserShiftOpen(decimal userID, decimal companyID, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            var sessionOpen = _adm_user_sessionService.Queryable()
+                .FirstOrDefault(a => a.UserId == userID
+                                  && a.CompanyId == companyID
+                                  && a.ShiftEndTime == null);
+
+            if (sessionOpen == null)
+            {
+                errorMessage = "Please start your shift before performing this operation. The system will not work if your shift is not open.";
+                return false;
+            }
+
+            return true;
         }
 
         [HttpGet]

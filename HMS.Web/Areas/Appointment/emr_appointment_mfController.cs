@@ -77,6 +77,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly ISmsService _smsService;
         private readonly Iemr_vitalService _emr_vitalService;
         private readonly Ipr_employee_mfService _pr_employee_mfService;
+        private readonly Iadm_user_sessionService _adm_user_sessionService;
 
         public emr_appointment_mfController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_service_mfService emr_service_mfService, Iemr_prescription_mfService emr_prescription_mfService, Iadm_userService adm_userService, Iemr_medicineService emr_medicineService, Iemr_patientService emr_patientService, Iemr_appointment_mfService service, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
@@ -102,7 +103,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             Iemr_documentService emr_documentService,
             Iadm_itemService adm_itemService,
             Iemr_vitalService emr_vitalService,
-            Ipr_employee_mfService pr_employee_mfService
+            Ipr_employee_mfService pr_employee_mfService, Iadm_user_sessionService adm_user_sessionService
+
             )
         {
             _ipd_diagnosisService = ipd_diagnosisService;
@@ -141,6 +143,26 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _ipd_admission_vitalService = ipd_admission_vitalService;
             _emr_vitalService = emr_vitalService;
             _pr_employee_mfService = pr_employee_mfService;
+            _adm_user_sessionService = adm_user_sessionService;
+
+        }
+
+        private bool IsUserShiftOpen(decimal userID, decimal companyID, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            var sessionOpen = _adm_user_sessionService.Queryable()
+                .FirstOrDefault(a => a.UserId == userID
+                                  && a.CompanyId == companyID
+                                  && a.ShiftEndTime == null);
+
+            if (sessionOpen == null)
+            {
+                errorMessage = "Please start your shift before performing this operation. The system will not work if your shift is not open.";
+                return false;
+            }
+
+            return true;
         }
 
         [HttpPost]
@@ -153,6 +175,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(UserID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
                     ID = _service.Queryable().Max(e => e.ID) + 1;
@@ -389,6 +418,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
 
                 decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(UserID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 Model.CompanyId = CompanyID;
                 Model.CreatedDate = Request.DateTimes();
                 Model.CreatedBy = Request.LoginID();
@@ -473,6 +510,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 //    return objResponse;
                 //}
                 decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(UserID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 var findAppointment = _service.Queryable().Where(a => a.ID == Model.ID && a.CompanyId == CompanyID).FirstOrDefault();
                 if (Model.StatusId != null)
                     findAppointment.StatusId = Model.StatusId;
@@ -578,7 +623,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     .Where(a => a.CompanyId == companyId && a.ID == AppontId)
     .Select(a => a.DoctorId)
     .FirstOrDefaultAsync();
-                 var prescription = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId && DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date)).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).OrderByDescending(a => a.ID).FirstOrDefault();
+                var prescription = _emr_prescription_mfService.Queryable().Where(e => e.PatientId == patientid && e.CompanyID == companyId && e.DoctorId == doctorId && DbFunctions.TruncateTime(e.AppointmentDate) == DbFunctions.TruncateTime(date)).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).OrderByDescending(a => a.ID).FirstOrDefault();
                 var reslt = await _service.Queryable()
      .Where(a => a.PatientId == patientid
               && a.CompanyId == companyId)
@@ -1723,6 +1768,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal CompanyID = Request.CompanyID();
                 int? stid = Convert.ToInt32(StatusId);
                 int userId = Convert.ToInt32(Request.LoginID());
+                string errorMessage;
+                if (!IsUserShiftOpen((decimal)userId, CompanyID, out errorMessage))
+                {
+                    objResult.ErrorMessage = errorMessage;
+                    return objResult;
+                }
+
+
                 DateTime todayDate = Convert.ToDateTime(date);
                 string TotalRecord = "0";
                 if (SearchText == null)
@@ -2276,6 +2329,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 decimal ID = Convert.ToDecimal(Id);
+                decimal UserID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(UserID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 emr_appointment_mf model = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID == ID).FirstOrDefault();
                 var bill = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID && a.AppointmentId == model.ID).ToList();
                 foreach (var item in bill)

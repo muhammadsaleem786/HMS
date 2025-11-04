@@ -63,6 +63,8 @@ export class PaymentComponentForm implements OnInit {
             Email: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.EmailPattern)]],
             PhoneNo: ['', [Validators.required]],
             AdminID: [''],
+            TotalUser: ['', [Validators.required]],
+            Charges: [''],
             IsDefault: [''],
             SlotTime: [''],
             AppStartTime: [''],

@@ -35,10 +35,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iadm_userService _adm_userService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iadm_companyService _adm_companyService;
+        private readonly Iadm_user_sessionService _adm_user_sessionService;
 
         public emr_expenseController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_medicineService emr_medicineService, Iadm_companyService adm_companyService, Iemr_expenseService service, Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
-            Isys_notification_alertService sys_notification_alertService)
+            Isys_notification_alertService sys_notification_alertService, Iadm_user_sessionService adm_user_sessionService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -51,7 +52,26 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _adm_user_tokenService = adm_user_tokenService;
             _emr_medicineService = emr_medicineService;
             _sys_notification_alertService = sys_notification_alertService;
+            _adm_user_sessionService = adm_user_sessionService;
         }
+        private bool IsUserShiftOpen(decimal userID, decimal companyID, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            var sessionOpen = _adm_user_sessionService.Queryable()
+                .FirstOrDefault(a => a.UserId == userID
+                                  && a.CompanyId == companyID
+                                  && a.ShiftEndTime == null);
+
+            if (sessionOpen == null)
+            {
+                errorMessage = "Please start your shift before performing this operation. The system will not work if your shift is not open.";
+                return false;
+            }
+
+            return true;
+        }
+
         [HttpPost]
         [HttpGet]
         [ActionName("Save")]
@@ -68,7 +88,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-
+                string errorMessage;
+                if (!IsUserShiftOpen(UserID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
                     ID = _service.Queryable().Max(e => e.ID) + 1;
@@ -125,7 +151,15 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
-
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(UserID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 Model.ModifiedBy = Request.LoginID();
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Modified;
@@ -284,6 +318,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 decimal ID = Convert.ToDecimal(Id);
+                decimal UserID = Request.LoginID();
+                string errorMessage;
+                if (!IsUserShiftOpen(UserID, CompanyID, out errorMessage))
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = errorMessage;
+                    return objResponse;
+                }
                 emr_expense model = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID == ID).FirstOrDefault();
 
                 if (model == null)

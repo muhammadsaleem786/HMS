@@ -86,6 +86,15 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //}
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
+                var userCount = _adm_user_companyService.Queryable().Where(a => a.CompanyID==CompanyID).Count();
+                var userObj = _service.Queryable().Where(a => a.ID == UserID).Select(a=>a.TotalUser).FirstOrDefault();
+                if (userCount >= userObj.Value)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "You are not authorized to create a user. Please contact the company.";
+                    return objResponse;
+                }
+
                 var userEmp = _service.Queryable().Where(y => y.EmployeeID == Model.EmployeeID).FirstOrDefault();
                 if (userEmp != null)
                 {
@@ -450,7 +459,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 adm_userCompany.AddRange(Model.adm_user_company);
 
                 string currdate = DateTime.Now.ToString("yyyy-MM-dd");
-                
+
                 if (Model.GenderDropdown != null)
                 {
                     string result = string.Join(",", Model.GenderDropdown);

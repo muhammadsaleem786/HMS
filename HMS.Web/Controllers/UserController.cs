@@ -747,7 +747,7 @@ namespace HMS.Web.API.Controllers
                     employee_mf.PayTypeID = 1;
                     employee_mf.StatusDropDownID = (int)sys_dropdown_mfEnum.EmployeeStatus;
                     employee_mf.StatusID = 1;
-                    employee_mf.PaymentMethodDropDownID = (int)sys_dropdown_mfEnum.SalaryPaymentMethod;
+                    employee_mf.PaymentMethodDropDownID = (int)sys_dropdown_mfEnum.PaymentMethodType;
                     employee_mf.PaymentMethodID = 1;
 
                     employee_mf.NationalityDropDownID = (int)sys_dropdown_mfEnum.Nationality;

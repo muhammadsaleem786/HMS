@@ -52,6 +52,9 @@ export class AdmitService {
     FormLoad(): Promise<any> {
         return this.http.Get(this.urlToApi + '/Load', {}).then(e => e);
     }
+    PaymentFormLoad(): Promise<any> {
+        return this.http.Get(this.urlToApiPay + '/Load', {}).then(e => e);
+    }
     GetAllScreens(): Promise<any> {
         return this.http.Get(this.urlToApi + '/GetAllScreens', {}).then(e => e);
     }

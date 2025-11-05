@@ -34,12 +34,12 @@ namespace HMS.Web.API.Areas.Admission.Controllers
         private readonly ipd_paymentService _service;
         private readonly Iadm_companyService _adm_companyService;
         private readonly Iadm_userService _adm_userService;
-
+        private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly Iadm_user_companyService _adm_user_companyService;
         public ipd_paymentController(IUnitOfWorkAsync unitOfWorkAsync,
         ipd_paymentService Service,
           Iadm_userService adm_userService,
-             Iadm_user_companyService adm_user_companyService,
+             Iadm_user_companyService adm_user_companyService, Isys_drop_down_valueService sys_drop_down_valueService,
         IStoredProcedureService ProcedureService, Iadm_companyService adm_companyService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
@@ -47,6 +47,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             _adm_companyService = adm_companyService;
             _adm_userService = adm_userService;
             _adm_user_companyService = adm_user_companyService;
+            _sys_drop_down_valueService = sys_drop_down_valueService;
         }
 
         [HttpGet]
@@ -57,11 +58,23 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-
-
+                var dropDownIds = new[] {41 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+                var paymentList = allDropDownValues.Where(d => d.DropDownID == 41)
+    .Select(d => new { d.ID, d.Value })
+    .ToList();
 
                 objResponse.ResultSet = new
                 {
+                    paymentList= paymentList,
                 };
                 objResponse.IsSuccess = true;
             }
@@ -142,11 +155,25 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
+                var dropDownIds = new[] { 41 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+                var paymentList = allDropDownValues.Where(d => d.DropDownID == 41)
+.Select(d => new { d.ID, d.Value })
+.ToList();
                 var payment = _service.Queryable().Where(a => a.CompanyId == CompanyID && a.ID.ToString() == Id).FirstOrDefault();
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {
-                    payment = payment
+                    payment = payment,
+                    paymentList= paymentList
                 };
             }
             catch (Exception ex)
@@ -259,6 +286,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                     {
                         item.ID = ID;
                         item.CompanyId = CompanyID;
+                        item.PaymentMethodDropdownID = (int)sys_dropdown_mfEnum.PaymentMethodType;
                         item.CreatedBy = Request.LoginID();
                         item.CreatedDate = Request.DateTimes();
                         item.ModifiedBy = Request.LoginID();

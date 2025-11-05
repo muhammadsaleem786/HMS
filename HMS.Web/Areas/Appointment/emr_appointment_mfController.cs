@@ -436,22 +436,25 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 if (Model.ServiceId != 0)
                 {
                     var obj = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID && a.AppointmentId == Model.ID && a.DoctorId == Model.DoctorId).FirstOrDefault();
-                    obj.DoctorId = Model.DoctorId;
-                    obj.PatientId = Model.PatientId;
-                    obj.ServiceId = Model.ServiceId;
-                    obj.PaidAmount = Model.PaidAmount;
-                    obj.OutstandingBalance = Model.OutstandingBalance;
-                    obj.Price = Model.Price;
-                    obj.Discount = Model.Discount;
-                    obj.BillDate = Model.BillDate;
-                    obj.Remarks = Model.Remarks;
-                    obj.CompanyId = Request.CompanyID();
-                    obj.CreatedBy = Request.LoginID();
-                    obj.CreatedDate = Request.DateTimes();
-                    obj.ModifiedBy = Request.LoginID();
-                    obj.ModifiedDate = Request.DateTimes();
-                    obj.ObjectState = ObjectState.Modified;
-                    _emr_patient_billService.Update(obj);
+                    if (obj != null)
+                    {
+                        obj.DoctorId = Model.DoctorId;
+                        obj.PatientId = Model.PatientId;
+                        obj.ServiceId = Model.ServiceId;
+                        obj.PaidAmount = Model.PaidAmount;
+                        obj.OutstandingBalance = Model.OutstandingBalance;
+                        obj.Price = Model.Price;
+                        obj.Discount = Model.Discount;
+                        obj.BillDate = Model.BillDate;
+                        obj.Remarks = Model.Remarks;
+                        obj.CompanyId = Request.CompanyID();
+                        obj.CreatedBy = Request.LoginID();
+                        obj.CreatedDate = Request.DateTimes();
+                        obj.ModifiedBy = Request.LoginID();
+                        obj.ModifiedDate = Request.DateTimes();
+                        obj.ObjectState = ObjectState.Modified;
+                        _emr_patient_billService.Update(obj);
+                    }
                 }
                 try
                 {

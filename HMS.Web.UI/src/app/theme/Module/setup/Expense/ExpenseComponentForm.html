@@ -39,11 +39,30 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-4 text-right">
+                            <label>
+                                Payment Method
+                            </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <select class="form-control form-control-sm form-control-alternative" formControlName="PaymentMethodID" [(ngModel)]="model.PaymentMethodID">
+                                    <option *ngFor="let item of PaymentMethodList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                                <small class="text-danger" *ngIf="Form1.controls.PaymentMethodID.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> Date*</label>
-                               
+
                         </div>
                         <div class="col-8">
                             <div class="form-group small-input">
@@ -59,7 +78,7 @@
                     <div class="row">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> Remark*</label>
-                                    
+
                         </div>
                         <div class="col-8">
                             <div class="form-group">
@@ -75,11 +94,11 @@
                     <div class="row">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> Amount</label>
-                                       
+
                         </div>
                         <div class="col-8">
                             <div class="form-group">
-                                <input type="text" id="" formControlName="Amount" [(ngModel)]="model.Amount" class="form-control form-control-sm form-control-alternative" placeholder="Amount"oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                <input type="text" id="" formControlName="Amount" [(ngModel)]="model.Amount" class="form-control form-control-sm form-control-alternative" placeholder="Amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                                 <small class="text-danger" *ngIf="Form1.controls.Amount.hasError('required') && submitted">
                                     This value is required.
                                 </small>
@@ -90,7 +109,7 @@
                     <div class="row">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> Clinic</label>
-                                            
+
                         </div>
                         <div class="col-8">
                             <div class="form-group">
@@ -120,47 +139,47 @@
                     <div class="row">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> Invoice Date</label>
-                                                
+
                         </div>
                         <div class="col-8">
                             <div class="form-group  small-input">
                                 <Datetime-Component formControlName="InvoiceDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onInvoiceDateChanged($event)" [(ngModel)]="model.InvoiceDate">
                                 </Datetime-Component>
-                             </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> Invoice Number</label>
-                                                    
+
                         </div>
                         <div class="col-8">
                             <div class="form-group">
                                 <input type="text" id="" formControlName="InvoiceNumber" [(ngModel)]="model.InvoiceNumber" class="form-control form-control-sm form-control-alternative" placeholder="Invoice Number">
-                               
-                             </div>
+
+                            </div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> Vendor</label>
-                                                          
+
                         </div>
                         <div class="col-8">
                             <div class="form-group">
                                 <input type="text" id="" formControlName="Vendor" [(ngModel)]="model.Vendor" class="form-control form-control-sm form-control-alternative" placeholder="Vendor">
-                             
-                             </div>
+
+                            </div>
                         </div>
                     </div>
 
-                    
+
                     <div class="row">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> Payment Status</label>
-                                                                
+
                         </div>
                         <div class="col-8">
                             <div class="form-group">
@@ -169,19 +188,19 @@
                                         {{item.Value}}
                                     </option>
                                 </select>
-                             </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> Payment Remrks</label>
-                                                                  
+
                         </div>
                         <div class="col-8">
                             <div class="form-group">
                                 <textarea type="text" class="form-control m-input" placeholder="Payment Remrks" formControlName="PaymentRemrks" [(ngModel)]="model.PaymentRemrks"></textarea>
-                             
-                             </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>

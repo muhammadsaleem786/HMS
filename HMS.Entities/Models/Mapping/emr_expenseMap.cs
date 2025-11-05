@@ -53,6 +53,8 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.Vendor).HasColumnName("Vendor");
             this.Property(t => t.PaymentStatusId).HasColumnName("PaymentStatusId");
             this.Property(t => t.PaymentStatusDropdownId).HasColumnName("PaymentStatusDropdownId");
+            this.Property(t => t.PaymentMethodDropdownID).HasColumnName("PaymentMethodDropdownID");
+            this.Property(t => t.PaymentMethodID).HasColumnName("PaymentMethodID");
             this.Property(t => t.PaymentRemrks).HasColumnName("PaymentRemrks");
             this.Property(t => t.Attachment).HasColumnName("Attachment");
             this.Property(t => t.CreatedBy).HasColumnName("CreatedBy");
@@ -73,7 +75,9 @@ namespace HMS.Entities.Models.Mapping
             this.HasRequired(t => t.sys_drop_down_value)
                 .WithMany(t => t.emr_expense)
                 .HasForeignKey(d => new { d.CategoryId, d.CategoryDropdownId });
-
+            this.HasOptional(t => t.sys_drop_down_value1)
+              .WithMany(t => t.emr_expense1)
+              .HasForeignKey(d => new { d.PaymentMethodID, d.PaymentMethodDropdownID });
         }
     }
 }

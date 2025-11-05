@@ -5,7 +5,6 @@ import { ThemeComponent } from '../../../theme/theme.component';
 import { PatientDetailComponentForm } from '../../../theme/Module/HTMLReports/PatientReport/PatientDetailComponentForm';
 import { FeeComponentForm } from '../../../theme/Module/HTMLReports/PatientReport/FeeComponentForm';
 import { ProcedureComponentRptForm } from '../../../theme/Module/HTMLReports/PatientReport/ProcedureComponentRptForm';
-import { ProcedureServiceComponentRptForm } from '../../../theme/Module/HTMLReports/PatientReport/ProcedureServiceComponentRptForm';
 import { AppointmentComponentReportForm } from '../../../theme/Module/HTMLReports/PatientReport/AppointmentComponentReportForm';
 import { BirthdayComponentRptForm } from '../../../theme/Module/HTMLReports/PatientReport/BirthdayComponentRptForm';
 import { DetailedPatientComponentRptForm } from '../../../theme/Module/HTMLReports/PatientReport/DetailedPatientComponentRptForm';
@@ -37,8 +36,7 @@ const routes: Routes = [
             { path: 'PatientRpt', component: PatientDetailComponentForm, canActivate: [AuthGuard] },
             { path: 'FeeRpt', component: FeeComponentForm, canActivate: [AuthGuard] },
             { path: 'ProRpt', component: ProcedureComponentRptForm, canActivate: [AuthGuard] },
-            { path: 'ProserviceRpt', component: ProcedureServiceComponentRptForm, canActivate: [AuthGuard] },
-            { path: 'ProlossRpt', component: ProfitLossRptForm, canActivate: [AuthGuard] },
+           { path: 'ProlossRpt', component: ProfitLossRptForm, canActivate: [AuthGuard] },
             { path: 'CurrentRpt', component: CurrentStockRptForm, canActivate: [AuthGuard] },
             { path: 'SaleRpt', component: SaleByPatientRptForm, canActivate: [AuthGuard] },
             { path: 'AppRpt', component: AppointmentComponentReportForm, canActivate: [AuthGuard] },

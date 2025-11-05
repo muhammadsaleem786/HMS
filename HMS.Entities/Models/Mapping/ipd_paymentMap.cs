@@ -31,10 +31,12 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.Amount).HasColumnName("Amount");
             this.Property(t => t.PaymentDate).HasColumnName("PaymentDate");
             this.Property(t => t.Notes).HasColumnName("Notes");
+            this.Property(t => t.PaymentMethodDropdownID).HasColumnName("PaymentMethodDropdownID");
+            this.Property(t => t.PaymentMethodID).HasColumnName("PaymentMethodID");
             this.Property(t => t.CreatedBy).HasColumnName("CreatedBy");
             this.Property(t => t.CreatedDate).HasColumnName("CreatedDate");
             this.Property(t => t.ModifiedBy).HasColumnName("ModifiedBy");
-            this.Property(t => t.ModifiedDate).HasColumnName("ModifiedDate");          
+            this.Property(t => t.ModifiedDate).HasColumnName("ModifiedDate");
 
             // Relationships
             this.HasRequired(t => t.adm_company)
@@ -48,6 +50,10 @@ namespace HMS.Entities.Models.Mapping
             this.HasOptional(t => t.adm_user_mf1)
                 .WithMany(t => t.ipd_payment1)
                 .HasForeignKey(d => d.ModifiedBy);
+
+            this.HasOptional(t => t.sys_drop_down_value)
+   .WithMany(t => t.ipd_payment)
+   .HasForeignKey(d => new { d.PaymentMethodID, d.PaymentMethodDropdownID });
 
         }
     }

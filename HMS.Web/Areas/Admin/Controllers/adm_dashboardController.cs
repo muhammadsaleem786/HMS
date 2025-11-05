@@ -37,6 +37,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iadm_user_companyService _adm_User_CompanyService;
         private readonly Iipd_procedure_expenseService _ipd_procedure_expenseService;
         private readonly Iemr_prescription_mfService _emr_prescription_mfService;
+        private readonly Ipur_sale_mfService _pur_sale_mfService;
+        private readonly Iipd_paymentService _ipd_paymentService;
 
 
 
@@ -48,6 +50,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             , Iadm_userService adm_userService, Iadm_role_mfService adm_role_mfService,
            Iadm_user_companyService adm_User_CompanyService, Iipd_procedure_expenseService ipd_procedure_expenseService
             , Iemr_prescription_mfService emr_prescription_mfService
+            , Ipur_sale_mfService pur_sale_mfService,
+           Iipd_paymentService ipd_paymentService
 
             )
         {
@@ -65,6 +69,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _adm_User_CompanyService = adm_User_CompanyService;
             _ipd_procedure_expenseService = ipd_procedure_expenseService;
             _emr_prescription_mfService = emr_prescription_mfService;
+            _pur_sale_mfService = pur_sale_mfService;
+            _ipd_paymentService = ipd_paymentService;
         }
 
         [HttpGet]
@@ -234,8 +240,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     .ToListAsync();
                 decimal incomeFor(int catId) =>
     incomeByCategory.FirstOrDefault(x => x.CategoryId == catId)?.TotalReceived ?? 0m;
-                var pharmacyIncome = incomeFor(67);
-                var ipdIncome = incomeFor(69);
+                var pharmacyIncome = _pur_sale_mfService.Queryable().Where(i => i.CompanyID == CompanyID && i.Date >= start && i.Date < end).Sum(a=>a.Total);
+                var ipdIncome = _ipd_paymentService.Queryable().Where(i => i.CompanyId == CompanyID && i.PaymentDate >= start && i.PaymentDate < end).Sum(a => (decimal?)a.Amount) ?? 0m;
                 var pathologyIncome = incomeFor(65);
                 var generalIncome = incomeByCategory
     .Where(x => x.CategoryId == 63 || x.CategoryId == 64 || x.CategoryId == 66)
@@ -472,7 +478,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     OutStandingIncome = outStandingIncome, // from IncomeCTE aggregation (date-range)
                     DueIncome = dueIncomeAllTime,
                     Income = 0m, // per SP
-                    PharmacyIncome = pharmacyIncome,
+                    PharmacyIncome =Convert.ToDecimal(pharmacyIncome),
                     IPDIncome = ipdIncome,
                     PathologyIncome = pathologyIncome,
                     GeneralIncome = generalIncome,

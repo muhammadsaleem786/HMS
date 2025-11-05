@@ -103,6 +103,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     ID = _service.Queryable().Max(e => e.ID) + 1;
                 Model.ID = ID;
                 Model.CategoryDropdownId = (int)sys_dropdown_mfEnum.IncomeCategoryDropdownId;
+                Model.PaymentMethodDropdownID = (int)sys_dropdown_mfEnum.PaymentMethodType;
                 Model.CompanyId = Request.CompanyID();
                 Model.CreatedBy = Request.LoginID();
                 Model.CreatedDate = Request.DateTimes();
@@ -389,10 +390,28 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 20).ToList();
+
+                var dropDownIds = new[] { 20, 41 };
+                var allDropDownValues =  _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+
+                var categoryList = allDropDownValues.Where(d => d.DropDownID == 20)
+    .Select(d => new { d.ID, d.Value })
+    .ToList();
+                var paymentList = allDropDownValues.Where(d => d.DropDownID == 41)
+    .Select(d => new { d.ID, d.Value })
+    .ToList();
                 objResponse.ResultSet = new
                 {
                     categoryList = categoryList,
+                    paymentList= paymentList,
                 };
             }
             catch (Exception ex)

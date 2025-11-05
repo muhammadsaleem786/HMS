@@ -36,6 +36,7 @@ export class ExpenseComponentForm implements OnInit {
     public model = new emr_expense();
     public PayrollRegion: string;
     public PaymentList: any[] = [];
+    public PaymentMethodList: any[] = [];
     public CompanyList: any[] = [];
     public CategoryList: any[] = [];
     public Keywords: any[] = [];
@@ -51,7 +52,6 @@ export class ExpenseComponentForm implements OnInit {
         this.PayrollRegion =  this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("14");
-        //this.Keywords = this.commonservice.GetKeywords("Expense");
     }
     ngOnInit() {
         this.loadDropdown();
@@ -62,6 +62,7 @@ export class ExpenseComponentForm implements OnInit {
             Remark: ['', [Validators.required]],
             Amount: ['', [Validators.required]],
             ClinicId: ['', [Validators.required]],
+            PaymentMethodID: [''],
             InvoiceDate: [''],
             InvoiceNumber: [''],
             Vendor: [''],
@@ -100,6 +101,9 @@ export class ExpenseComponentForm implements OnInit {
                 this.CategoryList = m.ResultSet.categoryList;
                 this.PaymentList = m.ResultSet.PaymentMethodList;
                 this.CompanyList = m.ResultSet.CompanyList;
+                this.PaymentMethodList = m.ResultSet.PaymentList;
+                if (this.model.ID == 0)
+                    this.model.PaymentMethodID = 2;//id 2 for cash
                 if (this.CompanyList.length == 1)
                     this.model.ClinicId = this.CompanyList[0].ID;
                 this.loader.HideLoader();

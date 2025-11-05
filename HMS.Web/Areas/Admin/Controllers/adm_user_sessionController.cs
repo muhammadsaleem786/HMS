@@ -34,10 +34,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iipd_procedure_mfService _ipd_procedure_mfService;
         private readonly Iemr_incomeService _emr_incomeService;
         private readonly Iemr_expenseService _emr_expenseService;
+        private readonly ipd_paymentService _ipd_paymentService;
 
         public adm_user_sessionController(IUnitOfWorkAsync unitOfWorkAsync, Iadm_user_sessionService Service,
             IStoredProcedureService ProcedureService, Iemr_patient_billService emr_patient_billService, Ipur_sale_mfService pur_sale_mfService
-            , Iipd_procedure_mfService ipd_procedure_mfService, Iemr_incomeService emr_incomeService, Iemr_expenseService emr_expenseService)
+          , ipd_paymentService ipd_paymentService, Iipd_procedure_mfService ipd_procedure_mfService, Iemr_incomeService emr_incomeService, Iemr_expenseService emr_expenseService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = Service;
@@ -47,6 +48,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _ipd_procedure_mfService = ipd_procedure_mfService;
             _emr_incomeService = emr_incomeService;
             _emr_expenseService = emr_expenseService;
+            _ipd_paymentService = ipd_paymentService;
         }
 
         public async Task<ResponseInfo> Save(adm_user_session Model)
@@ -175,9 +177,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 result.OPDBalance = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.PaidAmount) ?? 0;
                 result.PharmacyBalance = _pur_sale_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.SaleTypeID == 1).Sum(a => (decimal?)a.Total) ?? 0;
                 result.Refunds = _pur_sale_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.SaleTypeID == 2).Sum(a => (decimal?)a.Total) ?? 0;
-                result.IPDBalance = _ipd_procedure_mfService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.PaidAmount) ?? 0;
+                result.IPDBalance = _ipd_paymentService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.Amount) ?? 0;
                 result.ExpensesAmount = _emr_expenseService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.Amount) ?? 0;
-                result.OtherIncome = _emr_incomeService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.ReceivedAmount) ?? 0; ;
+                result.OtherIncome = _emr_incomeService.Queryable().Where(a => a.CompanyId == CompanyID && a.CategoryId!=67 && a.CategoryId!=69 && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.ReceivedAmount) ?? 0; ;
                 result.TotalCollection = (result.StartingCash + result.OPDBalance + result.PharmacyBalance + result.IPDBalance + result.OtherIncome) - result.Refunds - result.ExpensesAmount;
                 objResponse.ResultSet = result;
                 objResponse.IsSuccess = true;

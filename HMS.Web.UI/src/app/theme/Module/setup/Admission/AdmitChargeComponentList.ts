@@ -54,6 +54,7 @@ export class AdmitChargeComponentList implements OnInit {
     public ipd_payment_dynamicArray = [];
     public ProcedureItem: any[] = [];
     public ProcedureMedicine: any[] = [];
+    public PaymentMethodList: any[] = [];
     public PaymentList: any[] = [];
     pagesRange: number[] = []; previousPage: number = 1; public SubTotal: number = 0;
     public valueForUser: any;
@@ -91,6 +92,7 @@ export class AdmitChargeComponentList implements OnInit {
             AdmissionId: [''],
             PatientId: [''],
             PaymentDate: [''],
+            PaymentMethodID: [''],
             Amount: [''],
             Notes: ['']
         });
@@ -105,7 +107,6 @@ export class AdmitChargeComponentList implements OnInit {
             this.loader.HideLoader();
         });
     }
-
     ChargeSaveOrUpdate(isValid: boolean): void {
         if (isValid) {
             this.submitted = false;
@@ -125,7 +126,6 @@ export class AdmitChargeComponentList implements OnInit {
             });
         }
     }
-
     openInvoiceModal(InvoiceModal: any) {
         this.loader.ShowLoader();
         let patientid = localStorage.getItem('PatientId');
@@ -146,14 +146,23 @@ export class AdmitChargeComponentList implements OnInit {
                 this.loader.HideLoader();
         });
     }
+    onChanged(event: any) {
+
+    }
     AddNewPayment(NewPayment) {
-        debugger
         this.loader.ShowLoader();
-        this.ipd_payment_dynamicArray = [];
-        this.paymentmodel = new ipd_payment();
-        this.paymentmodel.ID = 0;
-        this.modalService.open(NewPayment, { size: 'lg' });
-        this.loader.HideLoader();
+        this._AdmitService.PaymentFormLoad().then(m => {
+            if (m.IsSuccess) {
+                this.PaymentMethodList = [];
+                this.PaymentMethodList = m.ResultSet.paymentList;
+                this.ipd_payment_dynamicArray = [];
+                this.paymentmodel = new ipd_payment();
+                this.paymentmodel.ID = 0;
+                this.modalService.open(NewPayment, { size: 'lg' });
+                this.loader.HideLoader();
+            } else
+                this.loader.HideLoader();
+        });
     }
     LoadPayment() {
         this.loader.ShowLoader();
@@ -186,6 +195,7 @@ export class AdmitChargeComponentList implements OnInit {
         this._AdmitService.EditPaymentById(id).then(m => {
             if (m.IsSuccess) {
                 this.paymentmodel = m.ResultSet.payment;
+                this.PaymentMethodList = m.ResultSet.paymentList;
                 this.ipd_payment_dynamicArray.push(m.ResultSet.payment);
                 this.modalService.open(this.NewPayment, { size: 'lg' });
             }
@@ -195,6 +205,7 @@ export class AdmitChargeComponentList implements OnInit {
     AddPayment() {
         var obj = new ipd_payment();
         obj.PaymentDate = new Date();
+        obj.PaymentMethodID = 2;//id 2 for cash
         this.ipd_payment_dynamicArray.push(obj);
     }
     Remove_payment_row(rowno: any) {
@@ -205,6 +216,7 @@ export class AdmitChargeComponentList implements OnInit {
             this.submitted = false;
             this.loader.ShowLoader();
             let paymentArray: ipd_payment[] = [];
+            debugger
             this.ipd_payment_dynamicArray.forEach((item, index) => {
                 const newPayment = new ipd_payment();
                 if (item.PaymentDate == null || item.PaymentDate == undefined) {
@@ -216,6 +228,7 @@ export class AdmitChargeComponentList implements OnInit {
                     newPayment.CompanyId = item.CompanyId;
                     newPayment.AdmissionId = this.AdmitId;
                     newPayment.PatientId = this.PatientId;
+                    newPayment.PaymentMethodID = item.PaymentMethodID;
                     newPayment.PaymentDate = item.PaymentDate ? new Date(item.PaymentDate) : null;
                     newPayment.Amount = item.Amount;
                     newPayment.Notes = item.Notes;

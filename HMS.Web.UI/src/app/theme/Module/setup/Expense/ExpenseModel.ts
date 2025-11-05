@@ -2,6 +2,8 @@
     ID: number;
     CategoryId: number;
     CategoryDropdownId: number;
+    PaymentMethodID: number;
+    PaymentMethodDropdownID: number;
     Date: Date;
     Remark: string;
     Amount: number;

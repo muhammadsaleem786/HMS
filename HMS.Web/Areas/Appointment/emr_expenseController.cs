@@ -101,6 +101,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.ID = ID;
                 Model.CategoryDropdownId = (int)sys_dropdown_mfEnum.CategoryDropdownId;
                 Model.PaymentStatusDropdownId = (int)sys_dropdown_mfEnum.PaymentDropdownId;
+                Model.PaymentMethodDropdownID = (int)sys_dropdown_mfEnum.PaymentMethodType;
                 Model.CompanyId = Request.CompanyID();
                 Model.CreatedBy = Request.LoginID();
                 Model.CreatedDate = Request.DateTimes();
@@ -379,14 +380,29 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 18).ToList();
-                var PaymentMethodList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 19).ToList();
+                var dropDownIds = new[] { 18,19, 41 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
+    .Where(x => dropDownIds.Contains(x.DropDownID)
+                && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
+                {
+                    z.ID,
+                    z.Value,
+                    z.DropDownID,
+                })
+    .ToList();
+
+
+
+                var categoryList = allDropDownValues.Where(e => e.DropDownID == 18).ToList();
+                var PaymentMethodList = allDropDownValues.Where(e => e.DropDownID == 19).ToList();
+                var PaymentList = allDropDownValues.Where(e => e.DropDownID == 41).ToList();
                 var CompanyList = _adm_companyService.Queryable().Where(a => a.ID == CompanyID).Select(a => new { ID=a.ID, CompanyName=a.CompanyName }).ToList();
                 objResponse.ResultSet = new
                 {
                     categoryList = categoryList,
                     PaymentMethodList = PaymentMethodList,
                     CompanyList= CompanyList,
+                    PaymentList= PaymentList,
                 };
             }
             catch (Exception ex)

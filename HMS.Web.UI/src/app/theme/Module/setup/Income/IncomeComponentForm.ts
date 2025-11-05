@@ -36,6 +36,7 @@ export class IncomeComponentForm implements OnInit {
     public model = new emr_Income();
     public PayrollRegion: string;
     public CategoryList: any[] = [];
+    public PaymentMethodList: any[] = [];
     public Keywords: any[] = [];
     public sub: any;
     public Rights: any;
@@ -59,6 +60,7 @@ export class IncomeComponentForm implements OnInit {
             Date: ['', [Validators.required]],
             Remark: ['', [Validators.required]],
             DueAmount: ['', [Validators.required]],
+            PaymentMethodID: [''],
             ReceivedAmount: [''],
             Image: [''],
         });
@@ -91,6 +93,9 @@ export class IncomeComponentForm implements OnInit {
         this._IncomeService.FormLoad().then(m => {
             if (m.IsSuccess) {
                 this.CategoryList = m.ResultSet.categoryList;
+                this.PaymentMethodList = m.ResultSet.paymentList;
+                if (this.model.ID == 0)
+                    this.model.PaymentMethodID = 2;//id 2 for cash
                 this.loader.HideLoader();
             } else
                 this.loader.HideLoader();

@@ -234,6 +234,7 @@
                                 <th style="width:160px;">
                                     Payment Date
                                 </th>
+                                <th>Payment Type</th>
                                 <th>
                                     Amount
                                 </th>
@@ -248,8 +249,15 @@
                         <tbody>
                             <tr *ngFor="let dynamic of ipd_payment_dynamicArray; let i = index;">
                                 <td style="min-width:200px;">
-                                    <Datetime-Component [ngModelOptions]="{standalone:true}" placeholder="DD/MM/YYYY" (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="dynamic.PaymentDate">
+                                    <Datetime-Component [ngModelOptions]="{standalone:true}" placeholder="DD/MM/YYYY" (DateChangeValue)="onChanged($event)" [(ngModel)]="dynamic.PaymentDate">
                                     </Datetime-Component>
+                                </td>
+                                <td>
+                                    <select class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.PaymentMethodID">
+                                        <option *ngFor="let item of PaymentMethodList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
                                 </td>
                                 <td>
                                     <input type="text" class="form-control form-control-sm" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />

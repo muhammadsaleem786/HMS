@@ -17,8 +17,11 @@ namespace HMS.Entities.Models
             this.emr_medicine = new List<emr_medicine>();
             this.emr_medicine1 = new List<emr_medicine>();
             this.emr_expense = new List<emr_expense>();
+            this.emr_expense1 = new List<emr_expense>();
+            this.ipd_payment = new List<ipd_payment>();
             this.ipd_procedure_expense = new List<ipd_procedure_expense>();
             this.emr_income = new List<emr_income>();
+            this.emr_income1 = new List<emr_income>();
             this.emr_patient_mf = new List<emr_patient_mf>();
             this.emr_patient_mf1 = new List<emr_patient_mf>();
             this.emr_patient_mf2 = new List<emr_patient_mf>();
@@ -75,7 +78,10 @@ namespace HMS.Entities.Models
         public virtual ICollection<emr_patient_mf> emr_patient_mf1 { get; set; }
         public virtual ICollection<emr_patient_mf> emr_patient_mf2 { get; set; }
         public virtual ICollection<emr_expense> emr_expense { get; set; }
+        public virtual ICollection<emr_expense> emr_expense1 { get; set; }
+        public virtual ICollection<ipd_payment> ipd_payment { get; set; }
         public virtual ICollection<emr_income> emr_income { get; set; }
+        public virtual ICollection<emr_income> emr_income1 { get; set; }
         public virtual ICollection<emr_vital> emr_vital { get; set; }
         public virtual ICollection<ipd_admission> ipd_admission { get; set; }
         public virtual ICollection<adm_company_location> adm_company_location { get; set; }

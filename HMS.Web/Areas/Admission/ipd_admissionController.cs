@@ -98,7 +98,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 _service.Insert(Model);
                 decimal AppID = 1;
                 var findAppointment = _emr_appointment_mfService.Queryable().Where(a => a.CompanyId == CompanyID && a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(Model.AdmissionDate)).FirstOrDefault();
-                if (findAppointment == null)
+                if (findAppointment == null && Model.DoctorId != 0 && Model.DoctorId != null)
                 {
                     emr_appointment_mf appoint = new emr_appointment_mf();
                     if (_emr_appointment_mfService.Queryable().Count() > 0)
@@ -455,7 +455,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
     .Max(a => (int?)a.ID) ?? 0;
 
                 admissionNo += 1;
-                var mrNo =  _emr_patientService.Queryable()
+                var mrNo = _emr_patientService.Queryable()
     .Where(p => p.CompanyId == companyId)
     .Max(p => (int?)p.ID) ?? 0;
                 mrNo += 1;
@@ -520,7 +520,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 int ID = Convert.ToInt32(Id);
                 var obj = _service.Queryable().Where(a => a.CompanyId == companyId && a.ID == ID).Include(a => a.emr_patient_mf).FirstOrDefault();
 
-                var dropDownIds = new[] { 33,34,35 };
+                var dropDownIds = new[] { 33, 34, 35 };
                 var allDropDownValues = _sys_drop_down_valueService.Queryable()
     .Where(x => dropDownIds.Contains(x.DropDownID)
                 && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
@@ -531,8 +531,8 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                     z.DependedDropDownValueID,
                 })
     .ToList();
-               var wardList= allDropDownValues
-   .Where(x => x.DropDownID == 33).ToList();
+                var wardList = allDropDownValues
+    .Where(x => x.DropDownID == 33).ToList();
                 var roomList = allDropDownValues
   .Where(x => x.DropDownID == 34).ToList();
                 var bedList = allDropDownValues

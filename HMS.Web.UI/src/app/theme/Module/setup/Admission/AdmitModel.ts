@@ -311,4 +311,6 @@ export class ipd_payment {
     PaymentDate: Date;
     Amount: number;
     Notes: string;
+    PaymentMethodID: number;
+    PaymentMethodDropdownID: number;
 }

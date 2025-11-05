@@ -127,7 +127,7 @@ export class AdmitComponentForm implements OnInit {
             PatientId: [''],
             AdmissionTypeId: ['', [Validators.required]],
             AdmissionTypeDropdownId: [''],
-            DoctorId: ['', [Validators.required]],
+            DoctorId: [''],
             AdmissionDate: [''],
             AdmissionTime: [''],
             Location: [''],

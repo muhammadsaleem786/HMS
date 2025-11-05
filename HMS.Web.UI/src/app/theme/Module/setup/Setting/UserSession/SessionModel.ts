@@ -17,4 +17,6 @@
     IPDBalance: Number;
     PharmacyBalance: number;
     OtherIncome: number;
+    PaymentMethodID: number;
+    PaymentMethodDropdownID: number;
 }

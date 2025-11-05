@@ -10,6 +10,7 @@ namespace HMS.Entities.Models
         {
             this.adm_company_location = new List<adm_company_location>();
             this.pur_payment = new List<pur_payment>();
+            this.ipd_payment = new List<ipd_payment>();
             this.ipd_diagnosis = new List<ipd_diagnosis>();
             this.emr_notes_favorite = new List<emr_notes_favorite>();
             this.emr_service_mf = new List<emr_service_mf>();
@@ -72,6 +73,7 @@ namespace HMS.Entities.Models
             this.pur_sale_hold_dt = new List<pur_sale_hold_dt>();
             this.adm_integration = new List<adm_integration>();
             this.pr_attendance = new List<pr_attendance>();
+            this.adm_user_session = new List<adm_user_session>();
         }
         public decimal ID { get; set; }
         public string CompanyName { get; set; }
@@ -120,6 +122,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<adm_role_mf> adm_role_mf { get; set; }
         public virtual ICollection<adm_company_location> adm_company_location { get; set; }
         public virtual ICollection<pur_payment> pur_payment { get; set; }
+        public virtual ICollection<ipd_payment> ipd_payment { get; set; }
         public virtual ICollection<emr_prescription_complaint> emr_prescription_complaint { get; set; }
         public virtual ICollection<emr_prescription_diagnos> emr_prescription_diagnos { get; set; }
         public virtual ICollection<emr_prescription_investigation> emr_prescription_investigation { get; set; }
@@ -182,6 +185,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<ipd_procedure_expense> ipd_procedure_expense { get; set; }
         public virtual ICollection<adm_integration> adm_integration { get; set; }
         public virtual ICollection<pr_attendance> pr_attendance { get; set; }
+        public virtual ICollection<adm_user_session> adm_user_session { get; set; }
 
     }
 }

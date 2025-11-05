@@ -1,0 +1,203 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Session
+                    </h3>
+                </div>
+                <div class="col">
+                    <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Session</a>
+        </div>
+    </div>
+    <div class="Cardview px-3 pb-3">
+        <div class="TableView">
+            <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                <div class="uk-overflow-container col-sm-12 p-0">
+                    <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                        <thead class="grid-header">
+                            <tr>
+                                <th>Shift Start</th>
+                                <th>Shift End</th>
+                                <th>Opening Comments</th>
+                                <th>Closing Comments</th>
+                                <th>Opening Balance</th>
+                                <th>Closing Balance</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of SessionList" index as i>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.ShiftStart | date:'dd/MM/yyyy  hh:mm a' }}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.ShiftEnd | date:'dd/MM/yyyy hh:mm a' }}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.OpeningComments}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.ClosingComments}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.StartingCash}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.ClosingBalance}}
+                                </td>
+                                <td>
+                                    <button (click)="ShiftClose(shiftClose,item.ID)" [disabled]="item.ShiftEnd != null">Shift Close</button>
+                                </td>
+                            </tr>
+                            <tr [hidden]="!(SessionList.length == 0)" style="background:#fff;">
+                                <td [attr.colspan]="10" align="center">
+                                    <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                    <strong class="nodateFound">No record found</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                    <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                        <a (click)="selectPage(page)">
+                            {{page}}
+                        </a>
+                    </li>
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #shiftClose let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title" *ngIf="model.ID == 0">
+            New Open Session
+        </h4>
+
+        <h4 class="modal-title" id="modal-basic-title" *ngIf="model.ID != 0">
+            Closing Session
+        </h4>
+        <span type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <i class="icon icon-cross"></i>
+        </span>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div *ngIf="model.ID != 0">
+                <div class="row">
+                    <div class="row form-group">
+                        <div class="col-sm-2 text-right">
+                            <label class="form-control-label mt-2 required" for="input-username"> Shift End Date/ Time</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" formControlName="ShiftEndTime" [value]="model.ShiftEndTime | date:'dd/MM/yyyy'" readonly class="form-control" autocomplete="off">
+                            <small class="text-danger" *ngIf="Form1.controls.ShiftEndTime.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" formControlName="StartTime" [(ngModel)]="model.StartTime" (click)="SelectTime()" readonly class="form-control" id="TimeRecorded" autocomplete="off">
+                            <small class="text-danger" *ngIf="Form1.controls.StartTime.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2 text-right">
+                            <label class="required">Closing Balance</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" formControlName="ClosingBalance" [(ngModel)]="model.ClosingBalance" class="form-control input-sm">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2 text-right">
+                            <label class="required">Closing Comments</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" formControlName="ClosingComments" [(ngModel)]="model.ClosingComments" class="form-control input-sm">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <label>Opening Balanace:</label>
+                        <label>{{model.StartingCash}}</label><br />
+                        <label>IPD Balanace:</label>
+                        <label>{{model.IPDBalance}}</label><br />
+                        <label>OPD Balanace:</label>
+                        <label>{{model.OPDBalance}}</label><br />
+                        <label>Pharmacy Balanace:</label>
+                        <label>{{model.PharmacyBalance}}</label><br />
+                        <label>Pharmacy Refund:</label>
+                        <label>{{model.PharmacyRefund}}</label><br />
+                        <label>Other Income:</label>
+                        <label>{{model.OtherIncome}}</label><br />
+                        <label>Expense Amount</label>
+                        <label>{{model.ExpensesAmount}}</label><br />
+                        <label>Total:</label>
+                        <label>
+                            {{(model.TotalCollection || 0)}}
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+            <div *ngIf="model.ID == 0">
+                <div class="row form-group">
+                    <div class="col-sm-2 text-right">
+                        <label class="form-control-label mt-2 required" for="input-username"> Shift Start Date/ Time</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" formControlName="ShiftStartTime" [value]="model.ShiftStartTime | date:'dd/MM/yyyy'" readonly class="form-control" autocomplete="off">
+                        <small class="text-danger" *ngIf="Form1.controls.ShiftStartTime.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" formControlName="StartTime" [(ngModel)]="model.StartTime" (click)="SelectTime()" readonly class="form-control" id="TimeRecorded" autocomplete="off">
+                        <small class="text-danger" *ngIf="Form1.controls.StartTime.hasError('required') && submitted">
+                            This value is required.
+                        </small>
+                    </div>
+
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2 text-right">
+                        <label class="required">Starting Cash</label>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" formControlName="StartingCash" [(ngModel)]="model.StartingCash" class="form-control input-sm">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2 text-right">
+                        <label class="required">Opening Comments</label>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" formControlName="OpeningComments" [(ngModel)]="model.OpeningComments" class="form-control input-sm">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="model.ID == 0 && ControlRights.CreateRights">Save</button>
+            <button type="submit" class="btn btn-primary" *ngIf="model.ID != 0 && ControlRights.CreateRights">Close Session</button>
+        </div>
+    </form>
+</ng-template>
+
+

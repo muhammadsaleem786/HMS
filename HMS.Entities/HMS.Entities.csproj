@@ -117,7 +117,10 @@
     <Compile Include="Enum\sys_dropdown_mfEnum.cs" />
     <Compile Include="Models\adm_company.cs" />
     <Compile Include="Models\adm_company_location.cs" />
+    <Compile Include="Models\adm_user_session.cs" />
+    <Compile Include="Models\Mapping\adm_user_sessionMap.cs" />
     <Compile Include="Models\Mapping\pr_time_logMap.cs" />
+    <Compile Include="Models\Mapping\ipd_paymentMap.cs" />
     <Compile Include="Models\pr_time_log.cs" />
     <Compile Include="Models\pr_attendance.cs" />
     <Compile Include="Models\adm_integration.cs" />
@@ -281,6 +284,7 @@
     <Compile Include="Models\pr_loan_payment_dt.cs" />
     <Compile Include="Models\pr_pay_schedule.cs" />
     <Compile Include="Models\pr_time_entry.cs" />
+    <Compile Include="Models\ipd_payment.cs" />
     <Compile Include="Models\pur_payment.cs" />
     <Compile Include="Models\pur_sale_hold_dt.cs" />
     <Compile Include="Models\pur_sale_dt.cs" />

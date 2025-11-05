@@ -187,7 +187,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 return objResponse;
             }
         }
-
         [HttpPost]
         [ActionName("ItemRpt")]
         public ResponseInfo ItemRpt(ReportModel model)

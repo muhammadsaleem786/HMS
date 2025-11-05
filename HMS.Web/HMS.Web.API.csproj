@@ -347,6 +347,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_companyController.cs" />
+    <Compile Include="Areas\Admin\Controllers\adm_user_sessionController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_reminder_mfController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_integrationController.cs" />
     <Compile Include="Areas\Admin\Controllers\pur_paymentController.cs" />
@@ -375,6 +376,7 @@
     <Compile Include="Areas\Admission\ipd_admission_imagingController.cs" />
     <Compile Include="Areas\Admission\ipd_admission_chargesController.cs" />
     <Compile Include="Areas\Admission\ipd_admissionController.cs" />
+    <Compile Include="Areas\Admission\ipd_paymentController.cs" />
     <Compile Include="Areas\Appointment\emr_appointment_mfController.cs" />
     <Compile Include="Areas\Appointment\emr_prescription_templateController.cs" />
     <Compile Include="Areas\Appointment\emr_service_mfController.cs" />

@@ -79,6 +79,7 @@
     <Compile Include="Repositories\Admin\adm_reminder_mfRepository.cs" />
     <Compile Include="Repositories\Admin\adm_integrationRepository.cs" />
     <Compile Include="Repositories\Admin\adm_role_mfRepository.cs" />
+    <Compile Include="Repositories\Admin\adm_user_sessionRepository.cs" />
     <Compile Include="Repositories\Admin\contactRepository.cs" />
     <Compile Include="Repositories\Admin\user_paymentRepository.cs" />
     <Compile Include="Repositories\Admin\adm_user_mfRepository.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Repositories\Admission\ipd_procedure_chargedRepository.cs" />
     <Compile Include="Repositories\Admission\ipd_admissionRepository.cs" />
     <Compile Include="Repositories\Admission\ipd_admission_dischargeRepository.cs" />
+    <Compile Include="Repositories\Admission\ipd_paymentRepository.cs" />
     <Compile Include="Repositories\Appointment\emr_notes_favoriteRepository.cs" />
     <Compile Include="Repositories\Appointment\emr_patient_bill_paymentRepository.cs" />
     <Compile Include="Repositories\Appointment\emr_service_itemRepository.cs" />

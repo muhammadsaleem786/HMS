@@ -46,7 +46,7 @@ namespace HMS.Entities.Enum
         PayType = 38,
         PayDayFallOnHoliday = 39,
         EmployeeStatus = 40,
-        SalaryPaymentMethod = 41,
+        PaymentMethodType = 41,
         EmployeeType = 42,
         Nationality = 43,
         InsuranceClassType = 44, AirTicketClassType = 45,

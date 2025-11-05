@@ -36,7 +36,7 @@ const routes: Routes = [
             { path: 'PatientRpt', component: PatientDetailComponentForm, canActivate: [AuthGuard] },
             { path: 'FeeRpt', component: FeeComponentForm, canActivate: [AuthGuard] },
             { path: 'ProRpt', component: ProcedureComponentRptForm, canActivate: [AuthGuard] },
-            { path: 'ProlossRpt', component: ProfitLossRptForm, canActivate: [AuthGuard] },
+           { path: 'ProlossRpt', component: ProfitLossRptForm, canActivate: [AuthGuard] },
             { path: 'CurrentRpt', component: CurrentStockRptForm, canActivate: [AuthGuard] },
             { path: 'SaleRpt', component: SaleByPatientRptForm, canActivate: [AuthGuard] },
             { path: 'AppRpt', component: AppointmentComponentReportForm, canActivate: [AuthGuard] },

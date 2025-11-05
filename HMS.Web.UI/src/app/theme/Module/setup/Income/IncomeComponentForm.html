@@ -37,6 +37,25 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Payment Method
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="PaymentMethodID" [(ngModel)]="model.PaymentMethodID">
+                                        <option *ngFor="let item of PaymentMethodList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form1.controls.PaymentMethodID.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
                         <!-- ============= -->
 
                         <div class="row">
@@ -47,7 +66,7 @@
                             <div class="col-8">
                                 <div class="form-group">
                                     <Datetime-Component formControlName="Date" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateChanged($event)" [(ngModel)]="model.Date" [style.pointer-events]="true">
-                                    </Datetime-Component >
+                                    </Datetime-Component>
                                 </div>
                                 <small class="text-danger" *ngIf="Form1.controls.Date.hasError('required') && submitted">
                                     This value is required.

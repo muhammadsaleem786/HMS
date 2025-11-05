@@ -36,7 +36,7 @@
 
                             </div>
                             <div class="col-8">
-                                <input type="text"id="" formControlName="PhoneNo" [(ngModel)]="model.PhoneNo" appPhoneMask class="form-control form-control-alternative" maxlength="50">
+                                <input type="text" id="" formControlName="PhoneNo" [(ngModel)]="model.PhoneNo" appPhoneMask class="form-control form-control-alternative" maxlength="50">
                                 <small *ngIf="Form1.controls.PhoneNo.hasError('required') && submitted">
                                     This value is required.
                                 </small>
@@ -71,6 +71,25 @@
                                     <Datetime-Component formControlName="ExpiryDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateChanged($event)" [(ngModel)]="model.ExpiryDate">
                                     </Datetime-Component>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Total User</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" id="" formControlName="TotalUser" [(ngModel)]="model.TotalUser" class="form-control form-control-alternative" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                <small *ngIf="Form1.controls.TotalUser.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row margin-t-10">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Charges</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" id="" formControlName="Charges" [(ngModel)]="model.Charges" class="form-control form-control-alternative" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>                               
                             </div>
                         </div>
                         <div class="row">

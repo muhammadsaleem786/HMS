@@ -8,7 +8,7 @@
                     </a>
                 </div>
                 <div class="col-sm-12 CustomAccordion">
-                   
+
                     <div class="tab-content">
                         <ngb-accordion [closeOthers]="true" activeIds="">
                             <ngb-panel id="patienttab-1">
@@ -132,16 +132,158 @@
                             </ngb-panel>
                         </ngb-accordion>
                         <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
-                            <button type="submit" class="btn btn-primary"[disabled]="DischargeDate != null">Add</button>
-
+                            <button type="submit" class="btn btn-primary" [disabled]="DischargeDate != null">Add</button>
                         </div>
                     </form>
+                    <div class="tab-content">
+                        <ngb-accordion [closeOthers]="true" activeIds="">
+                            <ngb-panel id="patienttab-1">
+                                <ng-template ngbPanelTitle>
+                                    <div (click)="LoadPayment()">
+                                        <span>
+                                            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid radius">
+                                            Payments
+                                        </span><i class="icon-chevron-right iconImage"></i>
+                                    </div>
+                                </ng-template>
+                                <ng-template ngbPanelContent>
+                                    <div class="TableView">
+                                        <div class="text-right mb-2"*ngIf="PaymentRights.CreateRights">
+                                            <button class="btn btn-danger btn-sm" (click)="AddNewPayment(NewPayment)" [disabled]="DischargeDate != null"><i class="icon icon-plus"></i>Add Payment </button>
+                                        </div>
+                                        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+                                            <div class="uk-overflow-container col-sm-12 p-0">
+                                                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                                                    <thead class="grid-header">
+                                                        <tr>
+                                                            <th>
+                                                                Date
+                                                            </th>
+                                                            <th>
+                                                                Amount
+                                                            </th>
+                                                            <th>
+                                                                Note
+                                                            </th>
+                                                            <th>
+                                                                Action
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let item of PaymentList">
+                                                            <td>{{item.PaymentDate |date: 'MM/dd/yyyy'}}</td>
+                                                            <td>
+                                                                {{item.Amount}}
+                                                            </td>
+                                                            <td>
+                                                                {{item.Notes}}
+                                                            </td>
+                                                            <td>
+                                                                <span class="icon icon mr-3" (click)="Edit(item.ID)"*ngIf="PaymentRights.EditRights">
+                                                                    <i class="icon icon-pencil2"></i>
+                                                                </span>
+                                                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="PaymentRights.DeleteRights"[disabled]="DischargeDate != null">
+                                                                    <i class="icon icon-trash2 text-danger"></i>
+                                                                </button>
+
+                                                            </td>
+                                                        </tr>
+                                                        <tr [hidden]="!(PaymentList.length == 0)" style="background:#fff;">
+                                                            <td [attr.colspan]="10" align="center">
+                                                                <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                                                <strong class="nodateFound">No record found</strong>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ngb-panel>
+                        </ngb-accordion>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+<ng-template #NewPayment let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" *ngIf="paymentmodel.ID==0">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            New Payment
+        </h4>
+        <h4 class="modal-title" *ngIf="paymentmodel.ID!=0">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon">
+            Update Payment
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form2" novalidate (ngSubmit)="PaymentSaveOrUpdate(Form2.valid)">
+        <div class="modal-body">
+            <div class="row form-group mt-3">
+                <div class="col-sm-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:160px;">
+                                    Payment Date
+                                </th>
+                                <th>Payment Type</th>
+                                <th>
+                                    Amount
+                                </th>
+                                <th>
+                                    Remarks
+                                </th>
+                                <th class="text-right">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let dynamic of ipd_payment_dynamicArray; let i = index;">
+                                <td style="min-width:200px;">
+                                    <Datetime-Component [ngModelOptions]="{standalone:true}" placeholder="DD/MM/YYYY" (DateChangeValue)="onChanged($event)" [(ngModel)]="dynamic.PaymentDate">
+                                    </Datetime-Component>
+                                </td>
+                                <td>
+                                    <select class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.PaymentMethodID">
+                                        <option *ngFor="let item of PaymentMethodList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control form-control-sm" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                </td>
+                                <td>
+                                    <textarea class="form-control form-control-sm" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Notes"></textarea>
+                                </td>
+                                <td class="text-right">
+                                    <span class="btn-group" *ngIf="DischargeDate==null">
+                                        <span class="btn btn-icon" (click)="Remove_payment_row(i)">
+                                            <i class="icon icon-trash2"></i>
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" (click)="AddPayment()" class="btn btn-sm btn-danger py-1" style="height:24px;" [disabled]="DischargeDate != null">Add Payment</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" *ngIf="PaymentRights.CreateRights">
+            <button type="submit" class="btn btn-primary" [disabled]="DischargeDate != null">Add</button>
+        </div>
+    </form>
+</ng-template>
 <ng-template #InvoiceModal let-modal>
     <div class="modal-header">
         <h4 class="modal-title">
@@ -151,133 +293,133 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-   
-        <div class="modal-body Invoice_Template" id="printBill-section" style="font-family: Arial, sans-serif; font-size: 14px; color: #555555; background: #FFFFFF;">
-    <div class="Invoice_template" style="width: 100%;">
-        <header style="padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid #AAAAAA; overflow: hidden;">
-            
-            <!-- Company Logo -->
-            <div style="float: left; margin-top: 8px;" *ngIf="invoiceModel.length > 0 && invoiceModel.CompanyLogo != null">
-                <img [src]="invoiceModel.CompanyLogo" class="img-fluid radius" style="max-width: 100px; height: 70px;">
-            </div>
-            <div style="float: left; margin-top: 8px;" *ngIf="invoiceModel.length == 0 || invoiceModel.CompanyLogo == null">
-                <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px; height: 70px;">
-            </div>
 
-            <!-- Company Details -->
-            <div style="float: right; text-align: right;">
-                <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{invoiceModel.CompanyName}}</h2>
-                <div>{{invoiceModel.CompanyAddress1}}</div>
-                <div>{{invoiceModel.Phone}}</div>
-                <div><a href="mailto:company@example.com" style="color: #0087C3; text-decoration: none;">{{invoiceModel.Email}}</a></div>
-            </div>
-        </header>
+    <div class="modal-body Invoice_Template" id="printBill-section" style="font-family: Arial, sans-serif; font-size: 14px; color: #555555; background: #FFFFFF;">
+        <div class="Invoice_template" style="width: 100%;">
+            <header style="padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid #AAAAAA; overflow: hidden;">
 
-        <main>
-            <!-- Invoice To -->
-            <div style="margin-bottom: 50px; overflow: hidden;">
-                <div style="padding-left: 6px; border-left: 6px solid #0087C3; float: left;">
-                    <div style="color: #777777;">INVOICE TO:</div>
-                    <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{invoiceModel.PatientName}}</h2>
-                    <div class="address">{{invoiceModel.Address}}</div>
-                    <div class="address">{{invoiceModel.PatientMobile}}</div>
-                    <div class="email"><a href="mailto:john@example.com" style="color: #0087C3; text-decoration: none;">{{invoiceModel.PatientEmail}}</a></div>
+                <!-- Company Logo -->
+                <div style="float: left; margin-top: 8px;" *ngIf="invoiceModel.length > 0 && invoiceModel.CompanyLogo != null">
+                    <img [src]="invoiceModel.CompanyLogo" class="img-fluid radius" style="max-width: 100px; height: 70px;">
                 </div>
+                <div style="float: left; margin-top: 8px;" *ngIf="invoiceModel.length == 0 || invoiceModel.CompanyLogo == null">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px; height: 70px;">
+                </div>
+
+                <!-- Company Details -->
                 <div style="float: right; text-align: right;">
-                    <h1 style="color: #0087C3; font-size: 2.4em; line-height: 1em; font-weight: normal; margin: 0 0 10px 0;">{{invoiceModel.InvoiceNumber}}</h1>
-                    <div style="font-size: 1.1em; color: #777777;">Date of Invoice: {{invoiceModel.InvoiceDate}}</div>
-                    <div style="font-size: 1.1em; color: #777777;">Due Date: {{invoiceModel.DueDate}}</div>
+                    <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{invoiceModel.CompanyName}}</h2>
+                    <div>{{invoiceModel.CompanyAddress1}}</div>
+                    <div>{{invoiceModel.Phone}}</div>
+                    <div><a href="mailto:company@example.com" style="color: #0087C3; text-decoration: none;">{{invoiceModel.Email}}</a></div>
                 </div>
-            </div>
+            </header>
 
-            <!-- Procedure Item Table -->
-            <h2 style="margin: 10px 0;">Procedure Item</h2>
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
-                <thead>
-                    <tr>
-                        <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
-                        <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Service Name</th>
-                        <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Item</th>
-                        <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Batch</th>
-                        <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let b of ProcedureItem; let i = index;">
-                        <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
-                        <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.ServiceName}}</td>
-                        <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Item}}</td>
-                        <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Batch}}</td>
-                        <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- Medicine Table -->
-            <h2 style="margin: 10px 0;">Medicine</h2>
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
-                <thead>
-                    <tr>
-                        <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
-                        <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Medicine</th>
-                        <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let b of ProcedureMedicine; let i = index;">
-                        <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
-                        <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Medicine}}</td>
-                        <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- Charges -->
-           <!-- Charges -->
-            <div style="width: 33%; float: right; margin-bottom: 20px;">
-                <div style="font-weight: bold; margin-bottom: 5px;">Procedure Charges</div>
-                <div>Price: {{invoiceModel.Price}}</div>
-                <div>Discount: {{invoiceModel.Discount}}</div>
-                <div>Paid Amount: {{invoiceModel.PaidAmount}}</div>
-                <hr style="margin: 5px 0;">
-                <div style="color: #2f3479; font-weight: bold;">
-                    Balance: {{ (invoiceModel.Price || 0) - (invoiceModel.PaidAmount || 0) - (invoiceModel.Discount || 0) }}
+            <main>
+                <!-- Invoice To -->
+                <div style="margin-bottom: 50px; overflow: hidden;">
+                    <div style="padding-left: 6px; border-left: 6px solid #0087C3; float: left;">
+                        <div style="color: #777777;">INVOICE TO:</div>
+                        <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{invoiceModel.PatientName}}</h2>
+                        <div class="address">{{invoiceModel.Address}}</div>
+                        <div class="address">{{invoiceModel.PatientMobile}}</div>
+                        <div class="email"><a href="mailto:john@example.com" style="color: #0087C3; text-decoration: none;">{{invoiceModel.PatientEmail}}</a></div>
+                    </div>
+                    <div style="float: right; text-align: right;">
+                        <h1 style="color: #0087C3; font-size: 2.4em; line-height: 1em; font-weight: normal; margin: 0 0 10px 0;">{{invoiceModel.InvoiceNumber}}</h1>
+                        <div style="font-size: 1.1em; color: #777777;">Date of Invoice: {{invoiceModel.InvoiceDate}}</div>
+                        <div style="font-size: 1.1em; color: #777777;">Due Date: {{invoiceModel.DueDate}}</div>
+                    </div>
                 </div>
-            </div>
-            <div style="clear:both"></div>
 
-           <div style="width: 33%; float: right; margin-bottom: 20px;">
-                <div style="font-weight: bold; margin-bottom: 5px;">Other Charges</div>
-                <div>AnnualPE: {{invoiceModel.AnnualPE}}</div>
-                <div>General: {{invoiceModel.General}}</div>
-                <div>Medical: {{invoiceModel.Medical}}</div>
-                <div>ICU Charges: {{invoiceModel.ICUCharges}}</div>
-                <div>Exam Room: {{invoiceModel.ExamRoom}}</div>
-                <div>Private Ward: {{invoiceModel.PrivateWard}}</div>
-                <div>RIP: {{invoiceModel.RIP}}</div>
-                <div>Other All Charges: {{invoiceModel.OtherAllCharges}}</div>
-                <hr>
-                <div style="color: #2f3479; font-weight: bold;">
-                    Total: {{(invoiceModel.AnnualPE || 0) +(invoiceModel.General || 0) +(invoiceModel.Medical || 0) +(invoiceModel.ICUCharges || 0)+(invoiceModel.ExamRoom || 0)+(invoiceModel.PrivateWard || 0) +(invoiceModel.RIP || 0)+(invoiceModel.OtherAllCharges || 0) }}
+                <!-- Procedure Item Table -->
+                <h2 style="margin: 10px 0;">Procedure Item</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
+                            <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Service Name</th>
+                            <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Item</th>
+                            <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Batch</th>
+                            <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let b of ProcedureItem; let i = index;">
+                            <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
+                            <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.ServiceName}}</td>
+                            <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Item}}</td>
+                            <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Batch}}</td>
+                            <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Medicine Table -->
+                <h2 style="margin: 10px 0;">Medicine</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
+                            <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Medicine</th>
+                            <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let b of ProcedureMedicine; let i = index;">
+                            <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
+                            <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Medicine}}</td>
+                            <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Charges -->
+                <!-- Charges -->
+                <div style="width: 33%; float: right; margin-bottom: 20px;">
+                    <div style="font-weight: bold; margin-bottom: 5px;">Procedure Charges</div>
+                    <div>Price: {{invoiceModel.Price}}</div>
+                    <div>Discount: {{invoiceModel.Discount}}</div>
+                    <div>Paid Amount: {{invoiceModel.PaidAmount}}</div>
+                    <hr style="margin: 5px 0;">
+                    <div style="color: #2f3479; font-weight: bold;">
+                        Balance: {{ (invoiceModel.Price || 0) - (invoiceModel.PaidAmount || 0) - (invoiceModel.Discount || 0) }}
+                    </div>
                 </div>
-            </div>
-             <div style="clear:both"></div>
-            <!-- Thank You & Notice -->
-            <div style="font-size: 2em; margin-bottom: 50px;">Thank you!</div>
-            <div style="padding-left: 6px; border-left: 6px solid #0087C3;">
-                <div>NOTICE:</div>
-                <div style="font-size: 1.2em;">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
-            </div>
-        </main>
+                <div style="clear:both"></div>
 
-        
+                <div style="width: 33%; float: right; margin-bottom: 20px;">
+                    <div style="font-weight: bold; margin-bottom: 5px;">Other Charges</div>
+                    <div>AnnualPE: {{invoiceModel.AnnualPE}}</div>
+                    <div>General: {{invoiceModel.General}}</div>
+                    <div>Medical: {{invoiceModel.Medical}}</div>
+                    <div>ICU Charges: {{invoiceModel.ICUCharges}}</div>
+                    <div>Exam Room: {{invoiceModel.ExamRoom}}</div>
+                    <div>Private Ward: {{invoiceModel.PrivateWard}}</div>
+                    <div>RIP: {{invoiceModel.RIP}}</div>
+                    <div>Other All Charges: {{invoiceModel.OtherAllCharges}}</div>
+                    <hr>
+                    <div style="color: #2f3479; font-weight: bold;">
+                        Total: {{(invoiceModel.AnnualPE || 0) +(invoiceModel.General || 0) +(invoiceModel.Medical || 0) +(invoiceModel.ICUCharges || 0)+(invoiceModel.ExamRoom || 0)+(invoiceModel.PrivateWard || 0) +(invoiceModel.RIP || 0)+(invoiceModel.OtherAllCharges || 0) }}
+                    </div>
+                </div>
+                <div style="clear:both"></div>
+                <!-- Thank You & Notice -->
+                <div style="font-size: 2em; margin-bottom: 50px;">Thank you!</div>
+                <div style="padding-left: 6px; border-left: 6px solid #0087C3;">
+                    <div>NOTICE:</div>
+                    <div style="font-size: 1.2em;">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                </div>
+            </main>
 
-    <div class="modal-footer" style="position:fixed; right: 20px; top:0">
-        <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
-        <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
+
+
+            <div class="modal-footer" style="position:fixed; right: 20px; top:0">
+                <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
+                <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
+            </div>
+        </div>
     </div>
-    </div>
-</div>
 
 
 </ng-template>

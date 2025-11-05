@@ -55,6 +55,9 @@ export class ReportService {
     ProcedureRpt(entity: ReportModel): Promise<any> {
         return this.http.Post(this.urlToApi + '/ProcedureRpt', entity).then(e => e);
     } 
+    ProcedureServiceRpt(entity: ReportModel): Promise<any> {
+        return this.http.Post(this.urlToApi + '/ProcedureServiceRpt', entity).then(e => e);
+    } 
     ItemRpt(entity: ReportModel): Promise<any> {
         return this.http.Post(this.urlToApi + '/ItemRpt', entity).then(e => e);
     } 

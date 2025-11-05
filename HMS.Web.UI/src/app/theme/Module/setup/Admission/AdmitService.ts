@@ -1,13 +1,14 @@
 ﻿import { Injectable } from '@angular/core';
 import { GlobalVariable } from '../../../../AngularConfig/global';
 import { HttpService } from '../../../../CommonService/HttpService';
-import { emr_patient, ipd_admission, ipd_admission_vital, ipd_admission_notes, ipd_input_output, ipd_medication_log, ipd_procedure_charged, ipd_admission_lab, ipd_admission_charges, ipd_admission_medication, ipd_admission_imaging, ipd_procedure_mf, ipd_procedure_medication, ipd_diagnosis, ipd_admission_discharge } from './AdmitModel';
+import { emr_patient, ipd_admission, ipd_admission_vital, ipd_admission_notes, ipd_input_output, ipd_medication_log, ipd_procedure_charged, ipd_admission_lab, ipd_admission_charges, ipd_admission_medication, ipd_admission_imaging, ipd_procedure_mf, ipd_procedure_medication, ipd_diagnosis, ipd_admission_discharge, ipd_payment } from './AdmitModel';
 
 @Injectable()
 export class AdmitService {
     private urlToApi = GlobalVariable.BASE_Api_URL + "/api/Admission/ipd_admission";
     private urlToApiVital = GlobalVariable.BASE_Api_URL + "/api/Admission/ipd_admission_vital";
     private urlToApiCharg = GlobalVariable.BASE_Api_URL + "/api/Admission/ipd_admission_charges";
+    private urlToApiPay = GlobalVariable.BASE_Api_URL + "/api/Admission/ipd_payment";
     private urlToApinote = GlobalVariable.BASE_Api_URL + "/api/Admission/ipd_admission_notes";
     private urlToApiLab = GlobalVariable.BASE_Api_URL + "/api/Admission/ipd_admission_lab";
     private urlToApiImg = GlobalVariable.BASE_Api_URL + "/api/Admission/ipd_admission_imaging";
@@ -51,6 +52,9 @@ export class AdmitService {
     FormLoad(): Promise<any> {
         return this.http.Get(this.urlToApi + '/Load', {}).then(e => e);
     }
+    PaymentFormLoad(): Promise<any> {
+        return this.http.Get(this.urlToApiPay + '/Load', {}).then(e => e);
+    }
     GetAllScreens(): Promise<any> {
         return this.http.Get(this.urlToApi + '/GetAllScreens', {}).then(e => e);
     }
@@ -83,10 +87,33 @@ export class AdmitService {
         else
             return this.http.Put(this.urlToApiCharg + '/Update', entity).then(e => e);
     }
+    //Payment  charge
+    PaymentSaveOrUpdate(entity: ipd_payment): Promise<any> {
+        if (isNaN(entity.ID) || entity.ID == 0)
+            return this.http.Post(this.urlToApiPay + '/Save', entity).then(e => e);
+        else
+            return this.http.Put(this.urlToApiPay + '/Update', entity).then(e => e);
+    }
+    PaymentSaveOrUpdateList(entity: ipd_payment[]): Promise<any> {
+        return this.http.Post(this.urlToApiPay + '/SaveMultiple', entity).then(e => e);
+    }
+    PaymentList(AdmitId: string, PatientId: string): Promise<any> {
+        var data = { 'AdmitId': AdmitId, 'PatientId': PatientId };
+        return this.http.Get(this.urlToApiPay + '/GetPaymentList', data).then(e => e);
+    }
+    DeletePayment(Id: string): Promise<any> {
+        var data = { 'Id': Id };
+        return this.http.Delete(this.urlToApiPay + '/Delete', data).then(e => e);
+    }
+    EditPaymentById(Id: number): Promise<any> {
+        var data = { 'Id': Id};
+        return this.http.Get(this.urlToApiPay + '/GetById', data).then(e => e);
+    }
+
     ChargeGetById(AdmitId: string, PatientId: string): Promise<any> {
         var data = { 'AdmitId': AdmitId, 'PatientId': PatientId };
         return this.http.Get(this.urlToApiCharg + '/GetById', data).then(e => e);
-    }
+    } 
 
     //Admission  Vital
     VitalSaveOrUpdate(entity: ipd_admission_vital): Promise<any> {

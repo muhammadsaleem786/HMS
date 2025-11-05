@@ -23,7 +23,6 @@ namespace HMS.Entities.Models
             this.ipd_admission_discharge = new List<ipd_admission_discharge>();
             this.ipd_input_output = new List<ipd_input_output>();
             this.ipd_medication_log = new List<ipd_medication_log>();
-
         }
 
         public decimal ID { get; set; }

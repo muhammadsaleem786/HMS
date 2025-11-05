@@ -303,4 +303,14 @@ export class ipd_medication_log {
     Dose: string;
     MedicineName: string;
 }
-
+export class ipd_payment {
+    ID: number;
+    CompanyId: number;
+    AdmissionId: number;
+    PatientId: number;
+    PaymentDate: Date;
+    Amount: number;
+    Notes: string;
+    PaymentMethodID: number;
+    PaymentMethodDropdownID: number;
+}

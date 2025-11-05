@@ -83,7 +83,7 @@
                                         <hr />
                                         <div class="row form-group">
                                             <div class="col-4 text-right">
-                                                <label class="form-control-label mt-2 required" for="input-username"> Examiner</label>
+                                                <label class="form-control-label mt-2" for="input-username"> Examiner</label>
                                             </div>
                                             <div class="col-8">
                                                 <select class="form-control form-control-sm form-control-alternative" formControlName="DoctorId" [(ngModel)]="modelAdmission.DoctorId">
@@ -91,9 +91,9 @@
                                                         {{item.Name}}
                                                     </option>
                                                 </select>
-                                                <small class="text-danger" *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
+                                                <!--<small class="text-danger" *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
                                                     This value is required.
-                                                </small>
+                                                </small>-->
                                             </div>
                                         </div>
                                         <div class="row form-group">

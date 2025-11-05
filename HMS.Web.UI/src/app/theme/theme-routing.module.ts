@@ -82,6 +82,7 @@ import { ServiceComponentForm } from '../theme/Module/setup/Setting/Service/Serv
 import { ReminderComponentList } from '../theme/Module/setup/Setting/Reminder/ReminderComponentList';
 import { ReminderComponentForm } from '../theme/Module/setup/Setting/Reminder/ReminderComponentForm';
 import { TemplateComponentList } from '../theme/Module/setup/Setting/Template/TemplateComponentList';
+import { SessionComponentList } from '../theme/Module/setup/Setting/UserSession/SessionComponentList';
 
 import { FilterPipe } from '../angularfilter/filter.pipe'
 //end
@@ -227,7 +228,8 @@ const SecureRoutes: Routes = [
             { path: 'template', component: TemplateComponentList, canActivate: [AuthGuard] },
             { path: 'reminder/savereminder', component: ReminderComponentForm, canActivate: [AuthGuard] },
             { path: 'reminder/savereminder:id', component: ReminderComponentForm, canActivate: [AuthGuard] },
-
+            { path: 'session', component: SessionComponentList, canActivate: [AuthGuard] },
+            
             { path: 'Service', component: ServiceComponentList, canActivate: [AuthGuard] },
             { path: 'Service/saveservice', component: ServiceComponentForm, canActivate: [AuthGuard] },
             { path: 'Service/saveservice:id', component: ServiceComponentForm, canActivate: [AuthGuard] },
@@ -361,7 +363,7 @@ export const SecureComponent: any[] = [
     MedicineInstructionComponentList, ObservationComponentList, ComplaintComponentList, InvestigationComponentList, DiagnosComponentList, DropDownComponentList,
     ApplicationUserComponentList, ApplicationUserComponentForm, MedicineComponentList, MedicineComponentForm, CompanyComponentForm, UserRoleComponentList
     , ProfileUserComponentForm, ServiceComponentList, ServiceComponentForm,
-    UserRoleComponentForm, FilterPipe, ReminderComponentList, TemplateComponentList, ReminderComponentForm,
+    UserRoleComponentForm, FilterPipe, SessionComponentList, ReminderComponentList, TemplateComponentList, ReminderComponentForm,
     //end
     //Item Module
     ItemComponentList, SaleHoldComponentList, ItemComponentForm, VendorComponentList, VendorComponentForm,

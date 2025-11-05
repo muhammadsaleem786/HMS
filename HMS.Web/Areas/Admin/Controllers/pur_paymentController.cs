@@ -225,7 +225,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         ID = _service.Queryable().Max(e => e.ID) + 1;
                     Model.ID = ID;
                     Model.CompanyId = CompanyID;
-                    Model.PaymentMethodDropdownID = (int)sys_dropdown_mfEnum.SalaryPaymentMethod;
+                    Model.PaymentMethodDropdownID = (int)sys_dropdown_mfEnum.PaymentMethodType;
                     Model.CreatedBy = Request.LoginID();
                     Model.CreatedDate = Request.DateTimes();
                     Model.ModifiedBy = Request.LoginID();

@@ -53,7 +53,7 @@
                                     {{item.ClosingBalance}}
                                 </td>
                                 <td>
-                                    <button (click)="ShiftClose(shiftClose,item.ID)" [disabled]="item.ShiftEnd != null">Shift Close</button>
+                                    <button class="btn btn-sm btn-light" (click)="ShiftClose(shiftClose,item.ID)" [disabled]="item.ShiftEnd != null">Shift Close</button>
                                 </td>
                             </tr>
                             <tr [hidden]="!(SessionList.length == 0)" style="background:#fff;">
@@ -95,9 +95,8 @@
     <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
         <div class="modal-body">
             <div *ngIf="model.ID != 0">
-                <div class="row">
-                    <div class="row form-group">
-                        <div class="col-sm-2 text-right">
+               <div class="row form-group">
+                        <div class="col-sm-4 text-right">
                             <label class="form-control-label mt-2 required" for="input-username"> Shift End Date/ Time</label>
                         </div>
                         <div class="col-4">
@@ -115,49 +114,84 @@
 
                     </div>
                     <div class="row form-group">
-                        <div class="col-sm-2 text-right">
+                        <div class="col-sm-4 text-right">
                             <label class="required">Closing Balance</label>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-8">
                             <input type="text" formControlName="ClosingBalance" [(ngModel)]="model.ClosingBalance" class="form-control input-sm">
                         </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col-sm-2 text-right">
+                        <div class="col-sm-4 text-right">
                             <label class="required">Closing Comments</label>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-8">
                             <input type="text" formControlName="ClosingComments" [(ngModel)]="model.ClosingComments" class="form-control input-sm">
                         </div>
                     </div>
-                </div>
                 <div class="row">
-                    <div class="col-sm-8">
-                        <label>Opening Balanace:</label>
-                        <label>{{model.StartingCash}}</label><br />
-                        <label>IPD Balanace:</label>
-                        <label>{{model.IPDBalance}}</label><br />
-                        <label>OPD Balanace:</label>
-                        <label>{{model.OPDBalance}}</label><br />
-                        <label>Pharmacy Balanace:</label>
-                        <label>{{model.PharmacyBalance}}</label><br />
-                        <label>Pharmacy Refund:</label>
-                        <label>{{model.PharmacyRefund}}</label><br />
-                        <label>Other Income:</label>
-                        <label>{{model.OtherIncome}}</label><br />
-                        <label>Expense Amount</label>
-                        <label>{{model.ExpensesAmount}}</label><br />
-                        <label>Total:</label>
-                        <label>
-                            {{(model.TotalCollection || 0)}}
-                        </label>
+                    <div class="col-sm-12">
+                               <div class="card shadow-sm border-0" style="border-radius: 15px; background: #f8fdff;">
+                        <div class="card-body p-4">
+                            <h5 class="mb-4 font-weight-bold text-info">
+                            💰 Summary Overview
+                            </h5>
+
+                            <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2">
+                                <span class="text-secondary">Opening Balance:</span>
+                                <span class="font-weight-bold text-dark" style="font-size: 1.05rem;">{{ model.StartingCash }}</span>
+                            </div>
+
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2">
+                                <span class="text-secondary">IPD Balance:</span>
+                                <span class="font-weight-bold text-dark" style="font-size: 1.05rem;">{{ model.IPDBalance }}</span>
+                            </div>
+
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2">
+                                <span class="text-secondary">OPD Balance:</span>
+                                <span class="font-weight-bold text-dark" style="font-size: 1.05rem;">{{ model.OPDBalance }}</span>
+                            </div>
+
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2">
+                                <span class="text-secondary">Pharmacy Balance:</span>
+                                <span class="font-weight-bold text-dark" style="font-size: 1.05rem;">{{ model.PharmacyBalance }}</span>
+                            </div>
+
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2">
+                                <span class="text-secondary">Pharmacy Refund:</span>
+                                <span class="font-weight-bold text-dark" style="font-size: 1.05rem;">{{ model.PharmacyRefund }}</span>
+                            </div>
+
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2">
+                                <span class="text-secondary">Other Income:</span>
+                                <span class="font-weight-bold text-dark" style="font-size: 1.05rem;">{{ model.OtherIncome }}</span>
+                            </div>
+
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2">
+                                <span class="text-secondary">Expense Amount:</span>
+                                <span class="font-weight-bold text-dark" style="font-size: 1.05rem;">{{ model.ExpensesAmount }}</span>
+                            </div>
+
+                            <hr class="my-3" style="border-top: 2px dashed #cde9f7;">
+
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2">
+                                <span class="font-weight-bold text-info" style="font-size: 1.1rem;">Total:</span>
+                                <span class="font-weight-bold text-success" style="font-size: 1.2rem;">
+                                {{ (model.TotalCollection || 0) }}
+                                </span>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+
                     </div>
 
                 </div>
             </div>
             <div *ngIf="model.ID == 0">
                 <div class="row form-group">
-                    <div class="col-sm-2 text-right">
+                    <div class="col-sm-4 text-right">
                         <label class="form-control-label mt-2 required" for="input-username"> Shift Start Date/ Time</label>
                     </div>
                     <div class="col-4">
@@ -175,18 +209,18 @@
 
                 </div>
                 <div class="row form-group">
-                    <div class="col-sm-2 text-right">
+                    <div class="col-sm-4 text-right">
                         <label class="required">Starting Cash</label>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-8">
                         <input type="text" formControlName="StartingCash" [(ngModel)]="model.StartingCash" class="form-control input-sm">
                     </div>
                 </div>
                 <div class="row form-group">
-                    <div class="col-sm-2 text-right">
+                    <div class="col-sm-4 text-right">
                         <label class="required">Opening Comments</label>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-8">
                         <input type="text" formControlName="OpeningComments" [(ngModel)]="model.OpeningComments" class="form-control input-sm">
                     </div>
                 </div>

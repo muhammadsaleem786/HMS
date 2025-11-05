@@ -1,4 +1,11 @@
-﻿<div class="tab-pane" id="Charges">
+﻿<style>
+    .btn-xs{
+        height: 34px;
+        line-height: 15px;
+        margin-top: 10px;
+    }
+</style>
+<div class="tab-pane" id="Charges">
     <div class="row">
         <div class="col">
             <div class="tab-pane active" id="Charges">
@@ -55,6 +62,9 @@
                                                 <input type="text" class="form-control ml-1" formControlName="Medical" [(ngModel)]="model.Medical" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                             </div>
                                         </div>
+                                            <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
+                                            <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
+                                        </div>
                                     </div>
 
                                 </ng-template>
@@ -75,6 +85,9 @@
                                             </div>
                                         </div>
 
+                                        <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
+                                            <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
+                                        </div>
                                     </div>
 
                                 </ng-template>
@@ -106,6 +119,9 @@
                                                 <input type="text" class="form-control ml-1" formControlName="RIP" [(ngModel)]="model.RIP" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                             </div>
                                         </div>
+                                            <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
+                                                <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
+                                            </div>
                                     </div>
 
                                 </ng-template>
@@ -126,14 +142,15 @@
                                                 <input type="text" class="form-control ml-1" formControlName="OtherAllCharges" [(ngModel)]="model.OtherAllCharges" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                             </div>
                                         </div>
+                                            <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
+                                                <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
+                                            </div>
                                     </div>
 
                                 </ng-template>
                             </ngb-panel>
                         </ngb-accordion>
-                        <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
-                            <button type="submit" class="btn btn-primary" [disabled]="DischargeDate != null">Add</button>
-                        </div>
+                    
                     </form>
                     <div class="tab-content">
                         <ngb-accordion [closeOthers]="true" activeIds="">

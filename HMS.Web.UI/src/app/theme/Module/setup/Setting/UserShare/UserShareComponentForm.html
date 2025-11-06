@@ -1,0 +1,114 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
+                Update Share
+                <a routerLink="/home/setup"><i class="fa fa-arrow-circle-left"></i></a>
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                New Share
+                <a routerLink="/home/setup"><i class="fa fa-arrow-circle-left"></i></a>
+            </h3>
+        </div>
+    </div>
+    <div class="tab-pane" id="Charges">
+        <div class="row">
+            <div class="col">
+                <div class="tab-pane active" id="Charges">
+                    <div class="col-sm-12 CustomAccordion">
+                        <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                            <ngb-accordion [closeOthers]="true" activeIds="">
+                                <ngb-panel id="charges-1">
+                                    <ng-template ngbPanelTitle>
+                                        <span>
+                                            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid radius">
+                                            General Expense (%)
+                                        </span><i class="icon-chevron-right iconImage"></i>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label>Doctor Share</label>
+                                                    <input type="text" class="form-control ml-1" formControlName="DoctorShare" [(ngModel)]="model.DoctorShare" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label>Owner Share</label>
+                                                    <input type="text" class="form-control ml-1" formControlName="OwnerShare" [(ngModel)]="model.OwnerShare" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer" *ngIf="ControlRights.CreateRights">
+                                                <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
+                                            </div>
+                                        </div>
+
+                                    </ng-template>
+                                </ngb-panel>
+                                <ngb-panel id="charges-2">
+                                    <ng-template ngbPanelTitle>
+                                        <span>
+                                            <img src="../assets/app/media/img/icons/history.png" class="img-fluid radius">
+                                            Procedure (%)
+                                        </span><i class="icon-chevron-right iconImage"></i>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label>Doctor Share</label>
+                                                    <input type="text" class="form-control ml-1" formControlName="DoctorShare" [(ngModel)]="model.DoctorShare" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label>Owner Share</label>
+                                                    <input type="text" class="form-control ml-1" formControlName="OwnerShare" [(ngModel)]="model.OwnerShare" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer" *ngIf="ControlRights.CreateRights">
+                                                <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
+                                            </div>
+                                        </div>
+
+                                    </ng-template>
+                                </ngb-panel>
+                                <ngb-panel id="charges-3">
+                                    <ng-template ngbPanelTitle>
+                                        <span>
+                                            <img src="../assets/app/media/img/icons/history.png" class="img-fluid radius">
+                                            Discount (%)
+                                        </span><i class="icon-chevron-right iconImage"></i>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label>Doctor Share</label>
+                                                    <input type="text" class="form-control ml-1" formControlName="DoctorShare" [(ngModel)]="model.DoctorShare" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label>Owner Share</label>
+                                                    <input type="text" class="form-control ml-1" formControlName="OwnerShare" [(ngModel)]="model.OwnerShare" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer" *ngIf="ControlRights.CreateRights">
+                                                <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
+                                            </div>
+                                        </div>
+
+                                    </ng-template>
+                                </ngb-panel>
+
+                            </ngb-accordion>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

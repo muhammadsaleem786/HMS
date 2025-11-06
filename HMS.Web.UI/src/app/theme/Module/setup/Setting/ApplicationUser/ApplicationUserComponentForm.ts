@@ -162,16 +162,6 @@ export class ApplicationUserComponentForm implements OnInit {
                             this.DisplayMember = 'No Employee Data';
                             this.IsNewImage = true;
                         }
-
-                        //if (m.ResultSet.UserObj.StartTime != null)
-                        //    this.model.AppStartTime = m.ResultSet.UserObj.StartTime;
-                        //if (m.ResultSet.UserObj.EndTime != null)
-                        //    this.model.AppEndTime = m.ResultSet.UserObj.EndTime;
-                        //var days = m.ResultSet.UserObj.OffDay;
-                        //if (days != null && days != "") {
-                        //    const daysArray = days.split(',').map(Number);
-                        //    this.model.DocWorkingDay = daysArray;
-                        //}
                         var GenderList = m.ResultSet.UserObj.IsGenderDropdown;
                         if (GenderList != null && GenderList != "") {
                             const numArray = GenderList.split(',').map(Number);

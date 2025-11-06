@@ -118,7 +118,9 @@
     <Compile Include="Models\adm_company.cs" />
     <Compile Include="Models\adm_company_location.cs" />
     <Compile Include="Models\adm_user_session.cs" />
+    <Compile Include="Models\adm_user_share.cs" />
     <Compile Include="Models\Mapping\adm_user_sessionMap.cs" />
+    <Compile Include="Models\Mapping\adm_user_shareMap.cs" />
     <Compile Include="Models\Mapping\pr_time_logMap.cs" />
     <Compile Include="Models\Mapping\ipd_paymentMap.cs" />
     <Compile Include="Models\pr_time_log.cs" />

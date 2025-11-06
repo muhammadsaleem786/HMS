@@ -52,8 +52,6 @@ export class UserRoleComponentForm implements OnInit {
         , public _UserRoleService: UserRoleService, public commonservice: CommonService
         , public toastr: CommonToastrService, private encrypt: EncryptionService, public route: ActivatedRoute, public _router: Router) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
-        //this.Keywords = this.commonservice.GetKeywords("UserRole");
-
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("2");
     }

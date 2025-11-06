@@ -347,6 +347,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_companyController.cs" />
+    <Compile Include="Areas\Admin\Controllers\adm_user_shareController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_user_sessionController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_reminder_mfController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_integrationController.cs" />

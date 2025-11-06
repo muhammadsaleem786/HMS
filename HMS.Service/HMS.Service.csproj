@@ -78,6 +78,7 @@
     <Compile Include="Services\Admin\adm_role_mfService.cs" />
     <Compile Include="Services\Admin\adm_user_sessionService.cs" />
     <Compile Include="Services\Admin\contactService.cs" />
+    <Compile Include="Services\Admin\adm_user_shareService.cs" />
     <Compile Include="Services\Admin\user_paymentService.cs" />
     <Compile Include="Services\Admin\adm_userService.cs" />
     <Compile Include="Services\Admin\adm_user_companyService.cs" />

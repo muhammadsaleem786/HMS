@@ -47,7 +47,6 @@ namespace HMS.Entities.Models
         public DbSet<emr_patient_bill> emr_patient_bill { get; set; }
         public DbSet<emr_patient_bill_payment> emr_patient_bill_payment { get; set; }
         public DbSet<emr_vital> emr_vital { get; set; }
-
         public DbSet<ipd_admission> ipd_admission { get; set; }
         public DbSet<ipd_admission_charges> ipd_admission_charges { get; set; }
         public DbSet<ipd_admission_imaging> ipd_admission_imaging { get; set; }
@@ -59,8 +58,7 @@ namespace HMS.Entities.Models
         public DbSet<ipd_procedure_medication> ipd_procedure_medication { get; set; }
         public DbSet<ipd_procedure_mf> ipd_procedure_mf { get; set; }
         public DbSet<ipd_diagnosis> ipd_diagnosis { get; set; }
-        public DbSet<contact> contact { get; set; }
-        
+        public DbSet<contact> contact { get; set; }        
         public DbSet<user_payment> user_payment { get; set; }
         public DbSet<ipd_admission_discharge> ipd_admission_discharge { get; set; }
         public DbSet<adm_item> adm_item { get; set; }
@@ -106,6 +104,7 @@ namespace HMS.Entities.Models
         public DbSet<pr_time_log> pr_time_log { get; set; }
         public DbSet<adm_user_session> adm_user_session { get; set; }
         public DbSet<ipd_payment> ipd_payment { get; set; }
+        public DbSet<adm_user_share> adm_user_share { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new contactMap());
@@ -196,6 +195,7 @@ namespace HMS.Entities.Models
             modelBuilder.Configurations.Add(new pr_time_logMap());
             modelBuilder.Configurations.Add(new adm_user_sessionMap());
             modelBuilder.Configurations.Add(new ipd_paymentMap());
+            modelBuilder.Configurations.Add(new adm_user_shareMap());
         }
     }
 }

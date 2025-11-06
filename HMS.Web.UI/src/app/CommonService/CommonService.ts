@@ -21,13 +21,13 @@ export class CommonService {
     public objExistingCultureIDList: any[] = [];
     private BASE_Api_URL = GlobalVariable.BASE_Api_URL;
 
-    constructor(private http: HttpService, private encrypt: EncryptionService) {}
+    constructor(private http: HttpService, private encrypt: EncryptionService) { }
 
     GetKeywords(FormName: string): string[] {
         var KeyArray: string[] = [];
         var KeyWords: any[] = [];
         KeyWords = JSON.parse(localStorage.getItem('MultiKeyword'));
-        KeyWords.filter(function(item) { return item.Form == "Common" || item.Form == FormName }).map(function(item) {
+        KeyWords.filter(function (item) { return item.Form == "Common" || item.Form == FormName }).map(function (item) {
             KeyArray[item.Keyword] = item.Value;
         });
 
@@ -36,12 +36,21 @@ export class CommonService {
     ScreenRights(ScreenName: string): any {
         var Rights: string[] = [];
         var ScreenRights: any[] = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('ControlLevelRights')));
-        if (ScreenRights.filter(function(item) { return item.ScreenID == ScreenName }).length > 0) {
+        if (ScreenRights.filter(function (item) { return item.ScreenID == ScreenName }).length > 0) {
             var ActionList: any[] = [];
-            var Result = ScreenRights.filter(function(item) { return item.ScreenID == ScreenName });
+            var Result = ScreenRights.filter(function (item) { return item.ScreenID == ScreenName });
             Rights = Result[0];
         }
         return Rights;
+    }
+    RoleName(): any {
+        var Role: any = '';
+        var Role: any = this.encrypt.decryptionAES(localStorage.getItem('RoleName'));
+        if (Role == 'Administrator')
+            Role = true;
+        else
+            Role = false;
+        return Role;
     }
     MinNumberValidator(control: FormControl) {
 
@@ -86,15 +95,15 @@ export class CommonService {
             return null;
 
         var CultureID = parseInt(GlobalVariable.CultureID);
-        this.objModelList = List.filter(function(item) {
+        this.objModelList = List.filter(function (item) {
             return parseInt(item["CultureID"]) != CultureID;
         });
 
-        this.objExistingCultureIDList = List.map(function(item) {
+        this.objExistingCultureIDList = List.map(function (item) {
             return { 'CultureID': parseInt(item["CultureID"]) };
         });
 
-        var Model = List.filter(function(item) {
+        var Model = List.filter(function (item) {
             return parseInt(item["CultureID"]) == CultureID;
         });
 
@@ -106,14 +115,14 @@ export class CommonService {
 
         var Result: any[] = [];
 
-        Result = this.MultilingualModelList.filter(function(item) {
+        Result = this.MultilingualModelList.filter(function (item) {
             return item.CultureID == CultureID && item.Key == Key;
         });
 
         if (Result.length > 0)
             return Result[0]["Value"];
 
-        Result = this.objModelList.filter(function(item) { return item.CultureID == CultureID });
+        Result = this.objModelList.filter(function (item) { return item.CultureID == CultureID });
 
         if (Result.length > 0)
             return Result[0][Key];
@@ -227,16 +236,16 @@ export class CommonService {
 
         var Rights = {};
         Rights['ActionList'] = [];
-        Rights['Allow'] = function(Name: string) { return Rights['ActionList'].indexOf(Name) != -1 };
+        Rights['Allow'] = function (Name: string) { return Rights['ActionList'].indexOf(Name) != -1 };
 
         var ScreenRights: any[] = JSON.parse(localStorage.getItem('ScreenRights'));
 
-        if (ScreenRights.filter(function(item) { return item.ScreenAddress == ScreenName }).length > 0) {
+        if (ScreenRights.filter(function (item) { return item.ScreenAddress == ScreenName }).length > 0) {
 
             var ActionList: any[] = [];
-            var Result = ScreenRights.filter(function(item) { return item.ScreenAddress == ScreenName });
+            var Result = ScreenRights.filter(function (item) { return item.ScreenAddress == ScreenName });
             ActionList = Result[0].ActionList;
-            Rights['ActionList'] = ActionList.map(function(item) { return item.ActionName });
+            Rights['ActionList'] = ActionList.map(function (item) { return item.ActionName });
             Rights['ScreenName'] = Result[0].ScreenName;
             Rights['ScreenID'] = Result[0].ScreenID;
         }
@@ -301,7 +310,7 @@ export class CommonService {
     }
 
     getCurrency(): string {
-        var currency = this.encrypt.decryptionAES(localStorage.getItem("Currency"));       
+        var currency = this.encrypt.decryptionAES(localStorage.getItem("Currency"));
         return currency;
     }
     getPayrollRegion(): string {
@@ -321,7 +330,7 @@ export class CommonService {
 
     GetFormatDate(dat) {
         var dtFormat = this.encrypt.decryptionAES(localStorage.getItem("DateFormat"));
-       var dateFormat = dtFormat.split("/");
+        var dateFormat = dtFormat.split("/");
         var date = new Date(dat);
         var yyyy = date.getFullYear();
         var mm = date.getMonth() < 9 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1); // getMonth() is zero-based

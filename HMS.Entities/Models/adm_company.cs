@@ -11,6 +11,7 @@ namespace HMS.Entities.Models
             this.adm_company_location = new List<adm_company_location>();
             this.pur_payment = new List<pur_payment>();
             this.ipd_payment = new List<ipd_payment>();
+            this.adm_user_share = new List<adm_user_share>();
             this.ipd_diagnosis = new List<ipd_diagnosis>();
             this.emr_notes_favorite = new List<emr_notes_favorite>();
             this.emr_service_mf = new List<emr_service_mf>();
@@ -123,6 +124,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<adm_company_location> adm_company_location { get; set; }
         public virtual ICollection<pur_payment> pur_payment { get; set; }
         public virtual ICollection<ipd_payment> ipd_payment { get; set; }
+        public virtual ICollection<adm_user_share> adm_user_share { get; set; }
         public virtual ICollection<emr_prescription_complaint> emr_prescription_complaint { get; set; }
         public virtual ICollection<emr_prescription_diagnos> emr_prescription_diagnos { get; set; }
         public virtual ICollection<emr_prescription_investigation> emr_prescription_investigation { get; set; }

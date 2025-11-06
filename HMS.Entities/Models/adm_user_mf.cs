@@ -22,6 +22,8 @@ namespace HMS.Entities.Models
             this.emr_observation = new List<emr_observation>();
             this.emr_observation1 = new List<emr_observation>();
             this.adm_company = new List<adm_company>();
+            this.adm_user_share = new List<adm_user_share>();
+            this.adm_user_share1 = new List<adm_user_share>();
             this.adm_company1 = new List<adm_company>();
             this.adm_user_company = new List<adm_user_company>();
             this.adm_user_company1 = new List<adm_user_company>();
@@ -240,6 +242,8 @@ namespace HMS.Entities.Models
         //public virtual pr_employee_mf pr_employee_mf { get; set; }
         /// </summary>
         public virtual ICollection<adm_company> adm_company { get; set; }
+        public virtual ICollection<adm_user_share> adm_user_share { get; set; }
+        public virtual ICollection<adm_user_share> adm_user_share1 { get; set; }
         public virtual ICollection<adm_company> adm_company1 { get; set; }
         public virtual ICollection<adm_user_company> adm_user_company { get; set; }
         public virtual ICollection<adm_user_company> adm_user_company1 { get; set; }

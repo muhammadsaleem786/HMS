@@ -260,6 +260,8 @@
     <Content Include="src\app\theme\Module\setup\Expense\ExpenseComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Income\IncomeComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Income\IncomeComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\UserShare\UserShareComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\UserShare\UserShareComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\DropDown\DropDownComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Investigation\InvestigationComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\MedicineInstruction\MedicineInstructionComponentList.html" />
@@ -625,6 +627,10 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Income\IncomeComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Income\IncomeModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Income\IncomeService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserShare\UserShareModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserShare\UserShareComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserShare\UserShareComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserShare\UserShareService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\DropDown\DropDownComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\DropDown\DropDownModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\DropDown\DropDownService.ts" />

@@ -12,9 +12,14 @@ namespace HMS.Entities.Models
         public decimal ID { get; set; }
         public decimal CompanyId { get; set; }
         public decimal DoctorId { get; set; }
-        public string PercentageType { get; set; }
-        public decimal DoctorShare { get; set; }
-        public decimal OwnerShare { get; set; }      
+        public decimal GeneralDoctorShare { get; set; }
+        public decimal GeneralOwnerShare { get; set; }
+
+        public decimal ProcedureDoctorShare { get; set; }
+        public decimal ProcedureOwnerShare { get; set; }
+
+        public decimal DiscountDoctorShare { get; set; }
+        public decimal DiscountOwnerShare { get; set; }
         public decimal CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<decimal> ModifiedBy { get; set; }

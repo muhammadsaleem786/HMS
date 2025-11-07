@@ -18,39 +18,38 @@ import { filter } from 'rxjs/operators';
 })
 export class UserShareComponentForm implements OnInit {
     public Form1: FormGroup;
-    public submitted: boolean;
     @Input() ScreenName: string;
     @Input() id: number;
-    public IsReadOnly = false;
+    public IsReadOnly = false; public submitted: boolean;
     public ScreenLists = [];
     public Modules = [];
-    public filterdData = [];
-    public UnitList: any[] = [];
-    public MadicineTypeList: any[] = [];
-    public InstructionsList: any[] = [];
     public model = new UserShareModel();
     public IsAdmin: boolean = false;
     public PayrollRegion: string;
     public Keywords: any[] = [];
+    public DoctorList: any[] = [];
     public sub: any;
     public IsEdit: boolean = false;
     public CompanyInfo: any[] = [];
     public Rights: any;
     public ControlRights: any;
-    constructor(public _CommonService: CommonService,public _fb: FormBuilder, public loader: LoaderService
+    constructor(public _CommonService: CommonService, public _fb: FormBuilder, public loader: LoaderService
         , public _UserShareService: UserShareService, private encrypt: EncryptionService, public commonservice: CommonService
         , public toastr: CommonToastrService, public route: ActivatedRoute, public _router: Router) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
-        this.ControlRights = this._CommonService.ScreenRights("9");
+        this.ControlRights = this._CommonService.ScreenRights("77");
     }
     ngOnInit() {
-        //this.loadDropdown();
+        this.loadDropdown();
         this.Form1 = this._fb.group({
             DoctorId: ['', [Validators.required]],
-            PercentageType: ['', [Validators.required]],
-            DoctorShare: ['', [Validators.required]],
-            OwnerShare: ['', [Validators.required]]
+            GeneralDoctorShare: [''],
+            GeneralOwnerShare: [''],
+            ProcedureDoctorShare: [''],
+            ProcedureOwnerShare: [''],
+            DiscountDoctorShare: [''],
+            DiscountOwnerShare: ['']
         });
         this.sub = this.route.queryParams
             .pipe(filter(params => params.id))
@@ -59,8 +58,8 @@ export class UserShareComponentForm implements OnInit {
                 if (this.model.ID > 0) {
                     this.loader.ShowLoader();
                     this.IsEdit = true;
-                    this._UserShareService.GetMedicineById(this.model.ID).then(m => {
-                        if (m.ResultSet != null) {
+                    this._UserShareService.GetById(this.model.ID).then(m => {
+                        if (m.IsSuccess) {
                             this.model = m.ResultSet.result;
                         }
                         this.loader.HideLoader();
@@ -73,30 +72,28 @@ export class UserShareComponentForm implements OnInit {
         this.loader.ShowLoader();
         this._UserShareService.FormLoad().then(m => {
             if (m.IsSuccess) {
-                //this.UnitList = m.ResultSet.UnitList.filter(a => a.DropDownID ==14);
-                //this.MadicineTypeList = m.ResultSet.UnitList.filter(a => a.DropDownID == 15);
-                //this.InstructionsList = m.ResultSet.InstructionList;
+                this.DoctorList = m.ResultSet.result;
                 this.loader.HideLoader();
             } else
                 this.loader.HideLoader();
         });
     }
     SaveOrUpdate(isValid: boolean): void {
-        this.submitted = true; 
+        this.submitted = true;
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();
             this._UserShareService.SaveOrUpdate(this.model).then(m => {
-                    var result = JSON.parse(m._body);
+                var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
                     this.toastr.Success(result.Message);
                     this._router.navigate(['/home/share']);
-                    }
-                    else {
-                        this.toastr.Error('Error', result.ErrorMessage);
-                        this.loader.HideLoader();
-                    }
-                });
+                }
+                else {
+                    this.toastr.Error('Error', result.ErrorMessage);
+                    this.loader.HideLoader();
+                }
+            });
         }
     }
     Delete() {
@@ -108,7 +105,7 @@ export class UserShareComponentForm implements OnInit {
                     this.toastr.Error('Error', m.ErrorMessage);
                 else
                     this._router.navigate(['/home/share']);
-                    this.loader.HideLoader();
+                this.loader.HideLoader();
             });
         }
     }
@@ -117,4 +114,31 @@ export class UserShareComponentForm implements OnInit {
         this.submitted = false;
         this.IsAdmin = false;
     }
+    generalLimitShare(type: any) {
+        if (type == 'D') {
+            if (this.model.GeneralDoctorShare > 100) {
+                this.toastr.Error('Error', 'Value not exceed 100.');
+                this.model.GeneralDoctorShare = 0;
+            }
+        } else {
+            if (this.model.GeneralOwnerShare > 100) {
+                this.toastr.Error('Error', 'Value not exceed 100.');
+                this.model.GeneralOwnerShare = 0;
+            }
+        }
+    }
+    procedureLimitShare(type: any) {
+        if (type == 'D') {
+            if (this.model.ProcedureDoctorShare > 100) {
+                this.toastr.Error('Error', 'Value not exceed 100.');
+                this.model.ProcedureDoctorShare = 0;
+            }
+        } else {
+            if (this.model.ProcedureOwnerShare > 100) {
+                this.toastr.Error('Error', 'Value not exceed 100.');
+                this.model.ProcedureOwnerShare = 0;
+            }
+        }
+    }
+   
 }

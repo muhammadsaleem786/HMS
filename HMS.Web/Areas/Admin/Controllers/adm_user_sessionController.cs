@@ -68,9 +68,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 if (_service.Queryable().Count() > 0)
                     ID = _service.Queryable().Max(e => e.ID) + 1;
 
-                DateTime shiftDate = Model.ShiftStartTime.Date;
-                TimeSpan time = DateTime.ParseExact(Model.StartTime, "h:mm tt", null).TimeOfDay;
-                DateTime fullDateTime = shiftDate.Add(time);
+                DateTime fullDateTime = DateTime.Today.Add(DateTime.Now.TimeOfDay);
 
                 Model.ID = ID;
                 Model.CompanyId = CompanyID;
@@ -274,9 +272,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = "Shift is already closed.";
                     return objResponse;
                 }
-                DateTime shiftDate = Model.ShiftEndTime.Value.Date;
-                TimeSpan time = DateTime.ParseExact(Model.StartTime, "h:mm tt", null).TimeOfDay;
-                DateTime fullDateTime = shiftDate.Add(time);
+                DateTime fullDateTime = DateTime.Today.Add(DateTime.Now.TimeOfDay);
                 shift.ShiftEndTime = fullDateTime;
                 shift.ClosingBalance = Model.ClosingBalance;
                 shift.ClosingComments = Model.ClosingComments;

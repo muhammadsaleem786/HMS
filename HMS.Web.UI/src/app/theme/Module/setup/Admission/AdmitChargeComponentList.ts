@@ -170,8 +170,9 @@ export class AdmitChargeComponentList implements OnInit {
             if (m.ResultSet.result != null) {
                 this.PaymentList = [];
                 this.PaymentList = m.ResultSet.result;
+                this.loader.HideLoader();
                 this._router.navigate(['home/AdmitSummary/AdmitCharge/AdmitPro']);
-            }
+            }else
             this.loader.HideLoader();
         });
     }
@@ -213,10 +214,9 @@ export class AdmitChargeComponentList implements OnInit {
     }
     PaymentSaveOrUpdate(isValid: boolean): void {
         if (isValid) {
-            this.submitted = false;
             this.loader.ShowLoader();
+            this.submitted = false;            
             let paymentArray: ipd_payment[] = [];
-            debugger
             this.ipd_payment_dynamicArray.forEach((item, index) => {
                 const newPayment = new ipd_payment();
                 if (item.PaymentDate == null || item.PaymentDate == undefined) {
@@ -239,8 +239,8 @@ export class AdmitChargeComponentList implements OnInit {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
                     this.toastr.Success(result.Message);
-                    this.loader.HideLoader();
                     this.LoadPayment();
+                    this.loader.HideLoader();                    
                 }
                 else {
                     this.toastr.Error('Error', result.ErrorMessage);

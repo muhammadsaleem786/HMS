@@ -24,9 +24,15 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.ID).HasColumnName("ID");
             this.Property(t => t.CompanyId).HasColumnName("CompanyId");
             this.Property(t => t.DoctorId).HasColumnName("DoctorId");
-            this.Property(t => t.PercentageType).HasColumnName("PercentageType");
-            this.Property(t => t.DoctorShare).HasColumnName("DoctorShare");
-            this.Property(t => t.OwnerShare).HasColumnName("OwnerShare");
+            this.Property(t => t.GeneralDoctorShare).HasColumnName("GeneralDoctorShare");
+            this.Property(t => t.GeneralOwnerShare).HasColumnName("GeneralOwnerShare");
+
+            this.Property(t => t.ProcedureDoctorShare).HasColumnName("ProcedureDoctorShare");
+            this.Property(t => t.ProcedureOwnerShare).HasColumnName("ProcedureOwnerShare");
+
+            this.Property(t => t.DiscountDoctorShare).HasColumnName("DiscountDoctorShare");
+            this.Property(t => t.DiscountOwnerShare).HasColumnName("DiscountOwnerShare");
+
             this.Property(t => t.CreatedBy).HasColumnName("CreatedBy");
             this.Property(t => t.CreatedDate).HasColumnName("CreatedDate");
             this.Property(t => t.ModifiedBy).HasColumnName("ModifiedBy");

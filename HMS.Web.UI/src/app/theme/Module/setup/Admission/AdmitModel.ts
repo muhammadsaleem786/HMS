@@ -310,7 +310,7 @@ export class ipd_payment {
     PatientId: number;
     PaymentDate: Date;
     Amount: number;
-    Notes: string;
+    Notes: string="";
     PaymentMethodID: number;
     PaymentMethodDropdownID: number;
 }

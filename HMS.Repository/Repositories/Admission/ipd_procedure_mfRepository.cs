@@ -66,8 +66,9 @@ namespace HMS.Repository.Repositories.Admission
                             Date = s.Date,
                             PatientProcedure = s.PatientProcedure,
                             Price = s.Price,
+                            Discount = s.Discount,
                             PaidAmount = s.PaidAmount,
-                            Balance = s.Price - s.PaidAmount,
+                            Balance = s.Price - s.Discount,
                             DischargeDate = s.ipd_admission.DischargeDate
                         }).ToList<object>();
                 }
@@ -81,8 +82,9 @@ namespace HMS.Repository.Repositories.Admission
                            Date = s.Date,
                            PatientProcedure = s.PatientProcedure,
                            Price = s.Price,
+                           Discount = s.Discount,
                            PaidAmount = s.PaidAmount,
-                           Balance = s.Price - s.PaidAmount,
+                           Balance = s.Price - s.Discount,
                            DischargeDate = s.ipd_admission.DischargeDate
 
                        }).ToList<object>();

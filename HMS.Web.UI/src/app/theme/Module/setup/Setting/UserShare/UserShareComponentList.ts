@@ -27,7 +27,7 @@ export class UserShareComponentList {
         , public _router: Router, public toastr: CommonToastrService, ) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
-        this.ControlRights = this._CommonService.ScreenRights("9");
+        this.ControlRights = this._CommonService.ScreenRights("77");
     }
     ngOnInit() {
         this.PConfig.PrimaryColumn = "ID";
@@ -36,8 +36,12 @@ export class UserShareComponentList {
         this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             { Name: "DoctorName", Title: "Doctor Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "DoctorShare", Title: "Doctor Share", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "OwnerShare", Title: "Owner Share", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "GeneralDoctorShare", Title: "General Doctor Share", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "GeneralOwnerShare", Title: "General Owner Share", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "ProcedureDoctorShare", Title: "Procedure Doctor Share", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "ProcedureOwnerShare", Title: "Procedure Owner Share", OrderNo: 5, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "DiscountDoctorShare", Title: "Dis. Doctor Share", OrderNo: 6, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "DiscountOwnerShare", Title: "Dis. Owner Share", OrderNo: 7, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
        ];
     }
     Refresh() {

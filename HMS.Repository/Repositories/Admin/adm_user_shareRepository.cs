@@ -17,7 +17,7 @@ namespace HMS.Repository.Repositories.Admin
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<adm_user_share, bool>> predicate = (e => e.CompanyId == ID && (FilterID == "0" || e.PercentageType.ToString() == FilterID));
+                Expression<Func<adm_user_share, bool>> predicate = (e => e.CompanyId == ID);
 
                 bool DisplayDate, DisplayCategory, DisplayAmount, DisplayReceivedAmount;
                 bool OrderByDate, OrderByCategory, OrderByAmount, OrderByReceivedAmount;
@@ -29,9 +29,9 @@ namespace HMS.Repository.Repositories.Admin
                     DisplayCategory = PFilter.VisibleColumnInfoList.IndexOf("Category") > -1;
                     DisplayAmount = PFilter.VisibleColumnInfoList.IndexOf("DueAmount") > -1;
                     DisplayReceivedAmount = PFilter.VisibleColumnInfoList.IndexOf("ReceivedAmount") > -1;
-                    predicate = (c => c.CompanyId == ID && (FilterID == "0" || c.PercentageType.ToString() == FilterID) &&
-                    (DisplayDate && c.DoctorShare.ToString().Contains(PFilter.SearchText.ToLower()) ||
-                    (DisplayAmount && c.OwnerShare.ToString().ToLower().Contains(PFilter.SearchText.ToLower())
+                    predicate = (c => c.CompanyId == ID &&
+                    (DisplayDate && c.GeneralDoctorShare.ToString().Contains(PFilter.SearchText.ToLower()) ||
+                    (DisplayAmount && c.GeneralOwnerShare.ToString().ToLower().Contains(PFilter.SearchText.ToLower())
                      )));
                 }
                 if (IgnorePaging)
@@ -47,8 +47,8 @@ namespace HMS.Repository.Repositories.Admin
                 OrderByAmount = PFilter.OrderBy.IndexOf("DueAmount") > -1;
                 OrderByReceivedAmount = PFilter.OrderBy.IndexOf("ReceivedAmount") > -1;
                 Expression<Func<adm_user_share, string>> orderingFunction = (c =>
-                                                              OrderByCategory ? c.DoctorShare.ToString() :
-                                                              OrderByAmount ? c.OwnerShare.ToString() : ""
+                                                              OrderByCategory ? c.GeneralDoctorShare.ToString() :
+                                                              OrderByAmount ? c.GeneralOwnerShare.ToString() : ""
                                                               );
 
                 if (PFilter.IsOrderAsc)
@@ -66,8 +66,12 @@ namespace HMS.Repository.Repositories.Admin
                         {
                             s.ID,
                             DoctorName="",
-                            DoctorShare = s.DoctorShare,
-                            OwnerShare = s.OwnerShare,
+                            GeneralDoctorShare = s.GeneralDoctorShare,
+                            GeneralOwnerShare = s.GeneralOwnerShare,
+                            ProcedureDoctorShare = s.ProcedureDoctorShare,
+                            ProcedureOwnerShare = s.ProcedureOwnerShare,
+                            DiscountDoctorShare = s.DiscountDoctorShare,
+                            DiscountOwnerShare = s.DiscountOwnerShare,
                             CreatedDate = s.CreatedDate
                         }).OrderByDescending(A => A.CreatedDate).ToList<object>();
                 }
@@ -78,17 +82,24 @@ namespace HMS.Repository.Repositories.Admin
                         {
                             s.ID,
                             DoctorName = "",
-                            DoctorShare = s.DoctorShare,
-                            OwnerShare = s.OwnerShare,
+                            GeneralDoctorShare = s.GeneralDoctorShare,
+                            GeneralOwnerShare = s.GeneralOwnerShare,
+                            ProcedureDoctorShare = s.ProcedureDoctorShare,
+                            ProcedureOwnerShare = s.ProcedureOwnerShare,
+                            DiscountDoctorShare = s.DiscountDoctorShare,
+                            DiscountOwnerShare = s.DiscountOwnerShare,
                             CreatedDate = s.CreatedDate
                         }).OrderByDescending(A => A.CreatedDate).ToList();
                     objResult.DataList = data.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
                        .Select(s => new
                        {
                            s.ID,
-                           DoctorName = s.DoctorName,
-                           DoctorShare = s.DoctorShare,
-                           OwnerShare = s.OwnerShare,
+                           GeneralDoctorShare = s.GeneralDoctorShare,
+                           GeneralOwnerShare = s.GeneralOwnerShare,
+                           ProcedureDoctorShare = s.ProcedureDoctorShare,
+                           ProcedureOwnerShare = s.ProcedureOwnerShare,
+                           DiscountDoctorShare = s.DiscountDoctorShare,
+                           DiscountOwnerShare = s.DiscountOwnerShare,
                            CreatedDate = s.CreatedDate
                        }).OrderByDescending(A => A.CreatedDate).ToList<object>();
                 }

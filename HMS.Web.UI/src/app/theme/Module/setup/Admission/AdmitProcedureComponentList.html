@@ -20,8 +20,8 @@
                                         <th>
                                             Price
                                         </th>
-                                        <th>Paid Amount</th>
-                                        <th>Balance</th>
+                                        <th>Discount</th>
+                                        <th>Invoice Amount</th>
                                         <th>
                                             Action
                                         </th>
@@ -37,7 +37,7 @@
                                             {{item.Price}}
                                         </td>
                                         <td>
-                                            {{item.PaidAmount}}
+                                            {{item.Discount}}
                                         </td>
                                         <td>
                                             {{item.Balance}}
@@ -140,15 +140,15 @@
                             <label>Discount </label>
                         </div>
                         <div class="col-8">
-                            <input class="form-control" formControlName="Discount" [(ngModel)]="model.Discount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                            <input class="form-control" formControlName="Discount" [(ngModel)]="model.Discount"(keyup)="CalAmount()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col-4 text-">
-                            <label>PaidAmount </label>
+                            <label>Total </label>
                         </div>
                         <div class="col-8">
-                            <input class="form-control" formControlName="PaidAmount" [(ngModel)]="model.PaidAmount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                            <input class="form-control" formControlName="PaidAmount" [(ngModel)]="model.PaidAmount" readonly oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                         </div>
                     </div>
                 </div>

@@ -15,7 +15,7 @@ namespace HMS.Entities.Models
         public decimal PatientId { get; set; }
         public decimal Amount { get; set; }
         public System.DateTime PaymentDate { get; set; }
-        public string Notes { get; set; }       
+        public string Notes { get; set; } = string.Empty;      
         public decimal CreatedBy { get; set; }
         public Nullable<int> PaymentMethodDropdownID { get; set; }
         public Nullable<int> PaymentMethodID { get; set; }

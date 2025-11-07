@@ -144,6 +144,15 @@ export class AdmitProcedureComponentList implements OnInit {
             this.loader.HideLoader();
         });
     }
+    CalAmount() {
+        if (this.model.Discount == undefined || this.model.Discount == null)
+            this.model.Discount = 0;
+        if (this.model.Price == undefined || this.model.Price == null)
+            this.model.Price = 0;
+
+        this.model.PaidAmount = this.model.Price - this.model.Discount;
+  
+    }
     LoadService() {
         //Search By Name
         $('#txtService').autocomplete({

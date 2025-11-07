@@ -2,6 +2,7 @@
 using HMS.Entities.Models;
 using HMS.Service;
 using HMS.Service.Services.Admin;
+using HMS.Service.Services.Employee;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
@@ -9,6 +10,7 @@ using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -28,9 +30,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iadm_role_dtService _adm_role_dtService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iadm_user_companyService _adm_user_companyService;
+        private readonly Ipr_employee_mfService _pr_employee_mfService;
+
         public adm_user_shareController(IUnitOfWorkAsync unitOfWorkAsync, Iadm_user_shareService Service,
             Isys_drop_down_valueService sys_drop_down_valueService, Iadm_user_companyService adm_user_companyService,
-            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService)
+            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Ipr_employee_mfService pr_employee_mfService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -38,6 +42,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _adm_user_companyService = adm_user_companyService;
             _procedureService = ProcedureService;
             _adm_role_dtService = adm_role_dtService;
+            _pr_employee_mfService = pr_employee_mfService;
         }
 
         public async Task<ResponseInfo> Save(adm_user_share Model)
@@ -66,6 +71,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.ModifiedBy = Request.LoginID();
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Added;
+                _service.Insert(Model);
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
@@ -111,13 +117,52 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             }
             return objResponse;
         }
-
+        [HttpGet]
+        [ActionName("Load")]
         public ResponseInfo Load()
         {
             var objResponse = new ResponseInfo();
             try
             {
                 decimal companyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var role = _adm_user_companyService.Queryable()
+                    .Where(u => u.UserID == UserID && u.CompanyID == companyID)
+                    .Select(u => u.adm_role_mf.RoleName)
+                    .FirstOrDefault();
+
+                var doctorUsers = _adm_user_companyService.Queryable()
+           .Where(u => u.CompanyID == companyID && u.adm_role_mf.RoleName == "Doctor")
+           .Select(u => u.adm_user_mf)
+           .OrderBy(u => u.ID)
+           .ToList();
+                var doctors = doctorUsers.Select(mf =>
+                {
+                    return (object)new
+                    {
+                        ID = mf.ID,
+                        Name = mf.Name,
+                    };
+                }).ToList();
+
+                List<object> result;
+                if (role == "Administrator")
+                {
+                    result = doctors.ToList<object>();
+                }
+                else if (role == "Doctor")
+                {
+                    result = doctors.Where(d => ((dynamic)d).ID == UserID).ToList<object>();
+                }
+                else
+                {
+                    result = doctors;
+                }
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = new
+                {
+                    result = result,
+                };
             }
             catch (Exception ex)
             {
@@ -143,12 +188,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                var AllScreen = _procedureService.GetAllScreen();
-                var rolelist = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID.ToString() == Id).FirstOrDefault();
+                var result = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID.ToString() == Id).FirstOrDefault();
+                objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {
-                    AllScreen = AllScreen,
-                    rolelist = rolelist
+                    result = result
                 };
             }
             catch (Exception ex)

@@ -243,9 +243,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 var pharmacyIncome = _pur_sale_mfService.Queryable().Where(i => i.CompanyID == CompanyID && i.Date >= start && i.Date < end).Sum(a=>a.Total);
                 var ipdIncome = _ipd_paymentService.Queryable().Where(i => i.CompanyId == CompanyID && i.PaymentDate >= start && i.PaymentDate < end).Sum(a => (decimal?)a.Amount) ?? 0m;
                 var pathologyIncome = incomeFor(65);
-                var generalIncome = incomeByCategory
-    .Where(x => x.CategoryId == 63 || x.CategoryId == 64 || x.CategoryId == 66)
-    .Sum(x => x.TotalReceived);
+                var generalIncome = incomeByCategory.Sum(x => x.TotalReceived);
                 var outStandingIncome = incomeByCategory.Sum(x => x.TotalDue);
 
 

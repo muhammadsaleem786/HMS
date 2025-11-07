@@ -340,4 +340,8 @@ export class ProfileUserComponentForm implements OnInit {
             this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
         }
     }
+
+    openManagePlan(): void {
+  window.open('https://easyhms.com', '_blank');
+}
 }

@@ -35,9 +35,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iemr_incomeService _emr_incomeService;
         private readonly Iemr_expenseService _emr_expenseService;
         private readonly ipd_paymentService _ipd_paymentService;
+        private readonly Ipur_paymentService _pur_paymentService;
 
         public adm_user_sessionController(IUnitOfWorkAsync unitOfWorkAsync, Iadm_user_sessionService Service,
-            IStoredProcedureService ProcedureService, Iemr_patient_billService emr_patient_billService, Ipur_sale_mfService pur_sale_mfService
+            IStoredProcedureService ProcedureService, Iemr_patient_billService emr_patient_billService, Ipur_sale_mfService pur_sale_mfService, Ipur_paymentService pur_paymentService
           , ipd_paymentService ipd_paymentService, Iipd_procedure_mfService ipd_procedure_mfService, Iemr_incomeService emr_incomeService, Iemr_expenseService emr_expenseService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
@@ -49,6 +50,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _emr_incomeService = emr_incomeService;
             _emr_expenseService = emr_expenseService;
             _ipd_paymentService = ipd_paymentService;
+            _pur_paymentService = pur_paymentService;
         }
 
         public async Task<ResponseInfo> Save(adm_user_session Model)
@@ -177,11 +179,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 result.Refunds = _pur_sale_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.SaleTypeID == 2).Sum(a => (decimal?)a.Total) ?? 0;
                 result.IPDBalance = _ipd_paymentService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.Amount) ?? 0;
                 result.ExpensesAmount = _emr_expenseService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.Amount) ?? 0;
-                result.OtherIncome = _emr_incomeService.Queryable().Where(a => a.CompanyId == CompanyID && a.CategoryId!=67 && a.CategoryId!=69 && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.ReceivedAmount) ?? 0; ;
-                result.TotalCollection = (result.StartingCash + result.OPDBalance + result.PharmacyBalance + result.IPDBalance + result.OtherIncome) - result.Refunds - result.ExpensesAmount;
+                result.PurchaseExpensesAmount = _pur_paymentService.Queryable().Where(p => p.CompanyId == CompanyID && p.PaymentMethodID != 1 && p.CreatedDate >= result.ShiftStartTime).Sum(p => (decimal?)p.Amount) ?? 0m;
+                result.OtherIncome = _emr_incomeService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.ReceivedAmount) ?? 0; ;
+                result.TotalCollection = (result.StartingCash + result.OPDBalance + result.PharmacyBalance + result.IPDBalance + result.OtherIncome) - (result.Refunds + result.ExpensesAmount + result.PurchaseExpensesAmount);
                 objResponse.ResultSet = result;
                 objResponse.IsSuccess = true;
-
             }
             catch (Exception ex)
             {
@@ -263,13 +265,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 if (shift == null)
                 {
                     objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = "Shift not found.";
+                    objResponse.ErrorMessage = "Session not found.";
                     return objResponse;
                 }
                 if (shift.ShiftEndTime != null)
                 {
                     objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = "Shift is already closed.";
+                    objResponse.ErrorMessage = "Session is already closed.";
                     return objResponse;
                 }
                 DateTime fullDateTime = DateTime.Today.Add(DateTime.Now.TimeOfDay);

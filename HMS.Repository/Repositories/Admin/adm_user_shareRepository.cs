@@ -65,7 +65,7 @@ namespace HMS.Repository.Repositories.Admin
                         .Select(s => new
                         {
                             s.ID,
-                            DoctorName="",
+                            DoctorName=s.adm_user_mf2.Name,
                             GeneralDoctorShare = s.GeneralDoctorShare,
                             GeneralOwnerShare = s.GeneralOwnerShare,
                             ProcedureDoctorShare = s.ProcedureDoctorShare,
@@ -81,7 +81,7 @@ namespace HMS.Repository.Repositories.Admin
                         .Select(s => new
                         {
                             s.ID,
-                            DoctorName = "",
+                            DoctorName = s.adm_user_mf2.Name,
                             GeneralDoctorShare = s.GeneralDoctorShare,
                             GeneralOwnerShare = s.GeneralOwnerShare,
                             ProcedureDoctorShare = s.ProcedureDoctorShare,
@@ -94,6 +94,7 @@ namespace HMS.Repository.Repositories.Admin
                        .Select(s => new
                        {
                            s.ID,
+                           DoctorName=s.DoctorName,
                            GeneralDoctorShare = s.GeneralDoctorShare,
                            GeneralOwnerShare = s.GeneralOwnerShare,
                            ProcedureDoctorShare = s.ProcedureDoctorShare,

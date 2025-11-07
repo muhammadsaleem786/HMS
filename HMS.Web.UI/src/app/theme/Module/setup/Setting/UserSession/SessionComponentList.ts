@@ -76,7 +76,7 @@ export class SessionComponentList {
     AddRecord(id: string) {
         this._SessionService.FormLoad().then(m => {
             if (m.IsSuccess && m.ResultSet != null) {
-                this.toastr.Error("Shift already open.");
+                this.toastr.Error("Session already open.");
                 return;
             } else {
                 this.model = new SessionModel();

@@ -19,4 +19,5 @@
     OtherIncome: number;
     PaymentMethodID: number;
     PaymentMethodDropdownID: number;
+    PurchaseExpensesAmount: number;
 }

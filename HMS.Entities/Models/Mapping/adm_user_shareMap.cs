@@ -47,6 +47,9 @@ namespace HMS.Entities.Models.Mapping
             this.HasOptional(t => t.adm_user_mf1)
                 .WithMany(t => t.adm_user_share1)
                 .HasForeignKey(d => d.ModifiedBy);
+            this.HasRequired(t => t.adm_user_mf2)
+             .WithMany(t => t.adm_user_share2)
+             .HasForeignKey(d => d.DoctorId);
         }
     }
 }

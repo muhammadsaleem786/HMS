@@ -588,31 +588,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         LogID++;
                     }
                 }
-                if (purorderitem.Count > 0)
-                {
-                    emr_income model = new emr_income();
-                    decimal IncomeID = 1;
-                    if (_emr_incomeService.Queryable().Count() > 0)
-                        IncomeID = _emr_incomeService.Queryable().Max(e => e.ID) + 1;
-                    model.ID = IncomeID;
-                    model.CategoryDropdownId = (int)sys_dropdown_mfEnum.IncomeCategoryDropdownId;
-                    // Set CategoryId based on item group
-                    if (purorderitem.Any(i => itemGroups[i.ItemID] == 1))//Pharmacy
-                        model.CategoryId = 67;
-                    else if (purorderitem.Any(i => itemGroups[i.ItemID] == 3))//Lab
-                        model.CategoryId = 65;
-                    model.Date = Request.DateTimes();
-                    model.Remark = "Invoice # " + ID.ToString();
-                    model.DueAmount = 0;
-                    model.ReceivedAmount = Model.Total;
-                    model.CompanyId = Request.CompanyID();
-                    model.CreatedBy = Request.LoginID();
-                    model.CreatedDate = Request.DateTimes();
-                    model.ModifiedBy = Request.LoginID();
-                    model.ModifiedDate = Request.DateTimes();
-                    model.ObjectState = ObjectState.Added;
-                    _emr_incomeService.Insert(model);
-                }
+              
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
@@ -747,31 +723,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         LogID++;
                     }
                 }
-                if (purorderitem.Count > 0)
-                {
-                    emr_income model = new emr_income();
-                    decimal IncomeID = 1;
-                    if (_emr_incomeService.Queryable().Count() > 0)
-                        IncomeID = _emr_incomeService.Queryable().Max(e => e.ID) + 1;
-                    model.ID = IncomeID;
-                    model.CategoryDropdownId = (int)sys_dropdown_mfEnum.IncomeCategoryDropdownId;
-                    // Set CategoryId based on item group
-                    if (purorderitem.Any(i => itemGroups[i.ItemID] == 1))//Pharmacy
-                        model.CategoryId = 67;
-                    else if (purorderitem.Any(i => itemGroups[i.ItemID] == 3))//Lab
-                        model.CategoryId = 65;
-                    model.Date = Request.DateTimes();
-                    model.Remark = "Invoice # " + ID.ToString();
-                    model.DueAmount = 0;
-                    model.ReceivedAmount = -(Model.Total);
-                    model.CompanyId = Request.CompanyID();
-                    model.CreatedBy = Request.LoginID();
-                    model.CreatedDate = Request.DateTimes();
-                    model.ModifiedBy = Request.LoginID();
-                    model.ModifiedDate = Request.DateTimes();
-                    model.ObjectState = ObjectState.Added;
-                    _emr_incomeService.Insert(model);
-                }
+               
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();

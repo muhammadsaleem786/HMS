@@ -94,8 +94,7 @@ export class IncomeComponentForm implements OnInit {
             if (m.IsSuccess) {
                 this.CategoryList = m.ResultSet.categoryList;
                 this.PaymentMethodList = m.ResultSet.paymentList;
-                if (this.model.ID == 0)
-                    this.model.PaymentMethodID = 2;//id 2 for cash
+                this.model.PaymentMethodID = (!this.model.ID) ? 2 : this.model.PaymentMethodID;//id 2 for cash
                 this.loader.HideLoader();
             } else
                 this.loader.HideLoader();

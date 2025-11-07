@@ -1,6 +1,7 @@
 ﻿using Repository.Pattern.Ef6;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +13,18 @@ namespace HMS.Entities.Models
         public decimal ID { get; set; }
         public decimal CompanyId { get; set; }
         public int CategoryId { get; set; }
+        public Nullable<decimal> EmployeeId { get; set; }
+        public Nullable<decimal> VendorId { get; set; }
+        public Nullable<decimal> PaymentTo { get; set; }
         public int CategoryDropdownId { get; set; }
         public Nullable<int> PaymentMethodDropdownID { get; set; }
         public Nullable<int> PaymentMethodID { get; set; }
         public System.DateTime Date { get; set; }
         public string Remark { get; set; }
+        [NotMapped]
+        public string EmployeeName { get; set; }
+        [NotMapped]
+        public string VendorName { get; set; }
         public decimal Amount { get; set; }
         public decimal ClinicId { get; set; }
         public Nullable<System.DateTime> InvoiceDate { get; set; }

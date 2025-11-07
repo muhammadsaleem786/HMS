@@ -51,6 +51,9 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
             this.Property(t => t.InvoiceNumber).HasColumnName("InvoiceNumber");
             this.Property(t => t.Vendor).HasColumnName("Vendor");
+            this.Property(t => t.EmployeeId).HasColumnName("EmployeeId");
+            this.Property(t => t.VendorId).HasColumnName("VendorId");
+            this.Property(t => t.PaymentTo).HasColumnName("PaymentTo");
             this.Property(t => t.PaymentStatusId).HasColumnName("PaymentStatusId");
             this.Property(t => t.PaymentStatusDropdownId).HasColumnName("PaymentStatusDropdownId");
             this.Property(t => t.PaymentMethodDropdownID).HasColumnName("PaymentMethodDropdownID");

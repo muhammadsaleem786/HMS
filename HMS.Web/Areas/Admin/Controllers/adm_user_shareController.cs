@@ -98,10 +98,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             }
             return objResponse;
         }
-
-
-
-        public ResponseInfo GetList()
+    public ResponseInfo GetList()
         {
             var objResponse = new ResponseInfo();
             try

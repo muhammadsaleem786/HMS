@@ -31,6 +31,14 @@ export class ExpenseService {
         else
             return this.http.Put(this.urlToApi + '/Update', entity).then(e => e);
     }
+    searchEmployee(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/searchEmployee', data).then(e => e);
+    }
+    searchVendor(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/searchVendor', data).then(e => e);
+    }
     Delete(Id: string): Promise<any> {
         var data = { 'Id': Id };
         return this.http.Delete(this.urlToApi + '/Delete', data).then(e => e);

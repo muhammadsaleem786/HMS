@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+declare var $: any; import { debounce } from 'lodash';
 @Component({
     selector: 'setup-ExpenseComponentForm',
     templateUrl: './ExpenseComponentForm.html',
@@ -39,21 +40,28 @@ export class ExpenseComponentForm implements OnInit {
     public PaymentMethodList: any[] = [];
     public CompanyList: any[] = [];
     public CategoryList: any[] = [];
+    public PaymentToList: any[] = [];
     public Keywords: any[] = [];
     public sub: any;
     public IsEdit: boolean = false;
     public AttachImage: string = '';
     public IsNewImage: boolean = true;
+    public selectedPaymentTo: any;
     public Rights: any;
     public ControlRights: any;
     constructor(public _CommonService: CommonService, private encrypt: EncryptionService, public _fb: FormBuilder, public loader: LoaderService
         , public _ExpenseService: ExpenseService, public commonservice: CommonService
         , public toastr: CommonToastrService, public route: ActivatedRoute, public _router: Router) {
-        this.PayrollRegion =  this.commonservice.getPayrollRegion();
+        this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("14");
     }
     ngOnInit() {
+        this.PaymentToList.push(
+            { ID: 1, Name: 'Employee' },
+            { ID: 2, Name: 'Vendor' },
+            { ID: 3, Name: 'Other' }
+        );
         this.loadDropdown();
         this.Form1 = this._fb.group({
             CategoryId: ['', [Validators.required]],
@@ -70,6 +78,9 @@ export class ExpenseComponentForm implements OnInit {
             PaymentStatusDropdownId: [''],
             PaymentRemrks: [''],
             Attachment: [''],
+            PaymentTo: [''],
+            EmployeeId: [''],
+            VendorId: [''],
         });
         this.sub = this.route.queryParams
             .pipe(filter(params => params.id))
@@ -80,16 +91,24 @@ export class ExpenseComponentForm implements OnInit {
                     this.IsEdit = true;
                     this.loader.ShowLoader();
                     this._ExpenseService.GetById(this.id).then(m => {
-                        this.model = m.ResultSet;
+                        this.model = m.ResultSet.result;
                         if (this.model.Attachment != null && this.model.Attachment != undefined && this.model.Attachment != "") {
                             this.getImageUrlName(this.model.Attachment);
                             this.IsNewImage = false;
                         } else this.IsNewImage = true;
+
+                        this.onPaymentToChange(this.model.PaymentTo);
+                        if (this.model.PaymentTo === 1) {
+                            setTimeout(() => this.EmployeeSearchableDropdown(), 0);
+                        } if (this.model.PaymentTo === 2) {
+                            setTimeout(() => this.VendorSearchableDropdown(), 0);
+                        }
                         this.loader.HideLoader();
                     });
                 } else {
                     this.model.Date = new Date();
                     this.model.InvoiceDate = new Date();
+                    this.onPaymentToChange('3');
                     this.loader.HideLoader();
                 }
             });
@@ -102,8 +121,7 @@ export class ExpenseComponentForm implements OnInit {
                 this.PaymentList = m.ResultSet.PaymentMethodList;
                 this.CompanyList = m.ResultSet.CompanyList;
                 this.PaymentMethodList = m.ResultSet.PaymentList;
-                if (this.model.ID == 0)
-                    this.model.PaymentMethodID = 2;//id 2 for cash
+                this.model.PaymentMethodID = (!this.model.ID) ? 2 : this.model.PaymentMethodID;//id 2 for cash
                 if (this.CompanyList.length == 1)
                     this.model.ClinicId = this.CompanyList[0].ID;
                 this.loader.HideLoader();
@@ -111,8 +129,47 @@ export class ExpenseComponentForm implements OnInit {
                 this.loader.HideLoader();
         });
     }
+    onPaymentToChange(event: any) {
+        this.selectedPaymentTo = Number(
+            event && event.target && event.target.value ? event.target.value : event
+        );
+    }
+    EmployeeSearchableDropdown() {
+        //Search By Name
+        $('#EmployeeSearchByName').autocomplete({
+            source: debounce((request, response) => {
+                this.loader.ShowLoader();
+                this._ExpenseService.searchEmployee(request.term).then(m => {
+                    response(m.ResultSet.empInfo);
+                    this.loader.HideLoader();
+                });
+            }, 300),
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.EmployeeId = ui.item.value;
+                this.model.EmployeeName = ui.item.label;
+            }
+        });
+    }
+    VendorSearchableDropdown() {
+        //Search By Name
+        $('#VendorSearchByName').autocomplete({
+            source: debounce((request, response) => {
+                this.loader.ShowLoader();
+                this._ExpenseService.searchVendor(request.term).then(m => {
+                    response(m.ResultSet.empInfo);
+                    this.loader.HideLoader();
+                });
+            }, 300),
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.VendorId = ui.item.value;
+                this.model.VendorName = ui.item.label;
+            }
+        });
+    }
     SaveOrUpdate(isValid: boolean): void {
-        this.submitted = true; // set form submit to true
+        this.submitted = true;
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();

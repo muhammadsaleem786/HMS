@@ -16,4 +16,9 @@
     PaymentRemrks: string;
     Attachment: string;
     Image: string;
+    PaymentTo: number=3;
+    EmployeeId: number;
+    EmployeeName: string;
+    VendorId: number;
+    VendorName: string;
 }

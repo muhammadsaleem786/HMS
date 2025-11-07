@@ -24,7 +24,9 @@ namespace HMS.Entities.Models
         [NotMapped]
         public string StartTime { get; set; }
         [NotMapped]
-        public decimal ExpensesAmount { get; set; } = 0;
+        public decimal ExpensesAmount { get; set; } = 0; 
+        [NotMapped]
+        public decimal PurchaseExpensesAmount { get; set; } = 0;
         [NotMapped]
         public decimal OtherIncome { get; set; } = 0;
         [NotMapped]

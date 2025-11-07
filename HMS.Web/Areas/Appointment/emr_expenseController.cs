@@ -3,6 +3,8 @@ using HMS.Entities.Enum;
 using HMS.Entities.Models;
 using HMS.Service.Services.Admin;
 using HMS.Service.Services.Appointment;
+using HMS.Service.Services.Employee;
+using HMS.Service.Services.Items;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
@@ -36,10 +38,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iadm_companyService _adm_companyService;
         private readonly Iadm_user_sessionService _adm_user_sessionService;
-
+        private readonly Ipr_employee_mfService _pr_employee_mfService;
+        private readonly Ipur_vendorService _pur_vendorService;
         public emr_expenseController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_medicineService emr_medicineService, Iadm_companyService adm_companyService, Iemr_expenseService service, Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
-            Isys_notification_alertService sys_notification_alertService, Iadm_user_sessionService adm_user_sessionService)
+            Isys_notification_alertService sys_notification_alertService, Iadm_user_sessionService adm_user_sessionService, Ipr_employee_mfService pr_employee_mfService, Ipur_vendorService pur_vendorService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -53,6 +56,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _emr_medicineService = emr_medicineService;
             _sys_notification_alertService = sys_notification_alertService;
             _adm_user_sessionService = adm_user_sessionService;
+            _pr_employee_mfService = pr_employee_mfService;
+            _pur_vendorService = pur_vendorService;
         }
         private bool IsUserShiftOpen(decimal userID, decimal companyID, out string errorMessage)
         {
@@ -247,8 +252,17 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                //objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).Include(x=>x.adm_user_company.Select(s=> s.adm_role_mf)).FirstOrDefault();
-                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                var result = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                var employee = _pr_employee_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.ID == result.EmployeeId).FirstOrDefault();
+                var vendor = _pur_vendorService.Queryable().Where(a => a.CompanyID == CompanyID && a.ID == result.VendorId).FirstOrDefault();
+                result.EmployeeName = employee != null? $"{employee.FirstName} {employee.LastName}": string.Empty;
+                result.VendorName = vendor != null? $"{vendor.FirstName} {vendor.LastName}": string.Empty;
+
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
             }
             catch (Exception ex)
             {
@@ -380,7 +394,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var dropDownIds = new[] { 18,19, 41 };
+                var dropDownIds = new[] { 18, 19, 41 };
                 var allDropDownValues = _sys_drop_down_valueService.Queryable()
     .Where(x => dropDownIds.Contains(x.DropDownID)
                 && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
@@ -396,13 +410,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var categoryList = allDropDownValues.Where(e => e.DropDownID == 18).ToList();
                 var PaymentMethodList = allDropDownValues.Where(e => e.DropDownID == 19).ToList();
                 var PaymentList = allDropDownValues.Where(e => e.DropDownID == 41).ToList();
-                var CompanyList = _adm_companyService.Queryable().Where(a => a.ID == CompanyID).Select(a => new { ID=a.ID, CompanyName=a.CompanyName }).ToList();
+                var CompanyList = _adm_companyService.Queryable().Where(a => a.ID == CompanyID).Select(a => new { ID = a.ID, CompanyName = a.CompanyName }).ToList();
                 objResponse.ResultSet = new
                 {
                     categoryList = categoryList,
                     PaymentMethodList = PaymentMethodList,
-                    CompanyList= CompanyList,
-                    PaymentList= PaymentList,
+                    CompanyList = CompanyList,
+                    PaymentList = PaymentList,
                 };
             }
             catch (Exception ex)
@@ -413,7 +427,64 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResponse;
         }
-
+        [HttpPost]
+        [HttpGet]
+        [ActionName("searchEmployee")]
+        public async Task<ResponseInfo> searchEmployee(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var empInfo = _pr_employee_mfService.Queryable().Where(a => a.CompanyID == CompanyID &&
+                (a.FirstName.Contains(term) || a.LastName.Contains(term))).Select(z => new
+                {
+                    value = z.ID,
+                    label = z.FirstName + " " + z.LastName
+                }).ToList();
+                objResponse.ResultSet = new
+                {
+                    empInfo = empInfo
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("searchVendor")]
+        public async Task<ResponseInfo> searchVendor(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var empInfo = _pur_vendorService.Queryable().Where(a => a.CompanyID == CompanyID &&
+                (a.FirstName.Contains(term) || a.LastName.Contains(term))).Select(z => new
+                {
+                    value = z.ID,
+                    label = z.FirstName + " " + z.LastName
+                }).ToList();
+                objResponse.ResultSet = new
+                {
+                    empInfo = empInfo
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
         [HttpGet]
         [ActionName("PaginationWithParm")]
         public PaginationResult PaginationWithParm(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)

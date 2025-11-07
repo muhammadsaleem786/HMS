@@ -1,6 +1,7 @@
 ﻿using Repository.Pattern.Ef6;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace HMS.Entities.Models
     {
         public decimal ID { get; set; }
         public decimal CompanyId { get; set; }
+       
         public decimal DoctorId { get; set; }
         public decimal GeneralDoctorShare { get; set; }
         public decimal GeneralOwnerShare { get; set; }
@@ -27,5 +29,7 @@ namespace HMS.Entities.Models
         public virtual adm_company adm_company { get; set; }
         public virtual adm_user_mf adm_user_mf { get; set; }
         public virtual adm_user_mf adm_user_mf1 { get; set; }  
+        public virtual adm_user_mf adm_user_mf2 { get; set; }
+
     }
 }

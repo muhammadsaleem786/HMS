@@ -1,21 +1,21 @@
 ﻿<div class="col-sm-12 AddRoleWraper">
     <div class="row headSection paginationHead">
-        <div class="col-sm-8 no-padding">
+        <div class="col-sm-12 no-padding">
             <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
                 Update Share
-                <a routerLink="/home/setup"><i class="fa fa-arrow-circle-left"></i></a>
+                <a routerLink="/home/setup" class="btn btn-light mr-2 pull-right">Back</a>
             </h3>
             <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
                 New Share
-                <a routerLink="/home/setup"><i class="fa fa-arrow-circle-left"></i></a>
+                <a routerLink="/home/setup" class="btn btn-light mr-2 pull-right">Back</a>
             </h3>
         </div>
     </div>
-    <div class="tab-pane" id="Charges">
+    <div class="Cardview">
         <div class="row">
             <div class="col">
                 <div class="tab-pane active" id="Charges">
-                    <div class="col-sm-12 CustomAccordion">
+                    <div class="col-sm-12 CustomAccordion py-3">
                         <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
                             <div class="row">
                                 <div class="col-sm-3">
@@ -128,5 +128,5 @@
                 </div>
             </div>
         </div>
-    </div>
+     </div>
 </div>

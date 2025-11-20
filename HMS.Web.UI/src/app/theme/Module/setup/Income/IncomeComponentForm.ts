@@ -73,7 +73,7 @@ export class IncomeComponentForm implements OnInit {
                     this.IsEdit = true;
                     this.loader.ShowLoader();
                     this._IncomeService.GetById(this.id).then(m => {
-                        debugger
+                        
                         this.model = m.ResultSet;
                         if (m.ResultSet.adm_company != null)
                             this.IsBackDate = m.ResultSet.adm_company.IsUpdateBillDate

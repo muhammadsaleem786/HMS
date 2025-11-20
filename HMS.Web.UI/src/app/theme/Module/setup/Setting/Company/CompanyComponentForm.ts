@@ -129,7 +129,7 @@ export class CompanyComponentForm implements OnInit {
             this.model.Phone = '';
     }
     SaveOrUpdate(isValid: boolean): void {
-        debugger
+        
         this.submitted = true; // set form submit to true
         this.loader.ShowLoader();
         this.submitted = false;

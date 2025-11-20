@@ -205,6 +205,7 @@ export class AppointmentComponentList implements OnInit {
     @ViewChild("MedicineTemplate") MedicineTemplateContent: TemplateRef<any>;
     @ViewChild("MedicinePresModal") MedicinePresModal: TemplateRef<any>;
     @ViewChild('editorClinicalNote') editorClinicalNote!: ElementRef;
+    @ViewChild('editorPlanNote') editorPlanNote!: ElementRef;
     myControl = new FormControl();
     myNameControl = new FormControl();
     openAppointmentModal(longContent) {
@@ -416,7 +417,8 @@ export class AppointmentComponentList implements OnInit {
             SelectedDiagnos: [''],
             Day: [''],
             FollowUpNotes: [''],
-            ClinicalNote: ['']
+            ClinicalNote: [''],
+            PlanNote: [''],
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -505,6 +507,25 @@ export class AppointmentComponentList implements OnInit {
                     const html = editor.getData();
                     this.PrescriptionModel.ClinicalNote = html;
                     this.PrescriptionModel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(html);
+                });
+            }
+        }, 10);
+    }
+    PlanEditor() {
+        setTimeout(() => {
+            const CKEDITOR = (window as any).CKEDITOR;
+            if (this.editorPlanNote && this.editorPlanNote.nativeElement) {
+                if (CKEDITOR.instances['editorPlanNote']) {
+                    CKEDITOR.instances['editorPlanNote'].destroy(true);
+                }
+                const editor = CKEDITOR.replace('editorPlanNote', {
+                    enterMode: (window as any).CKEDITOR.ENTER_BR,
+                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
+                });
+                editor.on('change', () => {
+                    const html = editor.getData();
+                    this.PrescriptionModel.PlanNote = html;
+                    this.PrescriptionModel.safePlanNote = this.sanitizer.bypassSecurityTrustHtml(html);
                 });
             }
         }, 10);
@@ -817,6 +838,7 @@ export class AppointmentComponentList implements OnInit {
         }
     }
     AppointmentPrint(val: any) {
+        
         this.submitted = false;
         this.loader.ShowLoader();
         if (this.AppointmentModel.AppointmentTime == undefined)
@@ -924,6 +946,7 @@ export class AppointmentComponentList implements OnInit {
                         this.emr_prescription_treatment_dynamicArray[indx].Measure = null;
                         this.emr_prescription_treatment_dynamicArray[indx].Instructions = null;
                         this.emr_prescription_treatment_dynamicArray[indx].InstructionId = null;
+                        this.emr_prescription_treatment_dynamicArray[indx].IsInventory = 0;
                     }
 
                     const items = m.ResultSet.ItemInfo.map(item => ({
@@ -934,6 +957,7 @@ export class AppointmentComponentList implements OnInit {
                         InstructionId: item.InstructionId,
                         IsAllowNegativeStock: item.IsAllowNegativeStock,
                         stock: item.stock,
+                        IsInventory: item.IsInventory,
                     }));
                     response(items);
                     this.loader.HideLoader();
@@ -944,6 +968,7 @@ export class AppointmentComponentList implements OnInit {
                 this.emr_prescription_treatment_dynamicArray[indx].MedicineId = ui.item.value;
                 this.emr_prescription_treatment_dynamicArray[indx].MedicineName = ui.item.Name;
                 this.emr_prescription_treatment_dynamicArray[indx].Measure = ui.item.Measure;
+                this.emr_prescription_treatment_dynamicArray[indx].IsInventory = ui.item.IsInventory;
                 this.emr_prescription_treatment_dynamicArray[indx].Instructions = ui.item.Instructions;
                 this.emr_prescription_treatment_dynamicArray[indx].InstructionId = ui.item.InstructionId;
                 $(id).val(ui.item.label);
@@ -1955,7 +1980,11 @@ export class AppointmentComponentList implements OnInit {
         this.loader.ShowLoader();
         if (this.AppointmentModel.AppointmentTime == undefined)
             this.AppointmentModel.AppointmentTime = $('#basicExample').val();
-        this.AppointmentModel.AppointmentTime = this.Convert12TO24(this.AppointmentModel.AppointmentTime);
+
+        const time = this.AppointmentModel.AppointmentTime;
+        if (/AM|PM/i.test(time)) {
+            this.AppointmentModel.AppointmentTime = this.Convert12TO24(this.AppointmentModel.AppointmentTime);
+        }
         if (this.AppointmentModel.StatusId == undefined || this.AppointmentModel.StatusId == null)
             this.AppointmentModel.StatusId = 25;
         this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
@@ -2329,6 +2358,7 @@ export class AppointmentComponentList implements OnInit {
                 this.InvestigationsList = m.ResultSet.InvestigationsList;
                 this.ObservationList = m.ResultSet.ObservationList;
                 this.LoadEditor();
+                this.PlanEditor();
                 this.loader.HideLoader();
             });
         }
@@ -3063,6 +3093,9 @@ export class AppointmentComponentList implements OnInit {
                 this.PatientRXmodel.FollowUpDate = result.ResultSet.Model.FollowUpDate;
                 if (result.ResultSet.Model.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.ClinicalNote);
+                }
+                if (result.ResultSet.Model.PlanNote) {
+                    this.PatientRXmodel.safePlanNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.PlanNote);
                 }
                 if (result.ResultSet.doctor.length > 0)
                     this.DoctorInfo = result.ResultSet.doctor[0];

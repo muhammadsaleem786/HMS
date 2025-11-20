@@ -37,7 +37,9 @@ export class emr_prescription_mf {
     Email: string;
     Day: string;
     ClinicalNote: string;
+    PlanNote: string;
     safeClinicalNote: SafeHtml;
+    safePlanNote: SafeHtml;
     emr_prescription_complaint: Array<emr_prescription_complaint> = [];
     emr_prescription_diagnos: Array<emr_prescription_diagnos> = [];
     emr_prescription_investigation: Array<emr_prescription_investigation> = [];
@@ -96,11 +98,11 @@ export class emr_prescription_treatment {
     MedicineId: number;
     MedicineName: string;
     Duration: number;
-    DurationValue: string ="Day (s)";
+    DurationValue: string = "Day (s)";
     Instructions: string;
     InstructionId: string;
     Measure: string;
-    Morning: string="0";
+    Morning: string = "0";
     Evening: string = "0";
     AfterNoon: string = "0";
     Night: string = "0";
@@ -108,6 +110,7 @@ export class emr_prescription_treatment {
     PatientId: number;
     MedicineType: string;
     TypeId: number;
+    IsInventory: boolean = true;
 }
 export class emr_medicine {
     ID: number;

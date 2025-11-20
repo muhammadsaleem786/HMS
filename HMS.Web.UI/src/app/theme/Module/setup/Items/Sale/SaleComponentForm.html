@@ -53,7 +53,7 @@
                 <div class="col-md-5 pt-3 card_sideBar">
                     <div>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control form-control-lg ui-autocomplete-input" id="customerSearch" [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName" (click)="LoadPatentSearchableDropdown()" placeholder="Select customer" autocomplete="off">
+                            <input type="text" class="form-control form-control-lg ui-autocomplete-input" id="customerSearch" [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName" (focus)="LoadPatentSearchableDropdown()" placeholder="Select customer" autocomplete="off">
                             <span class="input-group-append" data-toggle="modal" data-target="#CustomerModal" id="newCustBtn" (click)="openNewPatient(content)">
                                 <span class="input-group-text"> <i class="fa fa-plus"> </i>Add New</span>
                             </span>
@@ -155,6 +155,46 @@
         </form>
     </section>
 </div>
+
+<!--medicine popu-->
+<ng-template #MedicinePopup let-modal class="PatientModal">
+    <div class="modal-header PatientModal">
+        <h4 class="modal-title" id="modal-basic-title">
+            <img src="../assets/app/media/img/icons/addpatient.png" class="img-fluid icon">
+            Medicine
+        </h4>
+        <button type="button" #closeModal class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                <thead class="grid-header">
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Duration</th>
+                        <th>Duration Value</th>
+                        <th> Dose </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of medicine_itemArray" index as i>
+                        <td></td>
+                        <td>{{item.label}}</td>
+                        <td>{{item.Duration}}</td>
+                        <td>{{item.DurationValue}}</td>
+                        <td>({{item.Morning}}+{{item.AfterNoon}}+{{item.Evening}}+{{item.Night}})</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="MedicineAdd()">Add</button>
+    </div>
+</ng-template>
 <!--invoice popu-->
 <ng-template #InvoicePopup let-modal class="PatientModal">
     <div class="modal-header PatientModal">

@@ -56,7 +56,7 @@ export class SaleComponentList {
         this.PModel.VisibleColumnInfo = "date#date,Invoiceno#Invoiceno,CompanyName#CompanyName,amount#amount,SaleType#SaleType";
         this._SaleService
             .GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-                debugger
+                
                 this.pagesRange = [];
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.InvoiveList = m.DataList;

@@ -1268,6 +1268,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.FollowUpDate,
                         z.FollowUpTime,
                         z.ClinicalNote,
+                        z.PlanNote,
                         PatientName = z.emr_patient_mf.PatientName,
                         Mobile = z.emr_patient_mf.Mobile,
                         Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",

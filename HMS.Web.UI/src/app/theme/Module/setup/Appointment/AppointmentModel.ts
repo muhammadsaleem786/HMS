@@ -121,6 +121,7 @@ export class patientInfo {
     ClinicIogo: string;
     Notes: string;
     safeClinicalNote: SafeHtml;
+    safePlanNote: SafeHtml;
     FollowUpDate: string;
     Weight: string;
 }

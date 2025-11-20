@@ -249,6 +249,9 @@ export class SummeryComponentList implements OnInit {
                 if (m.ResultSet.result.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(m.ResultSet.result.ClinicalNote);
                 }
+                if (m.ResultSet.result.PlanNote) {
+                    this.PatientRXmodel.safePlanNote = this.sanitizer.bypassSecurityTrustHtml(m.ResultSet.result.PlanNote);
+                }
                 var Weight = m.ResultSet.vitallist.filter(a => a.Name == "Weight");
                 if (Weight.length == 0)
                     this.PatientRXmodel.Weight = "";

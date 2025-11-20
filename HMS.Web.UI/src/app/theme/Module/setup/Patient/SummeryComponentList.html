@@ -876,27 +876,31 @@
                     </div>
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_complaint_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Complaint:</strong>
-                        <div *ngFor="let d of emr_prescription_complaint_dynamicArray"  style="color:#000;">{{d.Complaint}}</div>
+                        <div *ngFor="let d of emr_prescription_complaint_dynamicArray" style="color:#000;">{{d.Complaint}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientVitalList.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Vitals:</strong>
-                        <div *ngFor="let d of PatientVitalList"  style="color:#000;">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
+                        <div *ngFor="let d of PatientVitalList" style="color:#000;">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_observation_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Examination:</strong>
-                        <div *ngFor="let d of emr_prescription_observation_dynamicArray"  style="color:#000;">{{d.Observation}}</div>
+                        <div *ngFor="let d of emr_prescription_observation_dynamicArray" style="color:#000;">{{d.Observation}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_investigation_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Investigation:</strong>
-                        <div *ngFor="let d of emr_prescription_investigation_dynamicArray"  style="color:#000;">{{d.Investigation}}</div>
+                        <div *ngFor="let d of emr_prescription_investigation_dynamicArray" style="color:#000;">{{d.Investigation}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_diagnos_dynamicArray.length > 0">
                         <strong style="font-size:18px; color: #d9534f;">Diagnoses:</strong>
-                        <div *ngFor="let d of emr_prescription_diagnos_dynamicArray"  style="color:#000;">{{d.Diagnos}}</div>
+                        <div *ngFor="let d of emr_prescription_diagnos_dynamicArray" style="color:#000;">{{d.Diagnos}}</div>
+                    </div>
+                    <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safePlanNote!= null">
+                        <strong style="font-size:18px; color: #d9534f;">Plan:</strong>
+                        <div [innerHTML]="PatientRXmodel.safePlanNote" style="color:#000;"></div>
                     </div>
                 </div>
 

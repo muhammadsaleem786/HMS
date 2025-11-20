@@ -92,7 +92,7 @@ export class ZKTComponentList {
         this.IsList = false;
     }
     SaveOrUpdate(isValid: boolean): void {
-        debugger
+        
         this.submitted = true; // set form submit to true
         if (isValid) {
             this.submitted = false;

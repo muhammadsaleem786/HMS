@@ -347,7 +347,7 @@ export class ApplicationUserComponentForm implements OnInit {
         if (result == true) {
             this.loader.ShowLoader();
             this._ApplicationUserService.Delete(this.model.ID.toString()).then(m => {
-                debugger
+                
                 if (m.ErrorMessage != null) {
                     this.toastr.Error('Error', m.ErrorMessage);
                 } else {
@@ -432,11 +432,11 @@ export class ApplicationUserComponentForm implements OnInit {
         });
     }
     IsNewImageEvent(FName) {
-        debugger
+        
         this.IsNewImage = true;
     }
     getFileName(FName) {
-        debugger
+        
 
         this.model.UserImage = FName;
     }

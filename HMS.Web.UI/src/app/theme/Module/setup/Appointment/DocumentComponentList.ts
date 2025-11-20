@@ -133,6 +133,7 @@ export class DocumentComponentList implements OnInit {
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();
+            this.Docmodel.ReferenceNo = this.PatientId;
             this._AppointmentService.DocumentSave(this.Docmodel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
@@ -155,7 +156,7 @@ export class DocumentComponentList implements OnInit {
         this.loader.ShowLoader();
         this.Id = "0";
         this._AppointmentService
-            .GetDocList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+            .GetPatientDocList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PatientId).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.DocumentList = m.DataList;
                 this.DocumentList.forEach(x => {

@@ -35,7 +35,7 @@ export class ForgotpasswordComponent implements OnInit {
 
             this.accountService.forgotpasswd(this.model.Email).then(
                 data => {
-                    debugger
+                    
                     if (data.IsSuccess) {
                         this._router.navigate(['/passconfirmation']);
                     } else {

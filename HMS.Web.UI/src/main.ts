@@ -12,7 +12,7 @@ platformBrowserDynamic().bootstrapModule(AppModule)
     .catch(err => console.log(err));
 
 //(window as any).trackEvent = function (eventName: string, params: any = {}): void {
-//    debugger;
+//    ;
 //    if (params.email && typeof params.email === 'string') {
 //        if (!params.email.endsWith('@gmail.com')) {
 //            console.warn('Email is not from the @gmail.com domain');
@@ -26,7 +26,7 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 //};
 
 (window as any).trackEvent = function (eventName: string, params: any = {}): void {
-    debugger;
+    ;
 
     // Define internal domains
     const internalDomains = ['gmail.com']; // Replace with your actual internal domains

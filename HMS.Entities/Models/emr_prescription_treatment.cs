@@ -23,6 +23,7 @@ namespace HMS.Entities.Models
         public string AfterNoon { get; set; }
         public string Night { get; set; }
         public string Instructions { get; set; }
+        public bool IsInventory { get; set; }
         public Nullable<decimal> InstructionId { get; set; }
         public decimal CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }

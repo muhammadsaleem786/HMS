@@ -118,6 +118,7 @@
     <Compile Include="Models\adm_company.cs" />
     <Compile Include="Models\adm_company_location.cs" />
     <Compile Include="Models\adm_user_session.cs" />
+    <Compile Include="Models\lab_order.cs" />
     <Compile Include="Models\adm_user_share.cs" />
     <Compile Include="Models\Mapping\adm_user_sessionMap.cs" />
     <Compile Include="Models\Mapping\adm_user_shareMap.cs" />

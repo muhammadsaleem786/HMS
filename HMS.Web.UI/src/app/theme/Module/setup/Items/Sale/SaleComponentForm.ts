@@ -39,6 +39,7 @@ export class SaleComponentForm {
     public ItemList = []; public PatientName: any; public PatientId: any;
     public patientInfo: any;
     public Sale_itemdynamicArray = [];
+    public medicine_itemArray = [];
     public PrintSale_itemdynamicArray = [];
     public Id: string;
     public IsList: boolean = true;
@@ -89,6 +90,7 @@ export class SaleComponentForm {
     public ReceivedAmount: number = 0;
     @ViewChild("content") PatientContent: TemplateRef<any>;
     @ViewChild("InvoicePopup") InvoicePopup: TemplateRef<any>;
+    @ViewChild("MedicinePopup") MedicinePopup: TemplateRef<any>;
     @ViewChild("ItemCategory") ItemCategory: TemplateRef<any>;
     @ViewChild('closeBatchModal') closeBatchModal: ElementRef;
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
@@ -122,8 +124,14 @@ export class SaleComponentForm {
                     if (saleholdId == "0") {
                         this._SaleService.GetById(this.model.ID).then(m => {
                             if (m.ResultSet != null) {
+                                
                                 this.Sale_itemdynamicArray = [];
                                 this.model = m.ResultSet.result;
+                                if (m.ResultSet.PatientInfo != null) {
+                                    this.PatientName = m.ResultSet.PatientInfo.label;
+                                    this.CustomerId = m.ResultSet.PatientInfo.value;
+                                    this.model.CustomerId = this.CustomerId;
+                                }
                                 const ItemList = m.ResultSet.ItemList;
                                 this.IsRefund = m.ResultSet.IsRefund;
                                 if (this.model.Discount == null) {
@@ -153,7 +161,6 @@ export class SaleComponentForm {
                             } else
                                 this.loader.HideLoader();
                         });
-
                     } else {
                         this._SaleService.GetHoldSaleById(this.model.ID).then(m => {
                             if (m.ResultSet != null) {
@@ -187,11 +194,16 @@ export class SaleComponentForm {
                                 this.saleHoldModel.SaleHoldId = this.model.ID;
                                 this.saleHoldModel.ID = 0;
                                 this.model = Object.assign(new SaleModel(), this.saleHoldModel);
+                                if (m.ResultSet.PatientInfo != null) {
+                                    this.PatientName = m.ResultSet.PatientInfo.label;
+                                    this.CustomerId = m.ResultSet.PatientInfo.value;
+                                    this.model.CustomerId = this.CustomerId;
+                                }
+
                                 this.loader.HideLoader();
                             } else
                                 this.loader.HideLoader();
                         });
-
                     }
 
                 }
@@ -354,6 +366,55 @@ export class SaleComponentForm {
                 this.PatientName = ui.item.label;
                 this.CustomerId = ui.item.value;
                 this.model.CustomerId = this.CustomerId;
+                this.loader.ShowLoader();
+                this._SaleService.GetMedicineByPatientId(ui.item.value).then(m => {
+                    if (m.IsSuccess && m.ResultSet != null) {
+                        this.modalService.open(this.MedicinePopup, { size: 'lg' });
+                        this.medicine_itemArray = [];
+                        this.medicine_itemArray = m.ResultSet.ItemInfo;
+                        this.loader.HideLoader();
+                    } else
+                        this.loader.HideLoader();
+                });
+            }
+        });
+    }
+    MedicineAdd() {
+        this.medicine_itemArray.forEach((item, index) => {
+            if (item.stock < 0 && item.IsAllowNegativeStock == false) {
+                this.toastr.Error("Error", "The item is out of stock.");
+                item.value = null;
+                this.modalService.dismissAll();
+                return;
+            }
+            if (item.Type == 3 || item.Type == 4) {
+                this.toastr.Error("Error", "The item used batch or serial please add menuall.");
+                this.modalService.dismissAll();
+                item.value = null;
+                return;
+            } else {
+                var obj = new pur_sale_dt();
+                obj.Quantity = item.Quantity;
+                obj.ItemID = item.value;
+                obj.ItemName = item.label;
+                obj.Rate = item.CostPrice;
+                obj.DiscountType = 1;
+                obj.TotalAmount = obj.Quantity * obj.Rate;
+                obj.TypeValue = item.TypeValue;
+                obj.Stock = item.stock;
+                obj.GroupId = item.GroupId;
+                item.value = null;
+                var appendQty = this.Sale_itemdynamicArray.filter(a => a.ItemID == obj.ItemID).reduce((sum, a) => sum + parseInt(a.Quantity, 10), 0);
+                appendQty = appendQty + obj.Quantity;
+                if (item.stock < appendQty && item.TrackInventory == true) {
+                    this.modalService.dismissAll();
+                    this.toastr.Error("Error", "The item is out of stock.");
+                    return;
+                } else {
+                    this.modalService.dismissAll();
+                    this.Sale_itemdynamicArray.push(obj);
+                    this.CalculateSubTotal();
+                }
             }
         });
     }
@@ -428,7 +489,7 @@ export class SaleComponentForm {
             this.CalculateSubTotal();
         }
     }
-    
+
     OverAllDiscountValue(value: any) {
         if (this.model.DiscountType == 1 && this.model.Discount > 100)
             this.model.Discount = 0;
@@ -554,6 +615,11 @@ export class SaleComponentForm {
                 if (result.IsSuccess) {
                     this._router.navigate(['/home/Sale']);
                     this.toastr.Success(result.Message);
+                    if (result.ResultSet != null) {
+                        this.PatientName = result.ResultSet.label;
+                        this.CustomerId = result.ResultSet.value;
+                        this.model.CustomerId = this.CustomerId;
+                    }
                     this.Sale_itemdynamicArray = [];
                 }
                 else {
@@ -582,7 +648,6 @@ export class SaleComponentForm {
         this.model.CustomerId = this.CustomerId;
     }
     SaleOnHold() {
-        debugger
         var isValid: boolean = false;
         this.model.pur_sale_dt = this.Sale_itemdynamicArray;
         const distinctGroups = new Set(this.model.pur_sale_dt.map(item => item.GroupId));
@@ -621,6 +686,11 @@ export class SaleComponentForm {
                     this.Clear();
                     this._router.navigate(['home/Sale/savesale'], { queryParams: { id: 0 } });
                     this.toastr.Success(result.Message);
+                    if (m.ResultSet.PatientInfo != null) {
+                        this.PatientName = m.ResultSet.PatientInfo.label;
+                        this.CustomerId = m.ResultSet.PatientInfo.value;
+                        this.model.CustomerId = this.CustomerId;
+                    }
                     this.Sale_itemdynamicArray = [];
                 }
                 else {
@@ -655,7 +725,6 @@ export class SaleComponentForm {
         if (finditem[0].Type == "Batch" || finditem[0].Type == "Sarial")
             obj[0].IsBatch = true;
         this.CalculateSubTotal();
-
     }
     DiscountChange(rowno: number, Discount: any) {
         let discount;
@@ -814,7 +883,6 @@ export class SaleComponentForm {
         this.Total = this.roundToTwoDecimal(this.SubTotal - this.OverAllDiscountAmount);
     }
     PrintRxform(isValid: boolean): void {
-        debugger
         this.PrintSale_itemdynamicArray = [];
         this.loader.ShowLoader();
         if (this.DisType == 2)
@@ -857,6 +925,11 @@ export class SaleComponentForm {
                         this.modalService.open(this.PrintRxContent, { size: 'sm' });
                         this.toastr.Success(result.Message);
                         this.Clear();
+                        if (result.ResultSet != null) {
+                            this.PatientName = result.ResultSet.label;
+                            this.CustomerId = result.ResultSet.value;
+                            this.model.CustomerId = this.CustomerId;
+                        }
                     }
                     else {
                         this.model.SaleTypeID = saleTypeId;
@@ -869,7 +942,6 @@ export class SaleComponentForm {
         }
     }
     SavePopupInvice() {
-        debugger
         this.Total = this.ReceivedAmount;
         if (this.ReceivedAmount < this.PayableAmount) {
             this.toastr.Error("Error", "Received amount greater than or equal to payable amount.");

@@ -99,7 +99,7 @@ namespace HMS.Repository.Repositories.Appointment
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<emr_document, bool>> predicate = (e => e.CompanyID == CompanyID && DbFunctions.TruncateTime(e.Date) ==DbFunctions.TruncateTime(DateTime.Now));
+                Expression<Func<emr_document, bool>> predicate = (e => e.CompanyID == CompanyID && e.ReferenceNo==PatientId && DbFunctions.TruncateTime(e.Date) == DbFunctions.TruncateTime(DateTime.Now));
 
                 bool DisplayDate, DisplayRemarks;
                 bool OrderByDate, OrderByRemarks;

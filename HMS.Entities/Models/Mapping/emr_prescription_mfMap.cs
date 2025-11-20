@@ -38,6 +38,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.FollowUpNotes).HasColumnName("FollowUpNotes");
             this.Property(t => t.IsCreateAppointment).HasColumnName("IsCreateAppointment");
             this.Property(t => t.ClinicalNote).HasColumnName("ClinicalNote");
+            this.Property(t => t.PlanNote).HasColumnName("PlanNote");
             this.Property(t => t.Notes).HasColumnName("Notes");
             this.Property(t => t.CreatedBy).HasColumnName("CreatedBy");
             this.Property(t => t.CreatedDate).HasColumnName("CreatedDate");

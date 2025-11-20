@@ -142,7 +142,7 @@ export class DropDownComponentList {
             this.Id = id;
             this.Clear();
             var item = this.PaginationList.filter(x => x.ID == this.Id);
-            debugger
+            
             if (item.length > 0) {
                 if (item[0].SystemGenerated == "Yes") {
                     this.toastr.Error('You can not change System Generated.');

@@ -56,7 +56,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
          Iadm_user_companyService adm_user_companyService,
          Iinv_stockService inv_stockService,
          Iemr_patientService emr_patientService,
-         Iadm_item_logService adm_item_logService,Iadm_user_sessionService adm_user_sessionService,
+         Iadm_item_logService adm_item_logService, Iadm_user_sessionService adm_user_sessionService,
         IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iadm_companyService adm_companyService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
@@ -74,6 +74,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _emr_patientService = emr_patientService;
             _adm_item_logService = adm_item_logService;
             _adm_item_logService = adm_item_logService;
+            _adm_user_sessionService = adm_user_sessionService;
         }
         private bool IsUserShiftOpen(decimal userID, decimal companyID, out string errorMessage)
         {
@@ -406,10 +407,21 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     GroupId = z.GroupId,
                 }).ToList();
+                var PatientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == result.CustomerId)
+.Select(z => new
+{
+    value = z.ID,
+    label = z.PatientName + " " + (z.Mobile),
+    Phone = z.Mobile,
+    CNIC = z.CNIC,
+    Age = z.Age,
+    Gender = z.Gender,
+}).FirstOrDefault();
                 objResponse.ResultSet = new
                 {
                     result = result,
                     ItemList = ItemList,
+                    PatientInfo= PatientInfo,
                     IsRefund = true,
                 };
             }
@@ -532,7 +544,18 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Save;
+                    var PatientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && (a.PatientName.Contains("Walk In")))
+             .Select(z => new
+             {
+                 value = z.ID,
+                 label = z.PatientName + " " + (z.Mobile),
+                 Phone = z.Mobile,
+                 CNIC = z.CNIC,
+                 Age = z.Age,
+                 Gender = z.Gender,
+             }).FirstOrDefault();
                     objResponse.IsSuccess = true;
+                    objResponse.ResultSet = PatientInfo;
                 }
                 catch (DbUpdateException)
                 {

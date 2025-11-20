@@ -259,7 +259,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                   DischargeDate = a.DischargeDate,
                   DischargeTime = a.DischargeTime
               }).FirstOrDefault();
-                objResult = _service.Pagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, IgnorePaging);
+                objResult = _service.DocPagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText,  PatientId, IgnorePaging);
                 objResult.OtherDataModel = ipdAdmissions;
             }
             catch (Exception ex)

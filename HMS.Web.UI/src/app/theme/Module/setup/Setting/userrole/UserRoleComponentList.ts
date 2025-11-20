@@ -88,7 +88,7 @@ export class UserRoleComponentList {
         }
     }
     AddRecord(id: string) {  
-        debugger
+        
             //if (id != "0")
             //    this.loader.ShowLoader();
             //this.Id = id;

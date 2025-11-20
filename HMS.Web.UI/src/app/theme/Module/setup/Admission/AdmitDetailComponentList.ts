@@ -148,7 +148,7 @@ export class AdmitDetailComponentList implements OnInit {
         return hour + ':' + minute + ' ' + ampm;
     }
     AppointmentSaveOrUpdate(isValid: boolean): void {
-        debugger
+        
         this.model.PatientId = parseInt(localStorage.getItem('PatientId'));
         this.model.AdmissionId = this.AdmitId;
         this.model.IsAdmission = true;

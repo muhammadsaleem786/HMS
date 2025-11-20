@@ -132,6 +132,7 @@ export class DocumentSummeryComponentList implements OnInit {
     DocSaveOrUpdate(isValid: boolean): void {
         if (isValid) {
             this.submitted = false;
+            this.Docmodel.ReferenceNo = this.PatientId;
             this.loader.ShowLoader();
             this._AppointmentService.DocumentSave(this.Docmodel).then(m => {
                 var result = JSON.parse(m._body);
@@ -155,7 +156,7 @@ export class DocumentSummeryComponentList implements OnInit {
         this.PModel.VisibleColumnInfo = "Date#Date,Remarks#Remarks,Tag#Tag,Uploaddate#Uploaddate";
         this.loader.ShowLoader();
         this.Id = "0";
-        this._AppointmentService.GetDocList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+        this._AppointmentService.GetPatientDocList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PatientId).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.DocumentList = m.DataList;
                 this.DocumentList.forEach(x => {

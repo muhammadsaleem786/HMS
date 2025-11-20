@@ -33,6 +33,7 @@ namespace HMS.Entities.Models
         public Nullable<System.TimeSpan> FollowUpTime { get; set; }
         public string FollowUpNotes {  get; set; }
         public string ClinicalNote { get; set; }
+        public string PlanNote { get; set; }
         public bool IsCreateAppointment { get; set; }
         public string Notes { get; set; }
         public decimal CreatedBy { get; set; }

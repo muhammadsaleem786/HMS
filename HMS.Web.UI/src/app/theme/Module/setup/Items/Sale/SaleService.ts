@@ -57,6 +57,10 @@ export class SaleService {
         var data = { 'Id': Id };
         return this.http.Get(this.urlToApi + '/GetByIdParam', data).then(e => e);
     }
+    GetMedicineByPatientId(Id: number): Promise<any> {
+        var data = { 'Id': Id };
+        return this.http.Get(this.urlToApi + '/GetMedicineByPatientId', data).then(e => e);
+    }
     GetHoldSaleById(Id: number): Promise<any> {
         var data = { 'Id': Id };
         return this.http.Get(this.urlToHoldApi + '/GetByIdParam', data).then(e => e);

@@ -51,6 +51,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iadm_item_logService _adm_item_logService;
         private readonly Iemr_medicineService _emr_medicineService;
         private readonly Iadm_user_sessionService _adm_user_sessionService;
+        private readonly Iemr_prescription_mfService _emr_prescription_mfService;
 
         public pur_sale_mfController(IUnitOfWorkAsync unitOfWorkAsync,
          Ipur_sale_mfService Service,
@@ -69,7 +70,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         Iemr_medicineService emr_medicineService,
         Iadm_user_sessionService adm_user_sessionService,
 
-        IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iadm_companyService adm_companyService)
+        IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iadm_companyService adm_companyService, Iemr_prescription_mfService emr_prescription_mfService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -89,6 +90,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _adm_item_logService = adm_item_logService;
             _emr_medicineService = emr_medicineService;
             _adm_user_sessionService = adm_user_sessionService;
+            _emr_prescription_mfService = emr_prescription_mfService;
         }
 
         [HttpGet]
@@ -229,6 +231,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     InstructionId = z.InstructionId,
                     IsAllowNegativeStock = z.IsAllowNegativeStock,
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
+                    IsInventory = true,
                 });
                 var medicineResult = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && (a.Medicine.Contains(term))).Select(z => new
                 {
@@ -238,6 +241,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     InstructionId = z.InstructionId,
                     IsAllowNegativeStock = false,
                     stock = 0m,
+                    IsInventory = false,
                 });
                 var combined = itemResult.Union(medicineResult).ToList();
                 objResponse.ResultSet = new
@@ -422,11 +426,22 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
                     GroupId = z.GroupId,
                 }).ToList();
+                var PatientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == result.CustomerId)
+.Select(z => new
+{
+    value = z.ID,
+    label = z.PatientName + " " + (z.Mobile),
+    Phone = z.Mobile,
+    CNIC = z.CNIC,
+    Age = z.Age,
+    Gender = z.Gender,
+}).FirstOrDefault();
                 objResponse.ResultSet = new
                 {
                     result = result,
                     ItemList = ItemList,
                     IsRefund = IsRefund,
+                    PatientInfo= PatientInfo,
                 };
             }
             catch (Exception ex)
@@ -475,6 +490,114 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             }
             return objResponse;
         }
+        [HttpGet]
+        [ActionName("GetMedicineByPatientId")]
+        public ResponseInfo GetMedicineByPatientId(string Id)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var CompanyID = Request.CompanyID();
+                var latestPrescription = _emr_prescription_mfService.Queryable()
+    .Where(a => a.CompanyID == CompanyID && a.PatientId.ToString() == Id)
+    .OrderByDescending(a => a.ID).Include(a => a.emr_prescription_treatment)
+    .FirstOrDefault();
+
+                var medicineData = latestPrescription?.emr_prescription_treatment
+    .Where(t => t.IsInventory)
+    .Select(t => new
+    {
+        MedicineId = t.MedicineId,
+        Duration = t.Duration,
+        DurationValue = t.DurationValue,
+        t.Morning,
+        t.AfterNoon,
+        t.Evening,
+        t.Night
+    })
+    .Distinct()
+    .ToList();
+                var medicineIds = medicineData.Select(m => m.MedicineId).ToList();
+                var items = _adm_itemService.Queryable()
+    .Where(a => a.CompanyId == CompanyID && medicineIds.Contains(a.ID))
+    .Include(a => a.inv_stock).Include(a => a.sys_drop_down_value2)
+    .ToList();
+                var ItemInfo = items.Select(z =>
+                {
+                    var med = medicineData.First(m => m.MedicineId == z.ID);
+                    return new
+                    {
+                        value = z.ID,
+                        label = z.Name,
+                        SalePrice = z.SalePrice,
+                        CostPrice = z.CostPrice,
+                        Type = z.ItemTypeId,
+                        TypeValue = z.sys_drop_down_value2.Value,
+                        CategoryId = z.CategoryID,
+                        stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
+                        GroupId = z.GroupId,
+                        TrackInventory = z.TrackInventory,
+                        IsAllowNegativeStock = z.IsAllowNegativeStock,
+                        Morning = med.Morning,
+                        AfterNoon = med.AfterNoon,
+                        Evening = med.Evening,
+                        Night = med.Night,
+                        Duration = med.Duration,
+                        DurationValue = med.DurationValue,
+                        Quantity = CalculateQuantity(
+                                Convert.ToInt32(med.Morning),
+                                Convert.ToInt32(med.AfterNoon),
+                                Convert.ToInt32(med.Evening),
+                                Convert.ToInt32(med.Night),
+                                Convert.ToInt32(med.Duration),
+                                med.DurationValue
+                            )
+                    };
+                }).ToList();
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = new
+                {
+                    ItemInfo = ItemInfo
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        public int CalculateQuantity(int morning, int evening, int afternoon, int night,
+                              int duration, string durationValue)
+        {
+            int dailyDose = morning + evening + afternoon + night;
+            int days = duration;
+            switch (durationValue)
+            {
+                case "Day (s)":
+                case "Daily":
+                    days = duration;
+                    break;
+                case "Week (s)":
+                case "Weekly":
+                    days = duration * 7;
+                    break;
+                case "Month (s)":
+                case "Monthly":
+                    days = duration * 30;
+                    break;
+                case "Continuously":
+                    days = duration;
+                    break;
+                default:
+                    days = duration;
+                    break;
+            }
+            return dailyDose * days;
+        }
+
+
         public ResponseInfo GetById(string Id, int NextPreviousIndex)
         {
             throw new NotImplementedException();
@@ -588,12 +711,23 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         LogID++;
                     }
                 }
-              
+
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
+                    var PatientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && (a.PatientName.Contains("Walk In")))
+               .Select(z => new
+               {
+                   value = z.ID,
+                   label = z.PatientName + " " + (z.Mobile),
+                   Phone = z.Mobile,
+                   CNIC = z.CNIC,
+                   Age = z.Age,
+                   Gender = z.Gender,
+               }).FirstOrDefault();
                     objResponse.Message = MessageStatement.Save;
                     objResponse.IsSuccess = true;
+                    objResponse.ResultSet = PatientInfo;
                 }
                 catch (DbUpdateException)
                 {
@@ -649,7 +783,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     return objResponse;
                 }
                 decimal ReturnInvoiceId = Model.ID;
-               
+
                 List<pur_sale_dt> purorderitem = new List<pur_sale_dt>();
                 purorderitem.AddRange(Model.pur_sale_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
@@ -723,7 +857,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         LogID++;
                     }
                 }
-               
+
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();

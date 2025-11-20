@@ -116,6 +116,7 @@ export class PrescriptionComponentForm implements OnInit {
     @ViewChild("content") PatientContent: TemplateRef<any>;
     @ViewChild("MedicinePresModal") MedicinePresModal: TemplateRef<any>;
     @ViewChild('editorClinicalNote') editorClinicalNote!: ElementRef;
+    @ViewChild('editorPlanNote') editorPlanNote!: ElementRef;
     public ServiceType: any; public TokenNo: any; public patientInfo: any;
     @ViewChild("MedicineTemplate") MedicineTemplateContent: TemplateRef<any>; @ViewChild("longContent") ModelContent: TemplateRef<any>;
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
@@ -264,7 +265,8 @@ export class PrescriptionComponentForm implements OnInit {
             SelectedDiagnos: [''],
             Day: [''],
             FollowUpNotes: [''],
-            ClinicalNote: ['']
+            ClinicalNote: [''],
+            PlanNote: ['']
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -514,6 +516,7 @@ export class PrescriptionComponentForm implements OnInit {
                                 });
                             }
                             this.LoadEditor();
+                            this.PlanEditor();
                             this.loader.HideLoader();
                         }
                         else
@@ -521,6 +524,7 @@ export class PrescriptionComponentForm implements OnInit {
                     });
                 } else {
                     this.LoadEditor();
+                    this.PlanEditor();
                     this.Refresh();
                     this.Addtreatment();
                 }
@@ -800,6 +804,25 @@ export class PrescriptionComponentForm implements OnInit {
                     const html = editor.getData();
                     this.PrescriptionModel.ClinicalNote = html;
                     this.PrescriptionModel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(html);
+                });
+            }
+        }, 10);
+    }
+    PlanEditor() {
+        setTimeout(() => {
+            const CKEDITOR = (window as any).CKEDITOR;
+            if (this.editorPlanNote && this.editorPlanNote.nativeElement) {
+                if (CKEDITOR.instances['editorPlanNote']) {
+                    CKEDITOR.instances['editorPlanNote'].destroy(true);
+                }
+                const editor = CKEDITOR.replace('editorPlanNote', {
+                    enterMode: (window as any).CKEDITOR.ENTER_BR,
+                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
+                });
+                editor.on('change', () => {
+                    const html = editor.getData();
+                    this.PrescriptionModel.PlanNote = html;
+                    this.PrescriptionModel.safePlanNote = this.sanitizer.bypassSecurityTrustHtml(html);
                 });
             }
         }, 10);
@@ -1194,6 +1217,7 @@ export class PrescriptionComponentForm implements OnInit {
                         this.emr_prescription_treatment_dynamicArray[indx].Measure = null;
                         this.emr_prescription_treatment_dynamicArray[indx].Instructions = null;
                         this.emr_prescription_treatment_dynamicArray[indx].InstructionId = null;
+                        this.emr_prescription_treatment_dynamicArray[indx].IsInventory = 0;
                     }
                     const items = m.ResultSet.ItemInfo.map(item => ({
                         Name: item.label,
@@ -1203,6 +1227,7 @@ export class PrescriptionComponentForm implements OnInit {
                         InstructionId: item.InstructionId,
                         IsAllowNegativeStock: item.IsAllowNegativeStock,
                         stock: item.stock,
+                        IsInventory: item.IsInventory,
                     }));
                     response(items);
                     this.loader.HideLoader();
@@ -1213,6 +1238,7 @@ export class PrescriptionComponentForm implements OnInit {
                 this.emr_prescription_treatment_dynamicArray[indx].MedicineId = ui.item.value;
                 this.emr_prescription_treatment_dynamicArray[indx].MedicineName = ui.item.Name;
                 this.emr_prescription_treatment_dynamicArray[indx].Measure = ui.item.Measure;
+                this.emr_prescription_treatment_dynamicArray[indx].IsInventory = ui.item.IsInventory;
                 this.emr_prescription_treatment_dynamicArray[indx].Instructions = ui.item.Instructions;
                 this.emr_prescription_treatment_dynamicArray[indx].InstructionId = ui.item.InstructionId;
                 $(id).val(ui.item.label);
@@ -1756,6 +1782,7 @@ export class PrescriptionComponentForm implements OnInit {
             this.PrescriptionModel.emr_prescription_diagnos = [];
             this.PrescriptionModel.emr_prescription_investigation = [];
             this.PrescriptionModel.emr_prescription_observation = [];
+            
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;
             this.PrescriptionModel.emr_prescription_complaint = this.emr_prescription_complaint_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_diagnos = this.emr_prescription_diagnos_dynamicArray.filter(a => a.IsSelected == true);
@@ -2017,6 +2044,9 @@ export class PrescriptionComponentForm implements OnInit {
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
                 if (result.ResultSet.Model.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.ClinicalNote);
+                }
+                if (result.ResultSet.Model.PlanNote) {
+                    this.PatientRXmodel.safePlanNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.PlanNote);
                 }
                 this.PatientRXmodel.FollowUpDate = result.ResultSet.Model.FollowUpDate;
                 if (result.ResultSet.doctor.length > 0)

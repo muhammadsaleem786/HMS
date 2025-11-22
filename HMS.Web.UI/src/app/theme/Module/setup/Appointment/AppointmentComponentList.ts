@@ -828,8 +828,7 @@ export class AppointmentComponentList implements OnInit {
             return;
         } else {
             if (val == "P") {
-                this.AppointmentModel.IsExistFollowUp = false;
-                this.PrintContent();
+                this.AppointmentModel.IsExistFollowUp = false;                
                 this.AppointmentSaveOrUpdate(true);
             } else {
                 this.AppointmentModel.IsExistFollowUp = false;
@@ -838,7 +837,6 @@ export class AppointmentComponentList implements OnInit {
         }
     }
     AppointmentPrint(val: any) {
-        
         this.submitted = false;
         this.loader.ShowLoader();
         if (this.AppointmentModel.AppointmentTime == undefined)
@@ -1992,6 +1990,7 @@ export class AppointmentComponentList implements OnInit {
             if (result.IsSuccess) {
                 this.modalService.dismissAll(this.ModelContent);
                 this.toastr.Success(result.Message);
+                this.PrintContent();
                 this.CurntPrevDateList = result.ResultSet.CurntPrevDateList;
                 this.PModel.SortName = "";
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);

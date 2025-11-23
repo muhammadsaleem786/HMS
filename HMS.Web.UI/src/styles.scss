@@ -288,6 +288,14 @@ body {
     }
 }
 
+.dashboardSummary{
+    gap: 12px;
+    margin: 0;
+    .col-summary{
+        width: calc(25% - 9px);
+    }
+}
+
 #sidebar {
     color: #fff;
 }
@@ -2585,7 +2593,31 @@ div#chart4 {
     right: 12px;
 }
 
+@media (max-width: 1300px) {
+    .dashboardSummary{
+        gap: 12px;
+        margin: 0;
+        .col-summary{
+            width: calc(33.3% - 9px);
+            .card.card-stats h2{
+                font-size: 18px;
+            }
+            span.text-sm {
+                font-size: 14px;
+            }
+        }
+    }
+}
 
+@media (max-width: 960px) {
+    .dashboardSummary{
+        gap: 12px;
+        margin: 0;
+        .col-summary{
+            width: calc(50% - 9px);
+        }
+    }
+}
 @media (max-width: 575.98px) {
     .toast-top-right {
         top: unset;
@@ -4569,3 +4601,4 @@ label.custom-control-label {
     width: 100%;
     overflow: auto;
 }
+

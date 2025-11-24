@@ -828,7 +828,7 @@ export class AppointmentComponentList implements OnInit {
             return;
         } else {
             if (val == "P") {
-                this.AppointmentModel.IsExistFollowUp = false;                
+                this.AppointmentModel.IsExistFollowUp = false;
                 this.AppointmentSaveOrUpdate(true);
             } else {
                 this.AppointmentModel.IsExistFollowUp = false;
@@ -884,6 +884,26 @@ export class AppointmentComponentList implements OnInit {
                 popupWin.document.close();
             }
         }
+    }
+    LatestPrescriptionLoad() {
+        if (!this.CurntPrevDateList || this.CurntPrevDateList.length === 0) return;
+        this.loader.ShowLoader();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const pastAppointments = this.CurntPrevDateList.filter(a => {
+            const apptDate = new Date(a.AppointmentDate);
+            apptDate.setHours(0, 0, 0, 0);
+            return apptDate < today;
+        });
+
+        if (pastAppointments.length === 0) return;
+        const latestAppointment = pastAppointments.reduce((prev, current) => {
+            return new Date(prev.AppointmentDate) > new Date(current.AppointmentDate) ? prev : current;
+        });
+        //this.PrescriptionModel.AppointmentDate = latestAppointment.AppointmentDate;
+        //this.AppointDate = latestAppointment.AppointmentDate;
+        //this.PrescriptionModel.AppointmentId = latestAppointment.ID;
+        this.Loaddata(latestAppointment.PatientId, latestAppointment.AppointmentDate, latestAppointment.ID);
     }
     VitalSave(isValid: boolean): void {
         var obj = this.VitalModel;
@@ -1988,9 +2008,9 @@ export class AppointmentComponentList implements OnInit {
         this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
+                this.PrintContent();
                 this.modalService.dismissAll(this.ModelContent);
                 this.toastr.Success(result.Message);
-                this.PrintContent();
                 this.CurntPrevDateList = result.ResultSet.CurntPrevDateList;
                 this.PModel.SortName = "";
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
@@ -2149,6 +2169,128 @@ export class AppointmentComponentList implements OnInit {
             this.PrescriptionModel = new emr_prescription_mf();
         }
     }
+    Loaddata(id: any, date: any, AppId: any) {
+        if (!id || !AppId) return;
+        this.resetFlags();
+        this.loader.ShowLoader();
+        const formattedDate = this._CommonService.GetFormatDate(date);
+        this.PrescriptionModel = new emr_prescription_mf();
+
+        this._AppointmentService.PatientInfoLoad(id, formattedDate, AppId).then(m => {
+
+            const result = m.ResultSet;
+
+            this.setupBasePrescriptionData(result, formattedDate, AppId, id);
+            this.setupPatientBasicInfo(result);
+            this.setupPatientImage(result.patientInfo.Image);
+
+            this.CurntPrevDateList = result.CurntPrevDateList;
+
+            // Load vitals
+            this.emr_vital_dynamicArray = [...result.vitallist];
+
+            // Load dynamic arrays
+            this.loadDynamicList(
+                result.prescription_complaint,
+                result.ComplaintList,
+                this.emr_prescription_complaint_dynamicArray,
+                "ComplaintId"
+            );
+
+            this.loadDynamicList(
+                result.prescription_diagnos,
+                result.DiagnosisList,
+                this.emr_prescription_diagnos_dynamicArray,
+                "DiagnosId"
+            );
+
+            this.loadDynamicList(
+                result.prescription_investigation,
+                result.InvestigationsList,
+                this.emr_prescription_investigation_dynamicArray,
+                "InvestigationId"
+            );
+
+            this.loadDynamicList(
+                result.prescription_observation,
+                result.ObservationList,
+                this.emr_prescription_observation_dynamicArray,
+                "ObservationId"
+            );
+            this.emr_prescription_treatment_dynamicArray = result.prescription_treatment.map(item => {
+                const medicine = this.MedicineList.find(x => x.Id === item.MedicineId);
+                item.MedicineName = medicine ? medicine.Medicine : item.MedicineName;
+                return item;
+            });
+            this.ComplaintList = result.ComplaintList;
+            this.DiagnosisList = result.DiagnosisList;
+            this.InvestigationsList = result.InvestigationsList;
+            this.ObservationList = result.ObservationList;
+
+            this.LoadEditor();
+            this.PlanEditor();
+            this.loader.HideLoader();
+        });
+    }
+    setupBasePrescriptionData(result: any, formattedDate: string, AppId: any, patientId: any) {
+        this.MedicineList = result.MedicineList;
+        this.PrescriptionModel.PatientId = patientId;
+        this.PrescriptionModel.ClinicId = this.CompanyObj.CompanyID;
+        this.PrescriptionModel.DoctorId = result.Doctorid;
+        if (result.prescription_mf) {
+            Object.assign(this.PrescriptionModel, result.prescription_mf);
+            this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(result.prescription_mf.AppointmentDate);
+        } else {
+            this.PrescriptionModel.Notes = result.Instruction || "";
+        }
+    }
+    setupPatientBasicInfo(result: any) {
+        this.model = result.patientInfo;
+        this.BillTypeList = result.BillTypeList;
+        this.TittleList = result.TittleList;
+
+        localStorage.setItem("PatientName", this.model.PatientName);
+    }
+    setupPatientImage(image: string) {
+        if (image) {
+            this.getPatientImageUrlName(image);
+            this.IsNewPatientImage = false;
+        } else {
+            this.IsNewPatientImage = true;
+        }
+    }
+    loadDynamicList(sourceList, masterList, targetArray, field) {
+        targetArray.length = 0;
+
+        // pre-selected
+        sourceList.forEach(item => {
+            const match = masterList.find(x => x.id == item[field]);
+            item.IsSelected = match || item[field] == null;
+
+            if (match) {
+                item[field] = match.id;
+                item.favoriteId = match.favoriteId;
+                item.Isfavorite = match.Isfavorite;
+            } else if (item[field]) {
+                item.favoriteId = null;
+                item.Isfavorite = 0;
+            }
+
+            targetArray.push(item);
+        });
+
+        // remaining master items
+        masterList.forEach(item => {
+            if (!sourceList.some(x => x[field] == item.id)) {
+                targetArray.push({
+                    ...item,
+                    IsSelected: false,
+                    [field]: item.id
+                });
+            }
+        });
+    }
+
     showPatientDetail(id: any, date: any, AppId: any) {
         if (id != undefined && AppId != undefined) {
             this.IsLoadDocument = false;
@@ -2361,6 +2503,15 @@ export class AppointmentComponentList implements OnInit {
                 this.loader.HideLoader();
             });
         }
+    }
+    resetFlags() {
+        this.IsLoadDocument = false;
+        this.IsLoadBill = false;
+        this.IsPrevious = false;
+        this.IsVital = false;
+        this.PrescriptionExist = false;
+        this.IsPatient = true;
+        this.PatientDetailInfo = true;
     }
     IsNewPatientImageEvent(FName) {
         this.IsNewImage = true;

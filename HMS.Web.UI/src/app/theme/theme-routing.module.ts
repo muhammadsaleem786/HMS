@@ -151,6 +151,8 @@ import { PayScheduleComponentList } from '../theme/Module/setup/Employee/Paysche
 import { PayScheduleComponentForm } from '../theme/Module/setup/Employee/Payschedule/PayScheduleComponentForm';
 import { VacationSickLeaveComponentList } from '../theme/Module/setup/Employee/VacationSickLeave/VacationSickLeaveComponentList';
 import { VacationSickLeaveComponentForm } from '../theme/Module/setup/Employee/VacationSickLeave/VacationSickLeaveComponentForm';
+//lab module
+import { LabDashboardComponent } from './Module/setup/Lab/LabDashboardComponent';
 
 //end
 const SecureRoutes: Routes = [
@@ -327,6 +329,9 @@ const SecureRoutes: Routes = [
             { path: 'Schedule', component: PayScheduleComponentList, canActivate: [AuthGuard] },
             { path: 'vacationsickleave', component: VacationSickLeaveComponentList },
             //end
+            //lab module
+            { path: 'lab', component: LabDashboardComponent, canActivate: [AuthGuard] },
+
         ],
     },
     {
@@ -345,6 +350,9 @@ export const SecureComponent: any[] = [
     ReportComponentForm,
     DashboardForm,
     PageListComponent,
+    //lab module
+    LabDashboardComponent,
+    //end
     //employee module
     DepartmentComponentList, PayrollComponentList, PayrollComponentForm,
     AttendanceComponentList, AttendanceComponentForm,

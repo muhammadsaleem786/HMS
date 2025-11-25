@@ -895,14 +895,20 @@ export class AppointmentComponentList implements OnInit {
             apptDate.setHours(0, 0, 0, 0);
             return apptDate < today;
         });
+        const todayAppointments = this.CurntPrevDateList.filter(a => {
+            const apptDate = new Date(a.AppointmentDate);
+            apptDate.setHours(0, 0, 0, 0);
+            return apptDate.getTime() === today.getTime();
+        });
 
         if (pastAppointments.length === 0) return;
         const latestAppointment = pastAppointments.reduce((prev, current) => {
             return new Date(prev.AppointmentDate) > new Date(current.AppointmentDate) ? prev : current;
         });
-        //this.PrescriptionModel.AppointmentDate = latestAppointment.AppointmentDate;
-        //this.AppointDate = latestAppointment.AppointmentDate;
-        //this.PrescriptionModel.AppointmentId = latestAppointment.ID;
+        this.PrescriptionModel = new emr_prescription_mf();
+        this.PrescriptionModel.AppointmentDate = todayAppointments[0].AppointmentDate;
+        this.AppointDate = todayAppointments[0].AppointmentDate;
+        this.PrescriptionModel.AppointmentId = todayAppointments[0].ID;
         this.Loaddata(latestAppointment.PatientId, latestAppointment.AppointmentDate, latestAppointment.ID);
     }
     VitalSave(isValid: boolean): void {
@@ -2174,7 +2180,7 @@ export class AppointmentComponentList implements OnInit {
         this.resetFlags();
         this.loader.ShowLoader();
         const formattedDate = this._CommonService.GetFormatDate(date);
-        this.PrescriptionModel = new emr_prescription_mf();
+        
 
         this._AppointmentService.PatientInfoLoad(id, formattedDate, AppId).then(m => {
 

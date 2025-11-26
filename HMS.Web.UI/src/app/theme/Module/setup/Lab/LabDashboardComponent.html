@@ -1,24 +1,730 @@
-<div class="margin-t-68 removeAction">
+<div class="margin-t-68 removeAction px-4">
+    <!-- Page Header -->
     <div class="row headSection paginationHead">
         <div class="col-sm-8">
             <div class="row">
                 <div class="col max-content">
                     <h3 class="page-heading mt-d-inline-block">
-                        Lab
+                        Lab &amp; Pathology Operations
                     </h3>
+                </div>
+                <div class="col-12">
+                    <p class="text-muted mb-0">
+                        Comprehensive test management system
+                    </p>
                 </div>
             </div>
         </div>
         <div class="col-sm-4 text-right flex-row flex-end">
+            <button class="btn btn-outline-secondary btn-sm mr-2">
+                <i class="icon icon-file-text"></i> Report Templates
+            </button>
         </div>
     </div>
-    
+
+    <!-- Primary Actions -->
+    <div class="row mt-3">
+        <div class="col-md-3 col-sm-6 mb-3" *ngFor="let action of primaryActions">
+            <div class="card shadow-sm border-0 h-100 cursor-pointer" (click)="onPrimaryActionClick(action)">
+                <div class="card-body d-flex align-items-center">
+                    <div class="mr-3">
+                        <span class="badge badge-danger-light rounded-circle p-3">
+                            <i [class]="action.icon"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <h5 class="mb-0">{{ action.title }}</h5>
+                        <small class="text-muted">{{ action.subtitle }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Summary -->
+    <div class="row mt-3">
+        <div class="col-md-3 col-sm-6 mb-3" *ngFor="let stat of summaryStats">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">{{ stat.label }}</p>
+                            <h3 class="mb-0">{{ stat.value }}</h3>
+                        </div>
+                        <span class="badge" [ngClass]="stat.badgeClass">{{ stat.badgeText }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Cases -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-12 mb-2 mb-md-0">
+                    <h5 class="mb-0">Active Cases</h5>
+                </div>
+            </div>
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-4 mb-2 mb-md-0">
+                    <input class="form-control form-control-sm" placeholder="Search by patient, test ID, or sample ID..." type="text"
+                           [(ngModel)]="searchText" (keyup)="onSearch()" />
+                </div>
+                <div class="col-md-8 text-md-right">
+                    <div class="form-inline justify-content-md-end">
+                        <select class="form-control form-control-sm mr-2 mb-2 mb-md-0" [(ngModel)]="selectedDepartment">
+                            <option value="">All Departments</option>
+                            <option *ngFor="let d of departmentFilters" [value]="d">{{ d }}</option>
+                        </select>
+                        <select class="form-control form-control-sm mr-2 mb-2 mb-md-0" [(ngModel)]="selectedStatus">
+                            <option value="">All Status</option>
+                            <option *ngFor="let s of statusFilters" [value]="s">{{ s }}</option>
+                        </select>
+                        <select class="form-control form-control-sm" [(ngModel)]="selectedSampleType">
+                            <option value="">All Sample Types</option>
+                            <option *ngFor="let st of sampleTypeFilters" [value]="st">{{ st }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="Cardview fullHeight m-0">
+                <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                    <div class="uk-overflow-container col-sm-12 p-0">
+                        <table id="lab_dashboard_table" class="uk-table table" cellspacing="0" style="width: 100%; min-width: 1100px;">
+                            <thead class="grid-header">
+                                <tr>
+                                    <th style="width: 110px;">Test</th>
+                                    <th style="min-width: 220px;">Patient</th>
+                                    <th style="width: 110px;">Sample</th>
+                                    <th style="width: 150px;">Department</th>
+                                    <th style="width: 110px;">Priority</th>
+                                    <th style="width: 130px;">Status</th>
+                                    <th style="width: 130px;">Ordered Date</th>
+                                    <th class="text-right" style="min-width: 220px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of activeCases">
+                                    <td>
+                                        <span class="font-weight-bold">{{ item.testId }}</span>
+                                         <div class="TextOverflow" style="max-width: 190px;">
+                                        {{ item.testName }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="user_img mr-2">
+                                                <img src="../assets/app/media/img/patient-icon-4.jpg" class="img-fluid radius">
+                                            </span>
+                                            <div>
+                                                <div class="font-weight-bold TextOverflow" style="max-width: 140px;">
+                                                    {{ item.patientName }}
+                                                </div>
+                                               <p class="mb-0">
+                                                 <small class="text-muted">#{{ item.patientCode }}</small>
+                                               </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><p class="mb-0">
+                                        <strong> {{ item.sampleId }}</strong>
+                                       </p>
+                                         <span class="badge badge-danger-light">{{ item.sampleType }}</span>
+                                    </td>
+                                   
+                                    <td>
+                                        <span class="badge badge-primary-light">{{ item.department }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge" [ngClass]="item.priorityClass">{{ item.priority }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge" [ngClass]="item.statusClass">{{ item.status }}</span>
+                                    </td>
+                                    <td>{{ item.orderedDate | date: 'MM/dd/yyyy' }}</td>
+                                    <td class="text-right">
+                                        <select class="form-control form-control-sm d-inline-block w-auto mr-2"
+                                                [(ngModel)]="item.actionStatus">
+                                            <option *ngFor="let opt of actionStatusOptions" [ngValue]="opt">
+                                                {{ opt }}
+                                            </option>
+                                        </select>
+                                        <button class="btn btn-light btn-sm mr-1">
+                                            <i class="icon icon-printer"></i> Print
+                                        </button>
+                                        <button class="btn btn-danger btn-sm"
+                                                type="button"
+                                                (click)="onOpenEnterResultFromCase(item)">
+                                            Enter Results
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr [hidden]="!(activeCases.length == 0)" style="background:#fff;">
+                                    <td [attr.colspan]="10" align="center">
+                                        <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                        <strong class="nodateFound">No record found</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Catalogue Modal -->
+    <ng-template #TestCatalogueModal let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">
+                Test Catalogue
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p class="text-muted mb-3">
+                Browse available laboratory tests with detailed parameters and reference ranges.
+            </p>
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i class="icon icon-search"></i>
+                    </span>
+                </div>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Search tests by name, code, or parameter..."
+                       [(ngModel)]="testCatalogueSearch"
+                       (keyup)="onCatalogueSearchChange()" />
+            </div>
+
+            <div class="btn-group btn-group-toggle d-flex mb-3" data-toggle="buttons">
+                <label class="btn btn-light flex-fill"
+                       *ngFor="let tab of testCatalogueTabs"
+                       [class.active]="tab === selectedCatalogueTab"
+                       (click)="onChangeCatalogueTab(tab)">
+                    {{ tab }}
+                </label>
+            </div>
+
+            <div class="row customscroll" style="max-height: 420px; overflow-y: auto;">
+                <div class="col-md-6 mb-3" *ngFor="let test of filteredCatalogueList">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="mb-1">{{ test.name }}</h5>
+                                    <span class="badge badge-secondary-light">{{ test.code }}</span>
+                                </div>
+                                <h5 class="text-success mb-0">
+                                    ${{ test.price }}
+                                </h5>
+                            </div>
+                            <div class="mb-2">
+                                <div class="mb-1">
+                                    <strong>Category:</strong>
+                                    <span class="badge badge-success-light ml-1">{{ test.category }}</span>
+                                </div>
+                                <div class="mb-1">
+                                    <strong>Sample:</strong> {{ test.sample }}
+                                </div>
+                                <div class="mb-1">
+                                    <strong>TAT:</strong> {{ test.tat }}
+                                </div>
+                            </div>
+                            <div class="mt-auto pt-2 border-top">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">
+                                            Parameters ({{ test.parameterCount }})
+                                        </small>
+                                    </div>
+                                    <button class="btn btn-light btn-sm"
+                                            type="button"
+                                            (click)="onOpenParameterDialog(test)">
+                                        + Add Parameter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12" *ngIf="filteredCatalogueList.length === 0">
+                    <p class="text-center text-muted mb-0">No tests found.</p>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- Enter Result Modal -->
+    <ng-template #EnterResultModal let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">
+                Enter Test Results
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body p-0">
+            <div class="p-4">
+                <!-- Search by Test ID -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="font-weight-500">Search by Test ID</label>
+                        <div class="input-group input-group-sm">
+                           
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Enter Test ID (e.g. TST-2024-001)"
+                                   [(ngModel)]="enterResultSearchId"
+                                   (keyup.enter)="onSearchResultByTestId()" />
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" (click)="onSearchResultByTestId()">
+                                    Load
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loaded test details -->
+                <div *ngIf="selectedResultTest; else noTestSelected">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <h5 class="mb-1">{{ selectedResultTest.testName }}</h5>
+                            <p class="mb-0 text-muted">
+                                Test ID: <strong>{{ selectedResultTest.testId }}</strong> &nbsp;&bull;&nbsp;
+                                Sample ID: <strong>{{ selectedResultTest.sampleId }}</strong> &nbsp;&bull;&nbsp;
+                                Department: <strong>{{ selectedResultTest.department }}</strong>
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-right mt-2 mt-md-0">
+                            <div class="mb-1">
+                                <span class="badge badge-danger-light mr-1 text-uppercase">{{ selectedResultTest.sampleType }}</span>
+                                <span class="badge" [ngClass]="selectedResultTest.priorityClass">{{ selectedResultTest.priority }}</span>
+                            </div>
+                            <small class="text-muted">Patient: {{ selectedResultTest.patientName }} ({{ selectedResultTest.patientCode }})</small>
+                        </div>
+                    </div>
+
+                    <!-- Summary cards (Critical / Abnormal / Normal) -->
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-2">
+                            <div class="card h-100 shadow-sm border-left border-danger">
+                                <div class="card-body py-3 d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <span class="badge badge-danger-light rounded-circle p-2">
+                                            <i class="icon icon-warning"></i>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small">Critical Values</div>
+                                        <div class="h4 mb-0 text-danger">{{ resultSummary.critical }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="card h-100 shadow-sm border-left border-warning">
+                                <div class="card-body py-3 d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <span class="badge badge-warning-light rounded-circle p-2">
+                                            <i class="icon icon-info"></i>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small">Abnormal Values</div>
+                                        <div class="h4 mb-0 text-warning">{{ resultSummary.abnormal }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="card h-100 shadow-sm border-left border-success">
+                                <div class="card-body py-3 d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <span class="badge badge-success-light rounded-circle p-2">
+                                            <i class="icon icon-checkmark"></i>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small">Normal Values</div>
+                                        <div class="h4 mb-0 text-success">{{ resultSummary.normal }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parameters grid -->
+                    <div class="Cardview m-0">
+                        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                            <div class="uk-overflow-container col-sm-12 p-0 customscroll" style="max-height: 320px; overflow-y: auto;">
+                                <table class="uk-table table" cellspacing="0" style="width: 100%; min-width: 720px;">
+                                    <thead class="grid-header">
+                                        <tr>
+                                            <th style="min-width: 200px;">Parameter</th>
+                                            <th style="120px;">Result</th>
+                                            <th style="80px;">Unit</th>
+                                            <th style="min-width: 180px;">Reference Range</th>
+                                            <th style="90px;">Status</th>
+                                            <th style="min-width: 200px;">Comments (optional)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let p of selectedResultParameters" [ngClass]="getResultRowClass(p)">
+                                            <td>{{ p.name }}</td>
+                                            <td>
+                                                <input type="text"
+                                                       class="form-control form-control-sm"
+                                                       [ngModel]="p.result"
+                                                       (ngModelChange)="onChangeParameterResult(p, $event)"
+                                                       placeholder="Enter value" />
+                                            </td>
+                                            <td>{{ p.unit }}</td>
+                                            <td>{{ p.reference }}</td>
+                                            <td>
+                                                <span class="badge" [ngClass]="getStatusBadgeClass(p)">
+                                                    {{ p.status || '—' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <input type="text"
+                                                       class="form-control form-control-sm"
+                                                       [(ngModel)]="p.comment"
+                                                       placeholder="Comments (optional)" />
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="!selectedResultParameters || !selectedResultParameters.length">
+                                            <td colspan="5" class="text-center text-muted">
+                                                No parameters configured for this test.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <label class="font-weight-500">Comments / Interpretation</label>
+                            <textarea rows="2"
+                                      class="form-control form-control-sm"
+                                      placeholder="Any additional comments or interpretation..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-template #noTestSelected>
+                    <p class="text-muted mb-0">
+                        Search by <strong>Test ID</strong> to load a test and enter results.
+                    </p>
+                </ng-template>
+            </div>
+
+            <div class="bg-light border-top p-3 text-right">
+                <button type="button" class="btn btn-outline-secondary mr-2" (click)="modal.dismiss('cancel')">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="!selectedResultTest || !selectedResultParameters.length" (click)="onSaveResults()">
+                    Save Results
+                </button>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- New Test Order Modal -->
+    <ng-template #NewTestOrderModal let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">
+                New Test Order
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body p-0">
+            <div class="p-4">
+                <!-- Patient Information -->
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <h5 class="mb-1">Patient Information</h5>
+                        <p class="text-muted mb-2">Create a new test order for a patient. Fill in patient details and select tests.</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-500">Patient ID <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-sm" [(ngModel)]="newOrder.patientId" placeholder="Enter patient ID" />
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        <label class="font-weight-500">Patient Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-sm" [(ngModel)]="newOrder.patientName" placeholder="Enter patient name" />
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="font-weight-500">Age</label>
+                        <input type="text" class="form-control form-control-sm" [(ngModel)]="newOrder.age" placeholder="Enter age" />
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="font-weight-500">Gender</label>
+                        <select class="form-control form-control-sm" [(ngModel)]="newOrder.gender">
+                            <option value="">Select gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-500">Priority <span class="text-danger">*</span></label>
+                        <select class="form-control form-control-sm" [(ngModel)]="newOrder.priority">
+                            <option value="">Select priority</option>
+                            <option *ngFor="let p of orderPriorityOptions" [value]="p">{{ p }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-9 mb-3">
+                        <label class="font-weight-500">Clinical Notes</label>
+                        <textarea rows="2" class="form-control form-control-sm" [(ngModel)]="newOrder.clinicalNotes"
+                                  placeholder="Any clinical notes or special instructions..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Select Tests -->
+                <div class="row mt-2">
+                    <div class="col-12 mb-2">
+                        <h5 class="mb-1">Select Tests <span class="text-danger">*</span></h5>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="input-group input-group-sm">
+                            
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Search tests..."
+                                   [(ngModel)]="orderTestSearch"
+                                   (keyup)="onOrderTestSearchChange()" />
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="customscroll" style="max-height: 260px; overflow: hidden auto;">
+                            <div class="row">
+                                <div class="col-12 mb-2"
+                                     *ngFor="let test of filteredOrderTests">
+                                    <div class="d-flex align-items-center justify-content-between p-2 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-3">
+                                                <label class="m-0">
+                                                    <input type="checkbox"
+                                                           [(ngModel)]="test.selected"
+                                                           (change)="onToggleTestSelection(test)" />
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <div class="font-weight-500 d-flex align-items-center">
+                                                    {{ test.name }}
+                                                    <span class="badge badge-danger-light ml-2 px-2 py-1">{{ test.sample }}</span>
+                                                </div>
+                                                <small class="text-muted">
+                                                    {{ test.code }} &bull; {{ test.category }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="font-weight-500">PKR {{ test.price | number: '1.2-2' }}</div>
+                                            <small class="text-muted">TAT: {{ test.tat }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12" *ngIf="filteredOrderTests.length === 0">
+                                    <p class="text-center text-muted mb-0">No tests found.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoice summary section -->
+            <div class="bg-light border-top p-4">
+                <div class="row">
+                    <div class="col-md-7 mb-3 mb-md-0">
+                        <h6 class="mb-3">Invoice Summary</h6>
+                       
+                    </div>
+                    <div class="col-md-5 d-flex flex-column justify-content-between">
+                        <div class="text-right mb-3">
+                            <div class="h6 mb-1">Total Amount:</div>
+                            <div class="h4 text-primary mb-0">
+                                PKR {{ orderTotalAmount | number: '1.2-2' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                       <div class="col-sm-12">
+                          <div class="card shadow-none border-0">
+                            <div class="card-body py-3 px-3" *ngIf="groupedOrderSamples && groupedOrderSamples.length">
+                                <div class="mb-3" *ngFor="let group of groupedOrderSamples">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Sample Collection Required:</small>
+                                    </div>
+                                    <div class="d-inline-flex align-items-center bg-white rounded-pill px-3 py-1 mb-2">
+                                        <span class="badge badge-danger mr-2 text-uppercase">{{ group.sample }}</span>
+                                        <span class="badge badge-light border">{{ group.tests.length }} test{{ group.tests.length > 1 ? 's' : '' }}</span>
+                                    </div>
+
+                                    <div class="customscroll" style="max-height: 120px; overflow-y: auto;">
+                                        <div class="d-flex align-items-center justify-content-between bg-info-light rounded px-3 py-2 mb-2"
+                                             *ngFor="let t of group.tests">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge badge-primary mr-2">{{ t.code }}</span>
+                                                <span class="font-weight-500 mr-2">{{ t.name }}</span>
+                                                <span class="badge badge-danger-light text-uppercase">{{ t.sample }}</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="mr-3">PKR {{ t.price | number: '1.2-2' }}</span>
+                                                <button type="button" class="btn btn-sm btn-link text-muted p-0"
+                                                        (click)="removeTestFromOrder(t)">
+                                                    <i class="icon icon-close"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body py-3 px-3" *ngIf="!groupedOrderSamples || !groupedOrderSamples.length">
+                                <p class="text-muted mb-0">No tests selected yet.</p>
+                            </div>
+                        </div>
+                       </div>
+
+                       <div class="col-sm-12 mt-5">
+                        <div class="text-right">
+                            <button type="button" class="btn btn-outline-secondary mr-2" (click)="modal.dismiss('cancel')">
+                                Cancel
+                            </button>
+                            <button type="button" class="btn btn-primary" [disabled]="!canCreateOrder()">
+                                Create Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- Parameter Modal -->
+    <ng-template #TestParameterModal let-modal="close">
+        <div class="modal-header">
+            <h4 class="modal-title">
+                Add Parameter
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form #paramForm="ngForm" (ngSubmit)="onSaveParameter(paramForm.valid)">
+            <div class="modal-body">
+                <p class="text-muted mb-4">
+                    Add a new parameter to {{ selectedTestForParameter?.name }} ({{ selectedTestForParameter?.code }})
+                </p>
+
+                <div class="form-group">
+                    <label class="required">Parameter Name</label>
+                    <input type="text"
+                           name="name"
+                           class="form-control"
+                           [(ngModel)]="parameterModel.name"
+                           required
+                           placeholder="e.g., Total Cholesterol, Hemoglobin" />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label class="required">Unit</label>
+                        <input type="text"
+                               name="unit"
+                               class="form-control"
+                               [(ngModel)]="parameterModel.unit"
+                               required
+                               placeholder="e.g., mg/dL, g/dL, %" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="required">Reference Range</label>
+                        <input type="text"
+                               name="referenceRange"
+                               class="form-control"
+                               [(ngModel)]="parameterModel.referenceRange"
+                               required
+                               placeholder="e.g., 70-100, &lt;200" />
+                    </div>
+                </div>
+
+                <hr />
+
+                <h6 class="mb-3">Normal Range (for automatic checking)</h6>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Normal Minimum</label>
+                        <input type="text"
+                               name="normalMin"
+                               class="form-control"
+                               [(ngModel)]="parameterModel.normalMin"
+                               placeholder="e.g., 70" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Normal Maximum</label>
+                        <input type="text"
+                               name="normalMax"
+                               class="form-control"
+                               [(ngModel)]="parameterModel.normalMax"
+                               placeholder="e.g., 100" />
+                    </div>
+                </div>
+
+                <h6 class="mb-3">Critical Range (optional)</h6>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Critical Low</label>
+                        <input type="text"
+                               name="criticalLow"
+                               class="form-control"
+                               [(ngModel)]="parameterModel.criticalLow"
+                               placeholder="e.g., 40" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Critical High</label>
+                        <input type="text"
+                               name="criticalHigh"
+                               class="form-control"
+                               [(ngModel)]="parameterModel.criticalHigh"
+                               placeholder="e.g., 400" />
+                    </div>
+                </div>
+
+                <div class="form-group mb-0">
+                    <label>Description (optional)</label>
+                    <textarea name="description"
+                              class="form-control"
+                              rows="3"
+                              [(ngModel)]="parameterModel.description"
+                              placeholder="e.g., Diabetes indicator, Cholesterol check"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-transparent" (click)="modal('cancel')">Cancel</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!paramForm.valid">
+                    + Add Parameter
+                </button>
+            </div>
+        </form>
+    </ng-template>
 </div>
-
-
-
-
-
-
-
-

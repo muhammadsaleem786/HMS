@@ -62,6 +62,20 @@ export class LabDashboardComponent implements OnInit {
     // Add parameter model
     public parameterModel: any = {};
 
+    // Catalogue parameters (UI-only, per test code)
+    public catalogueParameters: { [code: string]: any[] } = {};
+    public expandedCatalogueCode: string | null = null;
+
+    // Add new catalogue state (UI only)
+    public isAddingCatalogue: boolean = false;
+    public newCatalogue: any = {
+        name: '',
+        category: '',
+        sample: '',
+        tat: '',
+        price: null
+    };
+
     // New Test Order state (UI only)
     public newOrder: any = {
         patientId: '',
@@ -322,6 +336,27 @@ export class LabDashboardComponent implements OnInit {
         this.applyTestCatalogueFilter();
         // initialise order tests list with catalogue data
         this.filteredOrderTests = this.testCatalogueList.map(t => ({ ...t, selected: false }));
+
+        // Mock parameter lists for catalogue cards
+        this.catalogueParameters = {
+            'BC001': [
+                { name: 'Glucose (Fasting)', unit: 'mg/dL', range: '70 - 100' }
+            ],
+            'BC002': [
+                { name: 'Glucose (Random)', unit: 'mg/dL', range: '70 - 140' }
+            ],
+            'BC003': [
+                { name: 'HbA1c', unit: '%', range: '< 5.7' }
+            ],
+            'CP001': [
+                { name: 'White Blood Cells', unit: 'cells/µL', range: '4,000 - 11,000' },
+                { name: 'Hemoglobin', unit: 'g/dL', range: '12.0 - 15.5' }
+            ],
+            'UR001': [
+                { name: 'pH', unit: '', range: '4.5 - 8.0' },
+                { name: 'Specific Gravity', unit: '', range: '1.005 - 1.030' }
+            ]
+        };
     }
 
     private applyTestCatalogueFilter(): void {
@@ -335,6 +370,53 @@ export class LabDashboardComponent implements OnInit {
                 t.code.toLowerCase().includes(search);
             return matchesTab && matchesSearch;
         });
+    }
+
+    public toggleCatalogueParameters(test: any): void {
+        if (!test || !test.code) {
+            return;
+        }
+        this.expandedCatalogueCode = this.expandedCatalogueCode === test.code ? null : test.code;
+    }
+
+    // --- Test catalogue: add new catalogue (UI only) ---
+    public onStartAddCatalogue(): void {
+        this.isAddingCatalogue = true;
+        this.newCatalogue = {
+            name: '',
+            category: '',
+            sample: '',
+            tat: '',
+            price: null
+        };
+    }
+
+    public onCancelAddCatalogue(): void {
+        this.isAddingCatalogue = false;
+    }
+
+    public onSaveCatalogue(isValid: boolean): void {
+        if (!isValid) {
+            return;
+        }
+
+        const nextCodeNumber = this.testCatalogueList.length + 1;
+        const code = 'NEW' + nextCodeNumber.toString().padStart(3, '0');
+
+        const newItem = {
+            code: code,
+            name: this.newCatalogue.name,
+            price: Number(this.newCatalogue.price) || 0,
+            category: this.newCatalogue.category,
+            sample: this.newCatalogue.sample,
+            tat: this.newCatalogue.tat,
+            parameterCount: 0
+        };
+
+        this.testCatalogueList = [newItem, ...this.testCatalogueList];
+        this.applyTestCatalogueFilter();
+        this.isAddingCatalogue = false;
+        this.toastr.Success('Test added to catalogue.');
     }
 
     // UI Events - dashboard

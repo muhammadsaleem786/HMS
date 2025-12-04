@@ -52,7 +52,6 @@ export class PaymentComponentForm implements OnInit {
         this.PayrollRegion =  this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("14");
-        //this.Keywords = this.commonservice.GetKeywords("Expense");
     }
     ngOnInit() {
         this.Form1 = this._fb.group({

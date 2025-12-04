@@ -169,7 +169,7 @@ export class AdmitDocumentSummeryComponentList implements OnInit {
                 this.DocumentList = m.DataList;
                 this.DocumentList.forEach(x => {
                     if (x.DocumentUpload != null && x.DocumentUpload != undefined && x.DocumentUpload != "")
-                        x.DocumentImage = GlobalVariable.BASE_Temp_File_URL + '' + x.DocumentUpload;
+                        x.DocumentImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.DocumentUpload;
                 });
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
                 this.loader.HideLoader();
@@ -206,9 +206,9 @@ export class AdmitDocumentSummeryComponentList implements OnInit {
     getDocImageUrlName(FName) {
         this.Docmodel.DocumentUpload = FName;
         if (this.IsEdit && !this.IsNewImage) {
-            this.DocumentImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.DocumentImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         } else {
-            this.DocumentImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.DocumentImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     onDocDateChanged(event: IMyDateModel) {

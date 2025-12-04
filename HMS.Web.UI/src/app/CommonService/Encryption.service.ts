@@ -18,7 +18,7 @@ export class EncryptionService {
     encryptionAES(msg) {
         // Encrypt
         if (msg != null) {
-            const ciphertext = CryptoTS.AES.encrypt(msg, 'secretkey123');
+            const ciphertext = CryptoTS.AES.encrypt(msg, 'secretkey@321');
             return ciphertext.toString();
         } else
             return "";
@@ -27,7 +27,7 @@ export class EncryptionService {
     decryptionAES(msg) {
         // Decrypt
         if (msg != null) {
-            const bytes = CryptoTS.AES.decrypt(msg, 'secretkey123');
+            const bytes = CryptoTS.AES.decrypt(msg, 'secretkey@321');
             const plaintext = bytes.toString(CryptoTS.enc.Utf8);
             return plaintext;
         } else

@@ -46,7 +46,7 @@ export class ApplicationUserComponentForm implements OnInit {
     public WasInside: boolean = false;
     public Keywords: any[] = []; public ControlRights: any;
     public TemplateList: any[] = [];
-    public UserProfileImage: string = '';
+    public UserProfileImage: string = ''; public CompanyObj: any;
     public IsNewImage: boolean = true;
     @HostListener('click', ['$event'],)
     Clickoutdocument(event) {
@@ -82,7 +82,7 @@ export class ApplicationUserComponentForm implements OnInit {
     constructor(public _CommonService: CommonService, public _fb: FormBuilder, public route: ActivatedRoute, public _router: Router
         , public loader: LoaderService, public _ApplicationUserService: ApplicationUserService
         , public _AttendanceService: AttendanceService, public toastr: CommonToastrService, public commonservice: CommonService, private encrypt: EncryptionService, private renderer: Renderer2, private sanitizer: DomSanitizer) {
-        //this.Keywords = this.commonservice.GetKeywords("ApplicationUser");
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
         this.ControlRights = this._CommonService.ScreenRights("3");
     }
     ngOnInit() {
@@ -448,9 +448,9 @@ export class ApplicationUserComponentForm implements OnInit {
     getImageUrlName(FName) {
         this.model.UserImage = FName;
         if (this.IsEdit && !this.IsNewImage) {
-            this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         } else {
-            this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
 }

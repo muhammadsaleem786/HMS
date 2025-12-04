@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using HMS.Web.API.Common;
 
 namespace HMS.Web.API.Areas.FileServer.Controllers
 {
@@ -19,6 +20,7 @@ namespace HMS.Web.API.Areas.FileServer.Controllers
         [ActionName("Temporary")]
         public ResponseInfo Temporary()
         {
+            decimal CompanyID = Request.CompanyID();
             var objResponse = new ResponseInfo() { IsSuccess = false };
             if (HttpContext.Current.Request.Files.AllKeys.Any())
             {
@@ -29,8 +31,11 @@ namespace HMS.Web.API.Areas.FileServer.Controllers
 
                 string fileSavePath, fileName;
                 var FolderPath = HttpContext.Current.Server.MapPath("~/Files");
-                FolderPath = Path.Combine(FolderPath, "Temp");
-
+                FolderPath = Path.Combine(FolderPath, $"Temp/{CompanyID}");
+                if (!Directory.Exists(FolderPath))
+                {
+                    Directory.CreateDirectory(FolderPath);
+                }
                 foreach (string i in httpPostedFile)
                 {
                     HttpPostedFile UFD = httpPostedFile[i] as HttpPostedFile;

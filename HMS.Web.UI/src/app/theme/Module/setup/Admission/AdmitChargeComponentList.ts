@@ -138,7 +138,7 @@ export class AdmitChargeComponentList implements OnInit {
                 this.ProcedureItem = m.ResultSet.result[1];
                 this.ProcedureMedicine = m.ResultSet.result[2];
                 if (this.invoiceModel.length > 0 && this.invoiceModel.CompanyLogo != null)
-                    this.invoiceModel.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + this.invoiceModel.CompanyLogo;
+                    this.invoiceModel.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.invoiceModel.CompanyLogo;
 
                 this.modalService.open(InvoiceModal, { size: 'lg' });
                 this.loader.HideLoader();

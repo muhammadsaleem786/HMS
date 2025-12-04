@@ -44,13 +44,14 @@ export class IncomeComponentForm implements OnInit {
     public IsEdit: boolean = false;
     public AttachImage: string = '';
     public IsNewImage: boolean = true;
-    public IsBackDate: any;
+    public IsBackDate: any; public CompanyObj: any;
     constructor(public _CommonService: CommonService, private encrypt: EncryptionService, public _fb: FormBuilder, public loader: LoaderService
         , public _IncomeService: IncomeService, public commonservice: CommonService
         , public toastr: CommonToastrService, public route: ActivatedRoute, public _router: Router) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("20");
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.loadDropdown();
@@ -158,9 +159,9 @@ export class IncomeComponentForm implements OnInit {
     getImageUrlName(FName) {
         this.model.Image = FName;
         if (this.IsEdit && !this.IsNewImage) {
-            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         } else {
-            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
 

@@ -176,7 +176,7 @@ export class SummeryComponentList implements OnInit {
         if (this.IsEdit && !this.IsNewImage) {
             this.PatientImage = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     HomePage() {
@@ -258,7 +258,7 @@ export class SummeryComponentList implements OnInit {
                 else
                     this.PatientRXmodel.Weight = Weight[0].Measure;
                 if (m.ResultSet.result.ClinicIogo != null)
-                    this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result.ClinicIogo;
+                    this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result.ClinicIogo;
                 this.PatientRXmodel.Age = m.ResultSet.result.Age;
                 this.PatientRXmodel.AppointmentDate = this._CommonService.GetFormatDate(m.ResultSet.result.AppointmentDate);
                 this.PatientVitalList = m.ResultSet.vitallist;

@@ -29,12 +29,13 @@ export class PatientComponentList {
     nextPage: number = 1;
     totalPages: number = 0;
     pagesRange: number[] = [];
-    public ControlRights: any;
+    public ControlRights: any; public CompanyObj: any;
     constructor(public _CommonService: CommonService, public loader: LoaderService, public _PatientService: PatientService
         , public _router: Router, public toastr: CommonToastrService, private encrypt: EncryptionService) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("11");
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
 
@@ -53,7 +54,7 @@ export class PatientComponentList {
                 
                 this.PatientList.forEach(x => {
                     if (x.Image != null && x.Image != undefined && x.Image != "") {
-                        x.Image = GlobalVariable.BASE_Temp_File_URL + '' + x.Image;
+                        x.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
                     } else
                         x.Image = null;
                 });

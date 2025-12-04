@@ -78,7 +78,7 @@ export class AsidebarComponent implements OnInit {
             if (this.Usermodel.UserImage === "")
                 this.Usermodel.UserImage = null;           
             if (this.Usermodel.UserImage !== null && this.Usermodel.UserImage !== undefined) {
-                this.Usermodel.UserImage = GlobalVariable.BASE_Temp_File_URL + '' + this.Usermodel.UserImage;
+                this.Usermodel.UserImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyID + '/' + this.Usermodel.UserImage;
 
             }
         }

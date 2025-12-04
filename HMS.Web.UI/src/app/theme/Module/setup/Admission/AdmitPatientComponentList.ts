@@ -162,7 +162,7 @@ export class AdmitPatientComponentList implements OnInit {
         if (this.IsEdit && !this.IsNewImage) {
             this.PatientImage = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
 

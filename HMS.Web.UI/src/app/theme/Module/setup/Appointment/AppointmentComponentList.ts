@@ -580,7 +580,7 @@ export class AppointmentComponentList implements OnInit {
                 if (this.AppointmentList != null) {
                     this.AppointmentList.forEach(x => {
                         if (x.Image != null && x.Image != undefined && x.Image != "") {
-                            x.Image = GlobalVariable.BASE_Temp_File_URL + '' + x.Image;
+                            x.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
                         }
                     });
                 }
@@ -636,7 +636,7 @@ export class AppointmentComponentList implements OnInit {
                 if (this.AppointmentList != null) {
                     this.AppointmentList.forEach(x => {
                         if (x.Image != null && x.Image != undefined && x.Image != "") {
-                            x.Image = GlobalVariable.BASE_Temp_File_URL + '' + x.Image;
+                            x.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
                         }
                     });
                 }
@@ -1787,7 +1787,7 @@ export class AppointmentComponentList implements OnInit {
                 if (this.AppointmentList != null) {
                     this.AppointmentList.forEach(x => {
                         if (x.Image != null && x.Image != undefined && x.Image != "") {
-                            x.Image = GlobalVariable.BASE_Temp_File_URL + '' + x.Image;
+                            x.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
                         }
                     });
                 }
@@ -1852,7 +1852,7 @@ export class AppointmentComponentList implements OnInit {
                 if (this.AppointmentList != null) {
                     this.AppointmentList.forEach(x => {
                         if (x.Image != null && x.Image != undefined && x.Image != "") {
-                            x.Image = GlobalVariable.BASE_Temp_File_URL + '' + x.Image;
+                            x.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
                         }
                     });
                 }
@@ -2113,7 +2113,7 @@ export class AppointmentComponentList implements OnInit {
         if (this.IsEdit && !this.IsNewImage) {
             this.PatientImage = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     onDocDateChanged(event: IMyDateModel) {
@@ -2536,7 +2536,7 @@ export class AppointmentComponentList implements OnInit {
         if (this.IsEdit && !this.IsNewImage) {
             this.PatientImage = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     DeleteVital(id: any, VitalId: any) {
@@ -3240,7 +3240,7 @@ export class AppointmentComponentList implements OnInit {
                 if (result.ResultSet.patientInfo != null) {
                     this.PatientRXmodel = result.ResultSet.patientInfo;
                     if (this.PatientRXmodel.ClinicIogo != null)
-                        this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + result.ResultSet.patientInfo.ClinicIogo;
+                        this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + result.ResultSet.patientInfo.ClinicIogo;
                     this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
                     this.PrescriptionModel.Gender = result.ResultSet.patientInfo.Gender;
                     this.PrescriptionModel.Mobile = result.ResultSet.patientInfo.Mobile;

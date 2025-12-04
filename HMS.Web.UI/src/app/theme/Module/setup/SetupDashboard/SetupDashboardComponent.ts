@@ -168,13 +168,13 @@ export class SetupDashboardComponent implements OnInit {
             if (!this.IsNewImage)
                 this.Image = this.model.CompanyLogo == FName ? this.model.CompanyLogo : "";
             else
-                this.Image = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+                this.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
         else {
             if (this.IsEdit && !this.IsNewImage) {
                 this.Image = GlobalVariable.BASE_File_URL + '' + FName;
             } else {
-                this.Image = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+                this.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
             }
         }
     }

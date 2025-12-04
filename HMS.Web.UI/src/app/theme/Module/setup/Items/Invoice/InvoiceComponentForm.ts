@@ -118,7 +118,7 @@ export class InvoiceComponentForm {
     nextPage: number = 1;
     totalPages: number = 0;
     pagesRange: number[] = [];
-    public ControlRights: any;
+    public ControlRights: any; public CompanyObj: any;
     @ViewChild('closeBatchModal') closeBatchModal: ElementRef;
     constructor(public _CommonService: CommonService, public loader: LoaderService
         , public _router: Router, public _InvoiceService: InvoiceService, public _fb: FormBuilder
@@ -129,6 +129,7 @@ export class InvoiceComponentForm {
         this.PayrollRegion = this._CommonService.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("62");
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.LoadDropDown();
@@ -596,7 +597,7 @@ export class InvoiceComponentForm {
         if (this.IsEdit && !this.IsNewImage) {
             this.FileName = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.FileName = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.FileName = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     //vandor

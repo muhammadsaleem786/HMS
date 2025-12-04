@@ -37,7 +37,7 @@ export class ProfileUserComponentForm implements OnInit {
     public IsEmpFound: boolean = false;
     public IsAdmin: boolean = false;
     public hide = true;
-    public sub: any;
+    public sub: any; public CompanyObj: any;
     public IsEdit: boolean = false;
     public model = new ApplicationUserModel();
     public Charges: any;
@@ -90,6 +90,7 @@ export class ProfileUserComponentForm implements OnInit {
         , public toastr: CommonToastrService, private sanitizer: DomSanitizer, private encrypt: EncryptionService) {
         this.ControlRights = this._CommonService.ScreenRights("4");
         this.IsAdminRole = this._CommonService.RoleName();
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.TemplateList = [
@@ -335,9 +336,9 @@ export class ProfileUserComponentForm implements OnInit {
     getImageUrlName(FName) {
         this.model.UserImage = FName;
         if (this.IsEdit && !this.IsNewImage) {
-            this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         } else {
-            this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
 

@@ -75,7 +75,7 @@ export class BillComponentForm implements OnInit {
                     this.InvoiceCompanyInfo.BillDate = m.ResultSet.result[0].BillDate;
                     this.InvoiceCompanyInfo.invoiceNo = m.ResultSet.result[0].ID;
                     if (m.ResultSet.result[0].CompanyLogo != null)
-                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result[0].CompanyLogo;
+                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
                     this.Total = 0; this.SubTotal = 0; this.TotalDiscount=0
                     m.ResultSet.result.forEach((item, index) => {
                         this.SubTotal += parseInt(item.Price);

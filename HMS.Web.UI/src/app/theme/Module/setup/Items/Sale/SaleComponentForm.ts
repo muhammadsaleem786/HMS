@@ -87,7 +87,7 @@ export class SaleComponentForm {
     public Payment: number = 0;
     public Change: number = 0;
     public PayableAmount: number = 0;
-    public ReceivedAmount: number = 0;
+    public ReceivedAmount: number = 0; public CompanyObj: any;
     @ViewChild("content") PatientContent: TemplateRef<any>;
     @ViewChild("InvoicePopup") InvoicePopup: TemplateRef<any>;
     @ViewChild("MedicinePopup") MedicinePopup: TemplateRef<any>;
@@ -104,6 +104,7 @@ export class SaleComponentForm {
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("63");
         this.PayrollRegion = this._CommonService.getPayrollRegion();
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.LoadDropDown();
@@ -800,7 +801,7 @@ export class SaleComponentForm {
         if (this.IsEdit && !this.IsNewImage) {
             this.FileName = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.FileName = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.FileName = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     Delete() {
@@ -898,7 +899,7 @@ export class SaleComponentForm {
         this.model.pur_sale_dt = this.Sale_itemdynamicArray;
         this.PrintSale_itemdynamicArray = this.Sale_itemdynamicArray;
         if (this.CompanyInfo.CompanyLogo != null)
-            this.CompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + this.CompanyInfo.CompanyLogo;
+            this.CompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.CompanyInfo.CompanyLogo;
         if (this.model.pur_sale_dt.length == 0) {
             this.toastr.Error("Error", "Please select at least one item.");
             this.loader.HideLoader();

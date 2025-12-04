@@ -39,7 +39,7 @@ export class ItemComponentForm {
     public isDisabled: boolean = false;
     public IsTrackInventory: boolean = false;
     public AttachImage: string = '';
-    public ControlRights: any;
+    public ControlRights: any; public CompanyObj: any;
     constructor(public _CommonService: CommonService, public loader: LoaderService
         , public _router: Router, public _ItemService: ItemService, public _fb: FormBuilder
         , public route: ActivatedRoute, public toastr: CommonToastrService,
@@ -48,6 +48,7 @@ export class ItemComponentForm {
         this.PayrollRegion = this._CommonService.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("61");
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.LoadDropDown();
@@ -231,9 +232,9 @@ export class ItemComponentForm {
     getImageUrlName(FName) {
         this.model.Image = FName;
         if (this.IsEdit && !this.IsNewImage) {
-            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         } else {
-            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
 }

@@ -28,7 +28,7 @@
 
 <ul class="MenuBar" [style.display]="_AsidebarService.MenuId()==1">
 
-    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive">
+    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(78)>-1">
         <a routerLink="dashboard">
             <span><i class="icon-pie-chart iconImage"></i></span>
             <span class="title">Dashboard</span>
@@ -46,7 +46,7 @@
             <span class="title">Patients</span>
         </a>
     </li>
-    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(11)>-1">
+    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(80)>-1">
         <a routerLink="Admit">
             <span><i class="icon-user iconImage"></i></span>
             <span class="title">Admit Patients</span>
@@ -65,12 +65,12 @@
             <span class="title">Billing</span>
         </a>
     </li>
-    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(12)>-1">
+    <!--<li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(12)>-1">
         <a routerLink="lab">
             <span><i class="icon-coin-dollar iconImage"></i></span>
             <span class="title">Lab</span>
         </a>
-    </li>
+    </li>-->
     <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive">
         <a>
             <div class="dropdown dropright">
@@ -126,7 +126,7 @@
                             </a>
                         </li>
 
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive">
+                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive"*ngIf="Modules.indexOf(4)>-1">
                             <a routerLink="/home/setup">
                                 <span><i class="icon-cog iconImage"></i></span>
                                 <span class="title">Setting</span>

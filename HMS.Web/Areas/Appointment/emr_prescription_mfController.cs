@@ -332,7 +332,28 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     appinfo.ObjectState = ObjectState.Modified;
                     _emr_appointment_mfService.Update(appinfo);
                 }
-
+                decimal vitalID = 1;
+                if (_emr_vitalService.Queryable().Count() > 0)
+                    vitalID = _emr_vitalService.Queryable().Max(e => e.ID) + 1;
+                foreach (var item in Model.emr_vital)
+                {
+                    var vital = new emr_vital
+                    {
+                        ID = vitalID++,
+                        Measure = item.Measure,
+                        VitalDropdownId = (int)sys_dropdown_mfEnum.VitalDropdownId,
+                        VitalId = item.VitalId,
+                        Name=item.Name,
+                        CompanyID = Request.CompanyID(),
+                        PatientId = Model.PatientId,
+                        CreatedBy = Request.LoginID(),
+                        CreatedDate = Request.DateTimes(),
+                        ModifiedBy = Request.LoginID(),
+                        ModifiedDate = Request.DateTimes(),
+                        Date = item.Date
+                    };
+                    _emr_vitalService.Insert(vital);
+                }
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();

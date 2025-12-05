@@ -41,6 +41,7 @@ export class emr_prescription_mf {
     safeClinicalNote: SafeHtml;
     safePlanNote: SafeHtml;
     emr_prescription_complaint: Array<emr_prescription_complaint> = [];
+    emr_vital: Array<emr_vital> = [];
     emr_prescription_diagnos: Array<emr_prescription_diagnos> = [];
     emr_prescription_investigation: Array<emr_prescription_investigation> = [];
     emr_prescription_observation: Array<emr_prescription_observation> = [];
@@ -121,7 +122,17 @@ export class emr_medicine {
     Measure: string;
     InstructionId: number;
 }
-
+export class emr_vital {
+    ID: number;
+    Measure: string;
+    Measure2: string;
+    Date: Date;
+    VitalId: number;
+    VitalDropdownId: number;
+    PatientId: number;
+    Name: string;
+    Unit: string;
+}
 
 
 

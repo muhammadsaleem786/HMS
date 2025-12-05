@@ -751,6 +751,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                             z.Date,
                             z.Measure,
                             z.VitalId,
+                            z.VitalDropdownId,
+                            z.PatientId,
                             Name = z.sys_drop_down_value.Value,
                             Unit = z.sys_drop_down_value.Unit
                         })

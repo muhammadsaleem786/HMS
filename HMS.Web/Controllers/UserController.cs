@@ -147,6 +147,7 @@ namespace HMS.Web.API.Controllers
                                 Modules = Modules,
                                 Rights = Rights,
                                 RoleName = RoleName,
+                                DateFormat= DateFormat,
                             };
                             objResponse.IsSuccess = true;
                         }

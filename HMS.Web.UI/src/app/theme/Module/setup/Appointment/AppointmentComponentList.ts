@@ -2190,12 +2190,13 @@ export class AppointmentComponentList implements OnInit {
             this.CurntPrevDateList = result.CurntPrevDateList;
 
             // Load vitals
-            this.emr_vital_dynamicArray = result.vitallist.map(x => {
-                return {
-                    ...x,
-                    Date: todayDate
-                };
-            });
+            this.emr_vital_dynamicArray =[];
+            //    result.vitallist.map(x => {
+            //    return {
+            //        ...x,
+            //        Date: todayDate
+            //    };
+            //});
             //this.emr_vital_dynamicArray = [...result.vitallist];
 
             // Load dynamic arrays
@@ -2444,6 +2445,7 @@ export class AppointmentComponentList implements OnInit {
                         this.emr_prescription_diagnos_dynamicArray.push(item);
                     }
                 });
+                debugger
                 m.ResultSet.prescription_investigation.forEach((item, index) => {
                     var list = m.ResultSet.InvestigationsList.filter(a => a.id == item.InvestigationId);
                     if (list.length > 0 || item.InvestigationId == null) {
@@ -2964,7 +2966,7 @@ export class AppointmentComponentList implements OnInit {
             this.PrescriptionModel.emr_prescription_investigation = [];
             this.PrescriptionModel.emr_prescription_observation = [];
             this.PrescriptionModel.emr_vital = [];
-            this.PrescriptionModel.emr_vital = this.emr_vital_dynamicArray;
+            //this.PrescriptionModel.emr_vital = this.emr_vital_dynamicArray;
             this.PrescriptionModel.emr_prescription_complaint = this.emr_prescription_complaint_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_diagnos = this.emr_prescription_diagnos_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_investigation = this.emr_prescription_investigation_dynamicArray.filter(a => a.IsSelected == true);
@@ -3225,7 +3227,7 @@ export class AppointmentComponentList implements OnInit {
         this.PrescriptionModel.emr_prescription_investigation = [];
         this.PrescriptionModel.emr_prescription_observation = [];
         this.PrescriptionModel.emr_vital = [];
-        this.PrescriptionModel.emr_vital = this.emr_vital_dynamicArray;
+        //this.PrescriptionModel.emr_vital = this.emr_vital_dynamicArray;
         if (this.PrescriptionModel.FollowUpTime != undefined)
             this.PrescriptionModel.FollowUpTime = this.Convert12TO24(this.PrescriptionModel.FollowUpTime);
         this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;

@@ -79,7 +79,6 @@ export class LoginComponent implements OnInit {
                 if (result.IsSuccess) {
                     this.loader.HideLoader();
                     let userObj = result.ResultSet.User;
-                    debugger
                     this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
 
                     if (result.IsSuccess && (userObj.Email == "saleem4292@gmail.com")) {

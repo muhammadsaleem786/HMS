@@ -240,7 +240,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     .ToListAsync();
                 decimal incomeFor(int catId) =>
     incomeByCategory.FirstOrDefault(x => x.CategoryId == catId)?.TotalReceived ?? 0m;
-                var pharmacyIncome = _pur_sale_mfService.Queryable().Where(i => i.CompanyID == CompanyID && i.Date >= start && i.Date < end).Sum(a=>a.Total);
+                var pharmacyIncome = _pur_sale_mfService.Queryable().Where(i => i.CompanyID == CompanyID && i.Date >= start && i.Date < end).Sum(a => a.Total);
                 var ipdIncome = _ipd_paymentService.Queryable().Where(i => i.CompanyId == CompanyID && i.PaymentDate >= start && i.PaymentDate < end).Sum(a => (decimal?)a.Amount) ?? 0m;
                 var pathologyIncome = incomeFor(65);
                 var generalIncome = incomeByCategory.Sum(x => x.TotalReceived);
@@ -367,7 +367,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     })
     .ToList();
                 var todaysFollowUps = _emr_prescription_mfService.Queryable()
-      .Where(mf => mf.CompanyID == CompanyID && mf.FollowUpDate == DateTime.Today)
+      .Where(mf => mf.CompanyID == CompanyID && DbFunctions.TruncateTime(mf.FollowUpDate) == DbFunctions.TruncateTime(DateTime.Today))
       .Select(mf => new
       {
           mf.FollowUpTime,
@@ -476,7 +476,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     OutStandingIncome = outStandingIncome, // from IncomeCTE aggregation (date-range)
                     DueIncome = dueIncomeAllTime,
                     Income = 0m, // per SP
-                    PharmacyIncome =Convert.ToDecimal(pharmacyIncome),
+                    PharmacyIncome = Convert.ToDecimal(pharmacyIncome),
                     IPDIncome = ipdIncome,
                     PathologyIncome = pathologyIncome,
                     GeneralIncome = generalIncome,

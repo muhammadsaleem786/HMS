@@ -49,20 +49,54 @@ export class HttpService {
         window.location.href = url;
     }
     public CreateAuthorizationHeader(): Headers {
-        if (localStorage.getItem("currentUser") !== null && localStorage.getItem("company") !== null) {
-            let UserObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem("currentUser")));
-            let CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem("company")));
-            let headers = new Headers({ 'Content-Type': 'application/json;charset=utf-8' });
-            if (localStorage.getItem("Token") !== null)
-                headers.set("Authorization", "Bearer " + this.encrypt.decryptionAES(localStorage.getItem("Token")));
-            if (CompanyObj.CompanyID !== null)
-                headers.set("CompanyID", CompanyObj.CompanyID);
-            if (UserObj.ID !== null)
-                headers.set("UserID", UserObj.ID);
-            if (UserObj !== null)
-                headers.set("User", UserObj);
-            return headers;
+        const headers = new Headers({
+            'Content-Type': 'application/json;charset=utf-8'
+        });
+        try {
+            const encUser = localStorage.getItem("currentUser");
+            if (encUser) {
+                const userStr = this.encrypt.decryptionAES(encUser);
+                if (userStr) {
+                    const user = JSON.parse(userStr);
+                    if (user.ID) {
+                        headers.append("UserID", user.ID.toString());
+                        headers.append("User", JSON.stringify(user)); // must be string
+                    }
+                }
+            }
+            const encCompany = localStorage.getItem("company");
+            if (encCompany) {
+                const compStr = this.encrypt.decryptionAES(encCompany);
+                if (compStr) {
+                    const company = JSON.parse(compStr);
+                    if (company.CompanyID) {
+                        headers.append("CompanyID", company.CompanyID.toString());
+                    }
+                }
+            }
+            const token = this.encrypt.decryptionAES(localStorage.getItem("Token"));
+            if (token) {
+                headers.append("Authorization", `Bearer ${token}`);
+            }
+
+        } catch (err) {
+            console.error("Header creation failed:", err);
         }
+        //if (localStorage.getItem("currentUser") !== null && localStorage.getItem("company") !== null) {
+        //    let UserObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem("currentUser")));
+        //    let CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem("company")));
+        //    let headers = new Headers({ 'Content-Type': 'application/json;charset=utf-8' });
+        //    if (localStorage.getItem("Token") !== null)
+        //        headers.set("Authorization", "Bearer " + this.encrypt.decryptionAES(localStorage.getItem("Token")));
+        //    if (CompanyObj.CompanyID !== null)
+        //        headers.set("CompanyID", CompanyObj.CompanyID);
+        //    if (UserObj.ID !== null)
+        //        headers.set("UserID", UserObj.ID);
+        //    if (UserObj !== null)
+        //        headers.set("User", UserObj);
+        //    return headers;
+        //}
+        return headers;
     }
     private handleError(error: any): Promise<any> {
         if (error.status === 401) {

@@ -560,7 +560,7 @@
                                                                                                                 <tbody>
                                                                                                                     <tr *ngFor="let dynamic of emr_prescription_treatment_dynamicArray; let i = index;">
                                                                                                                         <td>
-                                                                                                                            <input type="text" class="form-control form-control-sm" id="txtMedicine_{{i}}" name="Medicine" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.MedicineName" (click)="LoadMedicine(i)" autocomplete="off">
+                                                                                                                            <input type="text" class="form-control form-control-sm" id="txtMedicine_{{i}}" name="Medicine" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.MedicineName" (focus)="LoadMedicine(i)" autocomplete="off">
                                                                                                                         </td>
                                                                                                                         <td class="smallbox">
                                                                                                                             <div class="custom-control custom-checkbox" style="min-width: 95px;" placement="top" ngbTooltip="If you check this, You can save Medicine for , Future used. ">

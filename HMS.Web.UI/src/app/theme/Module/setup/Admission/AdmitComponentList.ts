@@ -53,7 +53,7 @@ export class AdmitComponentList {
     public InvoiceBillModel: any[] = [];
     public SubTotal: number = 0;
     public Total: number = 0;
-    public TotalDiscount: number = 0;
+    public TotalDiscount: number = 0; public CompanyObj: any;
     public valueForUser: any;
     @ViewChild("AllotNo") AllotNo: TemplateRef<any>;
     @ViewChild("InvoiceModal") InvModal: TemplateRef<any>;
@@ -75,7 +75,7 @@ export class AdmitComponentList {
                     this.InvoiceCompanyInfo.BillDate = m.ResultSet.result[0].BillDate;
                     this.InvoiceCompanyInfo.invoiceNo = m.ResultSet.result[0].ID;
                     if (m.ResultSet.result[0].CompanyLogo != null)
-                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result[0].CompanyLogo;
+                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
 
                     this.SubTotal = 0;
                     this.Total = 0;
@@ -100,7 +100,7 @@ export class AdmitComponentList {
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("11");
         this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
-
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.TypeList.push({ "id": 1, "Name": "Ward" }, { "id": 2, "Name": "Room" });
@@ -199,7 +199,7 @@ export class AdmitComponentList {
                 if (this.PatientAdmitList != null) {
                     this.PatientAdmitList.forEach(x => {
                         if (x.Image != null && x.Image != undefined && x.Image != "") {
-                            x.Image = GlobalVariable.BASE_Temp_File_URL + '' + x.Image;
+                            x.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
                         } else
                             x.Image = null;
                     });
@@ -423,7 +423,7 @@ export class AdmitComponentList {
                     //this.model.BP = m.ResultSet.Masterdata[0].Value;
                     //this.model.RespiratoryRate = m.ResultSet.Masterdata[0].RespiratoryRate;
                     if (m.ResultSet.Masterdata[0].CompanyLogo != null)
-                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.Masterdata[0].CompanyLogo;
+                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.Masterdata[0].CompanyLogo;
                 }
                 this.modalService.open(ReportModal, { size: 'lg' });
                 this.loader.HideLoader();

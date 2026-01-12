@@ -260,7 +260,7 @@ export class AdmitSummeryComponentList implements OnInit {
             this.DocumentList = m.ResultSet.DocumentList;
             this.DocumentList.forEach(x => {
                 if (x.DocumentUpload != null && x.DocumentUpload != undefined && x.DocumentUpload != "")
-                    x.DocumentImage = GlobalVariable.BASE_Temp_File_URL + '' + x.DocumentUpload;
+                    x.DocumentImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.DocumentUpload;
             });
             if (this.model.Gender == 1)
                 this.GenderName = 'Male';
@@ -281,7 +281,7 @@ export class AdmitSummeryComponentList implements OnInit {
         if (this.IsEdit && !this.IsNewImage) {
             this.PatientImage = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     initChart() {

@@ -41,6 +41,8 @@ namespace HMS.Entities.Models
         public string TemplateName { get; set; }
         [NotMapped]
         public Nullable<int> AppointmentId { get; set; }
+        [NotMapped]
+        public ICollection<emr_vital> emr_vital {  get; set; }
         public Nullable<int> Day { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public decimal ModifiedBy { get; set; }

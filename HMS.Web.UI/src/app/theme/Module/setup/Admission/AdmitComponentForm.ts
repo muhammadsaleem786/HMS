@@ -56,7 +56,7 @@ export class AdmitComponentForm implements OnInit {
     public IsNewImage: boolean = true;
     public CompanyInfo: any[] = []; public patientInfo: any;
     public Rights: any;
-    public ControlRights: any;
+    public ControlRights: any; public CompanyObj: any;
     @ViewChild("content") PatientContent: TemplateRef<any>;
     openNewPatient(content) {
         this.loader.ShowLoader();
@@ -77,6 +77,7 @@ export class AdmitComponentForm implements OnInit {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("11");
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.loadDropdown();
@@ -397,7 +398,7 @@ export class AdmitComponentForm implements OnInit {
         if (this.IsEdit && !this.IsNewImage) {
             this.PatientImage = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     Delete() {

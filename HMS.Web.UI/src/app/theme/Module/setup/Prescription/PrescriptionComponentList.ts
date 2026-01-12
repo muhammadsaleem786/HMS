@@ -40,7 +40,7 @@ export class PrescriptionComponentList {
     public PatientVitalList: any[] = [];
     previousPage: number = 1;
     nextPage: number = 1;
-    totalPages: number = 0;
+    totalPages: number = 0; public CompanyObj: any;
     pagesRange: number[] = []; public UsersObj: any;
     public DoctorInfo = new DoctorInfo();
     public PatientRXmodel = new patientInfo();
@@ -51,6 +51,7 @@ export class PrescriptionComponentList {
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("21");
         this.UsersObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
 
@@ -193,7 +194,7 @@ export class PrescriptionComponentList {
                 else
                     this.PatientRXmodel.Weight = Weight[0].Measure;
                 if (m.ResultSet.result.ClinicIogo != null)
-                    this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result.ClinicIogo;
+                    this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result.ClinicIogo;
                 this.PatientRXmodel.Age = m.ResultSet.result.Age;
                 this.PatientRXmodel.AppointmentDate = this._CommonService.GetFormatDate(m.ResultSet.result.AppointmentDate);
                 this.PatientVitalList = m.ResultSet.vitallist;

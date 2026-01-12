@@ -20,7 +20,7 @@
 
                             <div class="input-group mb-4">
 
-                                <input class="form-control md-input" type="text" placeholder="Name" maxlength="100" formControlName="Name" [(ngModel)]="model.Name">
+                                <input class="form-control md-input" type="text" placeholder="Name" maxlength="500" formControlName="Name" [(ngModel)]="model.Name">
                                 <small *ngIf="Form2.controls.Name.hasError('required') && submitted">
                                     This value is required.
                                 </small>

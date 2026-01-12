@@ -139,6 +139,7 @@ export class AccountService {
                     localStorage.setItem('IsLogin', "true");
                     localStorage.setItem('currentUser', this.encrypt.encryptionAES(user));
                     localStorage.setItem('company', this.encrypt.encryptionAES(company));            
+                    localStorage.setItem('DateFormat', this.encrypt.encryptionAES(result.ResultSet.DateFormat));            
                     localStorage.setItem('Token', this.encrypt.encryptionAES(result.ResultSet.Token));
                     localStorage.setItem('PayrollRegion', this.encrypt.encryptionAES(result.ResultSet.PayrollRegion.toString()));
                     localStorage.setItem('Currency', this.encrypt.encryptionAES(result.ResultSet.Currency.toString()));
@@ -165,5 +166,6 @@ export class AccountService {
         localStorage.removeItem('Rights');
         localStorage.removeItem('ControlLevelRights');
         localStorage.removeItem('company');        
+        localStorage.removeItem('DateFormat');        
     }
 }

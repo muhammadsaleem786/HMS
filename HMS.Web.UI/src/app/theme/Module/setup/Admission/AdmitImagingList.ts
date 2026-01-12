@@ -115,9 +115,9 @@ export class AdmitImagingList implements OnInit {
     getDocImageUrlName(FName) {
         this.model.Image = FName;
         if (this.IsEdit && !this.IsNewImage) {
-            this.ImagingImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.ImagingImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         } else {
-            this.ImagingImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.ImagingImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     GetImagingList() {
@@ -133,7 +133,7 @@ export class AdmitImagingList implements OnInit {
             this.ImagingList = m.DataList;
             this.ImagingList.forEach(x => {
                 if (x.Image != null && x.Image != undefined)
-                    x.ImagingImage = GlobalVariable.BASE_Temp_File_URL + '' + x.Image;
+                    x.ImagingImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
             });
             this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
             this.loader.HideLoader();

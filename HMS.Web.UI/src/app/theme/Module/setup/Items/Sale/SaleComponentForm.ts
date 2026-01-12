@@ -87,7 +87,7 @@ export class SaleComponentForm {
     public Payment: number = 0;
     public Change: number = 0;
     public PayableAmount: number = 0;
-    public ReceivedAmount: number = 0;
+    public ReceivedAmount: number = 0; public CompanyObj: any;
     @ViewChild("content") PatientContent: TemplateRef<any>;
     @ViewChild("InvoicePopup") InvoicePopup: TemplateRef<any>;
     @ViewChild("MedicinePopup") MedicinePopup: TemplateRef<any>;
@@ -104,6 +104,7 @@ export class SaleComponentForm {
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("63");
         this.PayrollRegion = this._CommonService.getPayrollRegion();
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.LoadDropDown();
@@ -284,6 +285,7 @@ export class SaleComponentForm {
             minLength: 3,
             select: (event, ui) => {
                 if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
+                    
                     this.toastr.Error("Error", "The item is out of stock.");
                     ui.item.value = null;
                     return;
@@ -306,7 +308,9 @@ export class SaleComponentForm {
                     var appendQty = this.Sale_itemdynamicArray.filter(a => a.ItemID == obj.ItemID).reduce((sum, a) => sum + parseInt(a.Quantity, 10), 0);
                     appendQty = appendQty + obj.Quantity;
                     if (ui.item.stock < appendQty && ui.item.TrackInventory == true) {
+                        
                         this.toastr.Error("Error", "The item is out of stock.");
+                        this.CalculateSubTotal();
                         return;
                     } else {
                         this.Sale_itemdynamicArray.push(obj);
@@ -338,7 +342,9 @@ export class SaleComponentForm {
             var appendQty = this.Sale_itemdynamicArray.filter(a => a.ItemID == itemid && a.BatchSarialNumber == BatchNumber).reduce((sum, a) => sum + parseInt(a.Quantity, 10), 0);
             appendQty = appendQty + obj.Quantity;
             if (itemfind[0].Stock < appendQty) {
+                
                 this.toastr.Error("Error", "The item is out of stock.");
+                this.CalculateSubTotal();
                 return;
             } else {
                 this.Sale_itemdynamicArray.push(obj);
@@ -382,6 +388,7 @@ export class SaleComponentForm {
     MedicineAdd() {
         this.medicine_itemArray.forEach((item, index) => {
             if (item.stock < 0 && item.IsAllowNegativeStock == false) {
+                
                 this.toastr.Error("Error", "The item is out of stock.");
                 item.value = null;
                 this.modalService.dismissAll();
@@ -408,7 +415,9 @@ export class SaleComponentForm {
                 appendQty = appendQty + obj.Quantity;
                 if (item.stock < appendQty && item.TrackInventory == true) {
                     this.modalService.dismissAll();
+                    
                     this.toastr.Error("Error", "The item is out of stock.");
+                    this.CalculateSubTotal();
                     return;
                 } else {
                     this.modalService.dismissAll();
@@ -425,8 +434,10 @@ export class SaleComponentForm {
         var appendQty = this.Sale_itemdynamicArray.filter(a => a.ItemID == itemid).reduce((sum, a) => sum + parseInt(a.Quantity, 10), 0);
         if (findobj.Stock < appendQty) {
             this.Sale_itemdynamicArray[rowno].Quantity = this.Sale_itemdynamicArray[rowno].Quantity - Quantity;
-            findobj.TotalAmount = findobj.Rate * parseInt(Quantity, 10);
+            findobj.TotalAmount = findobj.Rate * parseInt(this.Sale_itemdynamicArray[rowno].Quantity, 10);
+            
             this.toastr.Error("Error", "The item is out of stock.");
+            this.CalculateSubTotal();
             return;
         } else {
             if (Quantity != null)
@@ -800,7 +811,7 @@ export class SaleComponentForm {
         if (this.IsEdit && !this.IsNewImage) {
             this.FileName = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.FileName = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.FileName = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     Delete() {
@@ -898,7 +909,7 @@ export class SaleComponentForm {
         this.model.pur_sale_dt = this.Sale_itemdynamicArray;
         this.PrintSale_itemdynamicArray = this.Sale_itemdynamicArray;
         if (this.CompanyInfo.CompanyLogo != null)
-            this.CompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + this.CompanyInfo.CompanyLogo;
+            this.CompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.CompanyInfo.CompanyLogo;
         if (this.model.pur_sale_dt.length == 0) {
             this.toastr.Error("Error", "Please select at least one item.");
             this.loader.HideLoader();

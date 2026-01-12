@@ -33,7 +33,7 @@ export const ValidationVariables = {
     PhoneNo: "^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$",
     NumberPattern: "^[0-9+ ]+$",
     CNICPattern:"^[0-9+]{5}-[0-9+]{7}-[0-9]{1}$",
-    AlphabetPattern: "^[\u0600-\u065F\u066A-\u06EF\u06FA-\u06FFa-zA-Z ]{2,20}$",
+    AlphabetPattern: "^[\u0600-\u06FFa-zA-Z0-9\- ]{2,1000}$",
     AlphaNumeric: "^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*[A-Za-z0-9- \s!@#$%^&*()_+=-`~\\\]\[{}|';:/.,?><]*$",
     //website url like www.google.com (OR) https://www.google.com
     UrlPattern: /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm,

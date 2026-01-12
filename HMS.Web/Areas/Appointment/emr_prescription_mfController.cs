@@ -13,6 +13,7 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NPOI.Util;
+using Org.BouncyCastle.Crypto;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
@@ -312,7 +313,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     appObj.CompanyId = Request.CompanyID();
                     appObj.PatientId = Model.PatientId;
                     appObj.DoctorId = Model.DoctorId;
-                    appObj.AppointmentDate =Convert.ToDateTime(Model.FollowUpDate);
+                    appObj.AppointmentDate = Convert.ToDateTime(Model.FollowUpDate);
                     appObj.AppointmentTime = (TimeSpan)Model.FollowUpTime;
                     appObj.Notes = Model.Notes;
                     appObj.CreatedBy = Request.LoginID();
@@ -332,16 +333,56 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     appinfo.ObjectState = ObjectState.Modified;
                     _emr_appointment_mfService.Update(appinfo);
                 }
-
+                decimal vitalID = 1;
+                if (_emr_vitalService.Queryable().Count() > 0)
+                    vitalID = _emr_vitalService.Queryable().Max(e => e.ID) + 1;
+                foreach (var item in Model.emr_vital)
+                {
+                    var vital = new emr_vital
+                    {
+                        ID = vitalID++,
+                        Measure = item.Measure,
+                        VitalDropdownId = (int)sys_dropdown_mfEnum.VitalDropdownId,
+                        VitalId = item.VitalId,
+                        Name = item.Name,
+                        CompanyID = Request.CompanyID(),
+                        PatientId = Model.PatientId,
+                        CreatedBy = Request.LoginID(),
+                        CreatedDate = Request.DateTimes(),
+                        ModifiedBy = Request.LoginID(),
+                        ModifiedDate = Request.DateTimes(),
+                        Date = item.Date
+                    };
+                    _emr_vitalService.Insert(vital);
+                }
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Save;
                     objResponse.IsSuccess = true;
 
-                    var ids = Model?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
-                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-                    var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                    var ids =
+(
+Model?.emr_prescription_treatment
+?? Enumerable.Empty<emr_prescription_treatment>()
+)
+.Select(a => new
+{
+    Id = a.MedicineId,
+    IsInventory = a.IsInventory
+})
+.ToList();
+                    var inventoryIds = ids
+                        .Where(x => x.IsInventory)
+                        .Select(x => x.Id)
+                        .ToList();
+
+                    var medicineIds = ids
+                        .Where(x => !x.IsInventory)
+                        .Select(x => x.Id)
+                        .ToList();
+                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
+                    var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
                     var MedicineList = itemList.Union(medicineList).ToList();
                     var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
                         .Select(z => new
@@ -791,9 +832,28 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         Name = a.sys_drop_down_value.Value
                     }).ToList();
 
-                    var ids = Model?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
-                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-                    var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+var ids =
+                    (
+                    Model?.emr_prescription_treatment
+                    ?? Enumerable.Empty<emr_prescription_treatment>()
+                    )
+                    .Select(a => new
+                    {
+                        Id = a.MedicineId,
+                        IsInventory = a.IsInventory
+                    })
+                    .ToList();
+                    var inventoryIds = ids
+                        .Where(x => x.IsInventory)
+                        .Select(x => x.Id)
+                    .ToList();
+
+                    var medicineIds = ids
+                        .Where(x => !x.IsInventory)
+                        .Select(x => x.Id)
+                        .ToList();
+                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
+                    var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
                     var MedicineList = itemList.Union(medicineList).ToList();
 
                     objResponse.ResultSet = new
@@ -912,10 +972,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     a.PatientId,
                     AppointmentDate = a.AppointmentDate.Value.ToString("yyyy-MM-dd")
                 }).ToList();
-                var complaintList = await GetTopComplaintsAsync(companyId, doctorId, patientId);
-                var observationList = await GetTopObservationsAsync(companyId, doctorId, patientId);
-                var investigationList = await GetTopInvestigationsAsync(companyId, doctorId, patientId);
-                var diagnosisList = await GetTopDiagnosisAsync(companyId, doctorId, patientId);
+                var complaintList = await GetTopComplaintsAsync(companyId, doctorId, patientId, result?.emr_prescription_complaint ?? new List<emr_prescription_complaint>());
+                var observationList = await GetTopObservationsAsync(companyId, doctorId, patientId, result?.emr_prescription_observation ?? new List<emr_prescription_observation>());
+                var investigationList = await GetTopInvestigationsAsync(companyId, doctorId, patientId, result?.emr_prescription_investigation ?? new List<emr_prescription_investigation>());
+                var diagnosisList = await GetTopDiagnosisAsync(companyId, doctorId, patientId, result?.emr_prescription_diagnos ?? new List<emr_prescription_diagnos>());
+
                 var dropDownIds = new[] { 14, 15, 16, 2, 17 };
                 var allDropDownValues = await _sys_drop_down_valueService.Queryable()
     .Where(x => dropDownIds.Contains(x.DropDownID)
@@ -999,10 +1060,17 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             return objResponse;
         }
         public async Task<List<object>> GetTopComplaintsAsync(
-    decimal companyId,
-    decimal doctorId,
-    decimal patientId)
+   decimal companyId,
+   decimal doctorId,
+   decimal patientId, ICollection<emr_prescription_complaint> emr_prescription_complaint)
         {
+            var prescriptionList = emr_prescription_complaint ?? new List<emr_prescription_complaint>();
+            var prescribedIds = prescriptionList
+        .Where(x => x.ComplaintId.HasValue)
+        .Select(x => x.ComplaintId.Value)
+        .Distinct()
+        .ToList();
+
             // Step 1: Get favorite complaint IDs
             var favorites = await _emr_notes_favoriteService.Queryable()
                 .Where(ft => ft.ReferenceType == "C"
@@ -1011,54 +1079,50 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 .Select(ft => new { ft.ID, ft.ReferenceId })
                 .ToListAsync();
             var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
-            // Step 2: Get up to 10 complaints (favorites first, then others)
+
+            var priorityIds = prescribedIds
+        .Union(favoriteIds)
+        .Distinct()
+        .ToList();
+            var favoriteLookup = favorites
+        .ToDictionary(f => f.ReferenceId, f => f.ID);
             var complaints = await _emr_complaintService.Queryable()
-        .Where(c => c.CompanyID == companyId)
-        .Select(c => new
+        .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
+        .Select(i => new
         {
-            c.ID,
-            c.Complaint,
-            Isfavorite = favoriteIds.Contains(c.ID) ? 1 : 0
+            i.ID,
+            i.Complaint
         })
-        .OrderByDescending(c => c.Isfavorite)
-        .ThenBy(c => c.ID)
+        .OrderBy(i => i.ID)
         .Take(10)
         .ToListAsync();
-
-            // Step 3: Extract complaint IDs
-            var complaintIds = complaints.Select(c => (decimal?)c.ID).ToList();
-
-            // Step 4: Get related prescription complaints in one go
-            var prescriptionComplaints = await _emr_prescription_complaintService.Queryable()
-        .Where(pc => pc.CompanyID == companyId
-                  && pc.PatientId == patientId
-                  && complaintIds.Contains(pc.ComplaintId))
-        .Select(pc => new { pc.ComplaintId, pc.Complaint })
-        .ToListAsync();
-
-            // Step 5: Merge in-memory
-            var complaintList = complaints
-        .Select(c =>
+            var result = complaints
+        .Select(i => new
         {
-            var fav = favorites.FirstOrDefault(f => f.ReferenceId == c.ID);
-            var pc = prescriptionComplaints.FirstOrDefault(x => x.ComplaintId == c.ID);
-            return new
-            {
-                id = c.ID,
-                Complaint = pc?.Complaint ?? c.Complaint,
-                Isfavorite = c.Isfavorite,
-                favoriteId = fav?.ID
-            };
+            id = i.ID,
+            Complaint = i.Complaint,
+            Isfavorite = favoriteLookup.ContainsKey(i.ID) ? 1 : 0,
+            favoriteId = favoriteLookup.TryGetValue(i.ID, out var favId)
+                ? (decimal?)favId
+                : null
         })
-        .ToList<object>();
-
-            return complaintList;
+        .OrderByDescending(x => x.Isfavorite)
+        .Cast<object>()
+        .ToList();
+            return result;
         }
         public async Task<List<object>> GetTopObservationsAsync(
    decimal companyId,
    decimal doctorId,
-   decimal patientId)
+   decimal patientId, ICollection<emr_prescription_observation> emr_prescription_observation)
         {
+
+            var prescriptionList = emr_prescription_observation ?? new List<emr_prescription_observation>();
+            var prescribedIds = prescriptionList
+        .Where(x => x.ObservationId.HasValue)
+        .Select(x => x.ObservationId.Value)
+        .Distinct()
+        .ToList();
             // Step 1: Get favorite complaint IDs
             var favorites = await _emr_notes_favoriteService.Queryable()
                 .Where(ft => ft.ReferenceType == "O"
@@ -1067,54 +1131,52 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 .Select(ft => new { ft.ID, ft.ReferenceId })
                 .ToListAsync();
             var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
-            // Step 2: Get up to 10 complaints (favorites first, then others)
+
+
+            var priorityIds = prescribedIds
+        .Union(favoriteIds)
+        .Distinct()
+        .ToList();
+            var favoriteLookup = favorites
+        .ToDictionary(f => f.ReferenceId, f => f.ID);
             var observations = await _emr_observationService.Queryable()
-        .Where(c => c.CompanyID == companyId)
-        .Select(c => new
+        .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
+        .Select(i => new
         {
-            c.ID,
-            c.Observation,
-            Isfavorite = favoriteIds.Contains(c.ID) ? 1 : 0
+            i.ID,
+            i.Observation
         })
-        .OrderByDescending(c => c.Isfavorite)
-        .ThenBy(c => c.ID)
+        .OrderBy(i => i.ID)
         .Take(10)
         .ToListAsync();
-
-            // Step 3: Extract complaint IDs
-            var observationIds = observations.Select(c => (decimal?)c.ID).ToList();
-
-            // Step 4: Get related prescription complaints in one go
-            var prescriptionComplaints = await _emr_prescription_observationService.Queryable()
-        .Where(pc => pc.CompanyID == companyId
-                  && pc.PatientId == patientId
-                  && observationIds.Contains(pc.ObservationId))
-        .Select(pc => new { pc.ObservationId, pc.Observation })
-        .ToListAsync();
-
-            // Step 5: Merge in-memory
-            var observationList = observations
-        .Select(c =>
+            var result = observations
+        .Select(i => new
         {
-            var fav = favorites.FirstOrDefault(f => f.ReferenceId == c.ID);
-            var pc = prescriptionComplaints.FirstOrDefault(x => x.ObservationId == c.ID);
-            return new
-            {
-                id = c.ID,
-                Observation = pc?.Observation ?? c.Observation,
-                Isfavorite = c.Isfavorite,
-                favoriteId = fav?.ID
-            };
+            id = i.ID,
+            Observation = i.Observation,
+            Isfavorite = favoriteLookup.ContainsKey(i.ID) ? 1 : 0,
+            favoriteId = favoriteLookup.TryGetValue(i.ID, out var favId)
+                ? (decimal?)favId
+                : null
         })
-        .ToList<object>();
+        .OrderByDescending(x => x.Isfavorite)
+        .Cast<object>()
+        .ToList();
 
-            return observationList;
+            return result;
         }
         public async Task<List<object>> GetTopInvestigationsAsync(
-   decimal companyId,
-   decimal doctorId,
-   decimal patientId)
+decimal companyId,
+decimal doctorId,
+decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_Investigation)
         {
+            var prescriptionList = emr_Prescription_Investigation ?? new List<emr_prescription_investigation>();
+            var prescribedIds = prescriptionList
+        .Where(x => x.InvestigationId.HasValue)
+        .Select(x => x.InvestigationId.Value)
+        .Distinct()
+        .ToList();
+
             // Step 1: Get favorite complaint IDs
             var favorites = await _emr_notes_favoriteService.Queryable()
                 .Where(ft => ft.ReferenceType == "I"
@@ -1123,54 +1185,50 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 .Select(ft => new { ft.ID, ft.ReferenceId })
                 .ToListAsync();
             var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
-            // Step 2: Get up to 10 complaints (favorites first, then others)
+
+            var priorityIds = prescribedIds
+        .Union(favoriteIds)
+        .Distinct()
+        .ToList();
+            var favoriteLookup = favorites
+        .ToDictionary(f => f.ReferenceId, f => f.ID);
             var investigations = await _emr_investigationService.Queryable()
-        .Where(c => c.CompanyID == companyId)
-        .Select(c => new
+        .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
+        .Select(i => new
         {
-            c.ID,
-            c.Investigation,
-            Isfavorite = favoriteIds.Contains(c.ID) ? 1 : 0
+            i.ID,
+            i.Investigation
         })
-        .OrderByDescending(c => c.Isfavorite)
-        .ThenBy(c => c.ID)
+        .OrderBy(i => i.ID)
         .Take(10)
         .ToListAsync();
-
-            // Step 3: Extract complaint IDs
-            var investigationIds = investigations.Select(c => (decimal?)c.ID).ToList();
-
-            // Step 4: Get related prescription complaints in one go
-            var prescriptionComplaints = await _emr_prescription_investigationService.Queryable()
-        .Where(pc => pc.CompanyID == companyId
-                  && pc.PatientId == patientId
-                  && investigationIds.Contains(pc.InvestigationId))
-        .Select(pc => new { pc.InvestigationId, pc.Investigation })
-        .ToListAsync();
-
-            // Step 5: Merge in-memory
-            var investigationList = investigations
-        .Select(c =>
+            var result = investigations
+        .Select(i => new
         {
-            var fav = favorites.FirstOrDefault(f => f.ReferenceId == c.ID);
-            var pc = prescriptionComplaints.FirstOrDefault(x => x.InvestigationId == c.ID);
-            return new
-            {
-                id = c.ID,
-                Investigation = pc?.Investigation ?? c.Investigation,
-                Isfavorite = c.Isfavorite,
-                favoriteId = fav?.ID
-            };
+            id = i.ID,
+            Investigation = i.Investigation,
+            Isfavorite = favoriteLookup.ContainsKey(i.ID) ? 1 : 0,
+            favoriteId = favoriteLookup.TryGetValue(i.ID, out var favId)
+                ? (decimal?)favId
+                : null
         })
-        .ToList<object>();
+        .OrderByDescending(x => x.Isfavorite)
+        .Cast<object>()
+        .ToList();
 
-            return investigationList;
+            return result;
         }
         public async Task<List<object>> GetTopDiagnosisAsync(
    decimal companyId,
    decimal doctorId,
-   decimal patientId)
+   decimal patientId, ICollection<emr_prescription_diagnos> emr_prescription_diagnos)
         {
+            var prescriptionList = emr_prescription_diagnos ?? new List<emr_prescription_diagnos>();
+            var prescribedIds = prescriptionList
+        .Where(x => x.DiagnosId.HasValue)
+        .Select(x => x.DiagnosId.Value)
+        .Distinct()
+        .ToList();
             // Step 1: Get favorite complaint IDs
             var favorites = await _emr_notes_favoriteService.Queryable()
                 .Where(ft => ft.ReferenceType == "D"
@@ -1179,48 +1237,37 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 .Select(ft => new { ft.ID, ft.ReferenceId })
                 .ToListAsync();
             var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
-            // Step 2: Get up to 10 complaints (favorites first, then others)
+
+            var priorityIds = prescribedIds
+       .Union(favoriteIds)
+       .Distinct()
+       .ToList();
+            var favoriteLookup = favorites
+        .ToDictionary(f => f.ReferenceId, f => f.ID);
             var diagnosis = await _emr_diagnosService.Queryable()
-        .Where(c => c.CompanyID == companyId)
-        .Select(c => new
+        .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
+        .Select(i => new
         {
-            c.ID,
-            c.Diagnos,
-            Isfavorite = favoriteIds.Contains(c.ID) ? 1 : 0
+            i.ID,
+            i.Diagnos
         })
-        .OrderByDescending(c => c.Isfavorite)
-        .ThenBy(c => c.ID)
+        .OrderBy(i => i.ID)
         .Take(10)
         .ToListAsync();
-
-            // Step 3: Extract complaint IDs
-            var diagnosisIds = diagnosis.Select(c => (decimal?)c.ID).ToList();
-
-            // Step 4: Get related prescription complaints in one go
-            var prescriptionComplaints = await _emr_prescription_diagnosService.Queryable()
-        .Where(pc => pc.CompanyID == companyId
-                  && pc.PatientId == patientId
-                  && diagnosisIds.Contains(pc.DiagnosId))
-        .Select(pc => new { pc.DiagnosId, pc.Diagnos })
-        .ToListAsync();
-
-            // Step 5: Merge in-memory
-            var diagnosisList = diagnosis
-        .Select(c =>
+            var result = diagnosis
+        .Select(i => new
         {
-            var fav = favorites.FirstOrDefault(f => f.ReferenceId == c.ID);
-            var pc = prescriptionComplaints.FirstOrDefault(x => x.DiagnosId == c.ID);
-            return new
-            {
-                id = c.ID,
-                Diagnos = pc?.Diagnos ?? c.Diagnos,
-                Isfavorite = c.Isfavorite,
-                favoriteId = fav?.ID
-            };
+            id = i.ID,
+            Diagnos = i.Diagnos,
+            Isfavorite = favoriteLookup.ContainsKey(i.ID) ? 1 : 0,
+            favoriteId = favoriteLookup.TryGetValue(i.ID, out var favId)
+                ? (decimal?)favId
+                : null
         })
-        .ToList<object>();
-
-            return diagnosisList;
+        .OrderByDescending(x => x.Isfavorite)
+        .Cast<object>()
+        .ToList();
+            return result;
         }
         [HttpGet]
         [ActionName("TemplateLoadById")]
@@ -1231,9 +1278,28 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 var CompanyID = Request.CompanyID();
                 var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == CompanyID).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).Include(a => a.emr_prescription_treatment_template).Include(a => a.emr_patient_mf).FirstOrDefault();
-                var ids = result?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
-                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                var ids =
+(
+result?.emr_prescription_treatment
+?? Enumerable.Empty<emr_prescription_treatment>()
+)
+.Select(a => new
+{
+Id = a.MedicineId,
+IsInventory = a.IsInventory
+})
+.ToList();
+                var inventoryIds = ids
+                    .Where(x => x.IsInventory)
+                    .Select(x => x.Id)
+                    .ToList();
+
+                var medicineIds = ids
+                    .Where(x => !x.IsInventory)
+                    .Select(x => x.Id)
+                    .ToList();
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
                 var MedicineList = itemList.Union(medicineList).ToList();
                 objResponse.ResultSet = new
                 {
@@ -1343,9 +1409,28 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     Unit = a.sys_drop_down_value.Unit,
                     Name = a.sys_drop_down_value.Value
                 }).ToList();
-                var ids = result?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
-                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, TypeId = a.TypeId, Type = a.sys_drop_down_value1.Value });
-                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, TypeId = a.CategoryID, Type = a.sys_drop_down_value1.Value });
+                var ids =
+(
+result?.emr_prescription_treatment
+?? Enumerable.Empty<emr_prescription_treatment>()
+)
+.Select(a => new
+{
+Id = a.MedicineId,
+IsInventory = a.IsInventory
+})
+.ToList();
+                var inventoryIds = ids
+                    .Where(x => x.IsInventory)
+                    .Select(x => x.Id)
+                    .ToList();
+
+                var medicineIds = ids
+                    .Where(x => !x.IsInventory)
+                    .Select(x => x.Id)
+                    .ToList();
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, TypeId = a.TypeId, Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, TypeId = a.CategoryID, Type = a.sys_drop_down_value1.Value });
                 var MedicineList = itemList.Union(medicineList).ToList();
                 objResponse.ResultSet = new
                 {

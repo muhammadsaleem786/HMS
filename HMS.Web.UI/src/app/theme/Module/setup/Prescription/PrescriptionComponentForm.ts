@@ -40,7 +40,7 @@ export class PrescriptionComponentForm implements OnInit {
     @Input() id: number;
     public IsReadOnly = false;
     public ScreenLists = [];
-    public Modules = [];
+    public Modules = []; public CompanyObj: any;
     public filterdData = []; public FavoriteModel = new emr_notes_favorite();
     public MedicineModel = new emr_medicine();
     public vitalModel = new emr_vital();
@@ -186,6 +186,7 @@ export class PrescriptionComponentForm implements OnInit {
         this.ControlRights = this._CommonService.ScreenRights("21");
         this.AppControlRights = this._CommonService.ScreenRights("13");
         this.RoleName = this.encrypt.decryptionAES(localStorage.getItem('RoleName'));
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.DurationList = [
@@ -2039,7 +2040,7 @@ export class PrescriptionComponentForm implements OnInit {
                     this.PatientRXmodel.Gender = result.ResultSet.patientInfo.Gender;
                     this.PatientRXmodel.Mobile = result.ResultSet.patientInfo.Mobile;
                     if (this.PatientRXmodel.ClinicIogo != null)
-                        this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + '' + result.ResultSet.patientInfo.ClinicIogo;
+                        this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + result.ResultSet.patientInfo.ClinicIogo;
                 }
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
                 if (result.ResultSet.Model.ClinicalNote) {

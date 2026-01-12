@@ -49,7 +49,7 @@ export class BillingComponentList {
     pagesRange: number[] = [];
     public Rights: any;
     public ControlRights: any;
-    public valueForUser: any;
+    public valueForUser: any; public CompanyObj: any;
     openInvoiceModal(InvoiceModal: any, id: any) {
         this.loader.ShowLoader();
         this._BillingService.GetBillByPatient(id).then(m => {
@@ -77,7 +77,7 @@ export class BillingComponentList {
                     this.InvoiceCompanyInfo.AdmissionDate = m.ResultSet.result[0].AdmissionDate;
                     this.InvoiceCompanyInfo.MRNo = m.ResultSet.result[0].MRNo;
                     if (m.ResultSet.result[0].CompanyLogo != null)
-                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result[0].CompanyLogo;
+                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
                     m.ResultSet.result.forEach((item, index) => {
                         this.SubTotal += parseInt(item.Price);
                         this.TotalDiscount += parseInt(item.Discount);
@@ -126,7 +126,7 @@ export class BillingComponentList {
                     this.InvoiceCompanyInfo.Room = m.ResultSet.masterdata[0].Room;
                     this.InvoiceCompanyInfo.Ward = m.ResultSet.masterdata[0].Ward;
                     if (m.ResultSet.masterdata[0].CompanyLogo != null)
-                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.masterdata[0].CompanyLogo;
+                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.masterdata[0].CompanyLogo;
                     //m.ResultSet.result.forEach((item, index) => {
                     //    this.SubTotal += parseInt(item.Price);
                     //    this.TotalDiscount += parseInt(item.Discount);
@@ -164,7 +164,7 @@ export class BillingComponentList {
                     this.InvoiceCompanyInfo.Amount = m.ResultSet.result[0].Amount;
                     this.InvoiceCompanyInfo.DoctorName = m.ResultSet.result[0].DoctorName;
                     if (m.ResultSet.result[0].CompanyLogo != null)
-                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result[0].CompanyLogo;
+                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
                 }
                 this.modalService.open(PaymentModal, { size: 'lg' });
                 this.loader.HideLoader();
@@ -198,7 +198,7 @@ export class BillingComponentList {
                     this.InvoiceCompanyInfo.AdmissionDate = m.ResultSet.result[0].AdmissionDate;
                     this.InvoiceCompanyInfo.MRNo = m.ResultSet.result[0].MRNo;
                     if (m.ResultSet.result[0].CompanyLogo != null)
-                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + '' + m.ResultSet.result[0].CompanyLogo;
+                        this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
                     this.PaymentRptData.forEach((item, index) => {
                         this.SubTotal += parseInt(item.Amount);
                     });
@@ -216,7 +216,8 @@ export class BillingComponentList {
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("12");
         this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
-    }
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
+}
     ngOnInit() {
         this.Form1 = this._fb.group({
             AppointmentId: [''],

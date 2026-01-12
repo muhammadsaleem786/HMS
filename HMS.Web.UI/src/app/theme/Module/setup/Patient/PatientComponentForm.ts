@@ -63,7 +63,7 @@ export class PatientComponentForm implements OnInit {
         let Users = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
 
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
-        this.IsCNICMandatory = this.CompanyObj.IsCNICMandatory;
+       this.IsCNICMandatory = this.CompanyObj.IsCNICMandatory;
         this.GenderIds = Users.IsGenderDropdown;
     }
     ngOnInit() {
@@ -228,13 +228,14 @@ export class PatientComponentForm implements OnInit {
         //    if (!this.IsNewImage)
         //        this.Image = this.model.CompanyLogo == FName ? this.model.CompanyLogo : "";
         //    else
-        //        this.Image = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+        //        this.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         //}
         //else {
         if (this.IsEdit && !this.IsNewImage) {
-            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
+                
         } else {
-            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.PatientImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
         //}
     }

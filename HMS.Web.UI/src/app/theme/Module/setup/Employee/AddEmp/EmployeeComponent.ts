@@ -139,7 +139,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     public IsAdmin: boolean = false;
     public Currency: string;
     public PayrollRegion: string;
-    public IsNewImage: boolean = true;
+    public IsNewImage: boolean = true; public CompanyObj: any;
     public IsNewFile: boolean = true;
     public IsEmpCompletelyLoaded: boolean = false;
     public IsDrpdownDataCompletelyLoaded: boolean = false;
@@ -210,6 +210,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this.commonservice.ScreenRights("50");
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
 
     ngOnInit() {
@@ -1967,7 +1968,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         if (this.IsEdit && !this.IsNewImage) {
             this.Image = GlobalVariable.BASE_File_URL + '' + FName;
         } else {
-            this.Image = GlobalVariable.BASE_Temp_File_URL + '' + FName
+            this.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName
         }
     }
     Close() {
@@ -2010,7 +2011,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         if (index != undefined) this.model.pr_employee_Dependent.splice(index, 1);
     }
     OpenDocument(path) {
-        if (path) window.open((this.IsEdit && !this.IsNewFile) ? (GlobalVariable.BASE_File_URL + '' + path) : (GlobalVariable.BASE_Temp_File_URL + '' + path));
+        if (path) window.open((this.IsEdit && !this.IsNewFile) ? (GlobalVariable.BASE_File_URL + '' + path) : (GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + path));
     }
     GetDocumentType(id): string {
         var item = this.DocumentTypes.filter(x => x.ID == id);

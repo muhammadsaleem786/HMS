@@ -1,4 +1,4 @@
-import { Component, OnInit ,HostListener} from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Login } from '../../model/Login.model';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
@@ -10,6 +10,7 @@ import { User } from '../../model/User.model';
 import { LoaderService } from '../../../CommonService/LoaderService';
 import { CommonService } from '../../../CommonService/CommonService';
 import { CommonToastrService } from '../../../CommonService/CommonToastrService';
+import { EncryptionService } from '../../../CommonService/encryption.service';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -33,7 +34,7 @@ export class LoginComponent implements OnInit {
     public Keywords: any[] = [];
     public IsPasswordShow: boolean = true;
     public IsEmailShow: boolean = false;
-
+    public Rights: number[] = [];
     public ShowEmail: string;
     public LoaderClass: string;
     onKeyDownAltM(e) {
@@ -43,11 +44,12 @@ export class LoginComponent implements OnInit {
     }
     constructor(public _fb: FormBuilder, public _router: Router,
         public _authService: AuthenticationService, public accountService: AccountService,
-        public loader: LoaderService
+        public loader: LoaderService, private encrypt: EncryptionService
         , public _commonService: CommonService,
         public toastr: CommonToastrService) {
         this.accountService.IsPayrollRegion();
         this.PayrollRegion = this._commonService.getPayrollRegion();
+
     }
     ngOnInit() {
         this.resetForm();
@@ -71,17 +73,39 @@ export class LoginComponent implements OnInit {
         if (isValid) {
             this.submitted = false;
             this.LoaderClass = "changeloadbtn";
-            this.loader.ShowLoader();           
+            this.loader.ShowLoader();
             this.accountService.Login(this.model).then(data => {
                 var result = JSON.parse(data._body);
                 if (result.IsSuccess) {
                     this.loader.HideLoader();
                     let userObj = result.ResultSet.User;
+                    this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
+
                     if (result.IsSuccess && (userObj.Email == "saleem4292@gmail.com")) {
                         this._router.navigate(['/home/dashboard']);
                     }
                     else if (result.IsSuccess && userObj.ExpiryDate == null) {
-                        this._router.navigate(['/home/dashboard']);
+                        if (this.Rights.indexOf(78) > -1) { this._router.navigate(['/home/dashboard']); return; }
+
+                        if (this.Rights.indexOf(22) > -1) { this._router.navigate(['/home/Appoint']); return; }
+
+                        if (this.Rights.indexOf(11) > -1) { this._router.navigate(['/home/Patient']); return; }
+
+                        if (this.Rights.indexOf(12) > -1) { this._router.navigate(['/home/Billing']); return; }
+
+                        if (this.Rights.indexOf(21) > -1) { this._router.navigate(['/home/Prescription']); return; }
+
+                        if (this.Rights.indexOf(63) > -1) { this._router.navigate(['/home/Sale']); return; }
+
+                        if (this.Rights.indexOf(61) > -1) { this._router.navigate(['/home/Item']); return; }
+
+                        if (this.Rights.indexOf(20) > -1) { this._router.navigate(['/home/Income']); return; }
+
+                        if (this.Rights.indexOf(14) > -1) { this._router.navigate(['/home/Expense']); return; }
+
+                        if (this.Rights.indexOf(62) > -1) { this._router.navigate(['/home/Invoice']); return; }
+
+                        if (this.Rights.indexOf(76) > -1) { this._router.navigate(['/home/session']); return; }
                     }
                     else if (this._commonService.GetFormatDate(new Date()) > this._commonService.GetFormatDate(userObj.ExpiryDate)) {
                         this.toastr.Error("Expire", "Your acount is expire please connect administrator.");
@@ -108,7 +132,7 @@ export class LoginComponent implements OnInit {
 
         }
     }
-  
+
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true; // set form submit to true
         if (isValid) {

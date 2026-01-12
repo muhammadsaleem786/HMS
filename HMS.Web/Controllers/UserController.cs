@@ -117,10 +117,6 @@ namespace HMS.Web.API.Controllers
                             await _unitOfWorkAsync.SaveChangesAsync();
                             var Companyobj = _adm_user_companyService.Queryable()
                             .Where(e => e.UserID == user.ID).Include(x => x.adm_company).Select(x => new { x.CompanyID, x.adm_company.CompanyName, x.adm_company.DateFormatId, x.adm_company.IsCNICMandatory, x.adm_company.ReceiptFooter }).FirstOrDefault();
-                            //var MultiKeyword = _adm_multilingual_mfservice.Queryable()
-                            //                 .Where(e => e.MultilingualId == user.MultilingualId)
-                            //                 .SelectMany(s => s.adm_multilingual_dt)
-                            //                 .ToList();
                             var CompanyID = Companyobj == null ? 0 : Companyobj.CompanyID;
                             var RoleIds = _adm_user_companyService.Queryable().Where(e => e.CompanyID == CompanyID && e.UserID == user.ID)
                            .Select(s => s.RoleID).ToArray();
@@ -151,6 +147,7 @@ namespace HMS.Web.API.Controllers
                                 Modules = Modules,
                                 Rights = Rights,
                                 RoleName = RoleName,
+                                DateFormat= DateFormat,
                             };
                             objResponse.IsSuccess = true;
                         }

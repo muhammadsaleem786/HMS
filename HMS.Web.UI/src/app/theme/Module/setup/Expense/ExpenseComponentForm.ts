@@ -43,7 +43,7 @@ export class ExpenseComponentForm implements OnInit {
     public PaymentToList: any[] = [];
     public Keywords: any[] = [];
     public sub: any;
-    public IsEdit: boolean = false;
+    public IsEdit: boolean = false; public CompanyObj: any;
     public AttachImage: string = '';
     public IsNewImage: boolean = true;
     public selectedPaymentTo: any;
@@ -55,6 +55,7 @@ export class ExpenseComponentForm implements OnInit {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("14");
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
         this.PaymentToList.push(
@@ -210,9 +211,9 @@ export class ExpenseComponentForm implements OnInit {
     getImageUrlName(FName) {
         this.model.Attachment = FName;
         if (this.IsEdit && !this.IsNewImage) {
-            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         } else {
-            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + '' + FName;
+            this.AttachImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
     Delete() {

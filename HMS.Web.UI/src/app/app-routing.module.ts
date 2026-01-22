@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ContactComponent } from './Module/account/contact/contact.component';
 import { ForgotpasswordComponent } from './Module/account/forgotpassword/forgotpassword.component';
 import { ResetpasswordComponent } from './Module/account/resetpassword/resetpassword.component';
 import { ForgotpassconfirmationComponent } from './Module/account/forgotpassconfirmation/forgotpassconfirmation.component';
@@ -16,9 +15,6 @@ const routes: Routes = [
     { path: 'home', loadChildren: './theme/Module/HTMLReports/report.module#ReportModule' },
      {
         path: 'login', component: LoginComponent,
-    },
-    {
-        path: 'contact', component: ContactComponent,
     },  
     {
         path: 'forgotpassword', component: AccountComponent,

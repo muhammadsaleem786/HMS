@@ -3,16 +3,13 @@ import { ThemeComponent } from './theme.component';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../CommonService/AuthGuard';
 import { LayoutModule } from '../theme/layouts/layout.module';
-import { AppComponent } from '../app.component';
 import { CookieService } from 'ngx-cookie-service';
 import { DashboardMenuService } from '../CommonService/DashboardMenuService';
 import { ChangepasswordComponent } from './Module/changepassword/changepassword.component';
 import { SetupDashboardComponent } from './Module/setup/SetupDashboard/SetupDashboardComponent';
 import { ReportComponentForm } from '../theme/Module/Reports/ReportComponentForm';
 import { DashboardForm } from '../theme/Module/Dashboard/DashboardForm';
-import { PageListComponent } from '../CommonComponent/PageList/PageListComponent';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { MatStepperModule } from '@angular/material';
 import { MatInputModule, MatAutocompleteModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -349,7 +346,6 @@ export const SecureComponent: any[] = [
     SetupDashboardComponent,
     ReportComponentForm,
     DashboardForm,
-    PageListComponent,
     //lab module
     LabDashboardComponent,
     //end

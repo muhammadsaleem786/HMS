@@ -68,71 +68,88 @@ export class LoginComponent implements OnInit {
         this.IsPasswordShow = true;
         this.IsEmailShow = false;
     }
+    async login(isValid: boolean): Promise<void> {
+        if (!isValid) return;
 
-    login(isValid: boolean): void {
-        if (isValid) {
-            this.submitted = false;
-            this.LoaderClass = "changeloadbtn";
-            this.loader.ShowLoader();
-            this.accountService.Login(this.model).then(data => {
-                var result = JSON.parse(data._body);
-                if (result.IsSuccess) {
-                    this.loader.HideLoader();
-                    let userObj = result.ResultSet.User;
-                    this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
+        this.submitted = false;
+        this.LoaderClass = "changeloadbtn";
+        this.loader.ShowLoader();
 
-                    if (result.IsSuccess && (userObj.Email == "saleem4292@gmail.com")) {
-                        this._router.navigate(['/home/dashboard']);
-                    }
-                    else if (result.IsSuccess && userObj.ExpiryDate == null) {
-                        if (this.Rights.indexOf(78) > -1) { this._router.navigate(['/home/dashboard']); return; }
+        try {
+            const response = await this.accountService.Login(this.model);
+            const result = JSON.parse(response._body);
 
-                        if (this.Rights.indexOf(22) > -1) { this._router.navigate(['/home/Appoint']); return; }
+            if (!result.IsSuccess) {
+                this.toastr.Error('Error', result.ErrorMessage);
+                this.loader.HideLoader();
+                return;
+            }
 
-                        if (this.Rights.indexOf(11) > -1) { this._router.navigate(['/home/Patient']); return; }
+            const user = result.ResultSet.User;
+            const expiryDate = user.ExpiryDate;
+            const today = this._commonService.GetFormatDate(new Date());
 
-                        if (this.Rights.indexOf(12) > -1) { this._router.navigate(['/home/Billing']); return; }
+            this.Rights = JSON.parse(
+                this.encrypt.decryptionAES(localStorage.getItem('Rights'))
+            );
 
-                        if (this.Rights.indexOf(21) > -1) { this._router.navigate(['/home/Prescription']); return; }
+            // Admin / Special user
+            if (user.Email === "saleem4292@gmail.com") {
+                this._router.navigate(['/home/dashboard']);
+                return;
+            }
 
-                        if (this.Rights.indexOf(63) > -1) { this._router.navigate(['/home/Sale']); return; }
+            // Account Expiry Check
+            if (expiryDate && today > this._commonService.GetFormatDate(expiryDate)) {
+                this.handleExpiry();
+                this.loader.HideLoader();
+                return;
+            }
 
-                        if (this.Rights.indexOf(61) > -1) { this._router.navigate(['/home/Item']); return; }
-
-                        if (this.Rights.indexOf(20) > -1) { this._router.navigate(['/home/Income']); return; }
-
-                        if (this.Rights.indexOf(14) > -1) { this._router.navigate(['/home/Expense']); return; }
-
-                        if (this.Rights.indexOf(62) > -1) { this._router.navigate(['/home/Invoice']); return; }
-
-                        if (this.Rights.indexOf(76) > -1) { this._router.navigate(['/home/session']); return; }
-                    }
-                    else if (this._commonService.GetFormatDate(new Date()) > this._commonService.GetFormatDate(userObj.ExpiryDate)) {
-                        this.toastr.Error("Expire", "Your acount is expire please connect administrator.");
-                        this.LoaderClass = "";
-                        localStorage.removeItem('IsLogin');
-                        localStorage.removeItem('currentUser');
-                        localStorage.removeItem('UserID');
-                        localStorage.removeItem('Token');
-                        localStorage.removeItem('PayrollRegion');
-                        localStorage.removeItem('Currency');
-                        localStorage.removeItem('ValidTo');
-                        localStorage.removeItem('Modules');
-                        localStorage.removeItem('Rights');
-                        localStorage.removeItem('ControlLevelRights');
-                    } else {
-                        this._router.navigate(['/home/dashboard']);
-                    }
-                } else {
-                    this.loader.HideLoader();
-                    this.toastr.Error('Error', result.ErrorMessage);
-                    this.LoaderClass = "";
-                }
-            });
-
+            // Rights-based navigation
+            this.navigateByRights();
+        } catch (error) {
+            console.error(error);
+            this.toastr.Error('Error', 'Something went wrong');
+        } finally {            
+            this.LoaderClass = "";
         }
     }
+    private navigateByRights(): void {
+        const routes: { right: number, path: string }[] = [
+            { right: 78, path: '/home/dashboard' },
+            { right: 22, path: '/home/Appoint' },
+            { right: 11, path: '/home/Patient' },
+            { right: 12, path: '/home/Billing' },
+            { right: 21, path: '/home/Prescription' },
+            { right: 63, path: '/home/Sale' },
+            { right: 61, path: '/home/Item' },
+            { right: 20, path: '/home/Income' },
+            { right: 14, path: '/home/Expense' },
+            { right: 62, path: '/home/Invoice' },
+            { right: 76, path: '/home/session' }
+        ];
 
+        const firstAllowedRoute = routes.find(r => this.Rights.includes(r.right));
+
+        if (firstAllowedRoute) {
+            this._router.navigate([firstAllowedRoute.path]);
+        } else {
+            this._router.navigate(['/home/dashboard']);
+        }
+   
+    }
+    private handleExpiry(): void {
+        this.toastr.Error("Expire", "Your account is expired. Please contact administrator.");
+
+        const keysToRemove = [
+            'IsLogin', 'currentUser', 'UserID', 'Token',
+            'PayrollRegion', 'Currency', 'ValidTo',
+            'Modules', 'Rights', 'ControlLevelRights'
+        ];
+
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+    }
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true; // set form submit to true
         if (isValid) {
@@ -199,5 +216,4 @@ export class LoginComponent implements OnInit {
         //        }
         //    );
     }
-
 }

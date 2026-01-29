@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../../CommonService/AuthGuard';
-import { ThemeComponent } from '../../../theme/theme.component';
 import { PatientDetailComponentForm } from '../../../theme/Module/HTMLReports/PatientReport/PatientDetailComponentForm';
 import { FeeComponentForm } from '../../../theme/Module/HTMLReports/PatientReport/FeeComponentForm';
 import { ProcedureComponentRptForm } from '../../../theme/Module/HTMLReports/PatientReport/ProcedureComponentRptForm';
@@ -30,7 +29,6 @@ import { ProfitLossRptForm } from '../../../theme/Module/HTMLReports/FinancialRe
 const routes: Routes = [
     {
         'path': '',
-        'component': ThemeComponent,
         'canActivate': [AuthGuard],
         children: [
             { path: 'PatientRpt', component: PatientDetailComponentForm, canActivate: [AuthGuard] },

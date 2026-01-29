@@ -22,6 +22,10 @@ using System.Net.Mail;
 using HMS.Service.Services.Employee;
 using System.IO.IsolatedStorage;
 using System.Net;
+using NPOI.SS.Formula.Functions;
+using static System.Data.Entity.Infrastructure.Design.Executor;
+using System.Configuration;
+using NPOI.SS.Util;
 
 namespace HMS.Web.API.Controllers
 {
@@ -77,131 +81,123 @@ namespace HMS.Web.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ActionName("Login")]
-
         public async Task<ResponseInfo> Login(adm_user_mf Model)
         {
-            var objResponse = new ResponseInfo();
+            var response = new ResponseInfo();
             try
             {
-                adm_user_mf user = new adm_user_mf();
-                try
+                var user = await _service.Queryable().FirstOrDefaultAsync(e => e.Email == Model.Email);
+                if (user == null)
                 {
-                    user = _service.Queryable().Where(e => e.Email == Model.Email && e.Pwd == Model.Pwd && e.IsActivated == true && e.UserLock == false).FirstOrDefault();
-                    if (user == null)
-                    {
-                        objResponse.IsSuccess = false;
-                        objResponse.ErrorMessage = "User Name or Password is incorrect.";
-                        return objResponse;
-                    }
-                    if (user != null)
-                    {
-                        //if (user.IsActivated)
-                        //{
-                        adm_user_token user_token = new adm_user_token();
-                        user.LastSignIn = Request.DateTimes();
-                        user.ObjectState = ObjectState.Modified;
-                        _service.Update(user);
-                        var Token = JwtManager.GenerateToken(user.ID.ToString(), 4320);
-                        string token = Token.Split('|')[0];
-                        DateTime expDate = Convert.ToDateTime(Token.Split('|')[1]);
-                        decimal userId = user.ID;
-                        user_token = _adm_user_tokenService.Queryable().Where(e => e.UserID == userId).FirstOrDefault();
-
-                        user_token.TokenKey = token;
-                        user_token.ExpiryDate = expDate;
-                        user_token.ObjectState = ObjectState.Modified;
-                        _adm_user_tokenService.Update(user_token);
-
-                        try
-                        {
-                            await _unitOfWorkAsync.SaveChangesAsync();
-                            var Companyobj = _adm_user_companyService.Queryable()
-                            .Where(e => e.UserID == user.ID).Include(x => x.adm_company).Select(x => new { x.CompanyID, x.adm_company.CompanyName, x.adm_company.DateFormatId, x.adm_company.IsCNICMandatory, x.adm_company.ReceiptFooter }).FirstOrDefault();
-                            var CompanyID = Companyobj == null ? 0 : Companyobj.CompanyID;
-                            var RoleIds = _adm_user_companyService.Queryable().Where(e => e.CompanyID == CompanyID && e.UserID == user.ID)
-                           .Select(s => s.RoleID).ToArray();
-                            var RoleName = _adm_role_mfService.Queryable().Where(a => a.CompanyID == CompanyID && RoleIds.Contains(a.ID))
-                                .Select(s => s.RoleName).FirstOrDefault();
-                            var Rights = _adm_role_dtService.Queryable().Where(e => e.CompanyID == CompanyID && e.ViewRights && RoleIds.Contains(e.RoleID))
-                      .Select(s => s.ScreenID).Distinct().ToList();
-                            var ControlLevelRights = _adm_role_dtService.Queryable().Where(e => e.CompanyID == CompanyID && e.ViewRights && RoleIds.Contains(e.RoleID))
-                                  .Select(s => new { s.ScreenID, s.ViewRights, s.DeleteRights, s.EditRights, s.CreateRights }).Distinct().ToList();
-                            var Modules = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 7 && Rights.Contains(e.ID))
-                                    .Select(s => s.DependedDropDownValueID).Distinct().ToArray();
-                            string DateFormat = "";
-                            var DateFormatId = Companyobj == null ? 0 : Companyobj.DateFormatId;
-                            if (DateFormatId != 0)
-                            {
-                                var date = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 36 && a.ID == DateFormatId).FirstOrDefault();
-                                DateFormat = date.Value;
-                            }
-                            objResponse.ResultSet = new
-                            {
-                                User = user,
-                                Token = user_token.TokenKey,
-                                ValidTo = user_token.ExpiryDate,
-                                Company = Companyobj,
-                                PayrollRegion = System.Configuration.ConfigurationManager.AppSettings["PayrollRegion"],
-                                Currency = System.Configuration.ConfigurationManager.AppSettings["Currency"],
-                                ControlLevelRights = ControlLevelRights,
-                                Modules = Modules,
-                                Rights = Rights,
-                                RoleName = RoleName,
-                                DateFormat= DateFormat,
-                            };
-                            objResponse.IsSuccess = true;
-                        }
-                        catch (DbUpdateException)
-                        {
-                            if (ModelExists(user.ID.ToString()))
-                            {
-                                objResponse.IsSuccess = false;
-                                objResponse.ErrorMessage = MessageStatement.Conflict;
-                                return objResponse;
-                            }
-                            throw;
-                        }
-                        objResponse.IsSuccess = true;
-                        //}
-                        //else
-                        //{
-                        //    objResponse.IsSuccess = true;
-                        //    objResponse.Message = "RedirectToConfirmPage";
-                        //}
-
-                    }
-                    else
-                    {
-                        user = _service.Queryable().Where(e => e.Email == Model.Email).FirstOrDefault();
-                       
-                        user.LoginFailureNo += 1;
-                        if (user.LoginFailureNo > 5)
-                            user.UserLock = true;
-                        _service.Update(user);
-                        await _unitOfWorkAsync.SaveChangesAsync();
-                        objResponse.IsSuccess = false;
-                        if (user.UserLock)
-                            objResponse.ErrorMessage = "Your account has been locked due to multiple unsuccessful login attempts. Please reset your password to regain access.";
-                        else
-                            objResponse.ErrorMessage = "User Name or Password is incorrect.";
-                    }
+                    response.IsSuccess = false;
+                    response.ErrorMessage = "User Name or Password is incorrect.";
+                    return response;
                 }
-                catch (Exception ex)
+                if (user.Pwd != Model.Pwd || !user.IsActivated || user.UserLock)
                 {
-                    objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = ex.Message;
-                    Logger.Trace.Error(ex);
+                    user.LoginFailureNo++;
+                    if (user.LoginFailureNo >= 5)
+                        user.UserLock = true;
+                    user.ObjectState = ObjectState.Modified;
+                    _service.Update(user);
+                    await _unitOfWorkAsync.SaveChangesAsync();
+                    response.IsSuccess = false;
+                    response.ErrorMessage = user.UserLock ? "Your account has been locked due to multiple unsuccessful login attempts. Please reset your password." : "User Name or Password is incorrect.";
+                    return response;
                 }
+                user.LastSignIn = Request.DateTimes();
+                user.ObjectState = ObjectState.Modified;
+                _service.Update(user);
+                // Generate JWT
+                var tokenData = JwtManager.GenerateToken(user.ID.ToString(), 4320).Split('|');
+                string token = tokenData[0];
+                DateTime expiryDate = Convert.ToDateTime(tokenData[1]);
+                //Update or create token record
+                var userToken = await _adm_user_tokenService.Queryable().FirstOrDefaultAsync(e => e.UserID == user.ID);
+                if (userToken == null)
+                {
+                    userToken = new adm_user_token
+                    {
+                        UserID = user.ID,
+                        TokenKey = token,
+                        ExpiryDate = expiryDate,
+                        ObjectState = ObjectState.Added
+                    };
+                    _adm_user_tokenService.Insert(userToken);
+                }
+                else
+                {
+                    userToken.TokenKey = token;
+                    userToken.ExpiryDate = expiryDate;
+                    userToken.ObjectState = ObjectState.Modified;
+                    _adm_user_tokenService.Update(userToken);
+                }
+                await _unitOfWorkAsync.SaveChangesAsync();
+                //Company & Role Data
+                var company = await _adm_user_companyService.Queryable()
+                    .Where(e => e.UserID == user.ID)
+                    .Include(x => x.adm_company)
+                    .Select(x => new
+                    {
+                        x.CompanyID,
+                        x.adm_company.CompanyName,
+                        x.adm_company.DateFormatId,
+                        x.adm_company.IsCNICMandatory,
+                        x.adm_company.ReceiptFooter
+                    }).FirstOrDefaultAsync();
+
+                var companyId = company?.CompanyID ?? 0;
+                var roleIds = await _adm_user_companyService.Queryable().Where(e => e.CompanyID == companyId && e.UserID == user.ID).Select(s => s.RoleID).ToArrayAsync();
+                var roleName = await _adm_role_mfService.Queryable().Where(r => r.CompanyID == companyId && roleIds.Contains(r.ID)).Select(r => r.RoleName).FirstOrDefaultAsync();
+                var rightsQuery = _adm_role_dtService.Queryable().Where(e => e.CompanyID == companyId && roleIds.Contains(e.RoleID));
+                var rights = await rightsQuery.Where(e => e.ViewRights).Select(e => e.ScreenID).Distinct().ToListAsync();
+                var controlRights = await rightsQuery
+                    .Select(e => new
+                    {
+                        e.ScreenID,
+                        e.ViewRights,
+                        e.CreateRights,
+                        e.EditRights,
+                        e.DeleteRights
+                    }).Distinct().ToListAsync();
+                var modules = await _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == companyId)
+                     && e.DropDownID == 7 && rights.Contains(e.ID)).Select(e => e.DependedDropDownValueID).Distinct().ToArrayAsync();
+                //Date Format
+                string dateFormat = "";
+                if (company?.DateFormatId > 0)
+                {
+                    dateFormat = await _sys_drop_down_valueService.Queryable()
+                        .Where(d => d.DropDownID == 36 && d.ID == company.DateFormatId)
+                        .Select(d => d.Value)
+                        .FirstOrDefaultAsync();
+                }
+                //Final Response
+                response.ResultSet = new
+                {
+                    User = user,
+                    Token = userToken.TokenKey,
+                    ValidTo = userToken.ExpiryDate,
+                    PayrollRegion = ConfigurationManager.AppSettings["PayrollRegion"],
+                    Currency = ConfigurationManager.AppSettings["Currency"],
+                    Company = company,
+                    ControlLevelRights = controlRights,
+                    Modules = modules,
+                    Rights = rights,
+                    RoleName = roleName,
+                    DateFormat = dateFormat
+                };
+                response.IsSuccess = true;
             }
-
             catch (Exception ex)
             {
-                objResponse.IsSuccess = false;
-                objResponse.ErrorMessage = ex.Message;
+                response.IsSuccess = false;
+                response.ErrorMessage = "An unexpected error occurred.";
                 Logger.Trace.Error(ex);
             }
-            return objResponse;
+            return response;
         }
+
+
         [AllowAnonymous]
         [HttpGet]
         [ActionName("GetPayrollRegion")]
@@ -706,7 +702,7 @@ namespace HMS.Web.API.Controllers
                 if (!objResponse.IsSuccess)
                 {
                     if (_pr_employee_mfService.Queryable().Count() > 0)
-                        empID = _pr_employee_mfService.Queryable().Max(e => e.ID) + 1;                    
+                        empID = _pr_employee_mfService.Queryable().Max(e => e.ID) + 1;
                     // saveCompany 
                     adm_company obj = new adm_company();
                     decimal adm_companyID = 1;
@@ -1097,7 +1093,6 @@ namespace HMS.Web.API.Controllers
             }
             return objResponse;
         }
-
         private string getGender(int? GenderID)
         {
             if (GenderID == 1)

@@ -1,6 +1,6 @@
+//common-utils.modules.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ThemeComponent } from '../theme/theme.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
@@ -23,7 +23,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxPrintModule } from 'ngx-print';
+import { FilterPipe } from '../angularfilter/filter.pipe'
 @NgModule({
     imports: [
         MatAutocompleteModule,
@@ -35,7 +37,8 @@ import { NgxPrintModule } from 'ngx-print';
         LayoutModule,
         MatStepperModule,
         MatFormFieldModule,
-        MatInputModule,
+        MatFormFieldModule,
+        NgbModule,
         MatCheckboxModule,
         MatSelectModule,
         MatIconModule,
@@ -48,13 +51,13 @@ import { NgxPrintModule } from 'ngx-print';
         NgxEchartsModule        
     ],
     declarations: [
-        ThemeComponent,
         FileUploadComponent,
         ViewerComponent,
         PaginationComponent,
         PhoneMaskDirective,
         DatetimePickerComponent,
         DialogboxComponent,
+        FilterPipe
     ],
     exports: [
         RouterModule,
@@ -64,6 +67,7 @@ import { NgxPrintModule } from 'ngx-print';
         LayoutModule,
         MatStepperModule,
         MatFormFieldModule,
+        NgbModule,
         MatInputModule,
         MatCheckboxModule,
         MatSelectModule,
@@ -75,14 +79,14 @@ import { NgxPrintModule } from 'ngx-print';
         MyDatePickerModule,
         MultiselectDropdownModule,
         NgxEchartsModule,
-        ThemeComponent,
         FileUploadComponent,
         ViewerComponent,
         PaginationComponent,
         PhoneMaskDirective,
         DatetimePickerComponent,
         DialogboxComponent,
-        NgxPrintModule
+        NgxPrintModule,
+        FilterPipe
     ],
     providers: [
        

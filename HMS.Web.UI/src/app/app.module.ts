@@ -24,8 +24,6 @@ import { ForgotpasswordComponent } from './Module/account/forgotpassword/forgotp
 import { ResetpasswordComponent } from './Module/account/resetpassword/resetpassword.component';
 import { ForgotpassconfirmationComponent } from './Module/account/forgotpassconfirmation/forgotpassconfirmation.component';
 import { PasswordchangedComponent } from './Module/account/passwordchanged/passwordchanged.component';
-
-//import { RecaptchaModule, RecaptchaComponent } from 'ng-recaptcha';
 @NgModule({
     declarations: [
         AppComponent,
@@ -46,8 +44,6 @@ import { PasswordchangedComponent } from './Module/account/passwordchanged/passw
         HttpClientModule,
         ToastrModule.forRoot(),
         ReactiveFormsModule, FormsModule,
-
-        //RecaptchaModule,
         NgbModule,
     ],
     entryComponents: [

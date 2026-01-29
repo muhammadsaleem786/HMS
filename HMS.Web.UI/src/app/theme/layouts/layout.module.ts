@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { HeaderUserComponent } from './header-user/header-user.component';
 import { AsidebarComponent } from './asidebar/asidebar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { DashboardMenuService } from '../../CommonService/DashboardMenuService';
 @NgModule({
     declarations: [
         FooterComponent,
@@ -19,7 +19,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     imports: [
         CommonModule,
         RouterModule, FormsModule, ReactiveFormsModule
+    ],
+     providers: [
+        DashboardMenuService
     ]
 })
-export class LayoutModule {
-}
+export class LayoutModule {}

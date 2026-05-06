@@ -38,6 +38,7 @@ namespace HMS.Repository.Repositories.Appointment
                 {
                     ID = x.ID,
                     AppointmentDate = x.AppointmentDate,
+                    IsVOCObtained=x.IsVOCObtained,
                     PatientName = x.emr_patient_mf.PatientName,
                     PaidAmount = x.emr_patient_mf.emr_patient_bill.Where(a => a.PatientId == x.emr_patient_mf.ID && (decimal?)a.DoctorId== (decimal?)x.DoctorId).Sum(c => (decimal?)c.PaidAmount),
                     OutAmount = x.emr_patient_mf.emr_patient_bill.Where(a => a.PatientId == x.emr_patient_mf.ID && (decimal?)a.DoctorId == (decimal?)x.DoctorId).Sum(c => (decimal?)c.OutstandingBalance),
@@ -50,11 +51,12 @@ namespace HMS.Repository.Repositories.Appointment
                 if (IgnorePaging)
                 {
                     list = (from s in dataList
-                            group s by new { s.ID, s.AppointmentDate, s.PatientName, s.PaidAmount, s.OutAmount } into grp
+                            group s by new { s.ID, s.AppointmentDate, s.PatientName, s.PaidAmount, s.OutAmount,s.IsVOCObtained } into grp
                             select new PrescriptionModel
                             {
                                 ID = grp.Key.ID,
                                 AppointmentDate = grp.Key.AppointmentDate,
+                                IsVOCObtained= grp.Key.IsVOCObtained,
                                 PatientName = grp.Key.PatientName,
                                 PaidAmount = Convert.ToDecimal(grp.Key.PaidAmount),
                                 OutAmount = Convert.ToDecimal(grp.Key.OutAmount),
@@ -65,11 +67,12 @@ namespace HMS.Repository.Repositories.Appointment
                 {
 
                     list = (from s in dataList
-                            group s by new { s.ID, s.AppointmentDate, s.PatientName, s.PaidAmount, s.OutAmount } into grp
+                            group s by new { s.ID, s.AppointmentDate, s.PatientName, s.PaidAmount, s.OutAmount,s.IsVOCObtained } into grp
                             select new PrescriptionModel
                             {
                                 ID = grp.Key.ID,
                                 AppointmentDate = grp.Key.AppointmentDate,
+                                IsVOCObtained = grp.Key.IsVOCObtained,
                                 PatientName = grp.Key.PatientName,
                                 PaidAmount =Convert.ToDecimal(grp.Key.PaidAmount),
                                 OutAmount = Convert.ToDecimal(grp.Key.OutAmount),

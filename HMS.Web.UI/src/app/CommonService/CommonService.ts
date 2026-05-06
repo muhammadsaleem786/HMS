@@ -317,12 +317,8 @@ export class CommonService {
         var region = this.encrypt.decryptionAES(localStorage.getItem("PayrollRegion"));
         return region;
     }
-    IsPayrollRegion(): Promise<any> {
-        var data = {};
-        return this.http.Get(this.BASE_Api_URL + '/api/User/GetPayrollRegion', {}).then(m => {
-            localStorage.setItem('PayrollRegion', m.ResultSet.PayrollRegion);
-            return m;
-        });
+    IsPayrollRegion(){
+        localStorage.setItem('PayrollRegion', GlobalVariable.PayrollRegion);
     }
     GetThousandCommaSepFormatDate(Numb): number {
         return Numb.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

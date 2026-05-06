@@ -10,7 +10,6 @@ import { Company } from '../../../models/company.model';
 import { User } from '../../../../../../app/Module/model/User.model';
 import { Login } from '../../../../../../app/Module/model/Login.model';
 import { Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
 @Component({
     selector: 'setup-RegisterComponentForm',
     templateUrl: './RegisterComponentForm.html',

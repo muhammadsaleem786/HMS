@@ -33,7 +33,7 @@
                             <tr>
                                 <th>Date </th>
                                 <th> Bill No </th>
-                                <th>Vendor Name</th>
+                                <th> Purchase Vendor Name</th>
                                 <th>Status</th>
                                 <th>Due Date</th>
                                 <th>Amount</th>
@@ -50,7 +50,7 @@
                                     {{item.Invoiceno}}
                                 </td>
                                 <td (click)="AddRecord(item.ID)">
-                                    {{item.name}}
+                                    {{item.CompanyName}}
                                 </td>
                                 <td (click)="AddRecord(item.ID)">
                                     {{item.status}}

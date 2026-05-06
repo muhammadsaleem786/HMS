@@ -9,6 +9,7 @@ using HMS.Service.Services.Items;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
+using Microsoft.Extensions.Logging.Abstractions;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
@@ -173,14 +174,21 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                var result = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID.ToString() == Id).FirstOrDefault();
-                result.OPDBalance = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.PaidAmount) ?? 0;
-                result.PharmacyBalance = _pur_sale_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.SaleTypeID == 1).Sum(a => (decimal?)a.Total) ?? 0;
-                result.Refunds = _pur_sale_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.SaleTypeID == 2).Sum(a => (decimal?)a.Total) ?? 0;
-                result.IPDBalance = _ipd_paymentService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.Amount) ?? 0;
-                result.ExpensesAmount = _emr_expenseService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.Amount) ?? 0;
-                result.PurchaseExpensesAmount = _pur_paymentService.Queryable().Where(p => p.CompanyId == CompanyID && p.PaymentMethodID != 1 && p.CreatedDate >= result.ShiftStartTime).Sum(p => (decimal?)p.Amount) ?? 0m;
-                result.OtherIncome = _emr_incomeService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime).Sum(a => (decimal?)a.ReceivedAmount) ?? 0; ;
+                int userId = Request.LoginID();
+                var result = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID.ToString() == Id && e.UserId == userId).FirstOrDefault();
+                if (result == null)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "Shift record not found.";
+                    return objResponse;
+                }
+                result.OPDBalance = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.CreatedBy == userId).Sum(a => (decimal?)a.PaidAmount) ?? 0;
+                result.PharmacyBalance = _pur_sale_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.ReturnInvoiceId == null && a.CreatedBy == userId).Sum(a => (decimal?)a.Total) ?? 0;
+                result.Refunds = _pur_sale_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.ReturnInvoiceId != null && a.CreatedBy == userId).Sum(a => (decimal?)a.Total) ?? 0;
+                result.IPDBalance = _ipd_paymentService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.CreatedBy == userId).Sum(a => (decimal?)a.Amount) ?? 0;
+                result.ExpensesAmount = _emr_expenseService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.CreatedBy == userId).Sum(a => (decimal?)a.Amount) ?? 0;
+                result.PurchaseExpensesAmount = _pur_paymentService.Queryable().Where(p => p.CompanyId == CompanyID && p.PaymentMethodID != 1 && p.CreatedDate >= result.ShiftStartTime && p.CreatedBy == userId).Sum(p => (decimal?)p.Amount) ?? 0m;
+                result.OtherIncome = _emr_incomeService.Queryable().Where(a => a.CompanyId == CompanyID && a.CreatedDate >= result.ShiftStartTime && a.CreatedBy == userId).Sum(a => (decimal?)a.ReceivedAmount) ?? 0; ;
                 result.TotalCollection = (result.StartingCash + result.OPDBalance + result.PharmacyBalance + result.IPDBalance + result.OtherIncome) - (result.Refunds + result.ExpensesAmount + result.PurchaseExpensesAmount);
                 objResponse.ResultSet = result;
                 objResponse.IsSuccess = true;

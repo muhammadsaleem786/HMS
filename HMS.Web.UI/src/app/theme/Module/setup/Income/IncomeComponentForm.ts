@@ -12,12 +12,14 @@ import { GlobalVariable } from '../../../../AngularConfig/global';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { PatientService } from './../Patient/PatientService';
 import { filter } from 'rxjs/operators';
+declare var $: any;
 @Component({
     selector: 'setup-IncomeComponentForm',
     templateUrl: './IncomeComponentForm.html',
     moduleId: module.id,
-    providers: [IncomeService],
+    providers: [IncomeService,PatientService],
 })
 export class IncomeComponentForm implements OnInit {
     public Form1: FormGroup;
@@ -46,7 +48,7 @@ export class IncomeComponentForm implements OnInit {
     public IsNewImage: boolean = true;
     public IsBackDate: any; public CompanyObj: any;
     constructor(public _CommonService: CommonService, private encrypt: EncryptionService, public _fb: FormBuilder, public loader: LoaderService
-        , public _IncomeService: IncomeService, public commonservice: CommonService
+        , public _IncomeService: IncomeService, public commonservice: CommonService,public _PatientService: PatientService
         , public toastr: CommonToastrService, public route: ActivatedRoute, public _router: Router) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
@@ -64,6 +66,8 @@ export class IncomeComponentForm implements OnInit {
             PaymentMethodID: [''],
             ReceivedAmount: [''],
             Image: [''],
+            DoctorId: [''],
+            DoctorName: [''],
         });
         this.sub = this.route.queryParams
             .pipe(filter(params => params.id))
@@ -74,7 +78,7 @@ export class IncomeComponentForm implements OnInit {
                     this.IsEdit = true;
                     this.loader.ShowLoader();
                     this._IncomeService.GetById(this.id).then(m => {
-                        
+
                         this.model = m.ResultSet;
                         if (m.ResultSet.adm_company != null)
                             this.IsBackDate = m.ResultSet.adm_company.IsUpdateBillDate
@@ -124,6 +128,28 @@ export class IncomeComponentForm implements OnInit {
         if (event) {
             var dob = new Date(this.model.Date);
         }
+    }
+     LoadDoctor() {
+        $("#DoctorSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._PatientService.DoctorSearch(request.term).then(m => {
+
+                    if (m.ResultSet.result.length == 0)
+                        $("#DoctorSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.DoctorId = ui.item.value;
+                this.model.DoctorName = ui.item.label;
+
+                return ui.item.label;
+            }
+        });
     }
     Delete() {
         var result = confirm("Are you sure you want to delete selected record.");

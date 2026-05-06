@@ -29,7 +29,7 @@
                         <tr>
                             <th>Date </th>
                             <th> Patient Name </th>
-                            <th> Medication </th>
+                            <th> VC Obtained </th>
                             <th> Amount </th>
                             <th>Action</th>
                         </tr>
@@ -43,7 +43,7 @@
                                 {{item.PatientName}}
                             </td>
                             <td (click)="AddRecord(item.ID)">
-                                {{item.MedicineName}}
+                                {{item.IsVOCObtained ? 'Yes' : 'No' }}
                             </td>
                             <td (click)="AddRecord(item.ID)">
                                 {{item.PaidAmount}}/{{item.OutstandingBalance}}
@@ -177,9 +177,12 @@
                     <label style="font-size:12px; font-weight:bold;">Sex: </label>
                     <span style="font-size:12px;">{{PatientRXmodel.Gender}}</span>
                 </div>
-                <div style="width:20%; text-align:right;">
+                <div style="width:22%; text-align:right;">
                     <label style="font-size:12px; font-weight:bold;">Date: </label>
-                    <span style="font-size:12px;">{{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy' | uppercase}}</span>
+                    <span style="font-size:12px;">
+                        {{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy' | uppercase}}
+                        {{ currentTime | date:'hh:mm a' }}
+                    </span>
                 </div>
             </div>
 
@@ -339,7 +342,10 @@
                             </tr>
                         </tbody>
                     </table>
-
+                    <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">VOC Obtained</h3>
+                    <div>
+                        {{PatientRXmodel.IsVOCObtained ? 'Yes' : 'No'}}
+                    </div>
                     <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">Instructions</h3>
                     <div style="font-size:12px; margin:0; line-height:normal;">
                         <p *ngIf="DoctorInfo.TemplateId==2" style="direction: rtl; text-align: right;">

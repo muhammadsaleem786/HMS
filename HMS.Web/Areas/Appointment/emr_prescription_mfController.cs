@@ -1335,6 +1335,7 @@ IsInventory = a.IsInventory
                         z.FollowUpTime,
                         z.ClinicalNote,
                         z.PlanNote,
+                        z.IsVOCObtained,
                         PatientName = z.emr_patient_mf.PatientName,
                         Mobile = z.emr_patient_mf.Mobile,
                         Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",
@@ -1515,6 +1516,7 @@ IsInventory = a.IsInventory
         {
             mf.ID,
             mf.AppointmentDate,
+            mf.IsVOCObtained,
             PatientName = mf.emr_patient_mf.PatientName,   // via navigation property
             PaidAmount = mf.emr_patient_mf.emr_patient_bill
                 .Where(b => b.CompanyId == companyId
@@ -1526,11 +1528,11 @@ IsInventory = a.IsInventory
                             && b.DoctorId == mf.DoctorId
                             && DbFunctions.TruncateTime(b.CreatedDate) == DbFunctions.TruncateTime(mf.CreatedDate))
                 .Sum(b => (decimal?)b.OutstandingBalance) ?? 0,
-            MedicineIds = mf.emr_prescription_treatment
-                        .Where(t => t.CompanyID == companyId && t.PrescriptionId == mf.ID)
-                        .Select(t => t.MedicineId)
-                        .Distinct()
-                        .ToList()
+            //MedicineIds = mf.emr_prescription_treatment
+            //            .Where(t => t.CompanyID == companyId && t.PrescriptionId == mf.ID)
+            //            .Select(t => t.MedicineId)
+            //            .Distinct()
+            //            .ToList()
         });
                 if (!string.IsNullOrEmpty(SearchText))
                 {
@@ -1549,28 +1551,14 @@ IsInventory = a.IsInventory
                     r.PatientName,
                     r.PaidAmount,
                     r.OutstandingBalance,
-                    MedicineName = string.Join(", ",
-        _emr_medicineService.Queryable()
-            .Where(m => r.MedicineIds.Contains(m.ID))
-            .Select(m => m.Medicine)
-            .ToList()),
+                    r.IsVOCObtained,
+                    //MedicineName = string.Join(", ",
+        //_emr_medicineService.Queryable()
+        //    .Where(m => r.MedicineIds.Contains(m.ID))
+        //    .Select(m => m.Medicine)
+        //    .ToList()),
                     TotalRecord = totalRecords
                 }).ToList();
-
-                //string TotalRecord = "0";
-                //if (SearchText == null)
-                //    SearchText = "";
-                //DataAccessManager dataAccessManager = new DataAccessManager();
-                //var ht = new Hashtable();
-                //ht.Add("@CompanyID", CompanyID);
-                //ht.Add("@CurrentPageNo", CurrentPageNo);
-                //ht.Add("@RecordPerPage", RecordPerPage);
-                //ht.Add("@SearchText", SearchText.ToString());
-
-                //var AllData = dataAccessManager.GetDataSet("SP_PrescriptionList", ht);
-                //var DataList = AllData.Tables[0];
-                //if (DataList.Rows.Count > 0)
-                //    TotalRecord = DataList.Rows[0]["TotalRecord"].ToString();
                 objResult.OtherDataModel = result;
                 objResult.TotalRecord = totalRecords;
 

@@ -5,19 +5,14 @@ import { ValidationVariables } from '../../../../AngularConfig/global';
 import { CommonToastrService } from '../../../../CommonService/CommonToastrService';
 import { EncryptionService } from '../../../../CommonService/encryption.service';
 import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo } from './../Appointment/AppointmentModel';
-import { emr_patient_bill } from '../Billing/BillingModel';
-import { emr_prescription_mf, emr_prescription_complaint, emr_prescription_diagnos, emr_prescription_investigation, emr_prescription_observation, emr_prescription_treatment, emr_prescription_treatment_template, emr_medicine } from './../Prescription/PrescriptionModel';
-import { Observable } from 'rxjs';
 import { AppointmentService } from './../Appointment/AppointmentService';
 import { BillingService } from './../Billing/BillingService';
 import { PaginationModel, PaginationConfig } from '../../../../CommonComponent/PaginationComponentConfig';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { filter } from 'rxjs/operators';
 import { IMyDateModel } from 'mydatepicker';
 import { CommonService } from '../../../../CommonService/CommonService';
-import { GlobalVariable } from '../../../../AngularConfig/global';
 declare var $: any;
 @Component({
     templateUrl: './AdmitAppointSummeryComponentList.html',

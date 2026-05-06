@@ -14,6 +14,7 @@ import { debounce } from 'rxjs/operators';
 export class AccountService {
 
     private urlToApi = GlobalVariable.BASE_Api_URL + "/api/User"
+    private urlApi = GlobalVariable.BASE_Api_URL + "/api/Admin/adm_user"
 
     constructor(private http: HttpService, private _http: HttpClient, private _commonService: CommonService, private _router: Router
         , private toastr: CommonToastrService, private encrypt: EncryptionService) { }
@@ -70,7 +71,7 @@ export class AccountService {
         // if (isNaN(entity.ID) || entity.ID == 0)
         return this.http.Post(this.urlToApi + '/changePassword', entity).then(e => e);
         // else
-        //     return this.http.Put(this.urlToApi + '/Update', entity).then(e => e);
+        // return this.http.Put(this.urlToApi + '/Update', entity).then(e => e);
     }
 
     createPassword(entity: SetupPass): Promise<any> {
@@ -91,71 +92,53 @@ export class AccountService {
     resetpasswd(entity: User): Promise<any> {
         return this.http.Post(this.urlToApi + '/resetpassword', entity).then(e => e);
     }
-
     ResendConfirmationEmail(Email: string): Promise<any> {
         var data = { 'Email': Email };
         return this.http.Get(this.urlToApi + '/ResendEmail', data).then(e => e);
     }
-
-    // Login(Email: string, Pwd: string): Promise<any> {
-    //     
-    //     return this.http.Post(this.urlToApi + '/Login', JSON.stringify({ Email: Email, Pwd: Pwd })).then(e => e);
-    // }
-
-
     Delete(Id: string): Promise<any> {
         var data = { 'Id': Id };
         return this.http.Delete(this.urlToApi + '/Delete', data).then(e => e);
     }
-
     FormLoad(): Promise<any> {
         return this.http.Get(this.urlToApi + '/Load', {}).then(e => e);
     }
-
     IsUserLogin() {
         if (localStorage.getItem('IsLogin') == "true" && this._commonService.Tokenvalidate() == true)
             if (this._router.url == '/login' || this._router.url == '/register')
                 this._router.navigate(['/home/dashboard']);
     }
-    IsPayrollRegion(): Promise<any> {
-        var data = {};
-        return this.http.Get(this.urlToApi + '/GetPayrollRegion', {}).then(m => {
-            localStorage.setItem('PayrollRegion', this.encrypt.encryptionAES(m.ResultSet.PayrollRegion));
-            return m;
-        });
+    IsPayrollRegion() {
+        localStorage.setItem('PayrollRegion', this.encrypt.encryptionAES(GlobalVariable.PayrollRegion));
     }
-    Login(login: User): Promise<any> {
-        return this.http.Post(this.urlToApi + '/Login', login).then(m => {
-            var result = JSON.parse(m._body);
-            if (result.IsSuccess) {
-                if (!result.Message) {
-                    localStorage.removeItem('PayrollRegion');
-                    var userid = result.ResultSet.User.ID;
-                    var user = JSON.stringify(result.ResultSet.User);
-                    var company = JSON.stringify(result.ResultSet.Company);
-                    var modules = JSON.stringify(result.ResultSet.Modules);
-                    var rights = JSON.stringify(result.ResultSet.Rights);
-                    var coltrollevel = JSON.stringify(result.ResultSet.ControlLevelRights);
-                    localStorage.setItem('IsLogin', "true");
-                    localStorage.setItem('currentUser', this.encrypt.encryptionAES(user));
-                    localStorage.setItem('company', this.encrypt.encryptionAES(company));            
-                    localStorage.setItem('DateFormat', this.encrypt.encryptionAES(result.ResultSet.DateFormat));            
-                    localStorage.setItem('Token', this.encrypt.encryptionAES(result.ResultSet.Token));
-                    localStorage.setItem('PayrollRegion', this.encrypt.encryptionAES(result.ResultSet.PayrollRegion.toString()));
-                    localStorage.setItem('Currency', this.encrypt.encryptionAES(result.ResultSet.Currency.toString()));
-                    localStorage.setItem('ValidTo', result.ResultSet.ValidTo);
-                    localStorage.setItem('Modules', this.encrypt.encryptionAES(modules));
-                    localStorage.setItem('ControlLevelRights', this.encrypt.encryptionAES(coltrollevel));
-                    localStorage.setItem('Rights', this.encrypt.encryptionAES(rights));
-                    localStorage.setItem('RoleName', this.encrypt.encryptionAES(result.ResultSet.RoleName));
-                  
-                }
-            }
-            return m;
-        });
+   
+    async Login(login: User): Promise<any> {
+        const response = await this.http.Post(this.urlToApi + '/Login', login);
+        const result = JSON.parse(response._body);
+
+        if (!result.IsSuccess || result.Message) return response;
+
+        const rs = result.ResultSet;
+
+        localStorage.clear(); // optional, if safe
+
+        localStorage.setItem('IsLogin', 'true');
+        localStorage.setItem('currentUser', this.encrypt.encryptionAES(JSON.stringify(rs.User)));
+        localStorage.setItem('company', this.encrypt.encryptionAES(JSON.stringify(rs.Company)));
+        localStorage.setItem('Modules', this.encrypt.encryptionAES(JSON.stringify(rs.Modules)));
+        localStorage.setItem('Rights', this.encrypt.encryptionAES(JSON.stringify(rs.Rights)));
+        localStorage.setItem('ControlLevelRights', this.encrypt.encryptionAES(JSON.stringify(rs.ControlLevelRights)));
+
+        localStorage.setItem('Token', this.encrypt.encryptionAES(rs.Token));
+        localStorage.setItem('PayrollRegion', this.encrypt.encryptionAES(rs.PayrollRegion.toString()));
+        localStorage.setItem('Currency', this.encrypt.encryptionAES(rs.Currency.toString()));
+        localStorage.setItem('DateFormat', this.encrypt.encryptionAES(rs.DateFormat));
+        localStorage.setItem('ValidTo', rs.ValidTo);
+        localStorage.setItem('RoleName', this.encrypt.encryptionAES(rs.RoleName));
+
+        return response;
     }
     Logout(): void {
-        //clear variables remove user from local storage to log user out
         localStorage.removeItem('IsLogin');
         localStorage.removeItem('currentUser');
         localStorage.removeItem('Token');
@@ -165,7 +148,7 @@ export class AccountService {
         localStorage.removeItem('Modules');
         localStorage.removeItem('Rights');
         localStorage.removeItem('ControlLevelRights');
-        localStorage.removeItem('company');        
-        localStorage.removeItem('DateFormat');        
+        localStorage.removeItem('company');
+        localStorage.removeItem('DateFormat');
     }
 }

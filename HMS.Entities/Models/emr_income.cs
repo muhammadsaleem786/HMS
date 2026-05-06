@@ -17,6 +17,7 @@ namespace HMS.Entities.Models
         public Nullable<int> PaymentMethodID { get; set; }
         public System.DateTime Date { get; set; }
         public string Remark { get; set; }
+        public int? DoctorId { get; set; }
         public decimal DueAmount { get; set; }
         public Nullable<decimal> ReceivedAmount { get; set; }
         public decimal CreatedBy { get; set; }

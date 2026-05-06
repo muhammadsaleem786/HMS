@@ -2,15 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { LayoutModule } from './theme/layouts/layout.module';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ThemeRoutingModule } from "./theme/theme-routing.module";
 import { HttpClientModule } from '@angular/common/http';
 import { HttpService } from './CommonService/HttpService';
 import { CommonService } from './CommonService/CommonService';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ContactComponent } from './Module/account/contact/contact.component';
 import { AccountComponent } from './Module/account/account.component';
 import { LoginComponent } from './Module/account/login/login.component';
 import { LoaderService } from './CommonService/LoaderService';
@@ -27,12 +24,9 @@ import { ForgotpasswordComponent } from './Module/account/forgotpassword/forgotp
 import { ResetpasswordComponent } from './Module/account/resetpassword/resetpassword.component';
 import { ForgotpassconfirmationComponent } from './Module/account/forgotpassconfirmation/forgotpassconfirmation.component';
 import { PasswordchangedComponent } from './Module/account/passwordchanged/passwordchanged.component';
-
-//import { RecaptchaModule, RecaptchaComponent } from 'ng-recaptcha';
 @NgModule({
     declarations: [
         AppComponent,
-        ContactComponent,
         LoginComponent,
         AccountComponent,
         ForgotpasswordComponent,
@@ -50,8 +44,6 @@ import { PasswordchangedComponent } from './Module/account/passwordchanged/passw
         HttpClientModule,
         ToastrModule.forRoot(),
         ReactiveFormsModule, FormsModule,
-
-        //RecaptchaModule,
         NgbModule,
     ],
     entryComponents: [

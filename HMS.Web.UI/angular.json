@@ -25,12 +25,9 @@
             ],
             "styles": [
               "src/styles.scss"
-              //   "src/assets/app/argon.scss"
             ],
             "scripts": [
-              "node_modules/echarts/dist/echarts.min.js",
-              //"node_modules/jquery/dist/jquery.min.js",
-              //"node_modules/jquery-ui-dist/jquery-ui.js"            
+              "node_modules/echarts/dist/echarts.min.js"            
             ]
           },
           "configurations": {

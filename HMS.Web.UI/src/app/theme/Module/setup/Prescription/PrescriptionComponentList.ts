@@ -23,7 +23,7 @@ export class PrescriptionComponentList {
     public Id: string;
     public PModel = new PaginationModel();
     public PConfig = new PaginationConfig();
-    public PrescriptionList: any[] = [];
+    public PrescriptionList: any[] = []; public currentTime: Date = new Date();
     public IsList: boolean = true;
     public ID: number = 10;
     public Rights: any;
@@ -97,7 +97,6 @@ export class PrescriptionComponentList {
         this.Id = "0";
         this._PrescriptionService
             .GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.PrescriptionList = m.OtherDataModel || [];
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
@@ -182,6 +181,7 @@ export class PrescriptionComponentList {
                 this.PatientRXmodel.Mobile = m.ResultSet.result.Mobile;
                 this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
                 this.PatientRXmodel.FollowUpDate = m.ResultSet.result.FollowUpDate;
+                this.PatientRXmodel.IsVOCObtained = m.ResultSet.result.IsVOCObtained;
                 if (m.ResultSet.result.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(m.ResultSet.result.ClinicalNote);
                 }

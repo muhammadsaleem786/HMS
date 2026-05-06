@@ -37,10 +37,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iadm_companyService _adm_companyService;
         private readonly Iadm_user_sessionService _adm_user_sessionService;
-
+        private readonly Iemr_patientService _emr_patientService;
         public emr_incomeController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_medicineService emr_medicineService, Iadm_companyService adm_companyService, Iemr_incomeService service, Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
-                   Iadm_user_sessionService adm_user_sessionService, Isys_notification_alertService sys_notification_alertService)
+                   Iadm_user_sessionService adm_user_sessionService, Isys_notification_alertService sys_notification_alertService, Iemr_patientService emr_patientService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -54,7 +54,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _emr_medicineService = emr_medicineService;
             _sys_notification_alertService = sys_notification_alertService;
             _adm_user_sessionService = adm_user_sessionService;
-
+            _emr_patientService = emr_patientService;
         }
 
         private bool IsUserShiftOpen(decimal userID, decimal companyID, out string errorMessage)
@@ -249,9 +249,38 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                var CompanyID = Request.CompanyID();
-                //objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).Include(x=>x.adm_user_company.Select(s=> s.adm_role_mf)).FirstOrDefault();
-                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).Include(a => a.adm_company).FirstOrDefault();
+                decimal UserID = Request.LoginID();
+                decimal CompanyID = Request.CompanyID();
+                var DoctorList = _emr_patientService.DoctorList(CompanyID, UserID);
+                var result = _service.Queryable().Where(e => e.ID.ToString() == Id).Include(a => a.adm_company).FirstOrDefault();
+                if (result != null)
+                {
+                    var doctorName = result.DoctorId == 0
+                        ? ""
+                        : DoctorList.DoctList
+                            .FirstOrDefault(a => a.ID == result.DoctorId)?.Name ?? "";
+
+                    objResponse.ResultSet = new
+                    {
+                        result.ID,
+                        result.CategoryId,
+                        result.CompanyId,
+                        result.CategoryDropdownId,
+                        result.Date,
+                        result.ReceivedAmount,
+                        result.Remark,
+                        result.DueAmount,
+                        result.Image,
+                        result.PaymentMethodID,
+                        result.DoctorId,
+                        result.CreatedBy,
+                        result.CreatedDate,
+                        result.ModifiedBy,
+                        result.ModifiedDate,
+                        result.PaymentMethodDropdownID,
+                        DoctorName = doctorName
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -288,8 +317,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 objResult = _service.Pagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, IgnorePaging);
                 var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 20).Select(z => new
                 {
-                   z.ID,
-                     z.Value,
+                    z.ID,
+                    z.Value,
                 }).ToList();
                 objResult.OtherDataModel = categoryList;
 
@@ -392,7 +421,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal CompanyID = Request.CompanyID();
 
                 var dropDownIds = new[] { 20, 41 };
-                var allDropDownValues =  _sys_drop_down_valueService.Queryable()
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
     .Where(x => dropDownIds.Contains(x.DropDownID)
                 && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
                 {
@@ -411,7 +440,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 objResponse.ResultSet = new
                 {
                     categoryList = categoryList,
-                    paymentList= paymentList,
+                    paymentList = paymentList,
                 };
             }
             catch (Exception ex)
@@ -445,6 +474,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResult;
         }
-        
+
     }
 }

@@ -19,6 +19,7 @@ export class emr_prescription_mf {
     ID: number;
     CompanyID: number;
     IsTemplate: boolean = false;
+    IsVOCObtained: boolean = false;
     AppointmentDate: string;
     AppointDate: string;
     PatientId: number;

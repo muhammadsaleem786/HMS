@@ -9,4 +9,6 @@
     Image: string;
     DueAmount: number=0;
     ReceivedAmount: number;
+    DoctorId: number;
+    DoctorName: string;
 }

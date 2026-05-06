@@ -441,7 +441,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     result = result,
                     ItemList = ItemList,
                     IsRefund = IsRefund,
-                    PatientInfo= PatientInfo,
+                    PatientInfo = PatientInfo,
                 };
             }
             catch (Exception ex)
@@ -686,29 +686,32 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     item.ObjectState = ObjectState.Added;
                     item.adm_company = null;
                     _pur_sale_dtService.Insert(item);
-
                     saleItemID++;
-                    inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID
+                    var findItem = _adm_itemService.Queryable().Where(a => a.ID == item.ItemID).FirstOrDefault();
+                    if (findItem.TrackInventory)
+                    {
+                        inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID
                     && (e.BatchSarialNumber == null && item.BatchSarialNumber == null
                     || e.BatchSarialNumber.ToString() == item.BatchSarialNumber.ToString())
                     && e.CompanyId == CompanyID).FirstOrDefault();
-                    if (inv_stockModel != null)
-                    {
-                        inv_stockModel.Quantity -= Convert.ToDecimal(item.Quantity);
-                        _inv_stockService.Update(inv_stockModel);
-                        //log maintain                               
-                        adm_item_log_obj.ID = LogID;
-                        adm_item_log_obj.CompanyId = CompanyID;
-                        adm_item_log_obj.ItemId = item.ItemID;
-                        adm_item_log_obj.Quantity = "-" + item.Quantity;
-                        adm_item_log_obj.Type = "Sale";
-                        adm_item_log_obj.CreatedBy = Request.LoginID();
-                        adm_item_log_obj.CreatedDate = Request.DateTimes();
-                        adm_item_log_obj.ModifiedBy = Request.LoginID();
-                        adm_item_log_obj.ModifiedDate = Request.DateTimes();
-                        adm_item_log_obj.ObjectState = ObjectState.Added;
-                        _adm_item_logService.Insert(adm_item_log_obj);
-                        LogID++;
+                        if (inv_stockModel != null)
+                        {
+                            inv_stockModel.Quantity -= Convert.ToDecimal(item.Quantity);
+                            _inv_stockService.Update(inv_stockModel);
+                            //log maintain                               
+                            adm_item_log_obj.ID = LogID;
+                            adm_item_log_obj.CompanyId = CompanyID;
+                            adm_item_log_obj.ItemId = item.ItemID;
+                            adm_item_log_obj.Quantity = "-" + item.Quantity;
+                            adm_item_log_obj.Type = "Sale";
+                            adm_item_log_obj.CreatedBy = Request.LoginID();
+                            adm_item_log_obj.CreatedDate = Request.DateTimes();
+                            adm_item_log_obj.ModifiedBy = Request.LoginID();
+                            adm_item_log_obj.ModifiedDate = Request.DateTimes();
+                            adm_item_log_obj.ObjectState = ObjectState.Added;
+                            _adm_item_logService.Insert(adm_item_log_obj);
+                            LogID++;
+                        }
                     }
                 }
 
@@ -830,31 +833,33 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     item.adm_company = null;
                     _pur_sale_dtService.Insert(item);
                     adm_item_log adm_item_log_obj = new adm_item_log();
-
-
                     saleItemID++;
-                    inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID
-                    && (e.BatchSarialNumber == null && item.BatchSarialNumber == null
-                        || e.BatchSarialNumber.ToString() == item.BatchSarialNumber.ToString())
-                    && e.CompanyId == CompanyID).FirstOrDefault();
-                    if (inv_stockModel != null)
+                    var findItem = _adm_itemService.Queryable().Where(a => a.ID == item.ItemID).FirstOrDefault();
+                    if (findItem.TrackInventory)
                     {
-                        inv_stockModel.Quantity += Convert.ToDecimal(item.Quantity);
-                        _inv_stockService.Update(inv_stockModel);
+                        inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID
+                        && (e.BatchSarialNumber == null && item.BatchSarialNumber == null
+                            || e.BatchSarialNumber.ToString() == item.BatchSarialNumber.ToString())
+                        && e.CompanyId == CompanyID).FirstOrDefault();
+                        if (inv_stockModel != null)
+                        {
+                            inv_stockModel.Quantity += Convert.ToDecimal(item.Quantity);
+                            _inv_stockService.Update(inv_stockModel);
 
-                        //log maintain                               
-                        adm_item_log_obj.ID = LogID;
-                        adm_item_log_obj.CompanyId = CompanyID;
-                        adm_item_log_obj.ItemId = item.ItemID;
-                        adm_item_log_obj.Quantity = "+" + item.Quantity;
-                        adm_item_log_obj.Type = "Sale Update";
-                        adm_item_log_obj.CreatedBy = Request.LoginID();
-                        adm_item_log_obj.CreatedDate = Request.DateTimes();
-                        adm_item_log_obj.ModifiedBy = Request.LoginID();
-                        adm_item_log_obj.ModifiedDate = Request.DateTimes();
-                        adm_item_log_obj.ObjectState = ObjectState.Added;
-                        _adm_item_logService.Insert(adm_item_log_obj);
-                        LogID++;
+                            //log maintain                               
+                            adm_item_log_obj.ID = LogID;
+                            adm_item_log_obj.CompanyId = CompanyID;
+                            adm_item_log_obj.ItemId = item.ItemID;
+                            adm_item_log_obj.Quantity = "+" + item.Quantity;
+                            adm_item_log_obj.Type = "Sale Update";
+                            adm_item_log_obj.CreatedBy = Request.LoginID();
+                            adm_item_log_obj.CreatedDate = Request.DateTimes();
+                            adm_item_log_obj.ModifiedBy = Request.LoginID();
+                            adm_item_log_obj.ModifiedDate = Request.DateTimes();
+                            adm_item_log_obj.ObjectState = ObjectState.Added;
+                            _adm_item_logService.Insert(adm_item_log_obj);
+                            LogID++;
+                        }
                     }
                 }
 

@@ -240,9 +240,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     .ToListAsync();
                 decimal incomeFor(int catId) =>
     incomeByCategory.FirstOrDefault(x => x.CategoryId == catId)?.TotalReceived ?? 0m;
-                var pharmacyIncome = _pur_sale_mfService.Queryable().Where(i => i.CompanyID == CompanyID && i.Date >= start && i.Date < end).Sum(a => a.Total);
+                var totalReturns = _pur_sale_mfService.Queryable().Where(r => r.CompanyID == CompanyID && r.Date >= start && r.Date < end && r.ReturnInvoiceId != null).Sum(r => (decimal?)r.Total) ?? 0m;
+                var totalSales = _pur_sale_mfService.Queryable().Where(i => i.CompanyID == CompanyID && i.Date >= start && i.Date < end && i.ReturnInvoiceId == null).Sum(a => a.Total);
+                var pharmacyIncome = totalSales - totalReturns;
                 var ipdIncome = _ipd_paymentService.Queryable().Where(i => i.CompanyId == CompanyID && i.PaymentDate >= start && i.PaymentDate < end).Sum(a => (decimal?)a.Amount) ?? 0m;
-                var pathologyIncome = incomeFor(65);
+                var pathologyIncome = 0;
                 var generalIncome = incomeByCategory.Sum(x => x.TotalReceived);
                 var outStandingIncome = incomeByCategory.Sum(x => x.TotalDue);
 

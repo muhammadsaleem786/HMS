@@ -14,5 +14,6 @@ namespace HMS.Entities.CustomModel
         public decimal PaidAmount { get; set; }
         public decimal OutAmount { get; set; }
         public object medicine { get; set; }
+        public  bool IsVOCObtained {  get; set; }
     }
 }

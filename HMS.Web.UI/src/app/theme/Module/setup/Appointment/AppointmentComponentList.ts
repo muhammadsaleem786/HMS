@@ -176,6 +176,7 @@ export class AppointmentComponentList implements OnInit {
     public DurationList: any[] = [];
     public InstructionsList: any[] = [];
     public UsersObj: any;
+    public currentTime: Date = new Date();
     public ColumnSettings: IMultiSelectSettings = {
         pullRight: false,
         enableSearch: true,
@@ -419,6 +420,7 @@ export class AppointmentComponentList implements OnInit {
             FollowUpNotes: [''],
             ClinicalNote: [''],
             PlanNote: [''],
+            IsVOCObtained: [''],
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -3256,8 +3258,10 @@ export class AppointmentComponentList implements OnInit {
                     this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
                     this.PrescriptionModel.Gender = result.ResultSet.patientInfo.Gender;
                     this.PrescriptionModel.Mobile = result.ResultSet.patientInfo.Mobile;
+
                 }
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
+                this.PatientRXmodel.IsVOCObtained = result.ResultSet.Model.IsVOCObtained;
                 this.PatientRXmodel.FollowUpDate = result.ResultSet.Model.FollowUpDate;
                 if (result.ResultSet.Model.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.ClinicalNote);

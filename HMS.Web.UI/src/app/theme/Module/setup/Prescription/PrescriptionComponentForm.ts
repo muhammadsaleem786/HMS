@@ -59,7 +59,7 @@ export class PrescriptionComponentForm implements OnInit {
     public PayrollRegion: string;
     public Keywords: any[] = [];
     public sub: any; public Step: number = 30;
-    public IsEdit: boolean = false;
+    public IsEdit: boolean = false; public currentTime: Date = new Date();
     public CompanyInfo: any[] = [];
     public GenderList: any[] = []; public CurntPrevDateList: any[] = [];
     public model = new emr_patient();
@@ -267,7 +267,8 @@ export class PrescriptionComponentForm implements OnInit {
             Day: [''],
             FollowUpNotes: [''],
             ClinicalNote: [''],
-            PlanNote: ['']
+            PlanNote: [''],
+            IsVOCObtained: [''],
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -2039,6 +2040,7 @@ export class PrescriptionComponentForm implements OnInit {
                     this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
                     this.PatientRXmodel.Gender = result.ResultSet.patientInfo.Gender;
                     this.PatientRXmodel.Mobile = result.ResultSet.patientInfo.Mobile;
+                    this.PatientRXmodel.IsVOCObtained = result.ResultSet.Model.IsVOCObtained;
                     if (this.PatientRXmodel.ClinicIogo != null)
                         this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + result.ResultSet.patientInfo.ClinicIogo;
                 }

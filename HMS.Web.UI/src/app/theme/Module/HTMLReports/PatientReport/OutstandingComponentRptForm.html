@@ -82,8 +82,8 @@
                                 {{b.Mobile}}
                             </td>
                             <td>{{b.MrNo}}</td>
-                            <td  class="text-right">
-                                {{b.OutstandingBalance}}
+                            <td class="text-right">
+                                {{b.OutstandingBalance| number:'1.2-2'}}
                             </td>                     
                         </tr>
                     </tbody>
@@ -94,7 +94,7 @@
                             </td>
                             <td  class="text-right">
                                 <strong>
-                                    {{total}}
+                                    {{total| number:'1.2-2'}}
                                 </strong>
                             </td>
                         </tr>

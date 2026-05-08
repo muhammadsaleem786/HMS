@@ -725,8 +725,8 @@
 
                                                                                                             <div class="col-sm-3">
                                                                                                                 <div class="custom-control custom-checkbox mb-3 py-1">
-                                                                                                                    <input type="checkbox" class="custom-control-input" id="IsVoc" formControlName="IsVOCObtained" [(ngModel)]="PrescriptionModel.IsVOCObtained">
-                                                                                                                    <label class="custom-control-label" for="IsVoc">VOC Obtained Checked</label>
+                                                                                                                    <input type="checkbox" class="custom-control-input" id="IsVoc" formControlName="IsVCObtained" [(ngModel)]="PrescriptionModel.IsVCObtained">
+                                                                                                                    <label class="custom-control-label" for="IsVoc">VC Obtained</label>
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         </div>
@@ -2474,9 +2474,9 @@
                             </tr>
                         </tbody>
                     </table>
-                    <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">VOC Obtained</h3>
+                    <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">VC Obtained</h3>
                     <div>
-                        {{PatientRXmodel.IsVOCObtained ? 'Yes' : 'No'}}
+                        {{PatientRXmodel.IsVCObtained ? 'Yes' : 'No'}}
                     </div>
                     <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">Instructions</h3>
                     <div style="font-size:12px; margin:0; line-height:normal;">

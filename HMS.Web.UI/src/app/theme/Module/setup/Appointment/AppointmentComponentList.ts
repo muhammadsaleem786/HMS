@@ -420,7 +420,7 @@ export class AppointmentComponentList implements OnInit {
             FollowUpNotes: [''],
             ClinicalNote: [''],
             PlanNote: [''],
-            IsVOCObtained: [''],
+            IsVCObtained: [''],
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -3261,7 +3261,7 @@ export class AppointmentComponentList implements OnInit {
 
                 }
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
-                this.PatientRXmodel.IsVOCObtained = result.ResultSet.Model.IsVOCObtained;
+                this.PatientRXmodel.IsVCObtained = result.ResultSet.Model.IsVCObtained;
                 this.PatientRXmodel.FollowUpDate = result.ResultSet.Model.FollowUpDate;
                 if (result.ResultSet.Model.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.ClinicalNote);

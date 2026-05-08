@@ -156,10 +156,10 @@
     <Content Include="src\app\theme\Module\changepassword\changepassword.component.css" />
     <Content Include="src\app\theme\Module\changepassword\changepassword.component.html" />
     <Content Include="src\app\theme\Module\Dashboard\DashboardForm.html" />
-    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorPaymentSummaryComponentRptForm.html" />
-    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorswisePaymentComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\PaymentSummaryComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\PatientWisePaymentComponentRptForm.html" />
     <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\ClinicwiseComponentRptForm.html" />
-    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorswiseComponentRptForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\DateWisePaymentComponentRptForm.html" />
     <Content Include="src\app\theme\Module\HTMLReports\FinancialReport\ProfitLossRptForm.html" />
     <Content Include="src\app\theme\Module\HTMLReports\FinancialReport\OutstandingIncomeRptForm.html" />
     <Content Include="src\app\theme\Module\HTMLReports\FinancialReport\TreatmentwiseRptForm.html" />
@@ -396,10 +396,10 @@
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\PatientReport\ProcedureComponentRptForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\report-routing.module.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\report.module.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorPaymentSummaryComponentRptForm.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorswisePaymentComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\PaymentSummaryComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\PatientWisePaymentComponentRptForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\ClinicwiseComponentRptForm.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\DoctorswiseComponentRptForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\DateWisePaymentComponentRptForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\OutstandingIncomeRptForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\TreatmentwiseRptForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\MedicinewiseRptForm.ts" />

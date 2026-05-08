@@ -45,8 +45,8 @@
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" (click)="DownloadPDF()">Downlaod Pdf</a>
                         <a class="dropdown-item" (click)="DownloadExcel()">Downlaod Excel</a>
-                        
-                       
+
+
                     </div>
                 </div>
             </div>
@@ -54,22 +54,28 @@
         </div>
 
 
-        <div class="row AddNewItem"id="RptPDF" #RptPDF>
+        <div class="row AddNewItem" id="RptPDF" #RptPDF>
             <div class="col-sm-12">
-                <table class="table Reports_table"  border="1">
+                <table class="table Reports_table" border="1">
                     <thead class="gray_head">
                         <tr>
                             <th>
-                                Date / Time						
+                                Date / Time
                             </th>
                             <th>
                                 Doctor Name
                             </th>
                             <th class="text-right">
-                                Income Amount
+                                OPD Amount
                             </th>
                             <th class="text-right">
-                               Fee Amount
+                                IPD Amount
+                            </th>
+                            <th class="text-right">
+                                Pharmacy Amount
+                            </th>
+                            <th class="text-right">
+                                Income Amount
                             </th>
                             <th class="text-right">
                                 Total Amount
@@ -85,24 +91,30 @@
                                 {{p.DoctorName}}
                             </td>
                             <td class="text-right">
-                                {{p.IncomeAmount ? p.IncomeAmount : 0}}
+                                {{(p.OpdAmount ? p.OpdAmount : 0)| number:'1.2-2'}}
                             </td>
                             <td class="text-right">
-                                {{p.PaidAmount}}
+                                {{(p.IpdIncome ? p.IpdIncome : 0)| number:'1.2-2'}}
                             </td>
                             <td class="text-right">
-                                {{p.PaidAmount + p.IncomeAmount}}
+                                {{(p.pharmacyIncome ? p.pharmacyIncome : 0)| number:'1.2-2'}}
+                            </td>
+                            <td class="text-right">
+                                {{(p.IncomeAmount ? p.IncomeAmount : 0)| number:'1.2-2'}}
+                            </td>
+                            <td class="text-right">
+                                {{(p.OpdAmount + p.IpdIncome + p.pharmacyIncome + p.IncomeAmount) | number:'1.2-2'}}
                             </td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">
+                            <td colspan="6">
                                 <strong>Total</strong>
                             </td>
-                            <td  class="text-right">
+                            <td class="text-right">
                                 <strong>
-                                    {{total}}
+                                    {{total| number:'1.2-2'}}
 
                                 </strong>
                             </td>
@@ -112,7 +124,7 @@
             </div>
         </div>
     </div>
-  
+
 </div>
 
 

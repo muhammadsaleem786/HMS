@@ -111,7 +111,7 @@
                                 {{f.Mobile}}
                             </td>
                             <td class="text-right">
-                                {{f.PaidAmount}}
+                                {{f.PaidAmount| number:'1.2-2'}}
                             </td>
                         </tr>
                     </tbody>
@@ -122,7 +122,7 @@
                             </td>
                             <td class="text-right">
                                 <strong>
-                                    {{total}}
+                                    {{total| number:'1.2-2'}}
                                 </strong>
                             </td>
                         </tr>

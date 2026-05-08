@@ -23,7 +23,7 @@ namespace HMS.Entities.Models
         public decimal ID { get; set; }
         public decimal CompanyID { get; set; }
         public bool IsTemplate { get; set; }
-        public bool IsVOCObtained { get; set; }
+        public bool IsVCObtained { get; set; }
         [NotMapped]
         public string Email { get; set; }
         public System.DateTime AppointmentDate { get; set; }

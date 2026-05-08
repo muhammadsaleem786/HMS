@@ -43,7 +43,7 @@
                                 {{item.PatientName}}
                             </td>
                             <td (click)="AddRecord(item.ID)">
-                                {{item.IsVOCObtained ? 'Yes' : 'No' }}
+                                {{item.IsVCObtained ? 'Yes' : 'No' }}
                             </td>
                             <td (click)="AddRecord(item.ID)">
                                 {{item.PaidAmount}}/{{item.OutstandingBalance}}
@@ -342,9 +342,9 @@
                             </tr>
                         </tbody>
                     </table>
-                    <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">VOC Obtained</h3>
+                    <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">VC Obtained</h3>
                     <div>
-                        {{PatientRXmodel.IsVOCObtained ? 'Yes' : 'No'}}
+                        {{PatientRXmodel.IsVCObtained ? 'Yes' : 'No'}}
                     </div>
                     <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">Instructions</h3>
                     <div style="font-size:12px; margin:0; line-height:normal;">

@@ -16,9 +16,9 @@ import { OutstandingIncomeRptForm } from '../../../theme/Module/HTMLReports/Fina
 import { PaymentSummaryRptForm } from '../../../theme/Module/HTMLReports/FinancialReport/PaymentSummaryRptForm';
 import { TreatmentwiseRptForm } from '../../../theme/Module/HTMLReports/FinancialReport/TreatmentwiseRptForm';
 import { ClinicwiseComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/ClinicwiseComponentRptForm';
-import { DoctorswiseComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DoctorswiseComponentRptForm';
-import { DoctorswisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DoctorswisePaymentComponentRptForm';
-import { DoctorPaymentSummaryComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DoctorPaymentSummaryComponentRptForm';
+import { DateWisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DateWisePaymentComponentRptForm';
+import { PaymentSummaryComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/PaymentSummaryComponentRptForm';
+import { PatientWisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/PatientWisePaymentComponentRptForm';
 import { CurrentStockRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/CurrentStockRptForm';
 import { SaleByPatientRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/SaleByPatientRptForm';
 import { PurchaseRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/PurchaseRptForm';
@@ -49,10 +49,10 @@ const routes: Routes = [
             { path: 'OutstandingRpt', component: OutstandingComponentRptForm, canActivate: [AuthGuard] },
             { path: 'PaymentRpt', component: PaymentComponentRptForm, canActivate: [AuthGuard] },
             { path: 'ClinicRpt', component: ClinicwiseComponentRptForm, canActivate: [AuthGuard] },
-            { path: 'DocSummaryRpt', component: DoctorPaymentSummaryComponentRptForm, canActivate: [AuthGuard] },
-            { path: 'DoctorswiseRpt', component: DoctorswiseComponentRptForm, canActivate: [AuthGuard] },
+            { path: 'DocSummaryRpt', component: PaymentSummaryComponentRptForm , canActivate: [AuthGuard] },
+            { path: 'DoctorswiseRpt', component: DateWisePaymentComponentRptForm, canActivate: [AuthGuard] },
             { path: 'PurRpt', component: PurchaseRptForm, canActivate: [AuthGuard] },
-            { path: 'DocPaymentRpt', component: DoctorswisePaymentComponentRptForm, canActivate: [AuthGuard] },
+            { path: 'DocPaymentRpt', component: PatientWisePaymentComponentRptForm, canActivate: [AuthGuard] },
                
         ]
     }

@@ -30,6 +30,14 @@
                                         </span>
                                     </a>
                                 </div>
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(38)>-1">
+                                    <a class="report_block" routerLink="/home/ClinicRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Clinic wise Payment Report
+                                        </span>
+                                    </a>
+                                </div>
                                 <div class="col-sm-3" *ngIf="Rights.indexOf(27)>-1">
                                     <a class="report_block" routerLink="/home/CashFlowRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
@@ -145,7 +153,7 @@
                     </div>
                 </ng-template>
             </ngb-tab>
-            <ngb-tab title="Doctor/Clinic Reports">
+            <ngb-tab title="Doctor Reports">
                 <ng-template ngbTabContent>
                     <div class="row">
                         <div class="col-sm-12">
@@ -154,7 +162,7 @@
                                     <a class="report_block" routerLink="/home/DoctorswiseRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
                                         <span class="title">
-                                            Doctors wise Fees Report
+                                            Date Wise Payment
                                         </span>
                                     </a>
                                 </div>
@@ -162,7 +170,7 @@
                                     <a class="report_block" routerLink="/home/DocPaymentRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
                                         <span class="title">
-                                            Doctors wise Payment Report
+                                            Patient Wise Payment
                                         </span>
                                     </a>
                                 </div>
@@ -170,18 +178,11 @@
                                     <a class="report_block" routerLink="/home/DocSummaryRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
                                         <span class="title">
-                                            Doctors wise Summary Payment Report
+                                            Payment Summary Report
                                         </span>
                                     </a>
                                 </div>
-                                <div class="col-sm-3" *ngIf="Rights.indexOf(38)>-1">
-                                    <a class="report_block" routerLink="/home/ClinicRpt">
-                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
-                                        <span class="title">
-                                            Clinic wise Payment Report
-                                        </span>
-                                    </a>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>

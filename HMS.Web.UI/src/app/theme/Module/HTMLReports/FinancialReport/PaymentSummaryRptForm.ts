@@ -94,7 +94,7 @@ export class PaymentSummaryRptForm implements OnInit {
                 this.total = 0;
                 this.DataList = result.ResultSet.paymentList;
                 this.DataList.forEach(x => {
-                    this.total += (x.PaidAmount + x.IncomeAmount)
+                    this.total += (x.OpdAmount + x.IpdIncome + x.pharmacyIncome + x.IncomeAmount)
                 }); 
                 this.loader.HideLoader();
             } else

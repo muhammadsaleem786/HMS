@@ -3,6 +3,7 @@ using HMS.Entities.Models;
 using HMS.Service.Services.Admin;
 using HMS.Service.Services.Admission;
 using HMS.Service.Services.Appointment;
+using HMS.Service.Services.Items;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
@@ -37,14 +38,16 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iemr_expenseService _emr_expenseService;
         private readonly Iipd_procedure_mfService _ipd_procedure_mfService;
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
-
+        private readonly Iipd_paymentService _ipd_paymentService;
+        private readonly Iipd_admissionService _ipd_admissionService;
+        private readonly Ipur_sale_mfService _pur_sale_mfService;
         public adm_ReportController(IUnitOfWorkAsync unitOfWorkAsync,
             Iemr_appointment_mfService emr_appointment_mfService,
             Iemr_patient_billService emr_patient_billService,
             Iadm_userService service, Iemr_incomeService emr_incomeService, Iemr_expenseService emr_expenseService,
         Iemr_prescription_treatmentService emr_prescription_treatmentService,
             Iemr_prescription_mfService emr_prescription_mfService
-         , Iemr_patientService emr_patientService, Iipd_procedure_mfService ipd_procedure_mfService, Isys_drop_down_valueService sys_drop_down_valueService)
+         , Iemr_patientService emr_patientService, Iipd_procedure_mfService ipd_procedure_mfService, Isys_drop_down_valueService sys_drop_down_valueService, Iipd_paymentService ipd_paymentService, Iipd_admissionService ipd_admissionService, Ipur_sale_mfService pur_sale_mfService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -57,6 +60,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _emr_expenseService = emr_expenseService;
             _ipd_procedure_mfService = ipd_procedure_mfService;
             _sys_drop_down_valueService = sys_drop_down_valueService;
+            _ipd_paymentService = ipd_paymentService;
+            _ipd_admissionService = ipd_admissionService;
+            _pur_sale_mfService = pur_sale_mfService;
         }
         [HttpPost]
         [ActionName("AppointmentRpt")]
@@ -387,6 +393,60 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 }
                 return objResponse;
             }
+
+        }
+        public decimal GetTotalIncome(decimal companyId, DateTime fromDate, DateTime toDate)
+        {
+            // =========================
+            // OPD INCOME
+            // =========================
+            decimal opd = _emr_patient_billService.Queryable()
+                .Where(a => a.CompanyId == companyId &&
+                            DbFunctions.TruncateTime(a.BillDate) >= DbFunctions.TruncateTime(fromDate) &&
+                            DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(toDate))
+                .Sum(x => (decimal?)x.PaidAmount) ?? 0m;
+
+            // =========================
+            // IPD INCOME
+            // =========================
+            decimal ipd = _ipd_paymentService.Queryable()
+                .Where(a => a.CompanyId == companyId &&
+                            DbFunctions.TruncateTime(a.PaymentDate) >= DbFunctions.TruncateTime(fromDate) &&
+                            DbFunctions.TruncateTime(a.PaymentDate) <= DbFunctions.TruncateTime(toDate))
+                .Sum(x => (decimal?)x.Amount) ?? 0m;
+
+            // =========================
+            // GENERAL INCOME
+            // =========================
+            decimal income = _emr_incomeService.Queryable()
+                .Where(a => a.CompanyId == companyId &&
+                            DbFunctions.TruncateTime(a.Date) >= DbFunctions.TruncateTime(fromDate) &&
+                            DbFunctions.TruncateTime(a.Date) <= DbFunctions.TruncateTime(toDate))
+                .Sum(x => (decimal?)x.ReceivedAmount) ?? 0m;
+
+            // =========================
+            // PHARMACY INCOME
+            // =========================
+            decimal sales = _pur_sale_mfService.Queryable()
+                .Where(a => a.CompanyID == companyId &&
+                            DbFunctions.TruncateTime(a.Date) >= DbFunctions.TruncateTime(fromDate) &&
+                            DbFunctions.TruncateTime(a.Date) <= DbFunctions.TruncateTime(toDate) &&
+                            a.ReturnInvoiceId == null)
+                .Sum(x => (decimal?)x.Total) ?? 0m;
+
+            decimal returns = _pur_sale_mfService.Queryable()
+                .Where(a => a.CompanyID == companyId &&
+                            DbFunctions.TruncateTime(a.Date) >= DbFunctions.TruncateTime(fromDate) &&
+                            DbFunctions.TruncateTime(a.Date) <= DbFunctions.TruncateTime(toDate) &&
+                            a.ReturnInvoiceId != null)
+                .Sum(x => (decimal?)x.Total) ?? 0m;
+
+            decimal pharmacy = sales - returns;
+
+            // =========================
+            // FINAL TOTAL
+            // =========================
+            return opd + ipd + income + pharmacy;
         }
         [HttpPost]
         [ActionName("ClinicwiseRpt")]
@@ -397,23 +457,82 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 try
                 {
                     decimal CompanyID = Request.CompanyID();
+                    // =========================
+                    // OPD (Clinic-wise)
+                    // =========================
                     var Paymentlist = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID &&
                DbFunctions.TruncateTime(a.BillDate) >= DbFunctions.TruncateTime(model.FromDate) &&
                DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(model.ToDate)).Select(a => new
                {
-                   ID = a.ID,
-                   CompanyName = a.adm_company.CompanyName,
-                   OutstandingBalance = a.OutstandingBalance,
-                   PaidAmount = a.PaidAmount,
                    CompanyId = a.adm_company.ID,
-               }).Where(a => model.PatientId == null ? a.CompanyId == a.CompanyId : a.CompanyId == model.PatientId).OrderByDescending(a => a.ID).ToList();
-                    var results = Paymentlist.GroupBy(l => l.CompanyName)
-    .Select(cl => new
-    {
-        CompanyName = cl.First().CompanyName,
-        OutstandingBalance = cl.Sum(c => c.OutstandingBalance),
-        PaidAmount = cl.Sum(c => c.PaidAmount),
-    }).ToList();
+                   CompanyName = a.adm_company.CompanyName,
+                   PaidAmount = a.PaidAmount
+               }).Where(a => model.PatientId == null ? a.CompanyId == a.CompanyId : a.CompanyId == model.PatientId).ToList();
+
+                    // =========================
+                    // PHARMACY (Clinic-wise)
+                    // =========================
+                    var pharmacyList = _pur_sale_mfService.Queryable().
+                        Where(r => r.CompanyID == CompanyID && DbFunctions.TruncateTime(r.Date) >= DbFunctions.TruncateTime(model.FromDate) && DbFunctions.TruncateTime(r.Date) <= DbFunctions.TruncateTime(model.ToDate))
+                        .Select(x => new
+                        {
+                            CompanyId = x.CompanyID,
+                            Sales = x.ReturnInvoiceId == null ? x.Total : 0m,
+                            Returns = x.ReturnInvoiceId != null ? x.Total : 0m
+                        }).ToList();
+                    var pharmacyGrouped = pharmacyList
+      .GroupBy(x => x.CompanyId)
+      .ToDictionary(
+          g => g.Key,
+          g => g.Sum(x => x.Sales) - g.Sum(x => x.Returns)
+      );
+
+                    // =========================
+                    // IPD (Clinic-wise)
+                    // =========================
+                    var ipdGrouped = _ipd_paymentService.Queryable()
+          .Where(i => i.CompanyId == CompanyID && DbFunctions.TruncateTime(i.PaymentDate) >= DbFunctions.TruncateTime(model.FromDate) && DbFunctions.TruncateTime(i.PaymentDate) <= DbFunctions.TruncateTime(model.ToDate))
+          .GroupBy(x => x.CompanyId)
+          .ToDictionary(
+              g => g.Key,
+              g => g.Sum(x => (decimal?)x.Amount) ?? 0m
+          );
+                    // =========================
+                    // GENERAL INCOME (Clinic-wise)
+                    // =========================
+                    var incomeGrouped = _emr_incomeService.Queryable()
+         .Where(i => i.CompanyId == CompanyID && DbFunctions.TruncateTime(i.Date) >= DbFunctions.TruncateTime(model.FromDate) && DbFunctions.TruncateTime(i.Date) <= DbFunctions.TruncateTime(model.ToDate))
+         .GroupBy(x => x.CompanyId)
+         .ToDictionary(
+             g => g.Key,
+             g => g.Sum(x => (decimal?)x.ReceivedAmount) ?? 0m
+         );
+                    // =========================
+                    // FINAL GROUP (OPD + Income + Pharmacy + IPD)
+                    // =========================
+                    var results = Paymentlist
+            .GroupBy(x => new { x.CompanyId, x.CompanyName })
+            .Select(g =>
+            {
+                var cid = g.Key.CompanyId;
+
+                decimal opd = g.Sum(x => x.PaidAmount);
+                decimal ipd = ipdGrouped.ContainsKey(cid) ? ipdGrouped[cid] : 0m;
+                decimal income = incomeGrouped.ContainsKey(cid) ? incomeGrouped[cid] : 0m;
+                decimal? pharmacy = pharmacyGrouped.ContainsKey(cid) ? pharmacyGrouped[cid] : 0m;
+
+                return new
+                {
+                    CompanyName = g.Key.CompanyName,
+                    OpdAmount = opd,
+                    IpdIncome = ipd,
+                    IncomeAmount = income,
+                    PharmacyIncome = pharmacy,
+                    TotalIncome = opd + ipd + income + pharmacy
+                };
+            })
+            .OrderByDescending(x => x.TotalIncome)
+            .ToList();
                     objResponse.IsSuccess = true;
                     objResponse.ResultSet = new
                     {
@@ -448,6 +567,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                      Price = a.Price,
                      OutstandingBalance = a.OutstandingBalance,
                      PaidAmount = a.PaidAmount,
+                     BillDate = a.BillDate
                  }).Where(a => model.DoctorId == null ? a.DoctorId == a.DoctorId : a.DoctorId == model.DoctorId).OrderByDescending(a => a.ID).ToList();
 
                     var reslt = FeeList.AsEnumerable().Select(a => new
@@ -459,20 +579,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         Price = a.Price,
                         OutstandingBalance = a.OutstandingBalance,
                         PaidAmount = a.PaidAmount,
+                        BillDate = a.BillDate
                     }).ToList();
-                    var results = reslt.GroupBy(l => l.DoctorName)
-    .Select(cl => new
-    {
-        DoctorName = cl.First().DoctorName,
-        Discount = cl.Sum(c => c.Discount),
-        OutstandingBalance = cl.Sum(c => c.OutstandingBalance),
-        Price = cl.Sum(c => c.Price),
-        PaidAmount = cl.Sum(c => c.PaidAmount),
-    }).ToList();
                     objResponse.IsSuccess = true;
                     objResponse.ResultSet = new
                     {
-                        FeeList = results,
+                        FeeList = reslt,
                     };
                 }
                 catch (Exception ex)
@@ -493,34 +605,117 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 try
                 {
                     decimal CompanyID = Request.CompanyID();
-                    var FeeList = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID &&
-               DbFunctions.TruncateTime(a.BillDate) >= DbFunctions.TruncateTime(model.FromDate) &&
-               DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(model.ToDate)).Select(a => new
-               {
-                   ID = a.ID,
-                   CompanyName = a.adm_company.CompanyName,
-                   OutstandingBalance = a.OutstandingBalance,
-                   PaidAmount = a.PaidAmount,
-                   DoctorId = a.DoctorId,
-                   PatientName = a.emr_patient_mf.PatientName,
-                   Date = a.BillDate,
-               }).Where(a => model.DoctorId == null ? a.DoctorId == a.DoctorId : a.DoctorId == model.DoctorId).OrderByDescending(a => a.ID).ToList();
-
-                    var result = FeeList.AsEnumerable().Select(a => new
+                    // =========================
+                    // Doctor List
+                    // =========================
+                    var doctorList = _service.Queryable()
+                        .Select(x => new
+                        {
+                            x.ID,
+                            x.Name
+                        }).ToList();
+                    // =========================
+                    // OPD Income
+                    // =========================
+                    List<DoctorWisePaymentVM> opdIncome = _emr_patient_billService.Queryable()
+           .Where(a => a.CompanyId == CompanyID &&
+                  DbFunctions.TruncateTime(a.BillDate) >= DbFunctions.TruncateTime(model.FromDate) &&
+                  DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(model.ToDate))
+           .Select(a => new DoctorWisePaymentVM
+           {
+               ID = a.ID,
+               CompanyName = a.adm_company.CompanyName,
+               OutstandingBalance = a.OutstandingBalance,
+               PaidAmount = a.PaidAmount,
+               DoctorId = (decimal)a.DoctorId,
+               PatientName = a.emr_patient_mf.PatientName,
+               Date = a.BillDate,
+               Type = "OPD"
+           })
+           .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
+           .ToList();
+                    // =========================
+                    // IPD Income
+                    // =========================
+                    var ipdIncome = _ipd_admissionService.Queryable()
+                        .Where(i => i.CompanyId == CompanyID &&
+                               DbFunctions.TruncateTime(i.AdmissionDate) >= DbFunctions.TruncateTime(model.FromDate) &&
+                               DbFunctions.TruncateTime(i.AdmissionDate) <= DbFunctions.TruncateTime(model.ToDate))
+                        .Select(a => new
+                        {
+                            ID = a.ID,
+                            CompanyName = a.adm_company.CompanyName,
+                            OutstandingBalance = 0m,
+                            DoctorId = a.DoctorId,
+                            PatientName = a.emr_patient_mf.PatientName,
+                            Date = a.AdmissionDate,
+                            Type = "IPD"
+                        })
+                        .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
+                        .ToList();
+                    List<DoctorWisePaymentVM> ipdResult = ipdIncome.Select(a => new DoctorWisePaymentVM
                     {
                         ID = a.ID,
-                        DoctorName = _service.Queryable().Where(z => z.ID == a.DoctorId).Count() > 0 ? _service.Queryable().Where(z => z.ID == a.DoctorId).FirstOrDefault().Name : "",
                         CompanyName = a.CompanyName,
                         OutstandingBalance = a.OutstandingBalance,
-                        PaidAmount = a.PaidAmount,
+
+                        PaidAmount = _ipd_paymentService.Queryable()
+                            .Where(z => z.AdmissionId == a.ID)
+                            .Sum(y => (decimal?)y.Amount) ?? 0m,
+
                         DoctorId = a.DoctorId,
                         PatientName = a.PatientName,
                         Date = a.Date,
+                        Type = a.Type
                     }).ToList();
+                    // =========================
+                    // Other Income
+                    // =========================
+                    List<DoctorWisePaymentVM> income = _emr_incomeService.Queryable()
+                        .AsNoTracking()
+                        .Where(i => i.CompanyId == CompanyID &&
+                               DbFunctions.TruncateTime(i.Date) >= DbFunctions.TruncateTime(model.FromDate) &&
+                               DbFunctions.TruncateTime(i.Date) <= DbFunctions.TruncateTime(model.ToDate))
+                        .Select(a => new DoctorWisePaymentVM
+                        {
+                            ID = a.ID,
+                            CompanyName = a.adm_company.CompanyName,
+                            OutstandingBalance = 0m,
+                            PaidAmount = a.ReceivedAmount,
+                            DoctorId = a.DoctorId,
+                            PatientName = "",
+                            Date = a.Date,
+                            Type = "Income"
+                        })
+                        .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
+                        .ToList();
+                    // =========================
+                    // Combine All Results
+                    // =========================
+                    var allData = opdIncome
+            .Concat(ipdResult)
+            .Concat(income)
+            .Select(a => new DoctorWisePaymentVM
+            {
+                ID = a.ID,
+                DoctorName = doctorList
+                    .Where(z => z.ID == a.DoctorId)
+                    .Select(z => z.Name)
+                    .FirstOrDefault() ?? "",
+                CompanyName = a.CompanyName,
+                OutstandingBalance = a.OutstandingBalance,
+                PaidAmount = a.PaidAmount,
+                DoctorId = a.DoctorId,
+                PatientName = a.PatientName,
+                Date = a.Date,
+                Type = a.Type
+            })
+            .OrderByDescending(x => x.Date)
+            .ToList();
                     objResponse.IsSuccess = true;
                     objResponse.ResultSet = new
                     {
-                        FeeList = result
+                        FeeList = allData
                     };
                 }
                 catch (Exception ex)
@@ -532,6 +727,18 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 return objResponse;
             }
         }
+        public class DoctorWisePaymentVM
+        {
+            public decimal ID { get; set; }
+            public string DoctorName { get; set; }
+            public string CompanyName { get; set; }
+            public decimal OutstandingBalance { get; set; }
+            public decimal? PaidAmount { get; set; }
+            public decimal? DoctorId { get; set; }
+            public string PatientName { get; set; }
+            public DateTime Date { get; set; }
+            public string Type { get; set; }
+        }
         [HttpPost]
         [ActionName("DoctorswiseSummaryPaymentRpt")]
         public ResponseInfo DoctorswiseSummaryPaymentRpt(ReportModel model)
@@ -540,36 +747,123 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 var objResponse = new ResponseInfo();
                 try
                 {
+                    var doctorId = model.DoctorId;
                     decimal CompanyID = Request.CompanyID();
-                    var FeeList = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID &&
+                    // =========================
+                    // DOCTOR LIST (FAST LOOKUP)
+                    // =========================
+                    var doctorDict = _service.Queryable()
+            .ToDictionary(x => (int)x.ID, x => x.Name);
+
+                    // =========================
+                    // OPD Income
+                    // =========================
+                    var opdIncome = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID &&
                DbFunctions.TruncateTime(a.BillDate) >= DbFunctions.TruncateTime(model.FromDate) &&
-               DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(model.ToDate)).Select(a => new
+               DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(model.ToDate) && (doctorId == null || a.DoctorId == doctorId)).Select(a => new
                {
-                   ID = a.ID,
                    CompanyName = a.adm_company.CompanyName,
-                   OutstandingBalance = a.OutstandingBalance,
                    PaidAmount = a.PaidAmount,
                    DoctorId = a.DoctorId,
-               }).Where(a => model.DoctorId == null ? a.DoctorId == a.DoctorId : a.DoctorId == model.DoctorId).OrderByDescending(a => a.ID).ToList();
-                    var result = FeeList.AsEnumerable().Select(a => new
+               }).ToList();
+
+                    // =========================
+                    // IPD Income
+                    // =========================
+                    var ipdIncome = _ipd_admissionService.Queryable()
+                        .Where(i => i.CompanyId == CompanyID &&
+                               DbFunctions.TruncateTime(i.AdmissionDate) >= DbFunctions.TruncateTime(model.FromDate) &&
+                               DbFunctions.TruncateTime(i.AdmissionDate) <= DbFunctions.TruncateTime(model.ToDate)
+                               && (doctorId == null || i.DoctorId == doctorId))
+                        .Select(a => new
+                        {
+                            a.ID,
+                            DoctorId = a.DoctorId,
+                        })
+                        .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
+                        .ToList();
+                    var ipdGrouped = ipdIncome
+            .Select(x => new
+            {
+                x.DoctorId,
+                Amount = _ipd_paymentService.Queryable()
+                    .Where(z => z.AdmissionId == x.ID)
+                    .Sum(y => (decimal?)y.Amount) ?? 0m
+            })
+            .GroupBy(x => x.DoctorId)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Sum(x => x.Amount)
+            );
+                    // =========================
+                    // Other Income
+                    // =========================
+                    var incomeGrouped = _emr_incomeService.Queryable()
+                        .AsNoTracking()
+                        .Where(i => i.CompanyId == CompanyID &&
+                               DbFunctions.TruncateTime(i.Date) >= DbFunctions.TruncateTime(model.FromDate) &&
+                               DbFunctions.TruncateTime(i.Date) <= DbFunctions.TruncateTime(model.ToDate) &&
+                                (doctorId == null || i.DoctorId == doctorId))
+    .ToList()
+    .GroupBy(x => x.DoctorId ?? 0)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Sum(x => (decimal?)x.ReceivedAmount) ?? 0m
+            );
+                    // =========================
+                    // OPD GROUPED
+                    // =========================
+                    var opdGrouped = opdIncome
+.GroupBy(x => new
+{
+    x.DoctorId
+})
+.Select(g => new
+{
+    DoctorId = (int)g.Key.DoctorId,
+    CompanyName = g.FirstOrDefault().CompanyName,
+    OpdAmount = g.Sum(x => x.PaidAmount)
+})
+.ToList();
+                    // =========================
+                    // FINAL RESULT
+                    // =========================
+                    var results = opdGrouped.Select(x =>
                     {
-                        ID = a.ID,
-                        DoctorName = _service.Queryable().Where(z => z.ID == a.DoctorId).Count() > 0 ? _service.Queryable().Where(z => z.ID == a.DoctorId).FirstOrDefault().Name : "",
-                        CompanyName = a.CompanyName,
-                        OutstandingBalance = a.OutstandingBalance,
-                        PaidAmount = a.PaidAmount,
-                        DoctorId = a.DoctorId,
-                    }).ToList();
+                        decimal ipd = ipdGrouped.ContainsKey(x.DoctorId)
+                            ? ipdGrouped[x.DoctorId]
+                            : 0m;
+                        decimal income = 0m;
 
-                    var results = result.GroupBy(l => l.DoctorName)
-    .Select(cl => new
-    {
-        DoctorName = cl.First().DoctorName,
-        CompanyName = cl.First().CompanyName,
-        OutstandingBalance = cl.Sum(c => c.OutstandingBalance),
-        PaidAmount = cl.Sum(c => c.PaidAmount),
-    }).ToList();
+                        if (model.DoctorId != null)
+                        {
+                            income = incomeGrouped.ContainsKey(x.DoctorId)
+                                ? incomeGrouped[x.DoctorId]
+                                : 0m;
+                        }
+                        else
+                        {
+                            income = incomeGrouped.ContainsKey(0)
+                                ? incomeGrouped[0]
+                                : 0m;
+                        }
+                        return new
+                        {
+                            DoctorId = x.DoctorId,
+                            DoctorName = doctorDict.ContainsKey((int)x.DoctorId)
+                                ? doctorDict[(int)x.DoctorId]
+                                : "",
 
+                            CompanyName = x.CompanyName,
+
+                            OpdAmount = x.OpdAmount,
+                            IpdIncome = ipd,
+                            IncomeAmount = income,
+                            TotalIncome = x.OpdAmount + ipd + income
+                        };
+                    })
+.OrderByDescending(x => x.TotalIncome)
+.ToList();
 
                     objResponse.IsSuccess = true;
                     objResponse.ResultSet = new
@@ -726,35 +1020,144 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 try
                 {
                     decimal CompanyID = Request.CompanyID();
-                    var paymentList = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID &&
-                   DbFunctions.TruncateTime(a.BillDate) >= DbFunctions.TruncateTime(model.FromDate) &&
-                   DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(model.ToDate)).Select(a => new
-                   {
-                       ID = a.ID,
-                       BillDate = a.BillDate,
-                       DoctorId = a.DoctorId,
-                       PaidAmount = a.PaidAmount
-                   }).OrderByDescending(a => a.BillDate).ToList();
 
 
-                    var result = paymentList.AsEnumerable().Select(a => new
-                    {
-                        ID = a.ID,
-                        BillDate = a.BillDate,
-                        DoctorName = _service.Queryable().Where(z => z.ID == a.DoctorId).Count() > 0 ? _service.Queryable().Where(z => z.ID == a.DoctorId).FirstOrDefault().Name : "",
-                        IncomeAmount = _emr_incomeService.Queryable().Where(z => z.CompanyId == CompanyID && DbFunctions.TruncateTime(z.Date) == DbFunctions.TruncateTime(a.BillDate)).Sum(x => x.ReceivedAmount),
-                        PaidAmount = a.PaidAmount,
-                        DoctorId = a.DoctorId,
-                    }).ToList();
-                    var results = result.GroupBy(l => l.BillDate)
-   .Select(cl => new
-   {
-       DoctorName = cl.First().DoctorName,
-       BillDate = cl.First().BillDate,
-       PaidAmount = cl.Sum(c => c.PaidAmount),
-       IncomeAmount = cl.First().IncomeAmount,
-       DoctorId = cl.First().DoctorId,
-   }).ToList();
+                    // =========================
+                    // Doctor List
+                    // =========================
+                    var doctorDict = _service.Queryable()
+          .ToDictionary(x => x.ID, x => x.Name);
+                    // =========================
+                    // OPD DATA
+                    // =========================
+                    var paymentList = _emr_patient_billService.Queryable()
+           .Where(a => a.CompanyId == CompanyID &&
+                  DbFunctions.TruncateTime(a.BillDate) >= DbFunctions.TruncateTime(model.FromDate) &&
+                  DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(model.ToDate)).Select(a => new
+                  {
+                      ID = a.ID,
+                      BillDate = a.BillDate,
+                      DoctorId = a.DoctorId,
+                      PaidAmount = a.PaidAmount
+                  }).OrderByDescending(a => a.BillDate).ToList();
+
+                    // =========================
+                    // IPD DATA (preload once)
+                    // =========================
+                    var ipdData = _ipd_paymentService.Queryable()
+           .Where(i => i.CompanyId == CompanyID &&
+                  DbFunctions.TruncateTime(i.PaymentDate) >= DbFunctions.TruncateTime(model.FromDate) &&
+                  DbFunctions.TruncateTime(i.PaymentDate) <= DbFunctions.TruncateTime(model.ToDate))
+           .GroupBy(x => DbFunctions.TruncateTime(x.PaymentDate))
+           .Select(g => new
+           {
+               Date = g.Key,
+               Total = g.Sum(x => (decimal?)x.Amount) ?? 0m
+           })
+           .ToList();
+
+                    var ipdDict = ipdData.ToDictionary(x => x.Date, x => x.Total);
+
+                    // =========================
+                    // INCOME DATA (preload once)
+                    // =========================
+                    var incomeDict = _emr_incomeService.Queryable()
+                        .Where(z => z.CompanyId == CompanyID &&
+                               DbFunctions.TruncateTime(z.Date) >= DbFunctions.TruncateTime(model.FromDate) &&
+                               DbFunctions.TruncateTime(z.Date) <= DbFunctions.TruncateTime(model.ToDate))
+                        .GroupBy(x => DbFunctions.TruncateTime(x.Date))
+                        .Select(g => new
+                        {
+                            Date = g.Key,
+                            Total = g.Sum(x => (decimal?)x.ReceivedAmount) ?? 0m
+                        })
+                        .ToDictionary(x => x.Date, x => x.Total);
+
+                    // =========================
+                    // PHARMACY DATA (pre-calc once)
+                    // =========================
+                    var sales = _pur_sale_mfService.Queryable()
+                        .Where(i => i.CompanyID == CompanyID &&
+                               DbFunctions.TruncateTime(i.Date) >= DbFunctions.TruncateTime(model.FromDate) &&
+                               DbFunctions.TruncateTime(i.Date) <= DbFunctions.TruncateTime(model.ToDate) &&
+                               i.ReturnInvoiceId == null)
+                        .GroupBy(x => DbFunctions.TruncateTime(x.Date))
+                        .Select(g => new
+                        {
+                            Date = g.Key,
+                            Total = g.Sum(x => (decimal?)x.Total) ?? 0m
+                        })
+                        .ToDictionary(x => x.Date, x => x.Total);
+
+                    var returns = _pur_sale_mfService.Queryable()
+                        .Where(r => r.CompanyID == CompanyID &&
+                               DbFunctions.TruncateTime(r.Date) >= DbFunctions.TruncateTime(model.FromDate) &&
+                               DbFunctions.TruncateTime(r.Date) <= DbFunctions.TruncateTime(model.ToDate) &&
+                               r.ReturnInvoiceId != null)
+                        .GroupBy(x => DbFunctions.TruncateTime(x.Date))
+                        .Select(g => new
+                        {
+                            Date = g.Key,
+                            Total = g.Sum(x => (decimal?)x.Total) ?? 0m
+                        })
+                        .ToDictionary(x => x.Date, x => x.Total);
+                    // =========================
+                    // FINAL RESULT (FAST + CLEAN)
+                    // =========================
+                    var result = paymentList
+                        .Select(a =>
+                        {
+                            var date = a.BillDate.Date;
+
+                            decimal ipd = ipdDict.ContainsKey(date) ? ipdDict[date] : 0m;
+                            decimal income = incomeDict.ContainsKey(date) ? incomeDict[date] : 0m;
+
+                            decimal sale = sales.ContainsKey(date) ? sales[date] : 0m;
+                            decimal ret = returns.ContainsKey(date) ? returns[date] : 0m;
+
+                            return new
+                            {
+                                ID = a.ID,
+                                BillDate = a.BillDate,
+                                DoctorId = a.DoctorId,
+
+                                DoctorName = doctorDict.ContainsKey(a.DoctorId)
+                                    ? doctorDict[a.DoctorId]
+                                    : "",
+
+                                OpdAmount = a.PaidAmount,
+                                IpdIncome = ipd,
+                                IncomeAmount = income,
+                                pharmacyIncome = sale - ret
+                            };
+                        })
+                        .ToList();
+
+                    // =========================
+                    // GROUP FINAL (Doctor + Date)
+                    // =========================
+                    var results = result
+                        .GroupBy(x => new
+                        {
+                            x.BillDate,
+                            x.DoctorId,
+                            x.DoctorName
+                        })
+                        .Select(g => new
+                        {
+                            g.Key.DoctorName,
+                            g.Key.BillDate,
+                            g.Key.DoctorId,
+
+                            OpdAmount = g.Sum(x => x.OpdAmount),
+                            IpdIncome = g.FirstOrDefault().IpdIncome,
+                            IncomeAmount = g.FirstOrDefault().IncomeAmount,
+                            pharmacyIncome = g.FirstOrDefault().pharmacyIncome
+                        })
+                        .OrderByDescending(x => x.BillDate)
+                        .ToList();
+
+
                     objResponse.IsSuccess = true;
                     objResponse.ResultSet = new
                     {

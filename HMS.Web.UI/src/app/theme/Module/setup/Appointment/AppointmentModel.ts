@@ -120,7 +120,7 @@ export class patientInfo {
     AppointmentDate: string;
     ClinicIogo: string;
     Notes: string;
-    IsVOCObtained: boolean;
+    IsVCObtained: boolean;
     safeClinicalNote: SafeHtml;
     safePlanNote: SafeHtml;
     FollowUpDate: string;

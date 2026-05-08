@@ -105,7 +105,7 @@
                                 {{p.DoctorName}}
                             </td>
                             <td>{{p.CreatedBy}}</td>
-                            <td>{{p.PaidAmount}}</td>
+                            <td>{{p.PaidAmount| number:'1.2-2'}}</td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -115,7 +115,7 @@
                             </td>
                             <td>
                                 <strong>
-                                    {{total}}
+                                    {{total| number:'1.2-2'}}
                                 </strong>
                             </td>
                         </tr>

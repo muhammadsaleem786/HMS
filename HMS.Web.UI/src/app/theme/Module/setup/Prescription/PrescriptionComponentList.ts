@@ -181,7 +181,7 @@ export class PrescriptionComponentList {
                 this.PatientRXmodel.Mobile = m.ResultSet.result.Mobile;
                 this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
                 this.PatientRXmodel.FollowUpDate = m.ResultSet.result.FollowUpDate;
-                this.PatientRXmodel.IsVOCObtained = m.ResultSet.result.IsVOCObtained;
+                this.PatientRXmodel.IsVCObtained = m.ResultSet.result.IsVCObtained;
                 if (m.ResultSet.result.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(m.ResultSet.result.ClinicalNote);
                 }

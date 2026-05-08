@@ -46,7 +46,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.ModifiedDate).HasColumnName("ModifiedDate");
             this.Property(t => t.ClinicId).HasColumnName("ClinicId");
             this.Property(t => t.Day).HasColumnName("Day");
-            this.Property(t => t.IsVOCObtained).HasColumnName("IsVOCObtained");
+            this.Property(t => t.IsVCObtained).HasColumnName("IsVCObtained");
 
             // Relationships
             this.HasRequired(t => t.adm_company)

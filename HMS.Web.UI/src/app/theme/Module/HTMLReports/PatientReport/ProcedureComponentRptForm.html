@@ -99,13 +99,13 @@
                                 {{f.ServiceName}}
                             </td>
                             <td class="text-right">
-                                {{f.Procedure_cost}}
+                                {{f.Procedure_cost| number:'1.2-2'}}
                             </td>
                             <td class="text-right">
-                                {{f.PaidAmount}}
+                                {{f.PaidAmount| number:'1.2-2'}}
                             </td>
                             <td class="text-right">
-                                {{f.Profit}}
+                                {{f.Profit| number:'1.2-2'}}
                             </td>
                         </tr>
                     </tbody>

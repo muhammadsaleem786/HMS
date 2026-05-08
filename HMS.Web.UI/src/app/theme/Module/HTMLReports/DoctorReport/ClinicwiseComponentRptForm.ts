@@ -100,7 +100,7 @@ export class ClinicwiseComponentRptForm implements OnInit {
                 this.total = 0;
                 this.DataList = result.ResultSet.Paymentlist;
                 this.DataList.forEach(x => {
-                    this.total += x.PaidAmount
+                    this.total += x.TotalIncome
                 });
                 this.loader.HideLoader();
             } else

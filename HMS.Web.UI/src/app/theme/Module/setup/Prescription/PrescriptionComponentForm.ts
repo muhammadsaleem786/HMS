@@ -268,7 +268,7 @@ export class PrescriptionComponentForm implements OnInit {
             FollowUpNotes: [''],
             ClinicalNote: [''],
             PlanNote: [''],
-            IsVOCObtained: [''],
+            IsVCObtained: [''],
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -2040,7 +2040,7 @@ export class PrescriptionComponentForm implements OnInit {
                     this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
                     this.PatientRXmodel.Gender = result.ResultSet.patientInfo.Gender;
                     this.PatientRXmodel.Mobile = result.ResultSet.patientInfo.Mobile;
-                    this.PatientRXmodel.IsVOCObtained = result.ResultSet.Model.IsVOCObtained;
+                    this.PatientRXmodel.IsVCObtained = result.ResultSet.Model.IsVCObtained;
                     if (this.PatientRXmodel.ClinicIogo != null)
                         this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + result.ResultSet.patientInfo.ClinicIogo;
                 }

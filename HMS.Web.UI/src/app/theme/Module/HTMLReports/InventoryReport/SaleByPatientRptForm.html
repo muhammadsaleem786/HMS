@@ -112,10 +112,10 @@
                                 {{f.Qty}}
                             </td>
                             <td class="text-right">
-                                {{f.CostPrice}}
+                                {{f.CostPrice| number:'1.2-2'}}
                             </td>
                             <td class="text-right">
-                                {{f.SalePrice}}
+                                {{f.SalePrice| number:'1.2-2'}}
                             </td>
                         </tr>
                     </tbody>
@@ -131,12 +131,12 @@
                             </td>
                             <td class="text-right">
                                 <strong>
-                                    {{totalCost}}
+                                    {{totalCost| number:'1.2-2'}}
                                 </strong>
                             </td>
                             <td class="text-right">
                                 <strong>
-                                    {{totalSale}}
+                                    {{totalSale| number:'1.2-2'}}
                                 </strong>
                             </td>
                         </tr>

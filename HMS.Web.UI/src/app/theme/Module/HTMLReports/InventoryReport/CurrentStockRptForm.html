@@ -92,10 +92,10 @@
                                 {{f.GroupName}}
                             </td>
                             <td class="text-right">
-                                {{f.CostPrice}}
+                                {{f.CostPrice| number:'1.2-2'}}
                             </td>
                             <td class="text-right">
-                                {{f.SalePrice}}
+                                {{f.SalePrice| number:'1.2-2'}}
                             </td>
 
                             <td class="text-right">
@@ -106,10 +106,10 @@
                             </td>
                             <td class="text-right">{{f.ExpiredWarrantyDate|date: 'MM/dd/yyyy'}}</td>
                             <td class="text-right">
-                                {{f.CostValue}}
+                                {{f.CostValue| number:'1.2-2'}}
                             </td>
                             <td class="text-right">
-                                {{f.RetailValue}}
+                                {{f.RetailValue| number:'1.2-2'}}
                             </td>
                         </tr>
                     </tbody>
@@ -120,12 +120,12 @@
                             </td>
                             <td class="text-right">
                                 <strong>
-                                    {{totalCostValue}}
+                                    {{totalCostValue| number:'1.2-2'}}
                                 </strong>
                             </td>
                             <td class="text-right">
                                 <strong>
-                                    {{totalSaleValue}}
+                                    {{totalSaleValue| number:'1.2-2'}}
                                 </strong>
                             </td>
                         </tr>

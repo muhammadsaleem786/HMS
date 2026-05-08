@@ -1335,7 +1335,7 @@ IsInventory = a.IsInventory
                         z.FollowUpTime,
                         z.ClinicalNote,
                         z.PlanNote,
-                        z.IsVOCObtained,
+                        z.IsVCObtained,
                         PatientName = z.emr_patient_mf.PatientName,
                         Mobile = z.emr_patient_mf.Mobile,
                         Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",
@@ -1516,7 +1516,7 @@ IsInventory = a.IsInventory
         {
             mf.ID,
             mf.AppointmentDate,
-            mf.IsVOCObtained,
+            mf.IsVCObtained,
             PatientName = mf.emr_patient_mf.PatientName,   // via navigation property
             PaidAmount = mf.emr_patient_mf.emr_patient_bill
                 .Where(b => b.CompanyId == companyId
@@ -1551,7 +1551,7 @@ IsInventory = a.IsInventory
                     r.PatientName,
                     r.PaidAmount,
                     r.OutstandingBalance,
-                    r.IsVOCObtained,
+                    r.IsVCObtained,
                     //MedicineName = string.Join(", ",
         //_emr_medicineService.Queryable()
         //    .Where(m => r.MedicineIds.Contains(m.ID))

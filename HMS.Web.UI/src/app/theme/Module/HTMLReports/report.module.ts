@@ -21,9 +21,9 @@ import { OutstandingIncomeRptForm } from '../../../theme/Module/HTMLReports/Fina
 import { PaymentSummaryRptForm } from '../../../theme/Module/HTMLReports/FinancialReport/PaymentSummaryRptForm';
 import { TreatmentwiseRptForm } from '../../../theme/Module/HTMLReports/FinancialReport/TreatmentwiseRptForm';
 import { ClinicwiseComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/ClinicwiseComponentRptForm';
-import { DoctorswiseComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DoctorswiseComponentRptForm';
-import { DoctorswisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DoctorswisePaymentComponentRptForm';
-import { DoctorPaymentSummaryComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DoctorPaymentSummaryComponentRptForm';
+import { DateWisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DateWisePaymentComponentRptForm';
+import { PaymentSummaryComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/PaymentSummaryComponentRptForm';
+import { PatientWisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/PatientWisePaymentComponentRptForm';
 import { CurrentStockRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/CurrentStockRptForm';
 import { SaleByPatientRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/SaleByPatientRptForm';
 import { PurchaseRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/PurchaseRptForm';
@@ -37,7 +37,7 @@ import { ProfitLossRptForm } from '../../../theme/Module/HTMLReports/FinancialRe
     declarations: [
         CashFlowRptForm, MedicinewiseRptForm, OutstandingIncomeRptForm, PaymentSummaryRptForm, TreatmentwiseRptForm,
         BirthdayComponentRptForm, DetailedPatientComponentRptForm, FollowupComponentRptForm, OutstandingComponentRptForm, PaymentComponentRptForm,
-        ClinicwiseComponentRptForm, DoctorswisePaymentComponentRptForm, DoctorswiseComponentRptForm, DoctorPaymentSummaryComponentRptForm,
+        ClinicwiseComponentRptForm, PaymentSummaryComponentRptForm, PatientWisePaymentComponentRptForm, DateWisePaymentComponentRptForm,
         PatientDetailComponentForm, ProfitLossRptForm, CurrentStockRptForm, SaleByPatientRptForm, ProcedureComponentRptForm, FeeComponentForm, AppointmentComponentReportForm, PurchaseRptForm
     ],
     providers: [

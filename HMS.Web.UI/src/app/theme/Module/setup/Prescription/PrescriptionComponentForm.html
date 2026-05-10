@@ -1,4 +1,160 @@
-﻿<div class="col-sm-12 AddRoleWraper">
+﻿<style>
+    .btn-ai {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #4f46e5, #2563eb);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+        transition: all 0.25s ease;
+        user-select: none;
+    }
+
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-ai:active {
+            transform: scale(0.98);
+        }
+
+        .btn-ai:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+        }
+
+    .ai-badge {
+        background: #22c55e;
+        color: white;
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 8px;
+    }
+    /*ai popup css*/
+    .ai-modal .modal-content {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .ai-header {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: white;
+        padding: 18px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ai-title {
+        font-size: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .ai-close {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        opacity: 0.9;
+    }
+
+        .ai-close:hover {
+            opacity: 1;
+        }
+
+    .ai-modal-body {
+        background: #f4f7fb;
+        padding: 24px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .ai-response-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 22px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+    }
+
+    .ai-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #2563eb;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .ai-response-text {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 15px;
+        line-height: 1.9;
+        color: #374151;
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+    }
+
+    .ai-footer {
+        background: #ffffff;
+        padding: 16px 22px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn-ai-copy {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+        .btn-ai-copy:hover {
+            background: #1e40af;
+        }
+
+    .btn-ai-close {
+        background: #f3f4f6;
+        color: #374151;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+        .btn-ai-close:hover {
+            background: #e5e7eb;
+        }
+
+    /* Scrollbar */
+    .ai-modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .ai-modal-body::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 20px;
+    }
+</style>
+<div class="col-sm-12 AddRoleWraper">
     <div class="row headSection paginationHead">
         <div class="col-sm-8 no-padding">
             <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
@@ -155,7 +311,10 @@
                                     </div>
                                 </div>
                             </ng-template>
+
                         </ngb-panel>
+
+
                         <ngb-panel id="prescription2">
                             <ng-template ngbPanelTitle>
                                 <span>
@@ -198,6 +357,11 @@
                                                 <span class="fav_icon" placement="right" ngbTooltip="Make this Most used Suggestion" (click)="AddFavorite(c,'C')" *ngIf="c.Isfavorite == 0 && c.ComplaintId != null">
                                                     <span class="fa fa-star-o"></span>
                                                 </span>
+                                            </div>
+                                            <div class="btn-ai" (click)="loadAIResponse()" role="button" tabindex="0">
+
+                                                <i class="fa fa-robot mr-2"></i>
+                                                Clinical Assistant
                                             </div>
                                         </div>
 
@@ -514,6 +678,7 @@
                         </ngb-panel>
                     </ngb-accordion>
 
+
                     <div class="row">
                         <div class="col-sm-5  mt-4">
 
@@ -526,6 +691,7 @@
                     </div>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
@@ -1652,4 +1818,70 @@
             <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
         </div>
     </form>
+</ng-template>
+<!-- AI Modal -->
+<ng-template #DeepAIModal let-modal>
+
+    <div class="modal-content ai-modal">
+
+        <!-- Header -->
+        <div class="ai-header">
+
+            <div class="ai-title">
+                <i class="fa fa-robot"></i>
+                AI Clinical Assistant
+            </div>
+
+            <button type="button"
+                    class="ai-close"
+                    aria-label="Close"
+                    (click)="modal.dismiss('Cross click')">
+
+                &times;
+
+            </button>
+
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body ai-modal-body">
+
+            <div class="ai-response-card">
+
+                <div class="ai-label">
+                    AI Generated Clinical Summary
+                </div>
+
+                <pre class="ai-response-text">
+{{answer}}
+                </pre>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="ai-footer">
+
+            <button type="button"
+                    class="btn-ai-copy"
+                    (click)="copyAIResponse()">
+
+                <i class="fa fa-copy mr-1"></i>
+                Copy
+
+            </button>
+
+            <button type="button"
+                    class="btn-ai-close"
+                    (click)="modal.close('Close click')">
+
+                Close
+
+            </button>
+
+        </div>
+
+    </div>
+
 </ng-template>

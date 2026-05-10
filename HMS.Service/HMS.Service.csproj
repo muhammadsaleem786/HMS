@@ -57,6 +57,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Security" />
@@ -67,6 +68,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeepSeekService.cs" />
+    <Compile Include="IDeepSeekService.cs" />
     <Compile Include="ISmsService.cs" />
     <Compile Include="IStoredProcedureService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +90,10 @@
     <Compile Include="Services\Admin\sys_drop_down_valueService.cs" />
     <Compile Include="Services\Admin\adm_multilingual_mfService.cs" />
     <Compile Include="Services\Admin\sys_notification_alertService.cs" />
+    <Compile Include="Services\Admission\ipd_adverse_drug_reactionService .cs" />
+    <Compile Include="Services\Admission\ipd_specialized_equipment_maintenanceService.cs" />
+    <Compile Include="Services\Admission\ipd_sentinel_event_registerService .cs" />
+    <Compile Include="Services\Admission\ipd_death_record_registerService.cs" />
     <Compile Include="Services\Admission\ipd_procedure_expenseService.cs" />
     <Compile Include="Services\Admission\ipd_medication_logService.cs" />
     <Compile Include="Services\Admission\ipd_input_outputService.cs" />

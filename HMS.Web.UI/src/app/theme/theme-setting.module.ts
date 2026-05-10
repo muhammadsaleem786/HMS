@@ -28,6 +28,20 @@ import { ReminderComponentList } from '../theme/Module/setup/Setting/Reminder/Re
 import { ReminderComponentForm } from '../theme/Module/setup/Setting/Reminder/ReminderComponentForm';
 import { TemplateComponentList } from '../theme/Module/setup/Setting/Template/TemplateComponentList';
 import { SessionComponentList } from '../theme/Module/setup/Setting/UserSession/SessionComponentList';
+
+import { DeathRecordComponentForm } from '../theme/Module/setup/Setting/DeathRecord/DeathRecordComponentForm';
+import { DeathRecordComponentList } from '../theme/Module/setup/Setting/DeathRecord/DeathRecordComponentList';
+
+import { AdverseDrugComponentForm } from '../theme/Module/setup/Setting/AdverseDrug/AdverseDrugComponentForm';
+import { AdverseDrugComponentList } from '../theme/Module/setup/Setting/AdverseDrug/AdverseDrugComponentList';
+
+import { EquipmentMaintenanceComponentForm } from '../theme/Module/setup/Setting/EquipmentMaintenance/EquipmentMaintenanceComponentForm';
+import { EquipmentMaintenanceComponentList } from '../theme/Module/setup/Setting/EquipmentMaintenance/EquipmentMaintenanceComponentList';
+
+import { EventRegisterComponentForm } from '../theme/Module/setup/Setting/EventRegister/EventRegisterComponentForm';
+import { EventRegisterComponentList } from '../theme/Module/setup/Setting/EventRegister/EventRegisterComponentList';
+
+
 //Item module
 import { ItemComponentList } from '../theme/Module/setup/Items/AddItems/ItemComponentList';
 import { ItemComponentForm } from '../theme/Module/setup/Items/AddItems/ItemComponentForm';
@@ -115,6 +129,22 @@ const routes: Routes = [
     { path: 'Medicine/saveMedicine:id', component: MedicineComponentForm, canActivate: [AuthGuard] },
     { path: 'Medicine/saveMedicine', component: MedicineComponentForm, canActivate: [AuthGuard] },
     { path: 'Appoint/company', component: CompanyComponentForm, canActivate: [AuthGuard] },
+    { path: 'DeathRecord', component: DeathRecordComponentList, canActivate: [AuthGuard] },
+    { path: 'DeathRecord/saveDeathRecord:id', component: DeathRecordComponentForm, canActivate: [AuthGuard] },
+    { path: 'DeathRecord/saveDeathRecord', component: DeathRecordComponentForm, canActivate: [AuthGuard] },
+    { path: 'AdverseDrug', component: AdverseDrugComponentList, canActivate: [AuthGuard] },
+    { path: 'AdverseDrug/saveAdverseDrug:id', component: AdverseDrugComponentForm, canActivate: [AuthGuard] },
+    { path: 'AdverseDrug/saveAdverseDrug', component: AdverseDrugComponentForm, canActivate: [AuthGuard] },
+
+
+    { path: 'EquipmentMaintenance', component: EquipmentMaintenanceComponentList, canActivate: [AuthGuard] },
+    { path: 'EquipmentMaintenance/saveEquipmentMaintenance:id', component: EquipmentMaintenanceComponentForm, canActivate: [AuthGuard] },
+    { path: 'EquipmentMaintenance/saveEquipmentMaintenance', component: EquipmentMaintenanceComponentForm, canActivate: [AuthGuard] },
+
+    { path: 'EventRegister', component: EventRegisterComponentList, canActivate: [AuthGuard] },
+    { path: 'EventRegister/saveEventRegister:id', component: EventRegisterComponentForm, canActivate: [AuthGuard] },
+    { path: 'EventRegister/saveEventRegister', component: EventRegisterComponentForm, canActivate: [AuthGuard] },
+
     //end
     //Item module
     { path: 'Item/saveitem:id', component: ItemComponentForm },
@@ -194,7 +224,7 @@ const routes: Routes = [
         LocationsComponentList, LocationsComponentForm, holidayComponentList, holidayComponentForm,
         //end
         //setting module
-        MedicineInstructionComponentList, ObservationComponentList, ComplaintComponentList, InvestigationComponentList, DiagnosComponentList, DropDownComponentList,
+        EventRegisterComponentList, EventRegisterComponentForm, EquipmentMaintenanceComponentList, EquipmentMaintenanceComponentForm, AdverseDrugComponentList, AdverseDrugComponentForm,DeathRecordComponentForm,DeathRecordComponentList,MedicineInstructionComponentList, ObservationComponentList, ComplaintComponentList, InvestigationComponentList, DiagnosComponentList, DropDownComponentList,
         ApplicationUserComponentList, ApplicationUserComponentForm, MedicineComponentList, MedicineComponentForm, CompanyComponentForm, UserRoleComponentList
         , ProfileUserComponentForm, ServiceComponentList, ServiceComponentForm, UserShareComponentList, UserShareComponentForm,
         UserRoleComponentForm, SessionComponentList, ReminderComponentList, TemplateComponentList, ReminderComponentForm,

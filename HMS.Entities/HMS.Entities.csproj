@@ -87,6 +87,7 @@
     <Compile Include="CustomModel\DashboardFilterModel.cs" />
     <Compile Include="CustomModel\DashboardPrEmployeeModel.cs" />
     <Compile Include="CustomModel\DashboardSummaryDto.cs" />
+    <Compile Include="CustomModel\DeepSeekRequest.cs" />
     <Compile Include="CustomModel\DoctorList.cs" />
     <Compile Include="CustomModel\DropDownValueDto.cs" />
     <Compile Include="CustomModel\EmailModel.cs" />
@@ -118,10 +119,18 @@
     <Compile Include="Models\adm_company.cs" />
     <Compile Include="Models\adm_company_location.cs" />
     <Compile Include="Models\adm_user_session.cs" />
+    <Compile Include="Models\ipd_adverse_drug_reaction.cs" />
+    <Compile Include="Models\ipd_death_record_register.cs" />
+    <Compile Include="Models\ipd_sentinel_event_register.cs" />
+    <Compile Include="Models\ipd_specialized_equipment_maintenance.cs" />
     <Compile Include="Models\lab_order.cs" />
     <Compile Include="Models\adm_user_share.cs" />
     <Compile Include="Models\Mapping\adm_user_sessionMap.cs" />
     <Compile Include="Models\Mapping\adm_user_shareMap.cs" />
+    <Compile Include="Models\Mapping\ipd_adverse_drug_reactionMap.cs" />
+    <Compile Include="Models\Mapping\ipd_death_record_registerMap.cs" />
+    <Compile Include="Models\Mapping\ipd_sentinel_event_registerMap.cs" />
+    <Compile Include="Models\Mapping\ipd_specialized_equipment_maintenanceMap.cs" />
     <Compile Include="Models\Mapping\pr_time_logMap.cs" />
     <Compile Include="Models\Mapping\ipd_paymentMap.cs" />
     <Compile Include="Models\pr_time_log.cs" />

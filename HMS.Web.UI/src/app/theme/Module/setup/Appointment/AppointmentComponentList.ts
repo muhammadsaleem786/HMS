@@ -87,6 +87,7 @@ export class AppointmentComponentList implements OnInit {
     previousPage: number = 1;
     nextPage: number = 1;
     totalPages: number = 0;
+    public answer: any;
     pagesRange: number[] = [];
     public IsList: boolean = true;
     public ID: number = 10;
@@ -207,6 +208,7 @@ export class AppointmentComponentList implements OnInit {
     @ViewChild("MedicinePresModal") MedicinePresModal: TemplateRef<any>;
     @ViewChild('editorClinicalNote') editorClinicalNote!: ElementRef;
     @ViewChild('editorPlanNote') editorPlanNote!: ElementRef;
+     @ViewChild("DeepAIModal") DeepAIModal: TemplateRef<any>;
     myControl = new FormControl();
     myNameControl = new FormControl();
     openAppointmentModal(longContent) {
@@ -3591,6 +3593,52 @@ export class AppointmentComponentList implements OnInit {
                 return 'حسبِ ضرورت';
             default:
                 return value;
+        }
+    }
+    async loadAIResponse(isValid: boolean): Promise<void> {
+       
+        const vitalText = this.emr_vital_dynamicArray
+            .map(v => `${v.Measure} ${v.Unit}`)
+            .join(', ');
+        const complaintText =
+            this.emr_prescription_complaint_dynamicArray.filter(a => a.IsSelected)
+                .map(x => x.Complaint)
+                .join(', ');
+        if (!this.PrescriptionModel.ClinicalNote || this.PrescriptionModel.ClinicalNote.trim() === '' ||
+            !complaintText || complaintText.trim() === '' ||
+            !vitalText || vitalText.trim() === '') {
+            this.toastr.Error('Validation Error', 'Please enter Clinical History, Complaint and Vital signs first.');
+            return;
+        }
+        this.loader.ShowLoader();
+        let model = {
+            ClinicalHistory:this.PrescriptionModel.ClinicalNote,
+            Complaint: complaintText,               
+            Vital: vitalText
+        };
+        const response = await this._PrescriptionService.LoadAIResponse(model);
+       const result = JSON.parse(response._body);
+        if (result.IsSuccess) {
+            this.answer = result.ResultSet.Response
+                .replace(/\*\*/g, '')
+                .replace(/##/g, '')
+                .trim();
+            this.modalService.open(this.DeepAIModal, { size: 'lg' });
+            this.loader.HideLoader();
+
+        } else {
+            this.toastr.Error('Error', result.ErrorMessage);
+            this.loader.HideLoader();
+        }
+    }
+   async copyAIResponse() {
+        try {
+            await(navigator as any).clipboard.writeText(this.answer);
+
+            this.toastr.Success('Success', 'Copied to clipboard');
+        } catch (err) {
+            console.error(err);
+            this.toastr.Error('Error', 'Copy failed');
         }
     }
 }

@@ -105,6 +105,11 @@ namespace HMS.Entities.Models
         public DbSet<adm_user_session> adm_user_session { get; set; }
         public DbSet<ipd_payment> ipd_payment { get; set; }
         public DbSet<adm_user_share> adm_user_share { get; set; }
+        public DbSet<ipd_death_record_register> ipd_death_record_register { get; set; }
+        public DbSet<ipd_adverse_drug_reaction> ipd_adverse_drug_reaction { get; set; }
+        public DbSet<ipd_specialized_equipment_maintenance> ipd_specialized_equipment_maintenance { get; set; }
+        public DbSet<ipd_sentinel_event_register> ipd_sentinel_event_register { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new contactMap());
@@ -196,6 +201,11 @@ namespace HMS.Entities.Models
             modelBuilder.Configurations.Add(new adm_user_sessionMap());
             modelBuilder.Configurations.Add(new ipd_paymentMap());
             modelBuilder.Configurations.Add(new adm_user_shareMap());
+            modelBuilder.Configurations.Add(new ipd_adverse_drug_reactionMap());
+            modelBuilder.Configurations.Add(new ipd_specialized_equipment_maintenanceMap());
+            modelBuilder.Configurations.Add(new ipd_sentinel_event_registerMap());
+            modelBuilder.Configurations.Add(new ipd_death_record_registerMap());
+
         }
     }
 }

@@ -90,6 +90,10 @@
     <Compile Include="Repositories\Admin\sys_drop_down_valueRepository.cs" />
     <Compile Include="Repositories\Admin\adm_multilingual_mfRepository.cs" />
     <Compile Include="Repositories\Admin\sys_notification_alertRepository.cs" />
+    <Compile Include="Repositories\Admission\ipd_death_record_registerRepository.cs" />
+    <Compile Include="Repositories\Admission\ipd_adverse_drug_reactionRepository.cs" />
+    <Compile Include="Repositories\Admission\ipd_specialized_equipment_maintenanceRepository.cs" />
+    <Compile Include="Repositories\Admission\ipd_sentinel_event_registerRepository.cs" />
     <Compile Include="Repositories\Admission\ipd_procedure_expenseRepository.cs" />
     <Compile Include="Repositories\Admission\ipd_medication_logRepository.cs" />
     <Compile Include="Repositories\Admission\ipd_input_outputRepository.cs" />

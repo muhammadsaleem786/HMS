@@ -295,6 +295,113 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         }
         [HttpPost]
         [HttpGet]
+        [ActionName("searchByPatientName")]
+        public async Task<ResponseInfo> searchByPatientName(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+
+                var PatientInfo = await _service.Queryable()
+            .AsNoTracking()
+            .Where(a => a.CompanyId == CompanyID && (a.Mobile.Contains(term)))
+            .Select(z => new
+            {
+                value = z.ID,
+                label = z.PatientName + " " + (z.Mobile),
+                PatientName = z.PatientName,
+                Phone = z.Mobile,
+                CNIC = z.CNIC,
+                Age = z.Age,
+                Gender = z.Gender,
+                MRNO = z.MRNO,
+                Address=z.Address,
+                z.Father_Husband
+            }).Take(10)
+            .ToListAsync();
+                objResponse.ResultSet = new
+                {
+                    PatientInfo = PatientInfo.Select(z => new
+                    {
+                        z.value,
+                        z.label,
+                        z.PatientName,
+                        z.Phone,
+                        z.CNIC,
+                        z.Age,
+                        z.Gender,
+                        z.MRNO,
+                        z.Address,z.Father_Husband
+
+                    })
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("searchByMRNO")]
+        public async Task<ResponseInfo> searchByMRNO(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+
+
+                var PatientInfo = await _service.Queryable()
+            .AsNoTracking()
+            .Where(a => a.CompanyId == CompanyID && (a.MRNO.Contains(term)))
+            .Select(z => new
+            {
+                value = z.ID,
+                label = z.PatientName + " " + (z.Mobile),
+                PatientName = z.PatientName,
+                Phone = z.Mobile,
+                CNIC = z.CNIC,
+                Age = z.Age,
+                Gender = z.Gender,
+                MRNO = z.MRNO,
+                Address=z.Address,z.Father_Husband
+            }).Take(10)
+            .ToListAsync();
+                objResponse.ResultSet = new
+                {
+                    PatientInfo = PatientInfo.Select(z => new
+                    {
+                        z.value,
+                        z.label,
+                        z.PatientName,
+                        z.Phone,
+                        z.CNIC,
+                        z.Age,
+                        z.Gender,
+                        z.MRNO,
+                        z.Address,z.Father_Husband
+                    })
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpPost]
+        [HttpGet]
         [ActionName("getPatientById")]
         public async Task<ResponseInfo> getPatientById(string Id)
         {

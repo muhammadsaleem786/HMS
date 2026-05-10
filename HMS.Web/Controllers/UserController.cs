@@ -196,8 +196,7 @@ namespace HMS.Web.API.Controllers
             }
             return response;
         }
-
-
+      
         [AllowAnonymous]
         [HttpGet]
         [ActionName("GetPayrollRegion")]

@@ -15,7 +15,7 @@
     <div>
         <div class="Cardview Setting_wraper">
             <div class="row grid-box ">
-                <div class="col-md-4 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(3)>-1">
+                <div class="col-md-3 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(3)>-1">
                     <div class="col-md-12 no-padding-lr">
                         <div class="col-md-12 margin-b-20">
                             <div class="headTittle">
@@ -36,14 +36,42 @@
                                     <a routerLink="/home/changepassword" class="left-margin link-Company link-color">Change Password</a>
 
                                 </li>
-                                <li class="list-group-item"*ngIf="Rights.indexOf(66)>-1">
+                                <li class="list-group-item" *ngIf="Rights.indexOf(66)>-1">
                                     <a routerLink="/home/Vendor" class="left-margin link-color">Vendor</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(4)>-1">
+
+                <div class="col-md-3 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(107)>-1">
+                    <div class="col-md-12 no-padding-lr">
+                        <div class="col-md-12 margin-b-20">
+                            <div class="headTittle">
+                                <span class="Blockicon">
+                                    <img src="../assets/app/media/img/icons/remakrs.png" class="img-fluid radius">
+                                </span><span class="left-margin blue-text">Compliance</span>
+                            </div>
+                            <ul class="list-group">
+                                <li class="list-group-item" *ngIf="Rights.indexOf(108)>-1">
+                                    <a routerLink="/home/DeathRecord" class="left-margin link-Company link-color">Death Record Register</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(109)>-1">
+                                    <a routerLink="/home/AdverseDrug" class="left-margin link-Company link-color">Adverse Drug Reaction</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(110)>-1">
+                                    <a routerLink="/home/EquipmentMaintenance" class="left-margin link-Company link-color">Equipment Maintenance</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(111)>-1">
+                                    <a routerLink="/home/EventRegister" class="left-margin link-color">Sentinel Event Register</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(4)>-1">
                     <div class="col-md-12 no-padding-lr">
                         <div class="col-md-12 margin-b-20">
                             <div class="headTittle">
@@ -90,7 +118,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(1)>-1">
+                <div class="col-md-3 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(1)>-1">
                     <div class="col-md-12 no-padding-lr">
                         <div class="col-md-12 margin-b-20">
                             <div class="headTittle">
@@ -136,7 +164,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
 

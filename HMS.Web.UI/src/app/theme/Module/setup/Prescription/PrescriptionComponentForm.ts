@@ -2,7 +2,7 @@
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'; import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo, InvoiceCompanyInfo, emr_notes_favorite } from './../Appointment/AppointmentModel';
-import { emr_prescription_mf, emr_prescription_complaint, emr_prescription_diagnos, emr_prescription_investigation, emr_prescription_observation, emr_prescription_treatment, emr_medicine } from './PrescriptionModel';
+import { emr_prescription_mf, emr_prescription_complaint, emr_prescription_diagnos, emr_prescription_investigation, emr_prescription_observation, emr_prescription_treatment, emr_medicine} from './PrescriptionModel';
 import { LoaderService } from '../../../../CommonService/LoaderService';
 import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
@@ -40,6 +40,7 @@ export class PrescriptionComponentForm implements OnInit {
     @Input() id: number;
     public IsReadOnly = false;
     public ScreenLists = [];
+    public answer: any;
     public Modules = []; public CompanyObj: any;
     public filterdData = []; public FavoriteModel = new emr_notes_favorite();
     public MedicineModel = new emr_medicine();
@@ -120,6 +121,10 @@ export class PrescriptionComponentForm implements OnInit {
     public ServiceType: any; public TokenNo: any; public patientInfo: any;
     @ViewChild("MedicineTemplate") MedicineTemplateContent: TemplateRef<any>; @ViewChild("longContent") ModelContent: TemplateRef<any>;
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
+    @ViewChild("DeepAIModal") DeepAIModal: TemplateRef<any>;
+
+
+
     openAppointmentModal(longContent) {
         this.AppointmentModel = new emr_Appointment();
         this.modalService.open(longContent, { size: 'lg' });
@@ -1784,7 +1789,7 @@ export class PrescriptionComponentForm implements OnInit {
             this.PrescriptionModel.emr_prescription_diagnos = [];
             this.PrescriptionModel.emr_prescription_investigation = [];
             this.PrescriptionModel.emr_prescription_observation = [];
-            
+
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;
             this.PrescriptionModel.emr_prescription_complaint = this.emr_prescription_complaint_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_diagnos = this.emr_prescription_diagnos_dynamicArray.filter(a => a.IsSelected == true);
@@ -2371,6 +2376,52 @@ export class PrescriptionComponentForm implements OnInit {
                 }
                 this.loader.HideLoader();
             });
+        }
+    }
+    async loadAIResponse(isValid: boolean): Promise<void> {
+       
+        const vitalText = this.emr_vital_dynamicArray
+            .map(v => `${v.Measure} ${v.Unit}`)
+            .join(', ');
+        const complaintText =
+            this.emr_prescription_complaint_dynamicArray.filter(a => a.IsSelected)
+                .map(x => x.Complaint)
+                .join(', ');
+        if (!this.PrescriptionModel.ClinicalNote || this.PrescriptionModel.ClinicalNote.trim() === '' ||
+            !complaintText || complaintText.trim() === '' ||
+            !vitalText || vitalText.trim() === '') {
+            this.toastr.Error('Validation Error', 'Please enter Clinical History, Complaint and Vital signs first.');
+            return;
+        }
+        this.loader.ShowLoader();
+        let model = {
+            ClinicalHistory:this.PrescriptionModel.ClinicalNote,
+            Complaint: complaintText,               
+            Vital: vitalText
+        };
+        const response = await this._PrescriptionService.LoadAIResponse(model);
+       const result = JSON.parse(response._body);
+        if (result.IsSuccess) {
+            this.answer = result.ResultSet.Response
+                .replace(/\*\*/g, '')
+                .replace(/##/g, '')
+                .trim();
+            this.modalService.open(this.DeepAIModal, { size: 'lg' });
+            this.loader.HideLoader();
+
+        } else {
+            this.toastr.Error('Error', result.ErrorMessage);
+            this.loader.HideLoader();
+        }
+    }
+   async copyAIResponse() {
+        try {
+            await(navigator as any).clipboard.writeText(this.answer);
+
+            this.toastr.Success('Success', 'Copied to clipboard');
+        } catch (err) {
+            console.error(err);
+            this.toastr.Error('Error', 'Copy failed');
         }
     }
 }

@@ -152,6 +152,15 @@ export class AppointmentService {
         var data = { 'term': term };
         return this.http.Get(this.urlToApi + '/searchByName', data).then(e => e);
     }
+    searchByMRNO(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/searchByMRNO', data).then(e => e);
+    }
+    searchByPatientName(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/searchByPatientName', data).then(e => e);
+    }
+    
     Delete(Id: string): Promise<any> {
         var data = { 'Id': Id };
         return this.http.Delete(this.urlToApi + '/Delete', data).then(e => e);

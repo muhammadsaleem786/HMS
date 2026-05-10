@@ -133,6 +133,21 @@ namespace HMS.Entities.Models
             this.pr_attendance1 = new List<pr_attendance>();
             this.adm_user_session = new List<adm_user_session>();
             this.adm_user_session1 = new List<adm_user_session>();
+
+
+
+            this.ipd_specialized_equipment_maintenance = new List<ipd_specialized_equipment_maintenance>();
+            this.ipd_specialized_equipment_maintenance1 = new List<ipd_specialized_equipment_maintenance>();
+
+            this.ipd_sentinel_event_register = new List<ipd_sentinel_event_register>();
+            this.ipd_sentinel_event_register1 = new List<ipd_sentinel_event_register>();
+
+            this.ipd_death_record_register = new List<ipd_death_record_register>();
+            this.ipd_death_record_register1 = new List<ipd_death_record_register>();
+
+            this.ipd_adverse_drug_reaction = new List<ipd_adverse_drug_reaction>();
+            this.ipd_adverse_drug_reaction1 = new List<ipd_adverse_drug_reaction>();
+
         }
         public decimal ID { get; set; }
         public string Email { get; set; }
@@ -365,6 +380,18 @@ namespace HMS.Entities.Models
         public virtual ICollection<pr_attendance> pr_attendance1 { get; set; }
         public virtual ICollection<adm_user_session> adm_user_session { get; set; }
         public virtual ICollection<adm_user_session> adm_user_session1 { get; set; }
+
+
+
+        public virtual ICollection<ipd_specialized_equipment_maintenance> ipd_specialized_equipment_maintenance { get; set; }
+        public virtual ICollection<ipd_sentinel_event_register> ipd_sentinel_event_register { get; set; }
+        public virtual ICollection<ipd_adverse_drug_reaction> ipd_adverse_drug_reaction { get; set; }
+        public virtual ICollection<ipd_death_record_register> ipd_death_record_register { get; set; }
+
+        public virtual ICollection<ipd_specialized_equipment_maintenance> ipd_specialized_equipment_maintenance1 { get; set; }
+        public virtual ICollection<ipd_sentinel_event_register> ipd_sentinel_event_register1 { get; set; }
+        public virtual ICollection<ipd_adverse_drug_reaction> ipd_adverse_drug_reaction1 { get; set; }
+        public virtual ICollection<ipd_death_record_register> ipd_death_record_register1 { get; set; }
 
     }
 }

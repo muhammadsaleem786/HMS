@@ -6,6 +6,7 @@ import { emr_prescription_mf } from './PrescriptionModel';
 export class PrescriptionService {
     private urlToApi = GlobalVariable.BASE_Api_URL + "/api/Appointment/emr_prescription_mf"
     private urlToApiPatient = GlobalVariable.BASE_Api_URL + "/api/Appointment/emr_patient"
+    private urlToApiAI = GlobalVariable.BASE_Api_URL + "/api/deepai"
     constructor(private http: HttpService) { }
 
     GetList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string): Promise<any> {
@@ -32,6 +33,10 @@ export class PrescriptionService {
         else
             return this.http.Put(this.urlToApi + '/Update', entity).then(e => e);
     }
+    async LoadAIResponse(model: any): Promise<any> {
+        const response = await this.http.Post(this.urlToApiAI + '/chat', model);
+        return response;
+    }
     Delete(Id: string): Promise<any> {
         var data = { 'Id': Id };
         return this.http.Delete(this.urlToApi + '/Delete', data).then(e => e);
@@ -46,6 +51,7 @@ export class PrescriptionService {
         var data = { 'id': id, 'DocId': DocId, 'Date': Date }
         return this.http.Get(this.urlToApi + '/PrescriptionLoad', data).then(e => e);
     }
+
     PrePrescriptionDataLoad(PatientId: string, DocId: string): Promise<any> {
         var data = { 'PatientId': PatientId, 'DocId': DocId }
         return this.http.Get(this.urlToApi + '/PrescriptionDataLoad', data).then(e => e);

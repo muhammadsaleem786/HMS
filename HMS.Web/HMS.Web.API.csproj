@@ -364,6 +364,10 @@
     <Compile Include="Areas\Admin\Controllers\adm_dashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\sys_drop_downController.cs" />
     <Compile Include="Areas\Admission\ipd_admission_dischargeController.cs" />
+    <Compile Include="Areas\Admission\ipd_adverse_drug_reactionController.cs" />
+    <Compile Include="Areas\Admission\ipd_specialized_equipment_maintenanceController.cs" />
+    <Compile Include="Areas\Admission\ipd_sentinel_event_registerController.cs" />
+    <Compile Include="Areas\Admission\ipd_death_record_registerController.cs" />
     <Compile Include="Areas\Admission\ipd_medication_logController.cs" />
     <Compile Include="Areas\Admission\ipd_input_outputController.cs" />
     <Compile Include="Areas\Admission\ipd_diagnosisController.cs" />
@@ -460,6 +464,7 @@
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AttendanceSyncController.cs" />
+    <Compile Include="Controllers\DeepAIController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Filters\AddChallengeOnUnauthorizedResult.cs" />

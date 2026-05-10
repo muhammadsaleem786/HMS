@@ -1,0 +1,199 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
+                Update Death Record 
+                <a routerLink="/home/setup"><i class="fa fa-arrow-circle-left"></i></a>
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                New Death Record 
+                <a routerLink="/home/setup"><i class="fa fa-arrow-circle-left"></i></a>
+            </h3>
+        </div>
+    </div>
+    <div class="row Cardview padding-20">
+        <div class="col-sm-12 mt-2">
+            <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Date*</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <Datetime-Component formControlName="DeathDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateChanged($event)" [(ngModel)]="model.DeathDate" [style.pointer-events]="true">
+                                    </Datetime-Component>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    MR NO
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="PatientSearch" (click)="LoadPatient()" formControlName="MRNo" [(ngModel)]="model.MRNo" class="form-control form-control-sm form-control-alternative" placeholder="Search By MRNO" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Patient Name</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="PatientName" [(ngModel)]="model.PatientName" class="form-control form-control-sm form-control-alternative" readonly/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> F/H Name</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="FatherHusbandName" [(ngModel)]="model.FatherHusbandName" class="form-control form-control-sm form-control-alternative" readonly/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Age</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="Age" [(ngModel)]="model.Age" class="form-control form-control-sm form-control-alternative"readonly/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Gender</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="Gender" [(ngModel)]="model.Gender" class="form-control form-control-sm form-control-alternative" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Address</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="Address" [(ngModel)]="model.Address" class="form-control form-control-sm form-control-alternative" readonly/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> ID Card No</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="IDCardNo" [(ngModel)]="model.IDCardNo" class="form-control form-control-sm form-control-alternative" readonly/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Contact</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="ContractNo" [(ngModel)]="model.ContractNo" class="form-control form-control-sm form-control-alternative"readonly />
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Date Time Of Death</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <Datetime-Component formControlName="DateTimeOfDeath" placeholder="DD/MM/YYYY" (DateChangeValue)="onDateChanged($event)" [(ngModel)]="model.DateTimeOfDeath" [style.pointer-events]="true">
+                                    </Datetime-Component>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Probable Cause Of Death</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <textarea type="text" class="form-control m-input" placeholder="Probable Cause Of Death" formControlName="ProbableCauseOfDeath" [(ngModel)]="model.ProbableCauseOfDeath"></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username">Death Certificate Handed Over To</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="" formControlName="DeathCertificateHandedOverTo" [(ngModel)]="model.DeathCertificateHandedOverTo" class="form-control form-control-sm form-control-alternative" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username">Attendant Signature </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="checkbox" class="" formControlName="AttendantSignature" [(ngModel)]="model.AttendantSignature">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username">Doctor Signature </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="checkbox" class="" formControlName="DoctorSignature" [(ngModel)]="model.DoctorSignature">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="img-box">
+                            <div class="col-sm-12" *ngIf="model.Attachment!=''">
+                                <img [src]="AttachImage" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                            </div>
+                            <File-Component class="UploadActnWrap" [(ngModel)]="model.Attachment" (ClearModel)="ClearImageUrl()" (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+                        </div>
+                    </div>
+                </div>
+                <div class="modalfooter border-top mt-3">
+                    <div class="row mt-2">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+
+                        </div>
+
+                        <div class="col-sm-6 text-right">
+                            <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                            <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+                            <button type="button" class="btn btn-light ml-2" routerLink="/home/DeathRecord">Cancel</button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

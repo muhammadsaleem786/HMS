@@ -141,6 +141,12 @@ namespace HMS.Web.API
                   .RegisterType<IRepositoryAsync<ipd_payment>, Repository<ipd_payment>>()
                   .RegisterType<IRepositoryAsync<adm_user_share>, Repository<adm_user_share>>()
 
+                  .RegisterType<IRepositoryAsync<ipd_death_record_register>, Repository<ipd_death_record_register>>()
+                  .RegisterType<IRepositoryAsync<ipd_adverse_drug_reaction>, Repository<ipd_adverse_drug_reaction>>()
+                  .RegisterType<IRepositoryAsync<ipd_sentinel_event_register>, Repository<ipd_sentinel_event_register>>()
+                  .RegisterType<IRepositoryAsync<ipd_specialized_equipment_maintenance>, Repository<ipd_specialized_equipment_maintenance>>()
+
+
 
                         // Add services  
                         .RegisterType<IcontactService, contactService>()
@@ -229,6 +235,7 @@ namespace HMS.Web.API
                 .RegisterType<Iipd_input_outputService, ipd_input_outputService>()
                 .RegisterType<Iipd_medication_logService, ipd_medication_logService>()
                 .RegisterType<ISmsService, SmsService>()
+                .RegisterType<IDeepSeekService, DeepSeekService>()
                 .RegisterType<Iadm_integrationService, adm_integrationService>()
                 .RegisterType<Ipr_attendanceService, pr_attendanceService>()
                 .RegisterType<Ipr_time_logService, pr_time_logService>()
@@ -236,8 +243,11 @@ namespace HMS.Web.API
                 .RegisterType<Iipd_paymentService, ipd_paymentService>()
                 .RegisterType<Iadm_user_shareService, adm_user_shareService>()
                 .RegisterType<IERPStoredProcedures, HMSContext>(new PerRequestLifetimeManager())
+                .RegisterType<Iipd_death_record_registerService, ipd_death_record_registerService>()
+                .RegisterType<Iipd_adverse_drug_reactionService, ipd_adverse_drug_reactionService>()
+                .RegisterType<Iipd_sentinel_event_registerService, ipd_sentinel_event_registerService>()
+                .RegisterType<Iipd_specialized_equipment_maintenanceService, ipd_specialized_equipment_maintenanceService>()
                 .RegisterType<IStoredProcedureService, StoredProcedureService>();
-
         }
     }
 }

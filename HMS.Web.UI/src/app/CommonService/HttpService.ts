@@ -53,7 +53,6 @@ export class HttpService {
             'Content-Type': 'application/json;charset=utf-8'
         });
         try {
-            debugger
             const encUser = localStorage.getItem("currentUser");
             if (encUser) {
                 const userStr = this.encrypt.decryptionAES(encUser);

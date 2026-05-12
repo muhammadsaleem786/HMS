@@ -1109,7 +1109,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                 decimal getMaxMRNO = mrNo;
                 string MRNO = "";
-                MRNO = (getMaxMRNO).ToString("0000000000");
+                MRNO = (getMaxMRNO).ToString("000000000");
                 objResponse.ResultSet = new
                 {
                     MRNO = MRNO,
@@ -1162,7 +1162,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
    .Where(x => x.DropDownID == 23).ToList();
                 decimal getMaxMRNO = mrNo;
                 string MRNO = "";
-                MRNO = (getMaxMRNO).ToString("0000000000");
+                MRNO = (getMaxMRNO).ToString("000000000");
 
                 var GenderList = genderList;
                 var BillTypeList = billTypeList;

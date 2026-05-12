@@ -46,8 +46,10 @@ export class ApplicationUserComponentForm implements OnInit {
     public WasInside: boolean = false;
     public Keywords: any[] = []; public ControlRights: any;
     public TemplateList: any[] = [];
-    public UserProfileImage: string = ''; public CompanyObj: any;
+    public UserProfileImage: string = '';
+    public BrandImage: string = ''; public CompanyObj: any;
     public IsNewImage: boolean = true;
+    public IsNewBrandImage: boolean = true;
     @HostListener('click', ['$event'],)
     Clickoutdocument(event) {
         if (!this.WasInside)
@@ -123,6 +125,8 @@ export class ApplicationUserComponentForm implements OnInit {
             UserImage: [''],
             RepotFooter: [''],
             Instruction: [''],
+            BrandImage: [''],
+            BrandDescription: [''],
             Pwd: ['', [Validators.required, <any>Validators.minLength(6)]],
         });
         $(".toggle-password").click(function () {
@@ -148,7 +152,12 @@ export class ApplicationUserComponentForm implements OnInit {
                         this.IsEmpFound = true;
                         this.model.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescription);
                         this.model.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescriptionUrdu);
-
+                        if (m.ResultSet.UserObj.BrandImage != null && m.ResultSet.UserObj.BrandImage != undefined && m.ResultSet.UserObj.BrandImage != "") {
+                                this.getImageUrlNameBrand(m.ResultSet.UserObj.BrandImage);
+                                this.IsNewBrandImage = false;
+                            } else {
+                                this.IsNewBrandImage = true;
+                            }
                         if (m.ResultSet.employeeObj) {
                             this.DisplayMember = `${m.ResultSet.employeeObj.FirstName} ${m.ResultSet.employeeObj.LastName}`;
 
@@ -451,6 +460,29 @@ export class ApplicationUserComponentForm implements OnInit {
             this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         } else {
             this.UserProfileImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
+        }
+    }
+    //for BrandImage
+    IsNewImageEventBrand(FName) {
+
+        this.IsNewBrandImage = true;
+    }
+    getFileNameBrand(FName) {
+
+
+        this.model.BrandImage = FName;
+    }
+    ClearImageUrlBrand() {
+        this.IsNewBrandImage = true;
+        this.model.BrandImage = '';
+        this.BrandImage = '';
+    }
+    getImageUrlNameBrand(FName) {
+        this.model.BrandImage = FName;
+        if (this.IsEdit && !this.IsNewImage) {
+            this.BrandImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
+        } else {
+            this.BrandImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
 }

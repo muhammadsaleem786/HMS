@@ -207,6 +207,8 @@ namespace HMS.Entities.Models
         public Nullable<decimal> TemplateId { get; set; }
         public Nullable<int> TotalUser { get; set; } = 0;
         public Nullable<int> Charges { get; set; } = 0;
+        public string BrandImage { get; set; }
+        public string BrandDescription { get; set; }
 
         /// <summary> Company table
         [NotMapped]

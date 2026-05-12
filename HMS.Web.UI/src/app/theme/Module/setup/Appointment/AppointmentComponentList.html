@@ -883,18 +883,41 @@
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         </div>
-                                                                                                        <div class="row mt-4">
-
+                                                                                                        <div class="row mt-3 align-items-end">
                                                                                                             <div class="col-sm-3">
-                                                                                                                <div class="custom-control custom-checkbox mb-3 py-1">
-                                                                                                                    <input type="checkbox" class="custom-control-input" id="IsVoc" formControlName="IsVCObtained" [(ngModel)]="PrescriptionModel.IsVCObtained">
-                                                                                                                    <label class="custom-control-label" for="IsVoc">VC Obtained</label>
+                                                                                                                <div class="form-group mb-0">
+                                                                                                                    <label class="form-label fw-600 mb-2">
+                                                                                                                    </label>
+                                                                                                                    <div class="custom-control custom-checkbox">
+                                                                                                                        <input type="checkbox"
+                                                                                                                               class="custom-control-input"
+                                                                                                                               id="IsVoc"
+                                                                                                                               formControlName="IsVCObtained"
+                                                                                                                               [(ngModel)]="PrescriptionModel.IsVCObtained">
+                                                                                                                        <label class="custom-control-label"
+                                                                                                                               for="IsVoc">
+                                                                                                                            VC Obtained
+                                                                                                                        </label>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <div class="col-sm-3">
+                                                                                                                <div class="form-group mb-0">
+                                                                                                                    <label class="form-label fw-600 mb-2">
+                                                                                                                        Refill No
+                                                                                                                    </label>
+                                                                                                                    <select class="form-control"
+                                                                                                                            [ngModelOptions]="{standalone:true}"
+                                                                                                                            [(ngModel)]="PrescriptionModel.RefillNo">
+                                                                                                                        <option *ngFor="let item of RefillList"[ngValue]="item.Name">
+                                                                                                                            {{item.Name}}
+                                                                                                                        </option>
+                                                                                                                    </select>
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         </div>
                                                                                                         <div class="row" *ngIf="Surgery_sect">
                                                                                                             <div class="col-sm-7">
-
                                                                                                                 <div class="row form-group">
                                                                                                                     <div class="col-4 text-right">
                                                                                                                         <label class="form-control-label mt-2" for="input-username"> Examiner</label>
@@ -929,7 +952,6 @@
                                                                                                                     </div>
                                                                                                                 </div>
                                                                                                                 <!-- =============== -->
-
                                                                                                                 <div class="row form-group">
                                                                                                                     <div class="col-4 text-right">
                                                                                                                         <label class="form-control-label mt-2" for="input-username"> Loction</label>
@@ -947,7 +969,6 @@
                                                                                                                 </div>
                                                                                                                 <hr />
                                                                                                                 <!-- =============== -->
-
                                                                                                                 <div class="row form-group">
                                                                                                                     <div class="col-4 text-right">
                                                                                                                         <label class="form-control-label mt-2" for="input-username"> Reason for Visit</label>
@@ -958,7 +979,6 @@
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         </div>
-
                                                                                                     </ng-template>
                                                                                                 </ngb-panel>
                                                                                             </ngb-accordion>
@@ -2420,70 +2440,179 @@
             }
         }
     </style>
+    <!-- ================= MAIN CONTAINER ================= -->
+
     <div id="print-RxPrintModal"
          style="width:210mm;
-            min-height:297mm;
-            margin:0 auto;
-            background:#fff;
-            font-family: Arial, sans-serif;
-            font-size:13px;
-            line-height:1.4;
-            color:#000;
-            position:relative;
-            box-sizing:border-box;
-            padding-bottom:70px;">
+         min-height:297mm;
+         margin:0 auto;
+         background:#fff;
+         font-family: Arial, sans-serif;
+         font-size:13px;
+         line-height:1.4;
+         color:#000;
+         position:relative;
+         box-sizing:border-box;
+         padding-bottom:70px;">
 
-        <!-- HEADER -->
-        <div style="display:flex; justify-content:space-between; align-items:start; border-bottom:3px solid #5e72e4; padding:15px;">
-            <div style="width:46%; text-align:left; font-family: Arial, Helvetica, sans-serif;word-break: break-word;">
-                <div [innerHTML]="DoctorInfo.safeHeaderDescription" style="font-family: Arial, Helvetica, sans-serif;"></div>
+        <!-- ================= HEADER ================= -->
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:3px solid #5e72e4;
+            padding:12px 15px;
+            gap:10px;
+        ">
+
+            <!-- LEFT HEADER -->
+
+            <div style="
+                width:42%;
+                font-size:13px;
+                line-height:1.5;
+                word-break:break-word;
+            ">
+
+                <div [innerHTML]="DoctorInfo.safeHeaderDescription"></div>
+
             </div>
 
-            <div style="width:120px; text-align:right; display:flex; align-items:center; justify-content:center;">
-                <img *ngIf="PatientRXmodel.ClinicIogo"
-                     [src]="PatientRXmodel.ClinicIogo"
-                     style="max-width:120px; max-height:80px; object-fit:contain;">
-                <img *ngIf="!PatientRXmodel.ClinicIogo"
+            <!-- CENTER LOGO -->
+            <!-- CENTER LOGO -->
+
+            <div style="
+    width:16%;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+">
+
+                <!-- REF NO -->
+
+                <div style="
+        font-size:12px;
+        font-weight:bold;
+        margin-bottom:6px;
+        color:#000;
+        line-height:1;
+    ">
+                    Ref.No: {{PatientRXmodel.MrNo}}
+                </div>
+
+                <!-- LOGO -->
+
+                <img *ngIf="PatientRXmodel.BrandImage"
+                     [src]="PatientRXmodel.BrandImage"
+                     style="
+            max-width:100px;
+            max-height:70px;
+            object-fit:contain;
+         ">
+
+                <img *ngIf="!PatientRXmodel.BrandImage"
                      src="../assets/app/media/img/icons/doctor-logo.png"
-                     style="max-width:120px; max-height:80px; object-fit:contain;">
+                     style="
+            max-width:100px;
+            max-height:70px;
+            object-fit:contain;
+         ">
+
+                <!-- BRAND -->
+
+                <span style="
+        font-size:12px;
+        margin-top:4px;
+        color:#444;
+        text-align:center;
+        line-height:1.3;
+    ">
+                    {{PatientRXmodel.BrandDescription}}
+                </span>
+
             </div>
+
+            <!-- RIGHT HEADER -->
 
             <div *ngIf="DoctorInfo.TemplateId==2"
-                 style="width:46%; text-align:right; direction:rtl;word-break: break-word;">
-                <div [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu" style="margin:2px 0; font-size:13px; color:#444;"></div>
+                 style="
+                    width:42%;
+                    text-align:right;
+                    direction:rtl;
+                    font-size:13px;
+                    line-height:1.5;
+                    word-break:break-word;
+                 ">
+
+                <div [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu"></div>
+
             </div>
+
         </div>
 
-        <!-- BODY -->
+        <!-- ================= BODY ================= -->
+
         <div style="padding:6px 12px 12px; box-sizing:border-box; font-family: Arial, Helvetica, sans-serif;">
 
-            <!-- Patient Info -->
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #5e72e4; margin-bottom:8px; padding-bottom:6px;">
-                <div style="width:35%;">
-                    <label style="font-size:12px; font-weight:bold;">P/Name: </label>
-                    <span style="font-size:12px;">{{PatientRXmodel.PatientName}} ({{ PatientRXmodel.Mobile?.slice(0, -3) + '***' }})</span>
+
+            <!-- ================= PATIENT INFO ================= -->
+
+            <div style="
+                display:flex;
+                flex-wrap:wrap;
+                align-items:center;
+                justify-content:space-between;
+                gap:8px;
+                border-bottom:2px solid #5e72e4;
+                padding:8px 0;
+                margin-bottom:10px;
+                font-size:12px;
+            ">
+
+                <div style="min-width:190px;">
+                    <strong>P/Name:</strong>
+                    {{PatientRXmodel.PatientName}}
+                    ({{ PatientRXmodel.Mobile?.slice(0, -3) + '***' }})
                 </div>
-                <div style="width:20%;">
-                    <label style="font-size:12px; font-weight:bold;">Age: </label>
-                    <span style="font-size:12px;">{{PatientRXmodel.Age}}</span>
+
+                <div style="min-width:70px;">
+                    <strong>Age:</strong>
+                    {{PatientRXmodel.Age}}
                 </div>
-                <div style="width:15%;">
-                    <label style="font-size:12px; font-weight:bold;">Sex: </label>
-                    <span style="font-size:12px;">{{PatientRXmodel.Gender}}</span>
+
+                <div style="min-width:90px;">
+                    <strong>Gender:</strong>
+                    {{PatientRXmodel.Gender}}
                 </div>
-                <div style="width:22%; text-align:right;">
-                    <label style="font-size:12px; font-weight:bold;">Date: </label>
-                    <span style="font-size:12px;">
-                        {{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy' | uppercase}}
-                        {{ currentTime | date:'hh:mm a' }}
-                    </span>
+
+                <div style="min-width:170px;">
+                    <strong>Date:</strong>
+                    {{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy'}}
+                    {{ currentTime | date:'hh:mm a' }}
                 </div>
+
+                <div style="flex:1; min-width:218px;">
+                    <strong>Address:</strong>
+                    {{PatientRXmodel.Address}}
+                </div>
+
+                <div style="min-width:499px;">
+                    <strong>No.Of Visit:</strong>
+                    {{PatientRXmodel.NoVisit}}
+                </div>
+
             </div>
 
-            <!-- CONTENT SPLIT -->
+            <!-- ================= CONTENT AREA ================= -->
+
             <div style="display:flex; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, Helvetica, sans-serif;">
 
-                <!-- LEFT SIDEBAR -->
+
+                <!-- ================= LEFT SIDEBAR ================= -->
+
                 <div style="width:28%; padding-right:10px; font-size:13px; color:#000;">
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safeClinicalNote!= null">
                         <strong style="font-size:18px; color: #d9534f;">Clinical History:</strong>
@@ -2519,8 +2648,8 @@
                     </div>
                 </div>
 
-                <!-- RIGHT MAIN -->
-                <!-- RIGHT MAIN -->
+                <!-- ================= RIGHT CONTENT ================= -->
+
                 <div style="width:72%; border-left:1px solid #5e72e4; padding-left:12px;">
                     <img src="../assets/app/media/img/icons/Rx.png"
                          style="max-width:55px; max-height:55px; object-fit:contain; ">
@@ -2563,10 +2692,10 @@
                                                     <td>
                                                         <span *ngIf="m.Night > 0" style="white-space: nowrap;">
                                                             {{
-                                                                (m.TypeId == 39 || m.TypeId == 2) ? 'گولی رات'
-                                                                :
-                                                                (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ رات'
-                                                                : 'رات'
+                                                (m.TypeId == 39 || m.TypeId == 2) ? 'گولی رات'
+                                                :
+                                                (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ رات'
+                                                : 'رات'
                                                             }}
                                                         </span>
                                                     </td>
@@ -2578,10 +2707,10 @@
                                                     <td>
                                                         <span *ngIf="m.Evening > 0" style="white-space: nowrap;">
                                                             {{
-                                                                (m.TypeId == 39 || m.TypeId == 2) ? 'گولی شام'
-                                                                :
-                                                                (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ شام'
-                                                                : 'شام'
+                                                (m.TypeId == 39 || m.TypeId == 2) ? 'گولی شام'
+                                                :
+                                                (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ شام'
+                                                : 'شام'
                                                             }}
                                                         </span>
                                                     </td>
@@ -2593,10 +2722,10 @@
                                                     <td>
                                                         <span *ngIf="m.AfterNoon > 0" style="white-space: nowrap;">
                                                             {{
-                                                                (m.TypeId == 39 || m.TypeId == 2) ? 'گولی دوپہر'
-                                                                :
-                                                                (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ دوپہر'
-                                                                : 'دوپہر'
+                                                (m.TypeId == 39 || m.TypeId == 2) ? 'گولی دوپہر'
+                                                :
+                                                (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ دوپہر'
+                                                : 'دوپہر'
                                                             }}
                                                         </span>
                                                     </td>
@@ -2608,10 +2737,10 @@
                                                     <td>
                                                         <span *ngIf="m.Morning > 0" style="white-space: nowrap;">
                                                             {{
-                                                            (m.TypeId == 39 || m.TypeId == 2) ? 'گولی صبح'
-                                                            :
-                                                            (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ صبح'
-                                                            : 'صبح'
+                                            (m.TypeId == 39 || m.TypeId == 2) ? 'گولی صبح'
+                                            :
+                                            (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ صبح'
+                                            : 'صبح'
                                                             }}
                                                         </span>
                                                     </td>
@@ -2651,24 +2780,62 @@
                     </div>
 
                 </div>
+
             </div>
+
         </div>
 
-        <!-- FOOTER -->
-        <div style="position:absolute; bottom:0; left:0; width:100%; padding:6px 10px; text-align:center; border-top:4px solid #5e72e4; background:#fff;">
-            <div style="text-align: left; position: absolute; top: -50px; padding:6px 2px ">
-                <strong><i>Follow Up: </i></strong>
-                <i>{{PatientRXmodel.FollowUpDate| date:'dd-MMM-yyyy'}}</i>
+        <!-- ================= FOOTER ================= -->
+        <div style="
+            position:absolute;
+            bottom:0;
+            left:0;
+            width:100%;
+            background:#fff;
+            box-sizing:border-box;
+        ">
+
+            <!-- TOP FOOTER CONTENT -->
+            <div style="padding:0 18px 8px;font-size:12px;">
+                <div style="margin-bottom:10px;text-align:left;">
+                    <strong><i>Refill No:</i></strong>
+                    <i>{{PatientRXmodel.RefillNo}}</i>
+                </div>
+                <div style=" display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; ">
+                    <div style="text-align:left;">
+                        <strong><i>Follow Up:</i></strong>
+                        <i>{{PatientRXmodel.FollowUpDate | date:'dd-MMM-yyyy'}}</i>
+                    </div>
+                    <!-- RIGHT -->
+                    <div style="text-align:right;">
+                        <strong><i>Signature & Stamp</i></strong>
+                    </div>
+                </div>
             </div>
-            <p style="font-size:13px; margin:0; color:#444;">{{DoctorInfo.Footer}}</p>
+
+            <!-- FOOTER LINE -->
+
+            <div style="
+                border-top:4px solid #5e72e4;
+                padding:8px 15px 6px;
+                text-align:center;
+                font-size:13px;
+                color:#444;
+            ">
+                {{DoctorInfo.Footer}}
+            </div>
+
         </div>
+
     </div>
 
-    <!-- PRINT + CLOSE BUTTONS -->
+    <!-- ================= BUTTONS ================= -->
+
     <div style="position:fixed; right:20px; bottom:20px; font-family: Arial, sans-serif;">
         <button class="btn btn-primary" useExistingCss="true" printSectionId="print-RxPrintModal" ngxPrint>Print</button>
         <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
     </div>
+
 </ng-template>
 <!-- ============================ -->
 

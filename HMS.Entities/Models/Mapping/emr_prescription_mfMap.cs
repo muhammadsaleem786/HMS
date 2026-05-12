@@ -47,6 +47,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.ClinicId).HasColumnName("ClinicId");
             this.Property(t => t.Day).HasColumnName("Day");
             this.Property(t => t.IsVCObtained).HasColumnName("IsVCObtained");
+            this.Property(t => t.RefillNo).HasColumnName("RefillNo");
 
             // Relationships
             this.HasRequired(t => t.adm_company)

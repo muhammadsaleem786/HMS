@@ -1,195 +1,200 @@
-﻿import { Component, Input, forwardRef, Output, EventEmitter } from '@angular/core';
-import { Response } from '@angular/http';
+﻿import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  forwardRef,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
+
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { FileService } from '../../CommonService/FileService';
 import { CommonToastrService } from '../../CommonService/CommonToastrService';
-import { ViewChild } from '@angular/core';
-const noop = () => {
-};
+
+const noop = () => { };
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => FileUploadComponent),
-    multi: true,
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => FileUploadComponent),
+  multi: true,
 };
+
 @Component({
-    selector: 'File-Component',
-    moduleId: module.id,
-    templateUrl: 'FileUploadComponent.html',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, FileService]
+  selector: 'File-Component',
+  templateUrl: './FileUploadComponent.html',
+  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, FileService]
 })
 export class FileUploadComponent implements ControlValueAccessor {
 
-    //The internal data model
-    private innerValue: any = '';
-    private selectedFiles: File[] = [];
-    @Input() ImageWithAddress = false;
-    @Output() ClearModel = new EventEmitter<string>();
-    @Output() FileNameEvent = new EventEmitter<string>();
-    @Output() IsNewFileEvent = new EventEmitter<boolean>();
-    myInputVariable: any;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
+  @Input() ImageWithAddress: boolean = false;
 
-    public max: number = 0;
-    public count: number = 0;
-    public percentage: number = 0;
-    public imagedata: string = '';
-    public showbar: boolean = false;
-    public size: number;
+  @Output() ClearModel = new EventEmitter<void>();
+  @Output() FileNameEvent = new EventEmitter<string>();
+  @Output() IsNewFileEvent = new EventEmitter<boolean>();
 
+  private innerValue: any = '';
+  private onChangeCallback: (_: any) => void = noop;
+  private onTouchedCallback: () => void = noop;
 
-    public showCard:boolean = false; // add this
+  selectedFiles: File[] = [];
 
+  showbar: boolean = false;
+  imagedata: string = '';
+  percentage: number = 0;
+  max: number = 100;
+  size: number = 0;
 
-    //Placeholders for the callbacks which are later providesd
-    //by the Control Value Accessor
-    private onTouchedCallback: () => void = noop;
-    private onChangeCallback: (_: any) => void = noop;
+  constructor(
+    private http: FileService,
+    public toastr: CommonToastrService
+  ) { }
 
-    constructor(private http: FileService, public toastr: CommonToastrService,) {
+  // ---------------- VALUE ACCESSOR ----------------
 
+  get value(): any {
+    return this.innerValue;
+  }
+
+  set value(v: any) {
+    if (v !== this.innerValue) {
+      this.innerValue = v;
+      this.onChangeCallback(v);
     }
+  }
 
-    //get accessor
-    get value(): any {
-        return this.innerValue;
-    };
+  writeValue(value: any): void {
+    this.innerValue = value;
 
-    //set accessor including call the onchange callback
-    set value(v: any) {
-        if (v !== this.innerValue) {
-            this.innerValue = v;
-            this.onChangeCallback(v);
-        }
+    if (!value) {
+      this.resetUI();
     }
+  }
 
-    //Set touched on blur
-    onBlur() {
-        this.onTouchedCallback();
-    }
-    clearValue() {
-        $('#myFile').val('');
-        this.imagedata = '';
-        this.size = 0;
-        this.showbar = false;
-        this.value = '';
-        this.ClearModel.emit();
-    }
-    ClearValue(data: any) {
-        $("#myFile").val("");
-        this.innerValue = '';
-        this.imagedata = '';
-        this.size = null;
-        this.showbar = false;
-        this.value = '';
-    }
+  registerOnChange(fn: any): void {
+    this.onChangeCallback = fn;
+  }
 
-    //From ControlValueAccessor interface
-    writeValue(value: any) {
-        if (value !== this.innerValue) {
-            if (!value) {
-                this.innerValue = value;
-                this.imagedata = '';
-                this.size = null;
-                this.showbar = false;
-                this.value = '';
-            }
-        }
+  registerOnTouched(fn: any): void {
+    this.onTouchedCallback = fn;
+  }
 
-        if (value == "") {
-            this.imagedata = '';
-            this.size = null;
-            this.showbar = false;
-            this.value = '';
+  onBlur(): void {
+    this.onTouchedCallback();
+  }
 
-        }
+  // ---------------- FILE CHANGE ----------------
 
-        if (value == null) {
-            this.imagedata = '';
-            this.size = null;
-            this.showbar = false;
-            this.value = '';
-        }
+fileChangeEvent(event: any): void {
 
-    }
+  const input = event.target as HTMLInputElement;
 
-    //From ControlValueAccessor interface
-    registerOnChange(fn: any) {
-        this.onChangeCallback = fn;
-    }
+  const fileList = input.files;
+  if (!fileList || fileList.length === 0) return;
 
-    //From ControlValueAccessor interface
-    registerOnTouched(fn: any) {
-        this.onTouchedCallback = fn;
-    }
+  // ✅ CRITICAL FIX: clone file reference immediately
+  const file: File = new File([fileList[0]], fileList[0].name, {
+    type: fileList[0].type
+  });
 
-    fileChangeEvent(data: any): void {
-        const file = data.target.files[0];
-        if (file) {
-            const allowedExtensions = /(\.jpg|\.png|\.pdf)$/i;
-            if (!allowedExtensions.exec(file.name)) {
-                this.toastr.Error("Invalid file type. Only PDF, JPG, and PNG files are allowed.");
-                return;
-            }
-        }
+  const allowedExtensions = /(\.jpg|\.png|\.pdf)$/i;
 
-        this.IsNewFileEvent.emit(true);
-        var self = this;
-        self.size = data.target.files[0].size;
-        self.size = self.size / 1024;
-        self.size = self.size / 1024;
-        self.size = Math.round(self.size * 100) / 100
-        if (self.size > 10) {
-            self.imagedata = 'File size is greater than 10 MB. File size is ' + self.size + ' MB';
-            this.toastr.Error("Error", "File size is greater than 10 MB")
-            self.value = '';
-            return;
-        }
-        else {
-            self.showbar = true;
-            self.imagedata = 'File size is ' + self.size + ' MB';
-            self.selectedFiles = data.target.files;
-            if (self.selectedFiles.length == 0) return;
-            self.max = 100;
-            self.percentage = 0;
-            self.http.Upload(self, self.selectedFiles, self.tempFunction).then(res => {
-                var result = JSON.parse(JSON.stringify(res));
-                if (result.IsSuccess == true) {
-                    if (result.ResultSet.length = 1)
-                        if (self.ImageWithAddress == true) {
-                            self.value = result.ResultSet[0];
+  if (!allowedExtensions.exec(file.name)) {
+    this.toastr.Error("Invalid file type. Only JPG, PNG, PDF allowed.");
+    return;
+  }
 
-                            this.FileNameEvent.emit(result.ResultSet[0]);
-                        }
-                        else {
-                            self.value = result.ResultSet[0]
-                        }
-                    else {
-                        self.value = result.ResultSet
-                    }
-                }
-            },
-                error => error
-            );
+  this.IsNewFileEvent.emit(true);
+
+  this.size = Math.round((file.size / 1024 / 1024) * 100) / 100;
+
+  if (this.size > 10) {
+    this.toastr.Error("File size must be less than 10MB");
+    this.resetUI();
+    return;
+  }
+
+  this.showbar = true;
+  this.imagedata = 'File size is ' + this.size + ' MB';
+
+  // ✅ IMPORTANT: store safe copy
+  this.selectedFiles = [file];
+
+  // ❌ DO NOT clear input here
+  // ❌ DO NOT touch fileInput yet
+
+  this.startUpload();
+}
+private startUpload(): void {
+
+  setTimeout(() => {
+
+    this.http.Upload(this, this.selectedFiles, this.progressCallback)
+      .then(res => {
+
+        const result = JSON.parse(JSON.stringify(res));
+
+        if (result.IsSuccess && result.ResultSet && result.ResultSet.length > 0) {
+
+          const uploadedFile = result.ResultSet[0];
+
+          this.value = uploadedFile;
+
+          if (this.ImageWithAddress) {
+            this.FileNameEvent.emit(uploadedFile);
+          }
         }
 
-        self.value = '';
-        self.innerValue = '';
+        // ✅ ONLY clear AFTER upload completes
+        this.clearInput();
+      });
+
+  }, 0);
+}
+  // ---------------- PROGRESS ----------------
+
+  progressCallback(self: any, value: number): void {
+    self.percentage = value;
+  }
+
+  // ---------------- OPEN FILE ----------------
+
+  triggerFileBrowse(event?: Event): void {
+
+  if (event) {
+    event.stopPropagation();
+  }
+
+  setTimeout(() => {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.click();
     }
-    tempFunction(self: any, value: number) {
-        self.percentage = value
+  }, 0);
+}
+
+  // ---------------- CLEAR ----------------
+
+  clearValue(): void {
+    this.resetUI();
+    this.value = '';
+    this.ClearModel.emit();
+  }
+
+  // ---------------- RESET ----------------
+
+  private resetUI(): void {
+    this.showbar = false;
+    this.imagedata = '';
+    this.percentage = 0;
+    this.size = 0;
+    this.clearInput();
+  }
+
+  private clearInput(): void {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
     }
-
-
-            
-        triggerFileBrowse() {
-        this.showCard = true;
-        setTimeout(() => {
-            const fileInput: HTMLElement | null = document.getElementById('myFile');
-            if (fileInput) {
-            fileInput.click();
-            }
-        }, 100); // short delay to render card first
-        }
-
+  }
 }

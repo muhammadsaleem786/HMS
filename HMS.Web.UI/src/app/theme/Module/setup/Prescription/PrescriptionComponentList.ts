@@ -161,8 +161,12 @@ export class PrescriptionComponentList {
                 this.emr_prescription_treatment_dynamicArray = [];
                 this.PatientRXmodel = new patientInfo();
                 this.PatientVitalList = [];
-                if (m.ResultSet.doctor.length > 0)
+                if (m.ResultSet.doctor.length > 0) {
                     this.DoctorInfo = m.ResultSet.doctor[0];
+                    if (this.DoctorInfo.BrandImage != null)
+                        this.PatientRXmodel.BrandImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.DoctorInfo.BrandImage;
+                    this.PatientRXmodel.BrandDescription = this.DoctorInfo.BrandDescription;
+                }
                 if (this.DoctorInfo.HeaderDescription) {
                     this.DoctorInfo.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescription);
                 }
@@ -182,6 +186,10 @@ export class PrescriptionComponentList {
                 this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
                 this.PatientRXmodel.FollowUpDate = m.ResultSet.result.FollowUpDate;
                 this.PatientRXmodel.IsVCObtained = m.ResultSet.result.IsVCObtained;
+                this.PatientRXmodel.RefillNo = m.ResultSet.result.RefillNo;
+                this.PatientRXmodel.Address = m.ResultSet.result.Address;
+                this.PatientRXmodel.MrNo = m.ResultSet.result.MrNo;
+                this.PatientRXmodel.NoVisit = m.ResultSet.result.NoVisit;
                 if (m.ResultSet.result.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(m.ResultSet.result.ClinicalNote);
                 }
@@ -193,8 +201,6 @@ export class PrescriptionComponentList {
                     this.PatientRXmodel.Weight = "";
                 else
                     this.PatientRXmodel.Weight = Weight[0].Measure;
-                if (m.ResultSet.result.ClinicIogo != null)
-                    this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result.ClinicIogo;
                 this.PatientRXmodel.Age = m.ResultSet.result.Age;
                 this.PatientRXmodel.AppointmentDate = this._CommonService.GetFormatDate(m.ResultSet.result.AppointmentDate);
                 this.PatientVitalList = m.ResultSet.vitallist;
@@ -214,7 +220,6 @@ export class PrescriptionComponentList {
                     });
                 }
                 if (m.ResultSet.result.emr_prescription_observation != null) {
-
                     m.ResultSet.result.emr_prescription_observation.forEach((item, index) => {
                         this.emr_prescription_observation_dynamicArray.push(item);
                     });

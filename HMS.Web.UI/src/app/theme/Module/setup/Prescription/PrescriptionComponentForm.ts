@@ -2,7 +2,7 @@
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'; import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo, InvoiceCompanyInfo, emr_notes_favorite } from './../Appointment/AppointmentModel';
-import { emr_prescription_mf, emr_prescription_complaint, emr_prescription_diagnos, emr_prescription_investigation, emr_prescription_observation, emr_prescription_treatment, emr_medicine} from './PrescriptionModel';
+import { emr_prescription_mf, emr_prescription_complaint, emr_prescription_diagnos, emr_prescription_investigation, emr_prescription_observation, emr_prescription_treatment, emr_medicine } from './PrescriptionModel';
 import { LoaderService } from '../../../../CommonService/LoaderService';
 import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
@@ -89,6 +89,7 @@ export class PrescriptionComponentForm implements OnInit {
     public PatientRXmodel = new patientInfo();
     public InstructionsList: any[] = [];
     public DurationList: any[] = [];
+    public RefillList: any[] = [];
     public emr_vital_dynamicArray = [];
     public RowNo: number;
     public DoctorInfo = new DoctorInfo(); public BillTypeList: any[] = []; public AppControlRights: any;
@@ -206,6 +207,14 @@ export class PrescriptionComponentForm implements OnInit {
             { "ID": 9, "Name": "STAT" },
             { "ID": 10, "Name": "PRN" }
         ];
+        this.RefillList = [
+            { "ID": "-", "Name": "-" },
+            { "ID": "1", "Name": "1" },
+            { "ID": "2", "Name": "2" },
+            { "ID": "3", "Name": "3" },
+            { "ID": "4", "Name": "4" },
+            { "ID": "5", "Name": "5" },
+        ];
         this.Form1 = this._fb.group({
             PatientName: ['', [Validators.required]],
             Gender: ['', [Validators.required]],
@@ -274,6 +283,7 @@ export class PrescriptionComponentForm implements OnInit {
             ClinicalNote: [''],
             PlanNote: [''],
             IsVCObtained: [''],
+            RefillNo: [''],
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -2011,14 +2021,10 @@ export class PrescriptionComponentForm implements OnInit {
             return;
         }
         this.loader.ShowLoader();
-
-
         this.PrescriptionModel.emr_prescription_complaint = [];
         this.PrescriptionModel.emr_prescription_diagnos = [];
         this.PrescriptionModel.emr_prescription_investigation = [];
         this.PrescriptionModel.emr_prescription_observation = [];
-
-
         if (this.PrescriptionModel.FollowUpTime != undefined)
             this.PrescriptionModel.FollowUpTime = this.Convert12TO24(this.PrescriptionModel.FollowUpTime);
         this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;
@@ -2029,7 +2035,6 @@ export class PrescriptionComponentForm implements OnInit {
         this._AppointmentService.PrescriptionSave(this.PrescriptionModel).then(m => {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
-
                 this.toastr.Success(result.Message);
                 this.emr_prescription_complaint_dynamicArray = [];
                 this.emr_prescription_diagnos_dynamicArray = [];
@@ -2046,9 +2051,11 @@ export class PrescriptionComponentForm implements OnInit {
                     this.PatientRXmodel.Gender = result.ResultSet.patientInfo.Gender;
                     this.PatientRXmodel.Mobile = result.ResultSet.patientInfo.Mobile;
                     this.PatientRXmodel.IsVCObtained = result.ResultSet.Model.IsVCObtained;
-                    if (this.PatientRXmodel.ClinicIogo != null)
-                        this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + result.ResultSet.patientInfo.ClinicIogo;
-                }
+                    this.PatientRXmodel.RefillNo = result.ResultSet.Model.RefillNo;
+                    this.PatientRXmodel.Address = result.ResultSet.patientInfo.Address;
+                    this.PatientRXmodel.MrNo = result.ResultSet.patientInfo.MRNO;
+                    this.PatientRXmodel.NoVisit = result.ResultSet.patientInfo.NoVisit;
+                   }
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
                 if (result.ResultSet.Model.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.ClinicalNote);
@@ -2070,6 +2077,11 @@ export class PrescriptionComponentForm implements OnInit {
                     this.DoctorInfo.Designation = "";
                     this.DoctorInfo.Qualification = "";
                     this.DoctorInfo.PhoneNo = "";
+                } else {
+                    this.PatientRXmodel.BrandDescription = this.DoctorInfo.BrandDescription;
+                    if (this.DoctorInfo.BrandImage != null)
+                        this.PatientRXmodel.BrandImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.DoctorInfo.BrandImage;
+
                 }
                 if (this.PatientRXmodel == undefined || this.PatientRXmodel == null) {
                     this.PatientRXmodel.PatientName = "";
@@ -2379,7 +2391,7 @@ export class PrescriptionComponentForm implements OnInit {
         }
     }
     async loadAIResponse(isValid: boolean): Promise<void> {
-       
+
         const vitalText = this.emr_vital_dynamicArray
             .map(v => `${v.Measure} ${v.Unit}`)
             .join(', ');
@@ -2395,12 +2407,12 @@ export class PrescriptionComponentForm implements OnInit {
         }
         this.loader.ShowLoader();
         let model = {
-            ClinicalHistory:this.PrescriptionModel.ClinicalNote,
-            Complaint: complaintText,               
+            ClinicalHistory: this.PrescriptionModel.ClinicalNote,
+            Complaint: complaintText,
             Vital: vitalText
         };
         const response = await this._PrescriptionService.LoadAIResponse(model);
-       const result = JSON.parse(response._body);
+        const result = JSON.parse(response._body);
         if (result.IsSuccess) {
             this.answer = result.ResultSet.Response
                 .replace(/\*\*/g, '')
@@ -2414,9 +2426,9 @@ export class PrescriptionComponentForm implements OnInit {
             this.loader.HideLoader();
         }
     }
-   async copyAIResponse() {
+    async copyAIResponse() {
         try {
-            await(navigator as any).clipboard.writeText(this.answer);
+            await (navigator as any).clipboard.writeText(this.answer);
 
             this.toastr.Success('Success', 'Copied to clipboard');
         } catch (err) {

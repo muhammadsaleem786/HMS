@@ -37,6 +37,7 @@ namespace HMS.Entities.Models
         public string PlanNote { get; set; }
         public bool IsCreateAppointment { get; set; }
         public string Notes { get; set; }
+        public string RefillNo { get; set; }
         public decimal CreatedBy { get; set; }
         [NotMapped]
         public string TemplateName { get; set; }

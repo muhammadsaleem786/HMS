@@ -156,7 +156,6 @@ export class DeathRecordComponentForm implements OnInit {
         var result = confirm("Are you sure you want to delete selected record.");
         if (result) {
             this.loader.ShowLoader();
-            debugger
             this._DeathRecordService.Delete(this.model.ID.toString()).then(m => {
                 if (m.ErrorMessage != null)
                     this.toastr.Error('Error', m.ErrorMessage);

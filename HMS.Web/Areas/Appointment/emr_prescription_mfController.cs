@@ -384,15 +384,21 @@ Model?.emr_prescription_treatment
                     var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
                     var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
                     var MedicineList = itemList.Union(medicineList).ToList();
+                    DateTime todayDate = DateTime.UtcNow;
                     var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
-                        .Select(z => new
-                        {
-                            z.PatientName,
-                            z.Mobile,
-                            z.Age,
-                            ClinicIogo = z.adm_company.CompanyLogo,
-                            Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
-                        }).FirstOrDefault();
+                      .Select(z => new
+                      {
+                          z.PatientName,
+                          z.Age,
+                          Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
+                          ClinicIogo = z.adm_company.CompanyLogo,
+                          z.Mobile,
+                          z.MRNO,
+                          z.Address,
+                          NoVisit = z.emr_appointment_mf
+        .Where(a => a.CompanyId == z.CompanyId && DbFunctions.TruncateTime(a.AppointmentDate) <= DbFunctions.TruncateTime(todayDate))
+        .Count()
+                      }).FirstOrDefault();
                     var role = _adm_user_companyService.Queryable()
                      .Where(u => u.UserID == UserID && u.CompanyID == CompanyID)
                      .Select(u => u.adm_role_mf.RoleName)
@@ -425,6 +431,8 @@ Model?.emr_prescription_treatment
                             Qualification = mf.Qualification,
                             Designation = mf.Designation,
                             PhoneNo = mf.PhoneNo,
+                            BrandImage = mf.BrandImage,
+                            BrandDescription = mf.BrandDescription,
                             Footer = mf.RepotFooter,
                             TemplateId = mf.TemplateId,
                             QualificationUrdu = mf.QualificationUrdu,
@@ -760,7 +768,7 @@ Model?.emr_prescription_treatment
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Update;
                     objResponse.IsSuccess = true;
-
+                    DateTime todayDate = DateTime.UtcNow;
                     var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
                         .Select(z => new
                         {
@@ -769,7 +777,13 @@ Model?.emr_prescription_treatment
                             Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
                             ClinicIogo = z.adm_company.CompanyLogo,
                             z.Mobile,
+                            z.MRNO,
+                            z.Address,
+                            NoVisit = z.emr_appointment_mf
+          .Where(a => a.CompanyId == z.CompanyId && DbFunctions.TruncateTime(a.AppointmentDate) <= DbFunctions.TruncateTime(todayDate))
+          .Count()
                         }).FirstOrDefault();
+
                     var role = _adm_user_companyService.Queryable()
                      .Where(u => u.UserID == userid && u.CompanyID == CompanyID)
                      .Select(u => u.adm_role_mf.RoleName)
@@ -798,6 +812,8 @@ Model?.emr_prescription_treatment
                             WDFriday = emp?.WDFriday ?? false,
                             WDSaturday = emp?.WDSaturday ?? false,
                             IsShowDoctor = mf.IsShowDoctor,
+                            BrandImage = mf.BrandImage,
+                            BrandDescription = mf.BrandDescription,
                             IsDoctor = false,
                             Qualification = mf.Qualification,
                             Designation = mf.Designation,
@@ -832,17 +848,17 @@ Model?.emr_prescription_treatment
                         Name = a.sys_drop_down_value.Value
                     }).ToList();
 
-var ids =
-                    (
-                    Model?.emr_prescription_treatment
-                    ?? Enumerable.Empty<emr_prescription_treatment>()
-                    )
-                    .Select(a => new
-                    {
-                        Id = a.MedicineId,
-                        IsInventory = a.IsInventory
-                    })
-                    .ToList();
+                    var ids =
+                                        (
+                                        Model?.emr_prescription_treatment
+                                        ?? Enumerable.Empty<emr_prescription_treatment>()
+                                        )
+                                        .Select(a => new
+                                        {
+                                            Id = a.MedicineId,
+                                            IsInventory = a.IsInventory
+                                        })
+                                        .ToList();
                     var inventoryIds = ids
                         .Where(x => x.IsInventory)
                         .Select(x => x.Id)
@@ -1285,8 +1301,8 @@ result?.emr_prescription_treatment
 )
 .Select(a => new
 {
-Id = a.MedicineId,
-IsInventory = a.IsInventory
+    Id = a.MedicineId,
+    IsInventory = a.IsInventory
 })
 .ToList();
                 var inventoryIds = ids
@@ -1324,6 +1340,18 @@ IsInventory = a.IsInventory
             try
             {
                 var CompanyID = Request.CompanyID();
+
+                DateTime todayDate = DateTime.UtcNow;
+                var patientNewCounts = _emr_patientService.Queryable()
+    .Where(p => p.CompanyId == CompanyID)
+    .Select(p => new
+    {
+        PatientId = p.ID,
+        NewPatientCount = p.emr_appointment_mf
+            .Where(a => a.CompanyId == p.CompanyId && DbFunctions.TruncateTime(a.AppointmentDate) <= DbFunctions.TruncateTime(todayDate))
+            .Count()
+    });
+
                 var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == CompanyID).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).Include(a => a.emr_prescription_treatment_template)
                     .Select(z => new
                     {
@@ -1337,6 +1365,13 @@ IsInventory = a.IsInventory
                         z.PlanNote,
                         z.IsVCObtained,
                         PatientName = z.emr_patient_mf.PatientName,
+                        MrNo = z.emr_patient_mf.MRNO,
+                        Address = z.emr_patient_mf.Address,
+                        z.RefillNo,
+                        NoVisit = patientNewCounts
+                         .Where(nc => nc.PatientId == z.PatientId)
+                         .Select(nc => nc.NewPatientCount)
+                         .FirstOrDefault(),
                         Mobile = z.emr_patient_mf.Mobile,
                         Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",
                         ClinicIogo = z.adm_company.CompanyLogo,
@@ -1348,6 +1383,7 @@ IsInventory = a.IsInventory
                         z.emr_prescription_treatment,
                         z.adm_user_mf
                     }).FirstOrDefault();
+
                 int userid = Convert.ToInt32(Request.LoginID());
                 var role = _adm_user_companyService.Queryable()
                      .Where(u => u.UserID == userid && u.CompanyID == CompanyID)
@@ -1377,6 +1413,8 @@ IsInventory = a.IsInventory
                         WDFriday = emp?.WDFriday ?? false,
                         WDSaturday = emp?.WDSaturday ?? false,
                         IsShowDoctor = mf.IsShowDoctor,
+                        BrandImage = mf.BrandImage,
+                        BrandDescription = mf.BrandDescription,
                         IsDoctor = false,
                         Qualification = mf.Qualification,
                         Designation = mf.Designation,
@@ -1417,8 +1455,8 @@ result?.emr_prescription_treatment
 )
 .Select(a => new
 {
-Id = a.MedicineId,
-IsInventory = a.IsInventory
+    Id = a.MedicineId,
+    IsInventory = a.IsInventory
 })
 .ToList();
                 var inventoryIds = ids
@@ -1553,10 +1591,10 @@ IsInventory = a.IsInventory
                     r.OutstandingBalance,
                     r.IsVCObtained,
                     //MedicineName = string.Join(", ",
-        //_emr_medicineService.Queryable()
-        //    .Where(m => r.MedicineIds.Contains(m.ID))
-        //    .Select(m => m.Medicine)
-        //    .ToList()),
+                    //_emr_medicineService.Queryable()
+                    //    .Where(m => r.MedicineIds.Contains(m.ID))
+                    //    .Select(m => m.Medicine)
+                    //    .ToList()),
                     TotalRecord = totalRecords
                 }).ToList();
                 objResult.OtherDataModel = result;

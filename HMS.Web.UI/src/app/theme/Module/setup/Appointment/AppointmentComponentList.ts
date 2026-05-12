@@ -175,6 +175,7 @@ export class AppointmentComponentList implements OnInit {
     public IsBackDatedAppointment: boolean;
     public RowNo: number;
     public DurationList: any[] = [];
+    public RefillList: any[] = [];
     public InstructionsList: any[] = [];
     public UsersObj: any;
     public currentTime: Date = new Date();
@@ -208,7 +209,7 @@ export class AppointmentComponentList implements OnInit {
     @ViewChild("MedicinePresModal") MedicinePresModal: TemplateRef<any>;
     @ViewChild('editorClinicalNote') editorClinicalNote!: ElementRef;
     @ViewChild('editorPlanNote') editorPlanNote!: ElementRef;
-     @ViewChild("DeepAIModal") DeepAIModal: TemplateRef<any>;
+    @ViewChild("DeepAIModal") DeepAIModal: TemplateRef<any>;
     myControl = new FormControl();
     myNameControl = new FormControl();
     openAppointmentModal(longContent) {
@@ -321,6 +322,14 @@ export class AppointmentComponentList implements OnInit {
             { "ID": 9, "Name": "STAT" },
             { "ID": 10, "Name": "PRN" }
         ];
+        this.RefillList = [
+            { "ID": "-", "Name": "-" },
+            { "ID": "1", "Name": "1" },
+            { "ID": "2", "Name": "2" },
+            { "ID": "3", "Name": "3" },
+            { "ID": "4", "Name": "4" },
+            { "ID": "5", "Name": "5" },
+        ];
         this.PModel.SortName = "";
         this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
         this.selectPatientPage(this.PModel.CurrentPage);
@@ -423,6 +432,7 @@ export class AppointmentComponentList implements OnInit {
             ClinicalNote: [''],
             PlanNote: [''],
             IsVCObtained: [''],
+            RefillNo: [''],
         });
         this.Form7 = this._fb.group({
             PatientName: ['', [Validators.required]],
@@ -2194,7 +2204,7 @@ export class AppointmentComponentList implements OnInit {
             this.CurntPrevDateList = result.CurntPrevDateList;
 
             // Load vitals
-            this.emr_vital_dynamicArray =[];
+            this.emr_vital_dynamicArray = [];
             //    result.vitallist.map(x => {
             //    return {
             //        ...x,
@@ -2449,7 +2459,6 @@ export class AppointmentComponentList implements OnInit {
                         this.emr_prescription_diagnos_dynamicArray.push(item);
                     }
                 });
-                debugger
                 m.ResultSet.prescription_investigation.forEach((item, index) => {
                     var list = m.ResultSet.InvestigationsList.filter(a => a.id == item.InvestigationId);
                     if (list.length > 0 || item.InvestigationId == null) {
@@ -3255,12 +3264,13 @@ export class AppointmentComponentList implements OnInit {
                 this.MedicineList = result.ResultSet.MedicineList;
                 if (result.ResultSet.patientInfo != null) {
                     this.PatientRXmodel = result.ResultSet.patientInfo;
-                    if (this.PatientRXmodel.ClinicIogo != null)
-                        this.PatientRXmodel.ClinicIogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + result.ResultSet.patientInfo.ClinicIogo;
                     this.PrescriptionModel.PatientName = result.ResultSet.patientInfo.PatientName;
                     this.PrescriptionModel.Gender = result.ResultSet.patientInfo.Gender;
                     this.PrescriptionModel.Mobile = result.ResultSet.patientInfo.Mobile;
-
+                    this.PatientRXmodel.RefillNo = result.ResultSet.Model.RefillNo;
+                    this.PatientRXmodel.Address = result.ResultSet.patientInfo.Address;
+                    this.PatientRXmodel.MrNo = result.ResultSet.patientInfo.MRNO;
+                    this.PatientRXmodel.NoVisit = result.ResultSet.patientInfo.NoVisit;
                 }
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
                 this.PatientRXmodel.IsVCObtained = result.ResultSet.Model.IsVCObtained;
@@ -3284,7 +3294,13 @@ export class AppointmentComponentList implements OnInit {
                     this.DoctorInfo.Designation = "";
                     this.DoctorInfo.Qualification = "";
                     this.DoctorInfo.PhoneNo = "";
+                } else {
+                    this.PatientRXmodel.BrandDescription = this.DoctorInfo.BrandDescription;
+                    if (this.DoctorInfo.BrandImage != null)
+                        this.PatientRXmodel.BrandImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.DoctorInfo.BrandImage;
+
                 }
+
                 if (this.PatientRXmodel == undefined || this.PatientRXmodel == null) {
                     this.PatientRXmodel.PatientName = "";
                     this.PatientRXmodel.Age = "";
@@ -3596,7 +3612,7 @@ export class AppointmentComponentList implements OnInit {
         }
     }
     async loadAIResponse(isValid: boolean): Promise<void> {
-       
+
         const vitalText = this.emr_vital_dynamicArray
             .map(v => `${v.Measure} ${v.Unit}`)
             .join(', ');
@@ -3612,12 +3628,12 @@ export class AppointmentComponentList implements OnInit {
         }
         this.loader.ShowLoader();
         let model = {
-            ClinicalHistory:this.PrescriptionModel.ClinicalNote,
-            Complaint: complaintText,               
+            ClinicalHistory: this.PrescriptionModel.ClinicalNote,
+            Complaint: complaintText,
             Vital: vitalText
         };
         const response = await this._PrescriptionService.LoadAIResponse(model);
-       const result = JSON.parse(response._body);
+        const result = JSON.parse(response._body);
         if (result.IsSuccess) {
             this.answer = result.ResultSet.Response
                 .replace(/\*\*/g, '')
@@ -3631,9 +3647,9 @@ export class AppointmentComponentList implements OnInit {
             this.loader.HideLoader();
         }
     }
-   async copyAIResponse() {
+    async copyAIResponse() {
         try {
-            await(navigator as any).clipboard.writeText(this.answer);
+            await (navigator as any).clipboard.writeText(this.answer);
 
             this.toastr.Success('Success', 'Copied to clipboard');
         } catch (err) {

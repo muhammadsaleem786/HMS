@@ -1,109 +1,99 @@
-﻿<!--<style type="text/css">
-    .file {
-        background: url(/assets/img/avatars/no_image_placeholder.png);
-        cursor: pointer;
-        border: none;
+﻿<style>
+    .upload-wrapper {
+        width: 100%;
+        text-align: center;
+        padding: 25px;
+        border: 2px dashed #e5e5e5;
+        border-radius: 10px;
+        background: #fafafa;
     }
-    #myFile {
-        background: url(/assets/img/avatars/no_image_placeholder.png);
-        cursor: pointer;
-        border: none;
-    src="assets/img/avatars/no_image_placeholder.png"
-    }
-</style>-->
-<style>
-    .image-upload  input {
-        display: none;
-    }
+
+    /* ---------------- UPLOAD BOX ---------------- */
 
     .upload-box {
-  border: 2px dashed #cbd5e0;
-  padding: 20px;
-  border-radius: 10px;
-  display: inline-block;
-  width: 100%;
-  max-width: 350px;
-  text-align: center;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
+        width: 270px;
+        height: 160px;
+        margin: auto;
+        border: 2px dashed #b7c7e6;
+        border-radius: 14px;
+        background: #fff;
+        cursor: pointer;
+        transition: 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.upload-box:hover {
-  background: #f5faff;
-}
+        .upload-box:hover {
+            border-color: #0d6efd;
+            background: #f8fbff;
+        }
 
-.upload-label {
-  display: block;
-  cursor: pointer;
-  color: #4147d5;
-  text-align: center;
-  margin-bottom: 0;
-}
+    /* ---------------- CONTENT ---------------- */
 
-.upload-text {
-  margin: 10px;
-  font-weight: 500;
-  color: #7086b1;
-  font-size: 14px;
-}
+    .upload-content {
+        text-align: center;
+    }
 
-input[type="file"] {
-  display: none;
-}
+    /* ---------------- ICON ---------------- */
 
+    .upload-icon {
+        margin-bottom: 15px;
+    }
+
+        .upload-icon i {
+            font-size: 34px;
+            color: #4b4be0;
+        }
+
+    /* ---------------- TEXT ---------------- */
+
+    .upload-title {
+        font-size: 17px;
+        font-weight: 500;
+        color: #5f73b3;
+        margin-bottom: 10px;
+    }
+
+    .upload-file-name {
+        font-size: 15px;
+        color: #666;
+    }
+
+    /* ---------------- HIDDEN INPUT ---------------- */
+
+    .file-input {
+        display: none;
+    }
 </style>
 
+<div class="upload-wrapper">
 
+    <!-- Upload Area -->
+    <div class="upload-box" (click)="triggerFileBrowse()">
 
+        <input #fileInput
+               type="file"
+               class="file-input"
+               (click)="$event.stopPropagation()"
+               (change)="fileChangeEvent($event)" />
 
+        <div class="upload-content">
 
-<div class="uk-clearfix UplaodBtnWrap mt-3">
-   <ul class="list-inline" style="display: block; text-align: center;">
-  <li>
-    <div class="upload-box">
-      <label for="myFile" class="upload-label mb-0">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 14 14">
-          <g fill="none">
-            <path fill="#d7e0ff" d="M12.5 12.5a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1H9L12.5 4z"/>
-            <path stroke="#4147d5" stroke-linecap="round" stroke-linejoin="round" d="M12.5 12.5a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1H9L12.5 4z" stroke-width="1"/>
-            <path stroke="#4147d5" stroke-linecap="round" stroke-linejoin="round" d="m9 6.5l-2-2l-2 2m2-2V10" stroke-width="1"/>
-          </g>
-        </svg>
-        <p class="upload-text mb-0">Browse file to upload</p>
-      </label>
-
-      <p class="text-muted m-0" *ngIf="!showbar">No File Chosen</p>
-      <input type="file" id="myFile" (change)="fileChangeEvent($event)" />
-    </div>
-  </li>
-</ul>
-
-
-    <div *ngIf="showbar" class="uk-clearfix showbarWrap col-sm-12 p-0">
-        <div class="d-flex uploadbar_row align-items-center justify-content-between">
-            
-            <div class="d-flex flex-gorw-1 align-items-center w-100">
-                
-            <span style="height: 40px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><g fill="currentColor"><path d="M6.5 12a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1z"/><path fill-rule="evenodd" d="M11.185 1H4.5A1.5 1.5 0 0 0 3 2.5v15A1.5 1.5 0 0 0 4.5 19h11a1.5 1.5 0 0 0 1.5-1.5V7.202a1.5 1.5 0 0 0-.395-1.014l-4.314-4.702A1.5 1.5 0 0 0 11.185 1M4 2.5a.5.5 0 0 1 .5-.5h6.685a.5.5 0 0 1 .369.162l4.314 4.702a.5.5 0 0 1 .132.338V17.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5z" clip-rule="evenodd"/><path d="M11 7h5.5a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5v-6a.5.5 0 0 1 1 0z"/></g></svg>
-            </span>
-            <div style="width: 198px;margin: 10px;">
-              <div class="uploadBar text-muted">{{imagedata}}</div>
-                <progress value="{{percentage}}" max="{{max}}" style="width:100%;height:5px;" >
-                    {{percentage}}
-                </progress>
-            </div>
+            <div class="upload-icon">
+                <i class="fa fa-upload"></i>
             </div>
 
-            <div class="image-clear">
-                <label for="myFile2" class="mb-0 mt-2">
-                    <i class="icon icon-cross text-danger"></i>
-                </label>
-                <input id="myFile2" type="button" (click)="clearValue()" hidden />
+            <div class="upload-title">
+                Browse file to upload
+            </div>
+
+            <div class="upload-file-name">
+                {{ showbar ? imagedata : 'No File Chosen' }}
             </div>
 
         </div>
-       
 
     </div>
+
 </div>

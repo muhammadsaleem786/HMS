@@ -347,6 +347,30 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-sm-2 text-right">
+                                        <label>Logo/QR Code</label>
+                                    </div>
+                                    <div class="img-box">
+                                        <div class="" *ngIf="model.BrandImage=='' ||  model.BrandImage==null || model.BrandImage==undefined">
+                                            <img src="../../../../../assets/app/media/img/no_image.png" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                                        </div>
+                                        <div class="col-sm-12" *ngIf="model.BrandImage!=''">
+                                            <img [src]="BrandImage" class="Img_upload" />
+                                        </div>
+                                        <File-Component class="UploadActnWrap" [(ngModel)]="model.BrandImage" (ClearModel)="ClearImageUrlBrand()" (FileNameEvent)="getImageUrlNameBrand($event)" (IsNewFileEvents)="IsNewImageEventBrand($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-2 text-right">
+                                        <label>Logo/QR Code Desc.</label>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <div class="form-group">
+                                            <input type="text" formControlName="BrandDescription" [(ngModel)]="model.BrandDescription" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="btnArea-footer btnFixed">

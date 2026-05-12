@@ -40,6 +40,8 @@ export class ApplicationUserModel {
     RepotFooter: string;
     TemplateId: number=1;
     UserImage: string;
+    BrandImage: string;
+    BrandDescription:string;
     GenderDropdown: number[] = [];
     DoctorIds: number[] = [];
     DocWorkingDay: number[] = [];

@@ -121,6 +121,12 @@ export class patientInfo {
     ClinicIogo: string;
     Notes: string;
     IsVCObtained: boolean;
+    RefillNo: string;
+    NoVisit: string;    
+    BrandDescription: string;
+    BrandImage: string;
+    MrNo: string;
+    Address: string;
     safeClinicalNote: SafeHtml;
     safePlanNote: SafeHtml;
     FollowUpDate: string;
@@ -137,6 +143,8 @@ export class DoctorInfo {
     HeaderDescriptionUrdu: string;
     safeHeaderDescription!: SafeHtml;
     safeHeaderDescriptionUrdu!: SafeHtml;
+    BrandDescription: string;
+    BrandImage: string;
 }
 export class InvoiceCompanyInfo {
     CompanyName: string;

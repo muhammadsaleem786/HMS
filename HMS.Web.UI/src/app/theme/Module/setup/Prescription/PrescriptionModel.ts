@@ -21,6 +21,7 @@ export class emr_prescription_mf {
     IsTemplate: boolean = false;
     IsVCObtained: boolean = false;
     AppointmentDate: string;
+    RefillNo: string;
     AppointDate: string;
     PatientId: number;
     DoctorId: number;

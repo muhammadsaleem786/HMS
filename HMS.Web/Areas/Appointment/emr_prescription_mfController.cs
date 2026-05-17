@@ -1364,6 +1364,7 @@ result?.emr_prescription_treatment
                         z.ClinicalNote,
                         z.PlanNote,
                         z.IsVCObtained,
+                        z.CreatedDate,
                         PatientName = z.emr_patient_mf.PatientName,
                         MrNo = z.emr_patient_mf.MRNO,
                         Address = z.emr_patient_mf.Address,

@@ -186,6 +186,7 @@ export class PrescriptionComponentList {
                 this.PatientRXmodel.Notes = m.ResultSet.result.Notes;
                 this.PatientRXmodel.FollowUpDate = m.ResultSet.result.FollowUpDate;
                 this.PatientRXmodel.IsVCObtained = m.ResultSet.result.IsVCObtained;
+                this.PatientRXmodel.CurrentTime = m.ResultSet.result.CreatedDate;
                 this.PatientRXmodel.RefillNo = m.ResultSet.result.RefillNo;
                 this.PatientRXmodel.Address = m.ResultSet.result.Address;
                 this.PatientRXmodel.MrNo = m.ResultSet.result.MrNo;

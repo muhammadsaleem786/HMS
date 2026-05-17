@@ -121,6 +121,7 @@ export class patientInfo {
     ClinicIogo: string;
     Notes: string;
     IsVCObtained: boolean;
+    CurrentTime: Date;
     RefillNo: string;
     NoVisit: string;    
     BrandDescription: string;

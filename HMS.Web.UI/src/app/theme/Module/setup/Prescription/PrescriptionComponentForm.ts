@@ -2051,6 +2051,7 @@ export class PrescriptionComponentForm implements OnInit {
                     this.PatientRXmodel.Gender = result.ResultSet.patientInfo.Gender;
                     this.PatientRXmodel.Mobile = result.ResultSet.patientInfo.Mobile;
                     this.PatientRXmodel.IsVCObtained = result.ResultSet.Model.IsVCObtained;
+                    this.PatientRXmodel.CurrentTime = result.ResultSet.Model.CreatedDate;
                     this.PatientRXmodel.RefillNo = result.ResultSet.Model.RefillNo;
                     this.PatientRXmodel.Address = result.ResultSet.patientInfo.Address;
                     this.PatientRXmodel.MrNo = result.ResultSet.patientInfo.MRNO;

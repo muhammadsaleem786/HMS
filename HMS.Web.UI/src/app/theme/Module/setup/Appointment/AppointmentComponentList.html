@@ -1699,7 +1699,15 @@
                             </small>
                         </div>
                     </div>
-
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2 pl-0" for="input-username"> Address</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="Address" [(ngModel)]="model.Address" class="form-control form-control-sm form-control-alternative" placeholder="Address">
+                          
+                        </div>
+                    </div>
                     <div class="row form-group">
                         <div class="col-4 text-right">
                             <label class="form-control-label mt-2 pl-0" for="input-username"> MRNO</label>
@@ -2396,6 +2404,22 @@
 <!-- ============================   Rx Print  Modal ========= -->
 <ng-template #PrintRx let-modal class="RxPrintModal TemplateTwo">
     <style>
+        .clr_danger {
+            color: #d9534f !important;
+        }
+
+        .border-bottom-print {
+            border-bottom: 2px solid #5e72e4 !important;
+        }
+
+        .border-top-print {
+            border-top: 2px solid #5e72e4 !important;
+        }
+
+        .border-left-print {
+            border-left: 1px solid #5e72e4 !important;
+        }
+
         @media print {
             @page {
                 size: A4;
@@ -2461,10 +2485,9 @@
             display:flex;
             justify-content:space-between;
             align-items:center;
-            border-bottom:3px solid #5e72e4;
+            border-bottom:2px solid #000;
             padding:12px 15px;
-            gap:10px;
-        ">
+            gap:10px;" class="border-bottom-print">
 
             <!-- LEFT HEADER -->
 
@@ -2472,8 +2495,7 @@
                 width:42%;
                 font-size:13px;
                 line-height:1.5;
-                word-break:break-word;
-            ">
+                word-break:break-word;">
 
                 <div [innerHTML]="DoctorInfo.safeHeaderDescription"></div>
 
@@ -2488,8 +2510,7 @@
     display:flex;
     flex-direction:column;
     justify-content:center;
-    align-items:center;
-">
+    align-items:center;">
 
                 <!-- REF NO -->
 
@@ -2498,8 +2519,7 @@
         font-weight:bold;
         margin-bottom:6px;
         color:#000;
-        line-height:1;
-    ">
+        line-height:1;">
                     Ref.No: {{PatientRXmodel.MrNo}}
                 </div>
 
@@ -2518,21 +2538,12 @@
                      style="
             max-width:100px;
             max-height:70px;
-            object-fit:contain;
-         ">
+            object-fit:contain;">
 
                 <!-- BRAND -->
-
-                <span style="
-        font-size:12px;
-        margin-top:4px;
-        color:#444;
-        text-align:center;
-        line-height:1.3;
-    ">
-                    {{PatientRXmodel.BrandDescription}}
-                </span>
-
+                <div>
+                    <strong style="font-size:18px; color: #000;">{{PatientRXmodel.BrandDescription}}</strong>
+                </div>
             </div>
 
             <!-- RIGHT HEADER -->
@@ -2566,11 +2577,10 @@
                 align-items:center;
                 justify-content:space-between;
                 gap:8px;
-                border-bottom:2px solid #5e72e4;
+                border-bottom:2px solid #000;
                 padding:8px 0;
-                margin-bottom:10px;
                 font-size:12px;
-            ">
+            " class="border-bottom-print">
 
                 <div style="min-width:190px;">
                     <strong>P/Name:</strong>
@@ -2591,7 +2601,7 @@
                 <div style="min-width:170px;">
                     <strong>Date:</strong>
                     {{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy'}}
-                    {{ currentTime | date:'hh:mm a' }}
+                    {{ PatientRXmodel.CurrentTime | date:'hh:mm a' }}
                 </div>
 
                 <div style="flex:1; min-width:218px;">
@@ -2608,49 +2618,49 @@
 
             <!-- ================= CONTENT AREA ================= -->
 
-            <div style="display:flex; border-top:2px solid #5e72e4; padding-top:10px; font-family: Arial, Helvetica, sans-serif;">
+            <div class="border-top-print" style="display:flex; border-top:2px solid #000; padding-top:10px; font-family: Arial, Helvetica, sans-serif;">
 
 
                 <!-- ================= LEFT SIDEBAR ================= -->
 
                 <div style="width:28%; padding-right:10px; font-size:13px; color:#000;">
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safeClinicalNote!= null">
-                        <strong style="font-size:18px; color: #d9534f;">Clinical History:</strong>
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Clinical History:</strong>
                         <div [innerHTML]="PatientRXmodel.safeClinicalNote" style="color:#000;"></div>
                     </div>
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_complaint_dynamicArray.length > 0">
-                        <strong style="font-size:18px; color: #d9534f;">Complaint:</strong>
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Complaint:</strong>
                         <div *ngFor="let d of emr_prescription_complaint_dynamicArray" style="color:#000;">{{d.Complaint}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientVitalList.length > 0">
-                        <strong style="font-size:18px; color: #d9534f;">Vitals:</strong>
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Vitals:</strong>
                         <div *ngFor="let d of PatientVitalList" style="color:#000;">{{d.Name}} {{d.Measure}} {{d.Unit}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_observation_dynamicArray.length > 0">
-                        <strong style="font-size:18px; color: #d9534f;">Examination:</strong>
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Examination:</strong>
                         <div *ngFor="let d of emr_prescription_observation_dynamicArray" style="color:#000;">{{d.Observation}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_investigation_dynamicArray.length > 0">
-                        <strong style="font-size:18px; color: #d9534f;">Investigation:</strong>
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Investigation:</strong>
                         <div *ngFor="let d of emr_prescription_investigation_dynamicArray" style="color:#000;">{{d.Investigation}}</div>
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_diagnos_dynamicArray.length > 0">
-                        <strong style="font-size:18px; color: #d9534f;">Diagnoses:</strong>
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Diagnoses:</strong>
                         <div *ngFor="let d of emr_prescription_diagnos_dynamicArray" style="color:#000;">{{d.Diagnos}}</div>
                     </div>
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safePlanNote!= null">
-                        <strong style="font-size:18px; color: #d9534f;">Plan:</strong>
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Plan:</strong>
                         <div [innerHTML]="PatientRXmodel.safePlanNote" style="color:#000;"></div>
                     </div>
                 </div>
 
                 <!-- ================= RIGHT CONTENT ================= -->
 
-                <div style="width:72%; border-left:1px solid #5e72e4; padding-left:12px;">
+                <div style="width:72%; border-left:1px solid #000; padding-left:12px;" class="border-left-print">
                     <img src="../assets/app/media/img/icons/Rx.png"
                          style="max-width:55px; max-height:55px; object-fit:contain; ">
 
@@ -2765,11 +2775,11 @@
                             </tr>
                         </tbody>
                     </table>
-                    <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">VC Obtained</h3>
+                    <h3 style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">VC Obtained</h3>
                     <div>
                         {{PatientRXmodel.IsVCObtained ? 'Yes' : 'No'}}
                     </div>
-                    <h3 style="margin:24px 0 6px; font-size:15px; color:#5e72e4;">Instructions</h3>
+                    <h3 style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">Instructions</h3>
                     <div style="font-size:12px; margin:0; line-height:normal;">
                         <p *ngIf="DoctorInfo.TemplateId==2" style="direction: rtl; text-align: right;">
                             {{ PatientRXmodel.Notes }}
@@ -2797,17 +2807,17 @@
 
             <!-- TOP FOOTER CONTENT -->
             <div style="padding:0 18px 8px;font-size:12px;">
-                <div style="margin-bottom:10px;text-align:left;">
-                    <strong><i>Refill No:</i></strong>
+                <div style="margin-bottom:10px;text-align:left;font-size:18px; color: #000;">
+                    <strong><i>Refill:</i></strong>
                     <i>{{PatientRXmodel.RefillNo}}</i>
                 </div>
                 <div style=" display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; ">
-                    <div style="text-align:left;">
+                    <div style="text-align: left; font-size: 18px; color: #000;">
                         <strong><i>Follow Up:</i></strong>
                         <i>{{PatientRXmodel.FollowUpDate | date:'dd-MMM-yyyy'}}</i>
                     </div>
                     <!-- RIGHT -->
-                    <div style="text-align:right;">
+                    <div style="text-align: right; font-size: 18px; color: #000;">
                         <strong><i>Signature & Stamp</i></strong>
                     </div>
                 </div>
@@ -2816,12 +2826,12 @@
             <!-- FOOTER LINE -->
 
             <div style="
-                border-top:4px solid #5e72e4;
+                border-top:2px solid #000;
                 padding:8px 15px 6px;
                 text-align:center;
                 font-size:13px;
-                color:#444;
-            ">
+                color:#000;
+            " class="border-top-print">
                 {{DoctorInfo.Footer}}
             </div>
 

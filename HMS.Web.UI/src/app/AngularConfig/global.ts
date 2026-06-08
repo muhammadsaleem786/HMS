@@ -1,14 +1,14 @@
 ﻿import { AbstractControl } from '@angular/forms';
 export const GlobalVariable = {
-    // BASE_Api_URL: "https://localhost:44371",
-    // BASE_Web_URL: "http://localhost:4200",
-    // BASE_File_URL: "https://localhost:44371/files/attachmentfiles/",
-    // BASE_Temp_File_URL: "https://localhost:44371/files/temp/",
+    BASE_Api_URL: "https://localhost:44371",
+    BASE_Web_URL: "http://localhost:4200",
+    BASE_File_URL: "https://localhost:44371/files/attachmentfiles/",
+    BASE_Temp_File_URL: "https://localhost:44371/files/temp/",
     //Live
-    BASE_Api_URL: "https://easyhms.pk/api",
-    BASE_Web_URL: "https://easyhms.pk",
-    BASE_File_URL: "https://easyhms.pk/files/attachmentfiles/",
-    BASE_Temp_File_URL: "https://easyhms.pk/api/files/temp/",
+    // BASE_Api_URL: "https://easyhms.pk/api",
+    // BASE_Web_URL: "https://easyhms.pk",
+    // BASE_File_URL: "https://easyhms.pk/files/attachmentfiles/",
+    // BASE_Temp_File_URL: "https://easyhms.pk/api/files/temp/",
 
     IsUseS3: "No",    // Yes or No for S3 Storage
     Release_Version: "6.0",

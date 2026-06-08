@@ -32,7 +32,9 @@ export class SessionComponentList {
     public Rights: any;
     public Keywords: any[] = [];
     public PayrollRegion: string;
+    selectedValue: string = "A";
     public SessionList: any[] = [];
+    public CategoryList: any[] = [];
     previousPage: number = 1;
     nextPage: number = 1;
     totalPages: number = 0;
@@ -50,6 +52,11 @@ export class SessionComponentList {
         this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
     }
     ngOnInit() {
+        this.CategoryList = [
+            { "ID": "A", "Name": "All" },
+            { "ID": "O", "Name": "Open" },
+            { "ID": "C", "Name": "Close" },
+        ];
         this.Form1 = this._fb.group({
             ShiftStartTime: [''],
             StartTime: [''],
@@ -103,6 +110,10 @@ export class SessionComponentList {
             });
         }
     }
+    getFilterData() {
+        localStorage.setItem('selectedValue', this.selectedValue);
+        this.Refresh();
+    }
     GetList() {
         this.Refresh();
     }
@@ -114,9 +125,13 @@ export class SessionComponentList {
             this.Refresh();
     }
     Refresh() {
+        let selectValue = localStorage.getItem('selectedValue');
+        if (selectValue != "null" && selectValue != "") {
+            this.PModel.FilterID = selectValue == null ? "" : selectValue;
+        }
         this.loader.ShowLoader();
         this.PModel.VisibleColumnInfo = "ShiftStartTime#ShiftStartTime,ShiftEndTime#ShiftEndTime";
-        this._SessionService.GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PModel.VisibleFilter).then(m => {
+        this._SessionService.GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PModel.FilterID, this.PModel.VisibleFilter).then(m => {
             this.PModel.TotalRecord = m.TotalRecord;
             this.SessionList = m.DataList;
             this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);

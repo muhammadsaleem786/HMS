@@ -10,6 +10,15 @@
                 <div class="col">
                     <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
                 </div>
+                <div class="col">
+                    <div class="form-group">
+                        <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
+                            <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                {{item.Name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-sm-4 text-right flex-row flex-end">
@@ -23,6 +32,7 @@
                     <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
                         <thead class="grid-header">
                             <tr>
+                                <th>User Name</th>
                                 <th>Session Start</th>
                                 <th>Session End</th>
                                 <th>Opening Comments</th>
@@ -34,6 +44,9 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of SessionList" index as i>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Name}}
+                                </td>
                                 <td (click)="AddRecord(item.ID)">
                                     {{item.ShiftStart | date:'dd/MM/yyyy  hh:mm a' }}
                                 </td>

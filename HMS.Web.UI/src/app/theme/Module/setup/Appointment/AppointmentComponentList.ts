@@ -1400,7 +1400,7 @@ export class AppointmentComponentList implements OnInit {
         var minutes = time.split(':')[1];
         var ampm = hours >= 12 ? 'pm' : 'am';
         hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = hours ? hours : 12;// the hour '0' should be '12'
         var strTime = hours + ':' + minutes + ' ' + ampm;
         return strTime;
     }
@@ -1741,7 +1741,7 @@ export class AppointmentComponentList implements OnInit {
         if (time12h != "") {
             var hours = Number(time12h.match(/^(\d+)/)[1]);
             var minutes = Number(time12h.match(/:(\d+)/)[1]);
-            var AMPM = time12h.match(/\s(.*)$/)[1];
+            var AMPM = time12h.match(/\s(.*)$/)[1].toLowerCase();
             if (AMPM == "pm" && hours < 12) hours = hours + 12;
             if (AMPM == "am" && hours == 12) hours = hours - 12;
             return hours + ':' + minutes + ':00';
@@ -2361,7 +2361,7 @@ export class AppointmentComponentList implements OnInit {
                     if (m.ResultSet.prescription_mf.FollowUpDate != null && m.ResultSet.prescription_mf.FollowUpDate != undefined)
                         this.PrescriptionModel.FollowUpDate = m.ResultSet.prescription_mf.FollowUpDate;
                     if (m.ResultSet.prescription_mf.FollowUpTime != null && m.ResultSet.prescription_mf.FollowUpTime != undefined)
-                        this.PrescriptionModel.FollowUpTime = m.ResultSet.prescription_mf.FollowUpTime;
+                        this.PrescriptionModel.FollowUpTime =this.convertTo12HourFormat(m.ResultSet.prescription_mf.FollowUpTime);
                     this.PrescriptionModel.Notes = m.ResultSet.prescription_mf.Notes;
                     this.PrescriptionModel.IsCreateAppointment = m.ResultSet.prescription_mf.IsCreateAppointment;
                     this.PrescriptionModel.IsTemplate = m.ResultSet.prescription_mf.IsTemplate;
@@ -2984,9 +2984,10 @@ export class AppointmentComponentList implements OnInit {
             this.PrescriptionModel.emr_prescription_diagnos = this.emr_prescription_diagnos_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_investigation = this.emr_prescription_investigation_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_observation = this.emr_prescription_observation_dynamicArray.filter(a => a.IsSelected == true);
-            if (this.PrescriptionModel.FollowUpTime != undefined)
+           
+            if (this.PrescriptionModel.FollowUpTime != undefined) {
                 this.PrescriptionModel.FollowUpTime = this.Convert12TO24(this.PrescriptionModel.FollowUpTime);
-
+            }
             const hasInvalidMedicine = this.emr_prescription_treatment_dynamicArray.some(
                 item => !item.MedicineName || item.MedicineName.trim() === ''
             );
@@ -3241,8 +3242,9 @@ export class AppointmentComponentList implements OnInit {
         this.PrescriptionModel.emr_prescription_observation = [];
         this.PrescriptionModel.emr_vital = [];
         //this.PrescriptionModel.emr_vital = this.emr_vital_dynamicArray;
-        if (this.PrescriptionModel.FollowUpTime != undefined)
+        if (this.PrescriptionModel.FollowUpTime != undefined) {
             this.PrescriptionModel.FollowUpTime = this.Convert12TO24(this.PrescriptionModel.FollowUpTime);
+        }
         this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;
         this.PrescriptionModel.emr_prescription_complaint = this.emr_prescription_complaint_dynamicArray.filter(a => a.IsSelected == true);
         this.PrescriptionModel.emr_prescription_diagnos = this.emr_prescription_diagnos_dynamicArray.filter(a => a.IsSelected == true);

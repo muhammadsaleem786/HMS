@@ -696,6 +696,7 @@ namespace HMS.Web.API.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                 }
                 objResponse = IsEmailExist(Model.Email);
+                var genderList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 2).Select(a => a.ID).ToList();
                 decimal LoginID = Request.LoginID();
                 decimal empID = 1;
                 if (!objResponse.IsSuccess)
@@ -777,6 +778,11 @@ namespace HMS.Web.API.Controllers
                     Model.ActivationTokenDate = Request.DateTimes();
                     Model.ActivatedDate = Request.DateTimes();
                     Model.LastSignIn = Request.DateTimes();
+                    if (genderList != null)
+                    {
+                        string result = string.Join(",", genderList);
+                        Model.IsGenderDropdown = result;
+                    }
                     Model.LoginFailureNo = 0;
                     Model.IsActivated = false;
                     Model.UserLock = false;

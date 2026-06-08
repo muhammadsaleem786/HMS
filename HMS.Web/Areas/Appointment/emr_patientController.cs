@@ -1087,13 +1087,17 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var titleList = allDropDownValues
                .Where(x => x.DropDownID == 23).ToList();
                 var isShowDoctorIds = _adm_userService.Queryable()
-.Where(x => x.ID == userid)
-.Select(x => x.IsShowDoctor)
-.FirstOrDefault();
-                var mrNo = _service.Queryable()
-   .Where(p => p.CompanyId == companyId)
-   .Max(p => (int?)p.ID) ?? 0;
-                mrNo += 1;
+                .Where(x => x.ID == userid)
+                .Select(x => x.IsShowDoctor)
+                .FirstOrDefault();
+                var lastMrNo = (_service.Queryable()
+                .Where(p => p.CompanyId == companyId)
+                .Select(p => p.MRNO)
+                .ToList())
+                .Select(x => int.TryParse(x, out var n) ? n : 0)
+                .DefaultIfEmpty(0)
+                .Max();
+                var nextMrNo = (lastMrNo + 1).ToString("D9");
                 var DoctorList = _service.DoctorList(companyId, userid);
                 var GenderType = ganderList;
                 var BloodList = bloodList;
@@ -1106,10 +1110,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
                 var DoctorCalander = DoctorList;
 
-
-                decimal getMaxMRNO = mrNo;
-                string MRNO = "";
-                MRNO = (getMaxMRNO).ToString("000000000");
+                string MRNO = nextMrNo;
                 objResponse.ResultSet = new
                 {
                     MRNO = MRNO,

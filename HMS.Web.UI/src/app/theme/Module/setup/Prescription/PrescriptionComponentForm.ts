@@ -356,6 +356,9 @@ export class PrescriptionComponentForm implements OnInit {
                             this.PrescriptionModel.emr_prescription_observation = [];
                             this.emr_prescription_treatment_dynamicArray = [];
                             this.PrescriptionModel = m.ResultSet.result;
+                            if (this.PrescriptionModel.FollowUpTime != null && this.PrescriptionModel.FollowUpTime != undefined)
+                                this.PrescriptionModel.FollowUpTime = this.convertTo12HourFormat(this.PrescriptionModel.FollowUpTime);
+
                             this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(m.ResultSet.result.AppointmentDate);
                             this.CurntPrevDateList = m.ResultSet.CurntPrevDateList;
                             this.PrescriptionModel.PatientName = m.ResultSet.PatientInfo.PatientName;
@@ -881,16 +884,18 @@ export class PrescriptionComponentForm implements OnInit {
 
     }
     Convert12TO24(time12h: any) {
+        debugger
         const [time, modifier] = time12h.split(' ');
         let [hours, minutes] = time.split(':');
         //if (hours === '12') {
         //    hours = '00';
         //}
-        if (modifier === 'pm') {
+        if (modifier.toLowerCase() === 'pm') {
             hours = parseInt(hours, 10) + 12;
         }
         return hours + ':' + minutes + ':00';
     }
+
     handlePrint(val: any) {
         let selectedDate = new Date(this.AppointmentModel.AppointmentDate);
         let currentDate = new Date();
@@ -1014,6 +1019,12 @@ export class PrescriptionComponentForm implements OnInit {
                 popupWin.document.close();
             }
         }
+    }
+    convertTo12HourFormat(time: string): string {
+        let [hours, minutes] = time.split(':').map(Number);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12; // convert 0 → 12
+        return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
     }
     AppointmentSaveOrUpdate(isValid: boolean): void {
         let selectedDate = new Date(this.AppointmentModel.AppointmentDate);
@@ -1807,8 +1818,10 @@ export class PrescriptionComponentForm implements OnInit {
             this.PrescriptionModel.emr_prescription_observation = this.emr_prescription_observation_dynamicArray.filter(a => a.IsSelected == true);
 
 
-            if (this.PrescriptionModel.FollowUpTime != undefined)
+            if (this.PrescriptionModel.FollowUpTime != undefined) {
                 this.PrescriptionModel.FollowUpTime = this.Convert12TO24(this.PrescriptionModel.FollowUpTime);
+            }
+
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;
 
             this._AppointmentService.PrescriptionSave(this.PrescriptionModel).then(m => {
@@ -2044,6 +2057,9 @@ export class PrescriptionComponentForm implements OnInit {
                 this.PatientVitalList = [];
                 this.PrescriptionModel = new emr_prescription_mf();
                 this.PrescriptionModel = result.ResultSet.Model;
+                if (this.PrescriptionModel.FollowUpTime != null && this.PrescriptionModel.FollowUpTime != undefined)
+                    this.PrescriptionModel.FollowUpTime = this.convertTo12HourFormat(this.PrescriptionModel.FollowUpTime);
+
                 this.MedicineList = result.ResultSet.MedicineList;
                 if (result.ResultSet.patientInfo != null) {
                     this.PatientRXmodel = result.ResultSet.patientInfo;
@@ -2056,7 +2072,7 @@ export class PrescriptionComponentForm implements OnInit {
                     this.PatientRXmodel.Address = result.ResultSet.patientInfo.Address;
                     this.PatientRXmodel.MrNo = result.ResultSet.patientInfo.MRNO;
                     this.PatientRXmodel.NoVisit = result.ResultSet.patientInfo.NoVisit;
-                   }
+                }
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
                 if (result.ResultSet.Model.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.ClinicalNote);

@@ -109,6 +109,7 @@ namespace HMS.Entities.Models
         public DbSet<ipd_adverse_drug_reaction> ipd_adverse_drug_reaction { get; set; }
         public DbSet<ipd_specialized_equipment_maintenance> ipd_specialized_equipment_maintenance { get; set; }
         public DbSet<ipd_sentinel_event_register> ipd_sentinel_event_register { get; set; }
+        public DbSet<adm_generic> adm_generic { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -205,7 +206,7 @@ namespace HMS.Entities.Models
             modelBuilder.Configurations.Add(new ipd_specialized_equipment_maintenanceMap());
             modelBuilder.Configurations.Add(new ipd_sentinel_event_registerMap());
             modelBuilder.Configurations.Add(new ipd_death_record_registerMap());
-
+            modelBuilder.Configurations.Add(new adm_genericMap());
         }
     }
 }

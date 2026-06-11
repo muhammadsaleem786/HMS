@@ -23,6 +23,8 @@
     GroupId: number;
     POSItem: boolean = false;
     action: string;
+    VendorId: number;
+    GenericId: number;
 }
 
 export class ImpoertItemModel {

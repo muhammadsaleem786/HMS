@@ -78,6 +78,7 @@
     <Compile Include="Services\Admin\adm_reminder_mfService.cs" />
     <Compile Include="Services\Admin\adm_reminder_dtService.cs" />
     <Compile Include="Services\Admin\adm_integrationService.cs" />
+    <Compile Include="Services\Admin\adm_genericService .cs" />
     <Compile Include="Services\Admin\adm_role_mfService.cs" />
     <Compile Include="Services\Admin\adm_user_sessionService.cs" />
     <Compile Include="Services\Admin\contactService.cs" />

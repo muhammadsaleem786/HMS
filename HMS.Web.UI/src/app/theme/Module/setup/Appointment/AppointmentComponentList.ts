@@ -987,7 +987,7 @@ export class AppointmentComponentList implements OnInit {
 
                     const items = m.ResultSet.ItemInfo.map(item => ({
                         Name: item.label,
-                        label: item.label + " (qty:" + item.stock + ")",
+                        label: item.label + (item.GenericName && item.GenericName !== "" ? " (" + item.GenericName + ")" : "") + " (qty:" + item.stock + ")",
                         value: item.value,
                         Instructions: item.Instructions,
                         InstructionId: item.InstructionId,
@@ -3377,6 +3377,7 @@ export class AppointmentComponentList implements OnInit {
                         var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
+                            item.GenericName=medicineName.GenericName;
                             item.MedicineType = medicineName.Type;
                             item.TypeId = medicineName.TypeId;
                         }
@@ -3395,6 +3396,12 @@ export class AppointmentComponentList implements OnInit {
             this.loader.HideLoader();
         });
     }
+    getMedicineLabel(medicine: any): string {
+  if (this.DoctorInfo.DrugMode === 'G'){
+    return medicine.GenericName || medicine.MedicineName;
+  }
+  return medicine.MedicineName;
+}
     OnChangeDoctor() {
         this.loader.ShowLoader();
         if (this.PrescriptionModel.PatientName == null || this.PrescriptionModel.PatientName == "")

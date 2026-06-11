@@ -736,7 +736,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var inventoryids = prescription?.emr_prescription_treatment.Where(a => a.IsInventory)?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
                 var medicineIds = prescription?.emr_prescription_treatment.Where(a => !a.IsInventory)?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
                 var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine });
-                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && inventoryids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name });
+                var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == companyId && inventoryids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.adm_generic != null? a.Name + " (" + a.adm_generic.GenericName + ")": a.Name});
                 var MedicineList = medicineList.Union(itemList).ToList();
                 var userobj = _adm_userService.Queryable().Where(a => a.ID == doctorId).FirstOrDefault();
                 var vitalObj = new List<object>();
@@ -845,8 +845,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         OutAmount = z.emr_patient_mf.emr_patient_bill.Where(c => c.PatientId == z.emr_patient_mf.ID && (decimal?)c.DoctorId == (decimal?)z.DoctorId).Sum(c => (decimal?)c.OutstandingBalance),
                     }).OrderByDescending(a => a.AppointmentDate).ToList();
                 var ids = prescriptionresult.SelectMany(p => p.emr_prescription_treatment).Select(t => t.MedicineId).Distinct().ToList();
-                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName="", Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Include(a=>a.adm_generic).Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName=a.adm_generic.GenericName, Type = a.sys_drop_down_value1.Value });
                 var MedicineList = itemList.Union(medicineList).ToList();
                 var ipdAdmissions = _ipd_admissionService.Queryable()
                                  .Where(a => a.PatientId == patientid && a.CompanyId == companyId)
@@ -2075,6 +2075,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                     {
                         ID = mf.ID,
                         Name = mf.Name,
+                        DrugMode = mf.DrugMode,
                         StartTime = emp != null ? emp.StartTime : null,
                         EndTime = emp != null ? emp.EndTime : null,
                         SlotTime = mf.SlotTime,

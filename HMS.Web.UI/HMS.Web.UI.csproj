@@ -253,6 +253,7 @@
     <Content Include="src\app\theme\Module\setup\Billing\BillingComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Billing\BillingComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Company\CompanyComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Generic\GenericComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Complaint\ComplaintComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Diagnos\DiagnosComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Expense\ExpenseComponentForm.html" />
@@ -618,6 +619,9 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Billing\BillingService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Company\company.service.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Company\CompanyComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Generic\GenericComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Generic\GenericModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Generic\GenericService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Complaint\ComplaintComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Complaint\ComplaintService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Complaint\ComplaintModel.ts" />

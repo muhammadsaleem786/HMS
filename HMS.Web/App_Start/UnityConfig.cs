@@ -98,6 +98,7 @@ namespace HMS.Web.API
                   .RegisterType<IRepositoryAsync<ipd_admission_discharge>, Repository<ipd_admission_discharge>>()
                   .RegisterType<IRepositoryAsync<contact>, Repository<contact>>()
                   .RegisterType<IRepositoryAsync<adm_item_log>, Repository<adm_item_log>>()
+                  .RegisterType<IRepositoryAsync<adm_generic>, Repository<adm_generic>>()
                    //employee
                    .RegisterType<IRepositoryAsync<pr_employee_mf>, Repository<pr_employee_mf>>()
                    .RegisterType<IRepositoryAsync<pr_pay_schedule>, Repository<pr_pay_schedule>>()
@@ -201,6 +202,7 @@ namespace HMS.Web.API
                 .RegisterType<Iadm_reminder_dtService, adm_reminder_dtService>()
                 .RegisterType<Iadm_item_logService, adm_item_logService>()
                 .RegisterType<Iipd_procedure_expenseService, ipd_procedure_expenseService>()
+                .RegisterType<Iadm_genericService, adm_genericService>()
                  //employee
                  .RegisterType<Ipr_employee_mfService, pr_employee_mfService>()
                   .RegisterType<Ipr_pay_scheduleService, pr_pay_scheduleService>()

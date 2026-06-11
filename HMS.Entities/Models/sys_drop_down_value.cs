@@ -57,6 +57,8 @@ namespace HMS.Entities.Models
             this.pur_sale_hold_mf = new List<pur_sale_hold_mf>();
             this.adm_reminder_dt = new List<adm_reminder_dt>();
             this.adm_reminder_dt1 = new List<adm_reminder_dt>();
+            this.adm_generic = new List<adm_generic>();
+            this.adm_generic1 = new List<adm_generic>();
         }
         public int ID { get; set; }
         public int DropDownID { get; set; }
@@ -118,6 +120,8 @@ namespace HMS.Entities.Models
         public virtual ICollection<pur_sale_hold_mf> pur_sale_hold_mf { get; set; }
         public virtual ICollection<adm_reminder_dt> adm_reminder_dt { get; set; }
         public virtual ICollection<adm_reminder_dt> adm_reminder_dt1 { get; set; }
+        public virtual ICollection<adm_generic> adm_generic { get; set; }
+        public virtual ICollection<adm_generic> adm_generic1 { get; set; }
         public virtual ICollection<ipd_procedure_expense> ipd_procedure_expense { get; set; }
 
     }

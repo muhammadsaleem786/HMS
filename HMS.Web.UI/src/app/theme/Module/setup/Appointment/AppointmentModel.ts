@@ -146,6 +146,8 @@ export class DoctorInfo {
     safeHeaderDescriptionUrdu!: SafeHtml;
     BrandDescription: string;
     BrandImage: string;
+    DrugMode:string;
+
 }
 export class InvoiceCompanyInfo {
     CompanyName: string;

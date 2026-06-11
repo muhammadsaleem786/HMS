@@ -203,8 +203,15 @@ namespace HMS.Repository.Repositories.Items
             var objResult = new PaginationResult();
             try
             {
+                string type = "";
+                var res = FilterID.Split(',');
+                if (res != null && res.Length == 2)
+                {
+                    type = res[0];
+                    FilterID = res[1];
+                }
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID && (FilterID == "0" || e.adm_item.GroupId.ToString() == FilterID));
+                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID && (type == "V" ? e.adm_item.VendorId.ToString() == FilterID : true) && (FilterID == "0" || e.adm_item.GroupId.ToString() == FilterID));
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;
 
@@ -399,10 +406,17 @@ namespace HMS.Repository.Repositories.Items
             var objResult = new PaginationResult();
             try
             {
+                string type = "";
+                var res = FilterID.Split(',');
+                if (res != null && res.Length == 2)
+                {
+                    type = res[0];
+                    FilterID = res[1];
+                }
                 DateTime currentDate = DateTime.Now;
                 DateTime expiryDateLimit = currentDate.AddDays(90);
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID &&
+                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID && (type == "V" ? e.adm_item.VendorId.ToString() == FilterID : true) &&
                                                           e.Quantity > 0 &&
                                                           e.ExpiredWarrantyDate <= expiryDateLimit && (FilterID == "0" || e.adm_item.GroupId.ToString() == FilterID));
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;

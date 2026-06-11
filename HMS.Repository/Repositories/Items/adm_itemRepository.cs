@@ -253,8 +253,15 @@ namespace HMS.Repository.Repositories.Items
             var objResult = new PaginationResult();
             try
             {
+                string type = "";
+                var res = FilterID.Split(',');
+                if (res != null && res.Length == 2)
+                {
+                    type = res[0];
+                    FilterID = res[1];
+                }
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<adm_item, bool>> predicate = (e => e.CompanyId == CompanyID && (FilterID == "0" || e.GroupId.ToString() == FilterID));
+                Expression<Func<adm_item, bool>> predicate = (e => e.CompanyId == CompanyID && (type == "V" ? e.VendorId.ToString() == FilterID : true) && (FilterID == "0" || e.GroupId.ToString() == FilterID));
 
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;

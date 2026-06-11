@@ -1249,7 +1249,7 @@ export class PrescriptionComponentForm implements OnInit {
                     }
                     const items = m.ResultSet.ItemInfo.map(item => ({
                         Name: item.label,
-                        label: item.label + " (qty:" + item.stock + ")",
+                        label: item.label + (item.GenericName && item.GenericName !== "" ? " (" + item.GenericName + ")" : "") + " (qty:" + item.stock + ")",
                         value: item.value,
                         Instructions: item.Instructions,
                         InstructionId: item.InstructionId,
@@ -1735,7 +1735,6 @@ export class PrescriptionComponentForm implements OnInit {
         }
     }
     AddInvestigations(val: any) {
-
         if (val != undefined) {
             var obj = this.investigationModel;
             var findComp = this.emr_prescription_investigation_dynamicArray.filter(a => a.Investigation == val);
@@ -1810,20 +1809,15 @@ export class PrescriptionComponentForm implements OnInit {
             this.PrescriptionModel.emr_prescription_diagnos = [];
             this.PrescriptionModel.emr_prescription_investigation = [];
             this.PrescriptionModel.emr_prescription_observation = [];
-
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;
             this.PrescriptionModel.emr_prescription_complaint = this.emr_prescription_complaint_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_diagnos = this.emr_prescription_diagnos_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_investigation = this.emr_prescription_investigation_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_observation = this.emr_prescription_observation_dynamicArray.filter(a => a.IsSelected == true);
-
-
             if (this.PrescriptionModel.FollowUpTime != undefined) {
                 this.PrescriptionModel.FollowUpTime = this.Convert12TO24(this.PrescriptionModel.FollowUpTime);
             }
-
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;
-
             this._AppointmentService.PrescriptionSave(this.PrescriptionModel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
@@ -1832,7 +1826,6 @@ export class PrescriptionComponentForm implements OnInit {
                 }
                 else
                     this.toastr.Error('Error', result.ErrorMessage);
-
                 this.loader.HideLoader();
             });
         }
@@ -1924,7 +1917,6 @@ export class PrescriptionComponentForm implements OnInit {
                         item.IsSelected = false;
                         item.DiagnosId = item.id;
                         this.emr_prescription_diagnos_dynamicArray.push(item);
-
                     });
                 }
                 if (m.ResultSet.result.emr_prescription_investigation != null) {
@@ -1960,7 +1952,6 @@ export class PrescriptionComponentForm implements OnInit {
                         item.IsSelected = false;
                         item.InvestigationId = item.id;
                         this.emr_prescription_investigation_dynamicArray.push(item);
-
                     });
                 }
                 if (m.ResultSet.result.emr_prescription_observation != null) {
@@ -2164,11 +2155,11 @@ export class PrescriptionComponentForm implements OnInit {
                     });
                 }
                 if (this.PrescriptionModel.emr_prescription_treatment != null) {
-
                     this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
                         var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
+                            item.GenericName=medicineName.GenericName;
                             item.MedicineType = medicineName.Type;
                             item.TypeId = medicineName.TypeId;
                         }
@@ -2184,6 +2175,12 @@ export class PrescriptionComponentForm implements OnInit {
 
             this.loader.HideLoader();
         });
+    }
+    getMedicineLabel(medicine: any): string {
+      if (this.DoctorInfo.DrugMode === 'G'){
+        return medicine.GenericName || medicine.MedicineName;
+      }
+      return medicine.MedicineName;
     }
     AddFavorite(val: any, Type: any) {
         if (val != undefined && val != null) {

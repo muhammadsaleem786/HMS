@@ -75,6 +75,7 @@ namespace HMS.Entities.Models
             this.adm_integration = new List<adm_integration>();
             this.pr_attendance = new List<pr_attendance>();
             this.adm_user_session = new List<adm_user_session>();
+            this.adm_generic = new List<adm_generic>();
 
             this.ipd_adverse_drug_reaction = new List<ipd_adverse_drug_reaction>();
             this.ipd_sentinel_event_register = new List<ipd_sentinel_event_register>();
@@ -194,6 +195,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<adm_integration> adm_integration { get; set; }
         public virtual ICollection<pr_attendance> pr_attendance { get; set; }
         public virtual ICollection<adm_user_session> adm_user_session { get; set; }
+        public virtual ICollection<adm_generic> adm_generic { get; set; }
 
         public virtual ICollection<ipd_specialized_equipment_maintenance> ipd_specialized_equipment_maintenance { get; set; }
         public virtual ICollection<ipd_sentinel_event_register> ipd_sentinel_event_register { get; set; }

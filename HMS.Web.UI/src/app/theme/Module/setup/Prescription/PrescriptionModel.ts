@@ -114,6 +114,7 @@ export class emr_prescription_treatment {
     MedicineType: string;
     TypeId: number;
     IsInventory: boolean = true;
+    GenericName:string;
 }
 export class emr_medicine {
     ID: number;

@@ -57,6 +57,38 @@
                         </div>
                         <div class="row">
                             <div class="col-4 text-right">
+                                <label>
+                                    Preferred Vendor
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="VendorId" [(ngModel)]="model.VendorId">
+                                        <option *ngFor="let item of VendorList" [value]="item.ID">
+                                            {{item.Name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Formulation
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm form-control-alternative" formControlName="GenericId" [(ngModel)]="model.GenericId">
+                                        <option *ngFor="let item of GenericList" [value]="item.ID">
+                                            {{item.Name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
                                 <label class="form-control-label mt-2 pl-0" for="input-username"> Name*</label>
                             </div>
                             <div class="col-8">

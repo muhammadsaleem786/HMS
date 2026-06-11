@@ -14,7 +14,7 @@ import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng
     templateUrl: 'ItemComponentList.html',
     providers: [ItemService],
 })
-export class ItemComponentList{
+export class ItemComponentList {
     public ActiveToggle: boolean = false;
     public PModel = new PaginationModel();
     public PConfig = new PaginationConfig();
@@ -38,7 +38,9 @@ export class ItemComponentList{
     public RestockControlRights: any;
     public ExpireControlRights: any;
     selectedValue: string = "A";
+    selectedItemValue: string = "A";
     public CategoryList: any[] = [];
+    public VendorList: any[] = [];
     @Output() pageChange: EventEmitter<string> = new EventEmitter<string>();
     constructor(public _CommonService: CommonService, public loader: LoaderService
         , public _router: Router, public _AsidebarService: AsidebarService, public _ItemService: ItemService,
@@ -92,7 +94,7 @@ export class ItemComponentList{
         this.PModel.CurrentPage = 1;
         this.Refresh();
     }
-  
+
     Refresh() {
         this.loader.ShowLoader();
         this.PModel.VisibleColumnInfo = "Name#Name,Group#Group,Code#Code,CostPrice#CostPrice,Unit#Unit,Stock#Stock,Status#Status";
@@ -102,17 +104,29 @@ export class ItemComponentList{
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.ItemList = m.DataList;
                 this.CategoryList = m.OtherDataModel;
+                this.VendorList = m.OtherData2Model;
+                this.VendorList.push({ "ID": "A", "Name": "All" });
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
-                this.CategoryList.push({ "ID": "A", "Value": "All" })
+                this.CategoryList.push({ "ID": "A", "Value": "All" });
                 this.loader.HideLoader();
             });
     }
     getFilterData() {
         if (this.selectedValue == "A") {
-            this.PModel.FilterID = "0";
+            this.PModel.FilterID = "I,0";
             this.PModel.VisibleFilter = false;
         } else {
-            this.PModel.FilterID = this.selectedValue
+            this.PModel.FilterID = "I," + this.selectedValue
+            this.PModel.VisibleFilter = false;
+        }
+        this.Refresh();
+    }
+    getItemFilterData() {
+        if (this.selectedItemValue == "A") {
+            this.PModel.FilterID = "A,0";
+            this.PModel.VisibleFilter = false;
+        } else {
+            this.PModel.FilterID = "V," + this.selectedItemValue
             this.PModel.VisibleFilter = false;
         }
         this.Refresh();
@@ -172,7 +186,7 @@ export class ItemComponentList{
         this.PModel.FilterID = id;
         this.loader.ShowLoader();
         this.PModel.VisibleColumnInfo = "Name#Name,CostPrice#CostPrice,Unit#Unit,BatchSarialNumber#BatchSarialNumber,ExpiredWarrantyDate#ExpiredWarrantyDate,Stock#Stock";
-         this._ItemService
+        this._ItemService
             .GetItemStockList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PModel.FilterID).then(m => {
                 //this.PModel.TotalRecord = m.TotalRecord;
                 this.ItemStockList = m.DataList;

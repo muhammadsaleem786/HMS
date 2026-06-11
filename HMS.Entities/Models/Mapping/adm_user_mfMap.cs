@@ -85,6 +85,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.Charges).HasColumnName("Charges");
             this.Property(t => t.BrandImage).HasColumnName("BrandImage");
             this.Property(t => t.BrandDescription).HasColumnName("BrandDescription");
+            this.Property(t => t.DrugMode).HasColumnName("DrugMode");
             // Relationships
             this.HasOptional(t => t.sys_drop_down_value)
                 .WithMany(t => t.adm_user_mf)

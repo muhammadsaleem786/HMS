@@ -30,7 +30,9 @@ export class RestockComponentList {
     public IdsList: any = [];
     public IsShowSearch: boolean = false;
     selectedValue: string = "A";
+      selectedItemValue: string = "A";
     public CategoryList: any[] = [];
+    public VendorList: any[] = [];
     @Output() pageChange: EventEmitter<string> = new EventEmitter<string>();
     constructor(public _CommonService: CommonService, public loader: LoaderService
         , public _router: Router, public _AsidebarService: AsidebarService, public _ItemService: ItemService, public toastr: CommonToastrService) {
@@ -60,16 +62,28 @@ export class RestockComponentList {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.ItemList = m.DataList;
                 this.CategoryList = m.OtherDataModel;
-                this.CategoryList.push({ "ID": "A", "Value": "All" })
+                this.CategoryList.push({ "ID": "A", "Value": "All" });
+                 this.VendorList = m.OtherData2Model;
+                this.VendorList.push({ "ID": "A", "Name": "All" });
                 this.loader.HideLoader();
             });
     }
     getFilterData() {
         if (this.selectedValue == "A") {
-            this.PModel.FilterID = "0";
+            this.PModel.FilterID = "I,0";
             this.PModel.VisibleFilter = false;
         } else {
-            this.PModel.FilterID = this.selectedValue
+            this.PModel.FilterID = "I," + this.selectedValue
+            this.PModel.VisibleFilter = false;
+        }
+        this.Refresh();
+    }
+    getItemFilterData() {
+        if (this.selectedItemValue == "A") {
+            this.PModel.FilterID = "A,0";
+            this.PModel.VisibleFilter = false;
+        } else {
+            this.PModel.FilterID = "V," + this.selectedItemValue
             this.PModel.VisibleFilter = false;
         }
         this.Refresh();

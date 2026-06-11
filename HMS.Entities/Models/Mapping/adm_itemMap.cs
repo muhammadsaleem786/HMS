@@ -63,6 +63,8 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.GroupDropDownId).HasColumnName("GroupDropDownId");
             this.Property(t => t.POSItem).HasColumnName("POSItem");
             this.Property(t => t.InstructionId).HasColumnName("InstructionId");
+            this.Property(t => t.VendorId).HasColumnName("VendorId");
+            this.Property(t => t.GenericId).HasColumnName("GenericId");
 
             // Relationships
             this.HasRequired(t => t.adm_company)
@@ -74,6 +76,11 @@ namespace HMS.Entities.Models.Mapping
             this.HasOptional(t => t.adm_user_mf1)
                 .WithMany(t => t.adm_item1)
                 .HasForeignKey(d => d.ModifiedBy);
+
+            this.HasOptional(t => t.adm_generic)
+            .WithMany(t => t.adm_item)
+            .HasForeignKey(d => new { d.GenericId, d.CompanyId });
+
             this.HasOptional(t => t.sys_drop_down_value)
                 .WithMany(t => t.adm_item)
                 .HasForeignKey(d => new { d.UnitID, d.UnitDropDownID });

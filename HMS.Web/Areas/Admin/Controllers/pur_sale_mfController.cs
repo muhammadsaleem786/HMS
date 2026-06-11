@@ -223,10 +223,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-                var itemResult = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && (a.Name.Contains(term))).Select(z => new
+                var itemResult = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == CompanyID && (a.Name.Contains(term))).Select(z => new
                 {
                     value = z.ID,
                     label = z.Name,
+                    GenericName = z.adm_generic.GenericName,
                     Instructions = z.emr_instruction.Instructions,
                     InstructionId = z.InstructionId,
                     IsAllowNegativeStock = z.IsAllowNegativeStock,
@@ -237,6 +238,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 {
                     value = z.ID,
                     label = z.Medicine,
+                    GenericName = "",
                     Instructions = z.emr_instruction.Instructions,
                     InstructionId = z.InstructionId,
                     IsAllowNegativeStock = false,

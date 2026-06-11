@@ -34,12 +34,14 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iinv_stockService _inv_stockService;
         private readonly Iadm_item_logService _adm_item_logService;
         private readonly Iemr_instructionService _emr_instructionService;
+        private readonly Ipur_vendorService _pur_vendorService;
+        private readonly Iadm_genericService _adm_genericService;
 
         public adm_itemController(IUnitOfWorkAsync unitOfWorkAsync, Iadm_itemService Service,
         Isys_drop_down_valueService sys_drop_down_valueService,
   Iadm_companyService iadm_companyService, Iinv_stockService inv_stockService,
   Iadm_item_logService adm_item_logService,
-        IStoredProcedureService ProcedureService, Iemr_instructionService emr_instructionService)
+        IStoredProcedureService ProcedureService, Iemr_instructionService emr_instructionService, Ipur_vendorService pur_vendorService, Iadm_genericService adm_genericService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -49,6 +51,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _inv_stockService = inv_stockService;
             _adm_item_logService = adm_item_logService;
             _emr_instructionService = emr_instructionService;
+            _pur_vendorService = pur_vendorService;
+            _adm_genericService = adm_genericService;
         }
         public async Task<ResponseInfo> Save(adm_item Model)
         {
@@ -329,7 +333,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
                 dropdownValues = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && Ids.Contains(e.DropDownID)).ToList();
                 var InstructionList = _emr_instructionService.Queryable().Where(a => a.CompanyID == CompanyID).Select(a => new { ID = a.ID, Name = a.Instructions }).ToList();
-
+                var vendorObj = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(a => new { ID = a.ID, Name = a.CompanyName }).ToList();
+                var genericObj = _adm_genericService.Queryable().Where(e => e.CompanyId == CompanyID).Select(a => new { ID = a.ID, Name = a.GenericName }).ToList();
                 if (dropdownValues != null)
                 {
 
@@ -337,6 +342,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     {
                         dropdownValues = dropdownValues,
                         InstructionList = InstructionList,
+                        vendorList = vendorObj,
+                        genericList = genericObj,
                     };
                     objResponse.IsSuccess = true;
                     //objResponse.ErrorMessage = "User Name or Password is incorrect.";
@@ -500,7 +507,15 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     z.ID,
                     z.Value,
                 }).ToList();
+
+                var VendorList = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(z => new
+                {
+                    z.ID,
+                    Name = z.CompanyName,
+                }).ToList();
+
                 objResult.OtherDataModel = categoryList;
+                objResult.OtherData2Model = VendorList;
             }
             catch (Exception ex)
             {
@@ -522,7 +537,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     z.ID,
                     z.Value,
                 }).ToList();
+                var VendorList = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(z => new
+                {
+                    z.ID,
+                    Name = z.CompanyName,
+                }).ToList();
                 objResult.OtherDataModel = categoryList;
+                objResult.OtherData2Model = VendorList;
             }
             catch (Exception ex)
             {
@@ -544,7 +565,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     z.ID,
                     z.Value,
                 }).ToList();
+                var VendorList = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(z => new
+                {
+                    z.ID,
+                    Name = z.CompanyName,
+                }).ToList();
                 objResult.OtherDataModel = categoryList;
+                objResult.OtherData2Model = VendorList;
             }
             catch (Exception ex)
             {

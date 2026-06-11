@@ -135,6 +135,8 @@ namespace HMS.Entities.Models
             this.adm_user_session1 = new List<adm_user_session>();
 
 
+            this.adm_generic = new List<adm_generic>();
+            this.adm_generic1 = new List<adm_generic>();
 
             this.ipd_specialized_equipment_maintenance = new List<ipd_specialized_equipment_maintenance>();
             this.ipd_specialized_equipment_maintenance1 = new List<ipd_specialized_equipment_maintenance>();
@@ -165,6 +167,7 @@ namespace HMS.Entities.Models
         [NotMapped]
         public int[] GenderDropdown { get; set; }
         public int LoginFailureNo { get; set; }
+        public string DrugMode { get; set; }
         public bool UserLock { get; set; }
         public bool IsActivated { get; set; }
         public string UserImage { get; set; }
@@ -375,6 +378,9 @@ namespace HMS.Entities.Models
 
         public virtual ICollection<ipd_procedure_expense> ipd_procedure_expense { get; set; }
         public virtual ICollection<ipd_procedure_expense> ipd_procedure_expense1 { get; set; }
+
+        public virtual ICollection<adm_generic> adm_generic { get; set; }
+        public virtual ICollection<adm_generic> adm_generic1 { get; set; }
 
         public virtual ICollection<adm_integration> adm_integration { get; set; }
         public virtual ICollection<adm_integration> adm_integration1 { get; set; }

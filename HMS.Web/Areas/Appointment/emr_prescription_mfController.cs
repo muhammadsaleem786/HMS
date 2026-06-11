@@ -381,8 +381,8 @@ Model?.emr_prescription_treatment
                         .Where(x => !x.IsInventory)
                         .Select(x => x.Id)
                         .ToList();
-                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-                    var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName = "", Type = a.sys_drop_down_value1.Value });
+                    var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName = a.adm_generic.GenericName, Type = a.sys_drop_down_value1.Value });
                     var MedicineList = itemList.Union(medicineList).ToList();
                     DateTime todayDate = DateTime.UtcNow;
                     var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
@@ -416,6 +416,7 @@ Model?.emr_prescription_treatment
                         {
                             ID = mf.ID,
                             Name = mf.Name,
+                            DrugMode = mf.DrugMode,
                             StartTime = emp != null ? emp.StartTime : null,
                             EndTime = emp != null ? emp.EndTime : null,
                             SlotTime = mf.SlotTime,
@@ -801,6 +802,7 @@ Model?.emr_prescription_treatment
                         {
                             ID = mf.ID,
                             Name = mf.Name,
+                            DrugMode = mf.DrugMode,
                             StartTime = emp != null ? emp.StartTime : null,
                             EndTime = emp != null ? emp.EndTime : null,
                             SlotTime = mf.SlotTime,
@@ -868,8 +870,8 @@ Model?.emr_prescription_treatment
                         .Where(x => !x.IsInventory)
                         .Select(x => x.Id)
                         .ToList();
-                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-                    var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName = "", Type = a.sys_drop_down_value1.Value });
+                    var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName = a.adm_generic.GenericName, Type = a.sys_drop_down_value1.Value });
                     var MedicineList = itemList.Union(medicineList).ToList();
 
                     objResponse.ResultSet = new
@@ -942,8 +944,8 @@ Model?.emr_prescription_treatment
                 decimal prescriptionId = Convert.ToDecimal(result.ID);
                 int userid = Convert.ToInt32(Request.LoginID());
                 var ids = result?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
-                var medicine = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                var medicine = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName="", Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Include(a=>a.adm_generic).Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName=a.adm_generic.GenericName, Type = a.sys_drop_down_value1.Value });
                 var medicineList = itemList.Union(medicine).ToList();
 
                 var vitalObj = new List<object>();
@@ -1314,8 +1316,8 @@ result?.emr_prescription_treatment
                     .Where(x => !x.IsInventory)
                     .Select(x => x.Id)
                     .ToList();
-                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName="", Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Include(a=>a.adm_generic).Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName=a.adm_generic.GenericName, Type = a.sys_drop_down_value1.Value });
                 var MedicineList = itemList.Union(medicineList).ToList();
                 objResponse.ResultSet = new
                 {
@@ -1403,6 +1405,7 @@ result?.emr_prescription_treatment
                     {
                         ID = mf.ID,
                         Name = mf.Name,
+                        DrugMode=mf.DrugMode,
                         StartTime = emp != null ? emp.StartTime : null,
                         EndTime = emp != null ? emp.EndTime : null,
                         SlotTime = mf.SlotTime,
@@ -1469,8 +1472,8 @@ result?.emr_prescription_treatment
                     .Where(x => !x.IsInventory)
                     .Select(x => x.Id)
                     .ToList();
-                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, TypeId = a.TypeId, Type = a.sys_drop_down_value1.Value });
-                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, TypeId = a.CategoryID, Type = a.sys_drop_down_value1.Value });
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName = "", TypeId = a.TypeId, Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName = a.adm_generic.GenericName, TypeId = a.CategoryID, Type = a.sys_drop_down_value1.Value });
                 var MedicineList = itemList.Union(medicineList).ToList();
                 objResponse.ResultSet = new
                 {
@@ -2281,8 +2284,8 @@ result?.emr_prescription_treatment
                 }).ToList();
 
                 var ids = result?.emr_prescription_treatment?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
-                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, Type = a.sys_drop_down_value1.Value });
-                var itemList = _adm_itemService.Queryable().Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, Type = a.sys_drop_down_value1.Value });
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName="", Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName=a.adm_generic.GenericName, Type = a.sys_drop_down_value1.Value });
                 var MedicineList = itemList.Union(medicineList).ToList();
 
                 var patientInfo = _emr_patientService.Queryable().Where(a => a.ID == patientid && a.CompanyId == companyId).FirstOrDefault();

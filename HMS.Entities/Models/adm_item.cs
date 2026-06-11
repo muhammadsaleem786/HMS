@@ -45,11 +45,14 @@ namespace HMS.Entities.Models
         public Nullable<decimal> InventoryStockPerUnit { get; set; }
         public Nullable<decimal> InventoryStockQuantity { get; set; }
         public int SaveStatus { get; set; }
+        public int? VendorId { get; set; }
+        public decimal? GenericId { get; set; }
         public Boolean POSItem { get; set; }
         public decimal CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<decimal> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
+        public virtual adm_generic adm_generic { get; set; }
         public virtual adm_company adm_company { get; set; }
         public virtual adm_user_mf adm_user_mf { get; set; }
         public virtual adm_user_mf adm_user_mf1 { get; set; }

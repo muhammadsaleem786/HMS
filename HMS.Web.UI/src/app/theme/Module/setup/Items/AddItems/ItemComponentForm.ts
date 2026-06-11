@@ -28,7 +28,9 @@ export class ItemComponentForm {
     public unitList: any[] = [];
     public CategoryList: any[] = [];
     public ItemTypeList: any[] = [];
+    public VendorList: any[] = [];
     public GroupList: any[] = [];
+    public GenericList: any[] = [];
     public InstructionsList: any[] = [];
     public PayrollRegion: string;
     public sub: any;
@@ -121,7 +123,9 @@ export class ItemComponentForm {
             IsAllowNegativeStock: [''],
             IsActive: [''],
             GroupId: [''],
-            POSItem: ['']
+            POSItem: [''],
+            VendorId: [''],
+            GenericId:[''],
         });
     }
     ShowInventory(event: any) {
@@ -196,6 +200,8 @@ export class ItemComponentForm {
                 this.CategoryList = list.filter(f => f.DropDownID === 58);
                 this.ItemTypeList = list.filter(f => f.DropDownID === 59);
                 this.GroupList = list.filter(f => f.DropDownID === 64);
+                this.VendorList = m.ResultSet.vendorList;
+                this.GenericList = m.ResultSet.genericList;
                 this.InstructionsList = m.ResultSet.InstructionList;
                 if (this.IsEdit == false)
                     this.model.ItemTypeId = 1;

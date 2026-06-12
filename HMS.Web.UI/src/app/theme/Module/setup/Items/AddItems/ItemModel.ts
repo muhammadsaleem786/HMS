@@ -25,6 +25,13 @@
     action: string;
     VendorId: number;
     GenericId: number;
+
+    GroupName: string;
+    TypeName: string;
+    VendorName: string;
+    FormulationName: string;
+    CategoryName: string;
+    UnitName: string;
 }
 
 export class ImpoertItemModel {

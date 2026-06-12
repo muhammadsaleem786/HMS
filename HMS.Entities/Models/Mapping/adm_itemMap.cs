@@ -84,12 +84,15 @@ namespace HMS.Entities.Models.Mapping
             this.HasOptional(t => t.sys_drop_down_value)
                 .WithMany(t => t.adm_item)
                 .HasForeignKey(d => new { d.UnitID, d.UnitDropDownID });
+
             this.HasOptional(t => t.sys_drop_down_value1)
                .WithMany(t => t.adm_item1)
                .HasForeignKey(d => new { d.CategoryID, d.CategoryDropDownID });
+
             this.HasOptional(t => t.sys_drop_down_value2)
             .WithMany(t => t.adm_item2)
             .HasForeignKey(d => new { d.ItemTypeId, d.ItemTypeDropDownID });
+
             this.HasOptional(t => t.sys_drop_down_value3)
             .WithMany(t => t.adm_item3)
             .HasForeignKey(d => new { d.GroupId, d.GroupDropDownId });

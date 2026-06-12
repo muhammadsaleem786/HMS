@@ -787,6 +787,7 @@ namespace HMS.Web.API.Controllers
                     Model.IsActivated = false;
                     Model.UserLock = false;
                     Model.EmployeeID = empID;
+                    Model.DrugMode = "B";
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);
                     adm_user_token user_token = new adm_user_token();

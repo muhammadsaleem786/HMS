@@ -67,8 +67,31 @@ export class ItemService {
         var data = { 'Id': Id };
         return this.http.Get(this.urlToApi + '/GetById', data).then(e => e);
     }
-   
-   
+    VendorSearch(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/VendorSearch', data).then(e => e);
+    }
+    FormulationSearch(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/FormulationSearch', data).then(e => e);
+    }
+    UnitSearch(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/UnitSearch', data).then(e => e);
+    }
+    CategorySearch(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/CategorySearch', data).then(e => e);
+    }
+
+    ItemTypeSearch(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/ItemTypeSearch', data).then(e => e);
+    }
+    GroupSearch(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/GroupSearch', data).then(e => e);
+    } 
     SaveOrUpdate(entity: ItemModel): Promise<any> {
         if (isNaN(entity.ID) || entity.ID == 0)
             return this.http.Post(this.urlToApi + '/Save', entity).then(e => e);

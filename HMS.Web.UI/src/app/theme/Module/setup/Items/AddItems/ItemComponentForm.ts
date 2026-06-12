@@ -12,6 +12,7 @@ import { CommonToastrService } from '../../../../../CommonService/CommonToastrSe
 import { ValidationVariables } from '../../../../../AngularConfig/global';
 import { filter } from 'rxjs/operators';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';
+declare var $: any;
 @Component({
     moduleId: module.id,
     templateUrl: 'ItemComponentForm.html',
@@ -25,12 +26,6 @@ export class ItemComponentForm {
     public ID: number = 10;
     public Rights: any;
     public Keywords: any[] = [];
-    public unitList: any[] = [];
-    public CategoryList: any[] = [];
-    public ItemTypeList: any[] = [];
-    public VendorList: any[] = [];
-    public GroupList: any[] = [];
-    public GenericList: any[] = [];
     public InstructionsList: any[] = [];
     public PayrollRegion: string;
     public sub: any;
@@ -52,7 +47,7 @@ export class ItemComponentForm {
         this.ControlRights = this._CommonService.ScreenRights("61");
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
-    ngOnInit() {
+    ngOnInit() {    
         this.LoadDropDown();
         this.sub = this.route.queryParams
             .pipe(filter(params => params.id))
@@ -64,6 +59,7 @@ export class ItemComponentForm {
                     this._ItemService.GetById(this.model.ID).then(m => {
                         if (m.ResultSet != null) {
                             this.model = m.ResultSet.result;
+                            this.model.VendorName = m.ResultSet.vendorName;
                             if (this.model.Image != null && this.model.Image != undefined && this.model.Image != "") {
                                 this.IsNewImage = true;
                                 this.getImageUrlName(this.model.Image);
@@ -98,6 +94,7 @@ export class ItemComponentForm {
                                 this.Form1.get('InventoryOpeningStock').enable();
                                 this.Form1.get('InventoryStockPerUnit').enable();
                             }
+                            this.initAllAutocomplete();
                             this.loader.HideLoader();
                         } else
                             this.loader.HideLoader();
@@ -125,7 +122,13 @@ export class ItemComponentForm {
             GroupId: [''],
             POSItem: [''],
             VendorId: [''],
-            GenericId:[''],
+            GenericId: [''],
+            GroupName: [''],
+            TypeName: [''],
+            VendorName: [''],
+            FormulationName: [''],
+            CategoryName: [''],
+            UnitName: [''],
         });
     }
     ShowInventory(event: any) {
@@ -191,17 +194,141 @@ export class ItemComponentForm {
                 $("#IsTrack").removeAttr("disabled");
         }
     }
+    LoadVendor() {
+        $("#VendorSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._ItemService.VendorSearch(request.term).then(m => {
+
+                    if (m.ResultSet.result.length == 0)
+                        $("#VendorSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.VendorId = ui.item.value;
+                this.model.VendorName = ui.item.label;
+
+                return ui.item.label;
+            }
+        });
+    }
+    LoadFormulation() {
+        $("#FormulationSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._ItemService.FormulationSearch(request.term).then(m => {
+                    if (m.ResultSet.result.length == 0)
+                        $("#FormulationSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.GenericId = ui.item.value;
+                this.model.FormulationName = ui.item.label;
+                return ui.item.label;
+            }
+        });
+    }
+    LoadUnit() {
+        $("#UnitSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._ItemService.UnitSearch(request.term).then(m => {
+
+                    if (m.ResultSet.result.length == 0)
+                        $("#UnitSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 1,
+            select: (event, ui) => {
+                this.model.UnitID = ui.item.value;
+                this.model.UnitName = ui.item.label;
+
+                return ui.item.label;
+            }
+        });
+    }
+    LoadType() {
+        $("#TypeSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._ItemService.ItemTypeSearch(request.term).then(m => {
+
+                    if (m.ResultSet.result.length == 0)
+                        $("#TypeSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.ItemTypeId = ui.item.value;
+                this.model.TypeName = ui.item.label;
+
+                return ui.item.label;
+            }
+        });
+    }
+    LoadGroup() {
+        $("#GroupSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._ItemService.GroupSearch(request.term).then(m => {
+
+                    if (m.ResultSet.result.length == 0)
+                        $("#GroupSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 2,
+            select: (event, ui) => {
+                this.model.GroupId = ui.item.value;
+                this.model.GroupName = ui.item.label;
+
+                return ui.item.label;
+            }
+        });
+    }
+    LoadCategory() {
+        $("#CategorySearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._ItemService.CategorySearch(request.term).then(m => {
+
+                    if (m.ResultSet.result.length == 0)
+                        $("#CategorySearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.CategoryID = ui.item.value;
+                this.model.CategoryName = ui.item.label;
+
+                return ui.item.label;
+            }
+        });
+    }
+    
     LoadDropDown() {
         this.loader.ShowLoader();
-        this._ItemService.LoadDropdown("57,58,59,64").then(m => {
+        this._ItemService.FormLoad().then(m => {
             if (m.IsSuccess) {
-                let list = m.ResultSet.dropdownValues;
-                this.unitList = list.filter(f => f.DropDownID === 57);
-                this.CategoryList = list.filter(f => f.DropDownID === 58);
-                this.ItemTypeList = list.filter(f => f.DropDownID === 59);
-                this.GroupList = list.filter(f => f.DropDownID === 64);
-                this.VendorList = m.ResultSet.vendorList;
-                this.GenericList = m.ResultSet.genericList;
                 this.InstructionsList = m.ResultSet.InstructionList;
                 if (this.IsEdit == false)
                     this.model.ItemTypeId = 1;
@@ -209,6 +336,15 @@ export class ItemComponentForm {
             } else
                 this.loader.HideLoader();
         });
+    }
+    initAllAutocomplete() {
+        this.LoadGroup();
+        this.LoadType();
+        this.LoadUnit();
+        this.LoadCategory();
+        this.LoadVendor();
+        this.LoadFormulation();
+        this.LoadInstruction();
     }
     IsNewImageEvent(FName) {
         this.IsNewImage = true;

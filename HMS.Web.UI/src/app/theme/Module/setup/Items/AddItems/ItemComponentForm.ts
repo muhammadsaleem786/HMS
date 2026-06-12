@@ -344,7 +344,6 @@ export class ItemComponentForm {
         this.LoadCategory();
         this.LoadVendor();
         this.LoadFormulation();
-        this.LoadInstruction();
     }
     IsNewImageEvent(FName) {
         this.IsNewImage = true;

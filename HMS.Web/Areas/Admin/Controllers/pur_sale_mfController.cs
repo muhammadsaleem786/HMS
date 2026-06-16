@@ -225,10 +225,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 decimal UserID = Request.LoginID();
                 var itemResult = _adm_itemService.Queryable()
                      .AsNoTracking()
-                     .Where(a => a.CompanyId == CompanyID && 
+                     .Where(a => a.CompanyId == CompanyID &&
                      (
                      a.Name.StartsWith(term))
-                     || 
+                     ||
                      a.adm_generic.GenericName.StartsWith(term)
                      ).Select(z => new
                      {
@@ -660,7 +660,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
                 // Fetch item groups using the list of item IDs
                 var itemGroups = _adm_itemService.Queryable()
-                    .Where(i => itemIds.Contains(i.ID))
+                    .Where(i => i.CompanyId == CompanyID && itemIds.Contains(i.ID))
                     .ToDictionary(i => i.ID, i => i.GroupId);
                 //insert pur_sale_mf
                 decimal ID = 1;
@@ -807,7 +807,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
                 // Fetch item groups using the list of item IDs
                 var itemGroups = _adm_itemService.Queryable()
-                    .Where(i => itemIds.Contains(i.ID))
+                    .Where(i =>i.CompanyId== CompanyID && itemIds.Contains(i.ID))
                     .ToDictionary(i => i.ID, i => i.GroupId);
 
                 decimal ID = 1;

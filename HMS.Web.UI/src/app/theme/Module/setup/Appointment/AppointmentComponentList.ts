@@ -130,6 +130,7 @@ export class AppointmentComponentList implements OnInit {
     public BloodList: any[] = [];
     public CurntPrevDateList: any[] = [];
     public VitalList: any = [];
+    public ServiceList: any = [];
     public IsShowDoctorIds: any;
     public patientInfo: any;
     public ServiceType: any;
@@ -613,13 +614,15 @@ export class AppointmentComponentList implements OnInit {
                 this.BloodList = m.BloodList;
                 this.UnitList = m.UnitList;
                 this.MadicineTypeList = m.MadicineTypeList;
-
-                this.ServiceType = m.ServiceType[0];
+                ;
+                this.ServiceList = m.ServiceType;
+                var ServiceObj = m.ServiceType.filter(z => z.ServiceName == "Consultation")[0];
+                this.ServiceType = ServiceObj;
                 this.TokenNo = m.TokenNo;
-                if (m.ServiceType != null) {
-                    this.AppointmentModel.ServiceId = m.ServiceType.ID;
-                    this.AppointmentModel.ServiceName = m.ServiceType.ServiceName;
-                    this.AppointmentModel.Price = m.ServiceType.Price;
+                if (ServiceObj != null) {
+                    this.AppointmentModel.ServiceId = ServiceObj.ID;
+                    this.AppointmentModel.ServiceName = ServiceObj.ServiceName;
+                    this.AppointmentModel.Price = ServiceObj.Price;
                 }
                 this.BindEvent();
                 this.LoadCalendar(date);
@@ -669,12 +672,15 @@ export class AppointmentComponentList implements OnInit {
                 this.BloodList = m.BloodList;
                 this.UnitList = m.UnitList;
                 this.MadicineTypeList = m.MadicineTypeList;
-                this.ServiceType = m.ServiceType[0];
+
+                this.ServiceList = m.ServiceType;
+                var ServiceObj = m.ServiceType.filter(z => z.ServiceName == "Consultation")[0];
+                this.ServiceType = ServiceObj;
                 this.TokenNo = m.TokenNo;
-                if (m.ServiceType != null) {
-                    this.AppointmentModel.ServiceId = m.ServiceType.ID;
-                    this.AppointmentModel.ServiceName = m.ServiceType.ServiceName;
-                    this.AppointmentModel.Price = m.ServiceType.Price;
+                if (ServiceObj != null) {
+                    this.AppointmentModel.ServiceId = ServiceObj.ID;
+                    this.AppointmentModel.ServiceName = ServiceObj.ServiceName;
+                    this.AppointmentModel.Price = ServiceObj.Price;
                 }
                 this.BindEvent();
                 this.LoadCalendar(date);
@@ -756,6 +762,11 @@ export class AppointmentComponentList implements OnInit {
                     this.loader.HideLoader();
             });
         }
+    }
+    initAllAutocomplete() {
+        this.LoadDoctor();
+        this.LoadSearchableDropdown();
+        this.LoadService();
     }
     LoadDoctor() {
         $("#DoctorSearch").autocomplete({
@@ -1169,12 +1180,13 @@ export class AppointmentComponentList implements OnInit {
                     });
             },
             eventClick: (event) => {
-                ;
                 var dateTime = event.start.format();
                 var time = dateTime.split('T');
                 let CalendarDate = time[0];
                 let CalendarTime = time[1];
+                
                 var Appobj = this.AppointmentList.filter(a => a.ID == parseInt(event.id));
+                var serviceType = this.ServiceList.filter(a => a.ID == Appobj[0].ServiceId);
                 this.AppointmentModel = new emr_Appointment();
                 this.AppointmentModel = Appobj[0];
                 this.AppointmentModel.ID = event.id;
@@ -1185,8 +1197,8 @@ export class AppointmentComponentList implements OnInit {
                 this.AppointmentModel.Notes = Appobj[0].Note;
                 this.AppointmentModel.StatusId = Appobj[0].StatusId;
                 this.AppointmentModel.ReminderId = Appobj[0].ReminderId;
-                this.AppointmentModel.ServiceId = this.ServiceType.ID;
-                this.AppointmentModel.ServiceName = this.ServiceType.ServiceName;
+                this.AppointmentModel.ServiceId = serviceType[0].ID;
+                this.AppointmentModel.ServiceName = serviceType[0].ServiceName;
                 this.OnClickAppointment(CalendarDate, CalendarTime, event.resourceId, event.id);
             },
             dayClick: (date, jsEvent, view, resource) => {
@@ -1229,8 +1241,7 @@ export class AppointmentComponentList implements OnInit {
             },
         });
     }
-    CheckDayClik(date: any, time: any) {
-
+    CheckDayClik(date: any, time: any) {        
         let selectedDate = new Date(date);
         let currentDate = new Date();
         selectedDate.setHours(0, 0, 0, 0);
@@ -1240,7 +1251,7 @@ export class AppointmentComponentList implements OnInit {
             this.isDayClik = false;
         } else
             this.isDayClik = true;
-
+        this.LoadService();
     }
     formatCnic(event: any) {
         let input = event.target.value.replace(/\D/g, '');
@@ -1253,7 +1264,7 @@ export class AppointmentComponentList implements OnInit {
         this.Form1.controls['CNIC'].setValue(input, { emitEvent: false });
     }
     OnClickAppointment(date: any, time: any, doctorId: any, appointmentId: any) {
-
+        
         var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));
         var Appobj = this.AppointmentList.filter(a => a.DoctorId == parseInt(doctorId) && a.StartDate.split("T")[1] == time && a.ID == appointmentId);
         var slotTime = new Date();
@@ -1304,6 +1315,7 @@ export class AppointmentComponentList implements OnInit {
             }
             setTimeout(() => {
                 this.LoadSearchableDropdown();
+                this.LoadService();
                 this.cdr.detectChanges();
             }, 1000);
         }
@@ -1496,6 +1508,7 @@ export class AppointmentComponentList implements OnInit {
                 this.AppointmentModel.ServiceId = ui.item.ServiceID;
                 this.AppointmentModel.ServiceName = ui.item.ServiceName;
                 this.AppointmentModel.Price = ui.item.ServicePrice;
+                this.LoadService();
             }
         });
     }
@@ -1528,6 +1541,7 @@ export class AppointmentComponentList implements OnInit {
             select: (event, ui) => {
                 this.AppointmentModel.ServiceId = ui.item.value;
                 this.AppointmentModel.ServiceName = ui.item.label;
+                this.AppointmentModel.Price = ui.item.Price;
                 return ui.item.label;
             }
         });
@@ -1651,6 +1665,7 @@ export class AppointmentComponentList implements OnInit {
                 }
                 setTimeout(() => {
                     this.LoadSearchableDropdown();
+                    this.LoadService();
                     this.cdr.detectChanges();
                 }, 1000);
             }
@@ -3462,7 +3477,7 @@ export class AppointmentComponentList implements OnInit {
             this.AppointmentModel.StatusId = 25;
         this.AppointmentModel.IsPrscription = true;
         this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
-            debugger;
+            ;
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
                 this.emr_prescription_treatment_dynamicArray = [];
@@ -3490,7 +3505,7 @@ export class AppointmentComponentList implements OnInit {
                 if (this.DoctorInfo.HeaderDescriptionUrdu) {
                     this.DoctorInfo.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescriptionUrdu);
                 }
-                debugger
+                
                 if (this.DoctorInfo.Instruction) {
                     this.PatientRXmodel.Notes = this.DoctorInfo.Instruction;
                 }
@@ -3510,6 +3525,8 @@ export class AppointmentComponentList implements OnInit {
                     this.PatientRXmodel.Age = "";
                 }
                 this.modalService.open(this.PrintRxContent, { size: 'lg' });
+                this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
+                this.selectPatientPage(this.PModel.CurrentPage);
                 this.loader.HideLoader();
             }
             else {

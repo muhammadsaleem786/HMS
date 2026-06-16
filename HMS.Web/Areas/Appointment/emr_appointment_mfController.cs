@@ -1827,7 +1827,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
     .ToList();
 
                 var consultationService = await _emr_service_mfService.Queryable()
-    .Where(s => s.CompanyId == CompanyID && s.ServiceName == "Consultation")
+    .Where(s => s.CompanyId == CompanyID)
     .Select(s => new { s.ID, s.ServiceName, s.Price })
     .ToListAsync();
                 var maxCompanyToken = await _adm_companyService.Queryable()
@@ -2125,7 +2125,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
     .ToList();
 
                 var consultationService = await _emr_service_mfService.Queryable()
-    .Where(s => s.CompanyId == CompanyID && s.ServiceName == "Consultation")
+    .Where(s => s.CompanyId == CompanyID)
     .Select(s => new { s.ID, s.ServiceName, s.Price })
     .ToListAsync();
                 var maxCompanyToken = await _adm_companyService.Queryable()

@@ -909,7 +909,7 @@
                                                                                                                     <select class="form-control"
                                                                                                                             [ngModelOptions]="{standalone:true}"
                                                                                                                             [(ngModel)]="PrescriptionModel.RefillNo">
-                                                                                                                        <option *ngFor="let item of RefillList"[ngValue]="item.Name">
+                                                                                                                        <option *ngFor="let item of RefillList" [ngValue]="item.Name">
                                                                                                                             {{item.Name}}
                                                                                                                         </option>
                                                                                                                     </select>
@@ -1705,7 +1705,7 @@
                         </div>
                         <div class="col-8">
                             <input type="text" id="" formControlName="Address" [(ngModel)]="model.Address" class="form-control form-control-sm form-control-alternative" placeholder="Address">
-                          
+
                         </div>
                     </div>
                     <div class="row form-group">
@@ -2042,6 +2042,11 @@
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <button class="btn btn-light"
+                                    type="button"
+                                    (click)="handlePrint('PR')">
+                                <i class="icon icon-printer"></i> Print Prescription
+                            </button>
                             <button class="btn btn-light"
                                     type="button"
                                     (click)="handlePrint('P')">
@@ -2598,10 +2603,15 @@
                     {{PatientRXmodel.Gender}}
                 </div>
 
-                <div style="min-width:170px;">
+                <div style="min-width:170px;" *ngIf="PatientRXmodel.IsPrscription==false">
                     <strong>Date:</strong>
                     {{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy'}}
                     {{ PatientRXmodel.CurrentTime | date:'hh:mm a' }}
+                </div>
+                <div style="min-width:170px;" *ngIf="PatientRXmodel.IsPrscription==true">
+                    <strong>Date:</strong>
+                    {{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy'}}
+                    {{AppointmentModel.AppointmentTime }}
                 </div>
 
                 <div style="flex:1; min-width:218px;">
@@ -2622,8 +2632,32 @@
 
 
                 <!-- ================= LEFT SIDEBAR ================= -->
+                <div style="width:28%; padding-right:10px; font-size:13px; color:#000;" *ngIf="PatientRXmodel.IsPrscription== true">
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Clinical History:</strong>
+                    </div>
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Complaint:</strong>
+                    </div>
 
-                <div style="width:28%; padding-right:10px; font-size:13px; color:#000;">
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Vitals:</strong>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Examination:</strong>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Investigation:</strong>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Diagnoses:</strong>
+                    </div>
+                </div>
+
+                <div style="width:28%; padding-right:10px; font-size:13px; color:#000;" *ngIf="PatientRXmodel.IsPrscription== false">
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safeClinicalNote!= null">
                         <strong style="font-size:18px; color: #000;" class="clr_danger">Clinical History:</strong>
                         <div [innerHTML]="PatientRXmodel.safeClinicalNote" style="color:#000;"></div>
@@ -2657,7 +2691,7 @@
                         <div [innerHTML]="PatientRXmodel.safePlanNote" style="color:#000;"></div>
                     </div>
                 </div>
-
+                
                 <!-- ================= RIGHT CONTENT ================= -->
 
                 <div style="width:72%; border-left:1px solid #000; padding-left:12px;" class="border-left-print">
@@ -2775,11 +2809,12 @@
                             </tr>
                         </tbody>
                     </table>
-                    <h3 style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">VC Obtained</h3>
-                    <div>
+                    <h3 *ngIf="PatientRXmodel.IsPrscription==false" style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">VC Obtained</h3>
+                    <div *ngIf="PatientRXmodel.IsPrscription==false">
                         {{PatientRXmodel.IsVCObtained ? 'Yes' : 'No'}}
                     </div>
-                    <h3 style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">Instructions</h3>
+                    <h3 *ngIf="PatientRXmodel.IsPrscription==true" style="margin:500px 0 6px; font-size:15px; color:#000;" class="text-primary">Instructions</h3>
+                    <h3 *ngIf="PatientRXmodel.IsPrscription==false" style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">Instructions</h3>
                     <div style="font-size:12px; margin:0; line-height:normal;">
                         <p *ngIf="DoctorInfo.TemplateId==2" style="direction: rtl; text-align: right;">
                             {{ PatientRXmodel.Notes }}

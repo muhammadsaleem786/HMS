@@ -285,6 +285,85 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Save;
                     objResponse.IsSuccess = true;
+                    List<object> doctorResult = new List<object>();
+                    object patientInfo = null;
+                    if (Model.IsPrscription)
+                    {
+                        DateTime todayDate = DateTime.UtcNow;
+                         patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
+                                              .Select(z => new
+                                              {
+                                                  z.PatientName,
+                                                  z.Age,
+                                                  Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
+                                                  ClinicIogo = z.adm_company.CompanyLogo,
+                                                  z.Mobile,
+                                                  z.MRNO,
+                                                  z.Address,
+                                                  NoVisit = z.emr_appointment_mf
+                                .Where(a => a.CompanyId == z.CompanyId && DbFunctions.TruncateTime(a.AppointmentDate) <= DbFunctions.TruncateTime(todayDate))
+                                .Count()
+                                              }).FirstOrDefault();
+                        var role = _adm_user_companyService.Queryable()
+                             .Where(u => u.UserID == UserID && u.CompanyID == CompanyID)
+                             .Select(u => u.adm_role_mf.RoleName)
+                             .FirstOrDefault();
+                        var doctorUsers = _adm_user_companyService.Queryable()
+                .Where(u => u.CompanyID == CompanyID && u.adm_role_mf.RoleName == "Doctor")
+                .Select(u => u.adm_user_mf)
+                .OrderBy(u => u.ID)
+                .ToList();
+                        var doctors = doctorUsers.Select(mf =>
+                        {
+                            var emp = _pr_employee_mfService.Queryable().FirstOrDefault(e => e.ID == mf.EmployeeID);
+
+                            return (object)new
+                            {
+                                ID = mf.ID,
+                                Name = mf.Name,
+                                DrugMode = mf.DrugMode,
+                                StartTime = emp != null ? emp.StartTime : null,
+                                EndTime = emp != null ? emp.EndTime : null,
+                                SlotTime = mf.SlotTime,
+                                WDSunday = emp?.WDSunday ?? false,
+                                WDMonday = emp?.WDMonday ?? false,
+                                WDTuesday = emp?.WDTuesday ?? false,
+                                WDWednesday = emp?.WDWednesday ?? false,
+                                WDThursday = emp?.WDThursday ?? false,
+                                WDFriday = emp?.WDFriday ?? false,
+                                WDSaturday = emp?.WDSaturday ?? false,
+                                IsShowDoctor = mf.IsShowDoctor,
+                                IsDoctor = false,
+                                Qualification = mf.Qualification,
+                                Designation = mf.Designation,
+                                PhoneNo = mf.PhoneNo,
+                                BrandImage = mf.BrandImage,
+                                BrandDescription = mf.BrandDescription,
+                                Footer = mf.RepotFooter,
+                                TemplateId = mf.TemplateId,
+                                QualificationUrdu = mf.QualificationUrdu,
+                                DesignationUrdu = mf.DesignationUrdu,
+                                NameUrdu = mf.NameUrdu,
+                                HeaderDescription = mf.HeaderDescription,
+                                HeaderDescriptionUrdu = mf.HeaderDescriptionUrdu,
+                                IsOverLap = mf.IsOverLap,
+                                Instruction=mf.Instruction,
+                            };
+                        }).ToList();
+                       
+                        if (role == "Administrator")
+                        {
+                            doctorResult = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
+                        }
+                        else if (role == "Doctor")
+                        {
+                            doctorResult = doctors.Where(d => ((dynamic)d).ID == UserID).ToList<object>();
+                        }
+                        else
+                        {
+                            doctorResult = doctors;
+                        }
+                    }
                     if (Model.ReminderId != null)
                     {
                         Task.Run(() => SendRemindersAsync(Model.ReminderId, patientObj.Mobile, patientObj.Email, CompanyID));
@@ -304,6 +383,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     objResponse.ResultSet = new
                     {
                         CurntPrevDateList = CurntPrevDateList,
+                        patientInfo = patientInfo,
+                        doctor = doctorResult,
                     };
                 }
                 catch (DbUpdateException)
@@ -461,6 +542,85 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Update;
                     objResponse.IsSuccess = true;
+                    List<object> doctorResult = new List<object>();
+                    object patientInfo = null;
+                    if (Model.IsPrscription)
+                    {
+                        DateTime todayDate = DateTime.UtcNow;
+                        patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
+                                             .Select(z => new
+                                             {
+                                                 z.PatientName,
+                                                 z.Age,
+                                                 Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
+                                                 ClinicIogo = z.adm_company.CompanyLogo,
+                                                 z.Mobile,
+                                                 z.MRNO,
+                                                 z.Address,
+                                                 NoVisit = z.emr_appointment_mf
+                               .Where(a => a.CompanyId == z.CompanyId && DbFunctions.TruncateTime(a.AppointmentDate) <= DbFunctions.TruncateTime(todayDate))
+                               .Count()
+                                             }).FirstOrDefault();
+                        var role = _adm_user_companyService.Queryable()
+                             .Where(u => u.UserID == UserID && u.CompanyID == CompanyID)
+                             .Select(u => u.adm_role_mf.RoleName)
+                             .FirstOrDefault();
+                        var doctorUsers = _adm_user_companyService.Queryable()
+                .Where(u => u.CompanyID == CompanyID && u.adm_role_mf.RoleName == "Doctor")
+                .Select(u => u.adm_user_mf)
+                .OrderBy(u => u.ID)
+                .ToList();
+                        var doctors = doctorUsers.Select(mf =>
+                        {
+                            var emp = _pr_employee_mfService.Queryable().FirstOrDefault(e => e.ID == mf.EmployeeID);
+
+                            return (object)new
+                            {
+                                ID = mf.ID,
+                                Name = mf.Name,
+                                DrugMode = mf.DrugMode,
+                                StartTime = emp != null ? emp.StartTime : null,
+                                EndTime = emp != null ? emp.EndTime : null,
+                                SlotTime = mf.SlotTime,
+                                WDSunday = emp?.WDSunday ?? false,
+                                WDMonday = emp?.WDMonday ?? false,
+                                WDTuesday = emp?.WDTuesday ?? false,
+                                WDWednesday = emp?.WDWednesday ?? false,
+                                WDThursday = emp?.WDThursday ?? false,
+                                WDFriday = emp?.WDFriday ?? false,
+                                WDSaturday = emp?.WDSaturday ?? false,
+                                IsShowDoctor = mf.IsShowDoctor,
+                                IsDoctor = false,
+                                Qualification = mf.Qualification,
+                                Designation = mf.Designation,
+                                PhoneNo = mf.PhoneNo,
+                                BrandImage = mf.BrandImage,
+                                BrandDescription = mf.BrandDescription,
+                                Footer = mf.RepotFooter,
+                                TemplateId = mf.TemplateId,
+                                QualificationUrdu = mf.QualificationUrdu,
+                                DesignationUrdu = mf.DesignationUrdu,
+                                NameUrdu = mf.NameUrdu,
+                                HeaderDescription = mf.HeaderDescription,
+                                HeaderDescriptionUrdu = mf.HeaderDescriptionUrdu,
+                                IsOverLap = mf.IsOverLap,
+                                Instruction = mf.Instruction,
+                            };
+                        }).ToList();
+
+                        if (role == "Administrator")
+                        {
+                            doctorResult = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
+                        }
+                        else if (role == "Doctor")
+                        {
+                            doctorResult = doctors.Where(d => ((dynamic)d).ID == UserID).ToList<object>();
+                        }
+                        else
+                        {
+                            doctorResult = doctors;
+                        }
+                    }
                     var CurntPrevDate = _service.Queryable().Where(a => a.CompanyId == CompanyID && a.PatientId == Model.PatientId).Select(z => new
                     {
                         PatientId = z.PatientId,
@@ -477,6 +637,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     objResponse.ResultSet = new
                     {
                         CurntPrevDateList = CurntPrevDateList,
+                        patientInfo = patientInfo,
+                        doctor = doctorResult
                     };
                 }
                 catch (DbUpdateException)

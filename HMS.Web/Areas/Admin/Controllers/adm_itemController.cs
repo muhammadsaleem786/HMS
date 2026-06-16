@@ -569,6 +569,46 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             }
             return objResponse;
         }
+        [HttpGet]
+        [ActionName("LoadExcelMasters")]
+        public ResponseInfo LoadExcelMasters(string DropdownIds)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var CompanyID = Request.CompanyID();
+
+                List<sys_drop_down_value> dropdownValues = new List<sys_drop_down_value>();
+                var Ids = DropdownIds.Split(',').Select(s => int.Parse(s)).ToArray();
+                dropdownValues = _sys_drop_down_valueService
+                            .Queryable()
+                            .Where(e =>
+                                !e.IsDeleted &&
+                                (e.CompanyID == null || e.CompanyID == CompanyID) &&
+                                Ids.Contains(e.DropDownID))
+                            .ToList();
+                if (dropdownValues != null)
+                {
+                    objResponse.ResultSet = new
+                    {
+                        dropdownValues = dropdownValues,
+                    };
+                    objResponse.IsSuccess = true;
+                }
+                else
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "Email does not exist";
+                }
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
         private bool ModelExists(string key)
         {
             return _service.Query(e => e.ID.ToString() == key).Select().Any();

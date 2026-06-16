@@ -23,6 +23,7 @@ using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.SqlServer;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -492,7 +493,7 @@ Model?.emr_prescription_treatment
             }
             return objResponse;
         }
-        public string WorkingHours(DateTime? TimeIn, decimal? DoctorId)
+           public string WorkingHours(DateTime? TimeIn, decimal? DoctorId)
         {
             var slotTime = _adm_userService.Queryable().Where(a => a.ID == DoctorId).FirstOrDefault().SlotTime;
             var aaa = slotTime.Value.Minutes;

@@ -75,6 +75,7 @@ export class emr_Appointment {
     PrimaryDescription: string;
     SecondaryDescription: string;
     IsExistFollowUp: boolean;
+    IsPrscription: boolean;
 }
 export class emr_document {
     ID: number;
@@ -123,7 +124,8 @@ export class patientInfo {
     IsVCObtained: boolean;
     CurrentTime: Date;
     RefillNo: string;
-    NoVisit: string;    
+    NoVisit: string;
+    IsPrscription: boolean = false;
     BrandDescription: string;
     BrandImage: string;
     MrNo: string;
@@ -146,7 +148,8 @@ export class DoctorInfo {
     safeHeaderDescriptionUrdu!: SafeHtml;
     BrandDescription: string;
     BrandImage: string;
-    DrugMode:string;
+    DrugMode: string;
+    Instruction: string;
 
 }
 export class InvoiceCompanyInfo {

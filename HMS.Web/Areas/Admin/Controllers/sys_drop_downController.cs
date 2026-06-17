@@ -7,6 +7,7 @@ using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -43,9 +44,14 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             var objResponse = new ResponseInfo();
             try
             {
+                decimal CompanyID = Request.CompanyID();
                 List<sys_drop_down_value> dropdownValues = new List<sys_drop_down_value>();
                 var Ids = DropdownIds.Split(',').Select(s => int.Parse(s)).ToArray();
-                dropdownValues = _sys_drop_down_valueService.Queryable().Where(e => Ids.Contains(e.DropDownID)).ToList();
+                dropdownValues = _sys_drop_down_valueService.Queryable().Where(e =>
+                  (
+            e.CompanyID == CompanyID ||
+            e.CompanyID == null
+        ) && Ids.Contains(e.DropDownID)).ToList();
                 if (dropdownValues != null)
                 {
                     objResponse.IsSuccess = true;
@@ -291,8 +297,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
         public List<DropDownValueDto> GetValuesList(sys_drop_down_value Model)
         {
+            decimal CompanyID = Request.CompanyID();
             return _sys_drop_down_valueService.Queryable()
-                             .Where(x => x.DropDownID == Model.DropDownID && (Model.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID))
+                             .Where(x => (
+    x.CompanyID == CompanyID ||
+    x.CompanyID == null
+) && x.DropDownID == Model.DropDownID && (Model.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID))
                              .Select(x => new DropDownValueDto
                              {
                                  ID = x.ID,
@@ -325,13 +335,18 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
         public object GetdropdowValues(sys_drop_down_value model)
         {
+            decimal CompanyID = Request.CompanyID();
             var AllDTList = _sys_drop_down_valueService.Queryable()
-                  .Where(x => x.DropDownID == model.DropDownID).Select(z => new { 
-                  z.ID,
-                  z.Value,
-                  SystemGenerated= z.SystemGenerated==true?"Yes":"No",
-                  z.DependedDropDownID,
-                  z.DependedDropDownValueID                 
+                  .Where(x => (
+            x.CompanyID == CompanyID ||
+            x.CompanyID == null
+        ) && x.DropDownID == model.DropDownID).Select(z => new
+                  {
+                      z.ID,
+                      z.Value,
+                      SystemGenerated = z.SystemGenerated == true ? "Yes" : "No",
+                      z.DependedDropDownID,
+                      z.DependedDropDownValueID
                   }).ToList();
 
             var PaginationList = new List<sys_drop_down_value>();
@@ -369,7 +384,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 var CompanyID = Request.CompanyID();
                 objResponse.ResultSet = _sys_drop_down_valueService.Queryable()
-                  .Where(x => x.DropDownID == model.DropDownID && (model.DependedDropDownValueID == null || x.DependedDropDownValueID == model.DependedDropDownValueID))
+                  .Where(x =>
+                            (
+    x.CompanyID == CompanyID ||
+    x.CompanyID == null
+) && x.DropDownID == model.DropDownID && (model.DependedDropDownValueID == null || x.DependedDropDownValueID == model.DependedDropDownValueID))
                   .ToList();
             }
             catch (Exception ex)

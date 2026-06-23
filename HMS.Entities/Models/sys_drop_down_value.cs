@@ -59,6 +59,11 @@ namespace HMS.Entities.Models
             this.adm_reminder_dt1 = new List<adm_reminder_dt>();
             this.adm_generic = new List<adm_generic>();
             this.adm_generic1 = new List<adm_generic>();
+            this.lab_catalog = new List<lab_catalog>();
+            this.lab_catalog1 = new List<lab_catalog>();
+            this.lab_parameter = new List<lab_parameter>();
+            this.lab_patient_test = new List<lab_patient_test>();
+            this.lab_patient_test1 = new List<lab_patient_test>();
         }
         public int ID { get; set; }
         public int DropDownID { get; set; }
@@ -123,6 +128,11 @@ namespace HMS.Entities.Models
         public virtual ICollection<adm_generic> adm_generic { get; set; }
         public virtual ICollection<adm_generic> adm_generic1 { get; set; }
         public virtual ICollection<ipd_procedure_expense> ipd_procedure_expense { get; set; }
+        public virtual ICollection<lab_catalog> lab_catalog { get; set; }
+        public virtual ICollection<lab_catalog> lab_catalog1 { get; set; }
+        public virtual ICollection<lab_parameter> lab_parameter { get; set; }
+        public virtual ICollection<lab_patient_test> lab_patient_test { get; set; }
+        public virtual ICollection<lab_patient_test> lab_patient_test1 { get; set; }
 
     }
 }

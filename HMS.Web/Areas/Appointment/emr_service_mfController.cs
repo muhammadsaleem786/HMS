@@ -240,7 +240,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
+                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 2).ToList();
                 objResponse.ResultSet = new
                 {
                     GenderList = GenderType
@@ -436,7 +436,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var Speciality = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 24).Select(z => new
+                var Speciality = _sys_drop_down_valueService.Queryable().Where(a => (a.CompanyID == null || a.CompanyID == CompanyID) && a.DropDownID == 24).Select(z => new
                 {
                     z.ID,
                     z.Value,

@@ -14,6 +14,8 @@ namespace HMS.Entities.Models
             this.ipd_admission = new List<ipd_admission>();
             this.pur_sale_mf = new List<pur_sale_mf>();
             this.pur_sale_hold_mf = new List<pur_sale_hold_mf>();
+            this.lab_patient_test = new List<lab_patient_test>();
+            this.lab_result_mf = new List<lab_result_mf>();
         }
 
         public decimal ID { get; set; }
@@ -71,11 +73,13 @@ namespace HMS.Entities.Models
         public virtual sys_drop_down_value sys_drop_down_value { get; set; }
         public virtual sys_drop_down_value sys_drop_down_value1 { get; set; }
         public virtual sys_drop_down_value sys_drop_down_value2 { get; set; }
+        public virtual ICollection<lab_result_mf> lab_result_mf { get; set; }
         public virtual ICollection<emr_patient_bill> emr_patient_bill { get; set; }
         public virtual ICollection<ipd_admission> ipd_admission { get; set; }
         public virtual ICollection<pur_sale_mf> pur_sale_mf { get; set; }
         public virtual ICollection<pur_sale_hold_mf> pur_sale_hold_mf { get; set; }
         public virtual adm_reminder_mf adm_reminder_mf { get; set; }
-
+        public virtual ICollection<lab_patient_test> lab_patient_test { get; set; }
+    
     }
 }

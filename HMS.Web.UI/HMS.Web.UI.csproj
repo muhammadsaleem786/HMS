@@ -242,6 +242,7 @@
     <Content Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Lab\LabDashboardComponent.html" />
+    <Content Include="src\app\theme\Module\setup\Setting\Catalog\CatalogComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\ApplicationUser\ProfileUserComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Setting\ApplicationUser\ApplicationUserComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Setting\ApplicationUser\ApplicationUserComponentList.html" />
@@ -530,8 +531,12 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Lab\CatalogModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Lab\LabDashboardComponent.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Lab\LabDashboardService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Lab\LabService.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Catalog\CatalogComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Catalog\CatalogModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Catalog\CatalogService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\AdverseDrug\AdverseDrugModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\ApplicationUser\ProfileUserComponentForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\AppointmentComponentList.ts" />

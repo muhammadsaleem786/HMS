@@ -816,7 +816,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _service.PaginationWithGroupParm(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 64).Select(z => new
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 64).Select(z => new
                 {
                     z.ID,
                     z.Value,
@@ -846,7 +846,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _inv_stockService.ExpirePagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 64).Select(z => new
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 64).Select(z => new
                 {
                     z.ID,
                     z.Value,
@@ -874,7 +874,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _inv_stockService.RestockPagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 64).Select(z => new
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 64).Select(z => new
                 {
                     z.ID,
                     z.Value,

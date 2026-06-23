@@ -224,7 +224,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
+                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 2).ToList();
                 objResponse.ResultSet = new
                 {
                     GenderList = GenderType
@@ -315,7 +315,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _service.Pagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 20).Select(z => new
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 20).Select(z => new
                 {
                     z.ID,
                     z.Value,
@@ -460,7 +460,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _service.PaginationWithParm(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 20).Select(z => new
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 20).Select(z => new
                 {
                     z.ID,
                     z.Value,

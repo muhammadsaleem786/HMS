@@ -337,7 +337,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 64 && e.Value.Contains(term)).Select(z => new
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 64 && e.Value.Contains(term)).Select(z => new
                 {
                     value = z.ID,
                     label = z.Value,

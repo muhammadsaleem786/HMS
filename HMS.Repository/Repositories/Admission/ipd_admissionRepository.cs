@@ -204,7 +204,7 @@ namespace HMS.Repository.Repositories.Admission
                 if (IgnorePaging)
                 {
 
-                    objResult.DataList = filteredData
+                    objResult.DataList = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
                         .Select(s => new
                         {
                             s.ID,

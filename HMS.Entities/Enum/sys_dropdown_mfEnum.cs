@@ -42,6 +42,11 @@ namespace HMS.Entities.Enum
         Module = 6,
         Screen = 7,
         CompanyType = 9,
+        LabCategoryDropdownId=68,
+        LabUnitDropdownId=69,
+        LabPriorityDropdownId = 70,
+        LabSampleDropdownId=71,
+        LabStatusDropdownId=72,
         //Employee
         AccrualFrequency = 37,
         PayType = 38,

@@ -168,6 +168,11 @@
     <Compile Include="Repositories\Items\pur_Invoice_mfRepository.cs" />
     <Compile Include="Repositories\Items\pur_vendorRepository.cs" />
     <Compile Include="Repositories\Items\adm_itemRepository.cs" />
+    <Compile Include="Repositories\Lab\lab_result_dtRepository.cs" />
+    <Compile Include="Repositories\Lab\lab_result_mfRepository.cs" />
+    <Compile Include="Repositories\Lab\lab_patient_testRepository.cs" />
+    <Compile Include="Repositories\Lab\lab_parameterRepository.cs" />
+    <Compile Include="Repositories\Lab\lab_catalogRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Frameworks\Repository.Pattern.Ef6\Repository.Pattern.Ef6.csproj">

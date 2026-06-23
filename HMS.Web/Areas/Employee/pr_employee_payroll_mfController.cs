@@ -234,7 +234,7 @@ namespace HMS.Web.API.Areas.Employee
                     AllowancesList = _pr_allowanceService.Queryable().Where(e => e.CompanyID == CompanyID).ToList(),
                     ContributionList = _pr_deduction_contributionService.Queryable().Where(e => e.CompanyID == CompanyID && e.Category == "C").ToList(),
                     DeductionList = _pr_deduction_contributionService.Queryable().Where(e => e.CompanyID == CompanyID && e.Category == "D").ToList(),
-                    AllowanceCategoryTypes = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory).ToList(),
+                    AllowanceCategoryTypes = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory).ToList(),
                 };
             }
             catch (Exception ex)

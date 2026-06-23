@@ -1,0 +1,728 @@
+﻿using HMS.Entities.CustomModel;
+using HMS.Entities.Enum;
+using HMS.Entities.Models;
+using HMS.Service;
+using HMS.Service.Services.Admin;
+using HMS.Service.Services.Appointment;
+using HMS.Service.Services.Lab;
+using HMS.Web.API.Common;
+using HMS.Web.API.Filters;
+using HMS.Web.API.Interface;
+using NPOI.SS.Formula.Functions;
+using Repository.Pattern.Infrastructure;
+using Repository.Pattern.UnitOfWork;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Data.Entity;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.Results;
+using System.Web.UI.WebControls;
+using static NPOI.HSSF.Util.HSSFColor;
+
+namespace HMS.Web.API.Areas.Lab.Controllers
+{
+    [JwtAuthentication]
+    public class lab_patient_testController : ApiController, IERPAPIInterface<lab_patient_test>, IDisposable
+    {
+        private readonly Ilab_patient_testService _service;
+        private readonly Ilab_result_mfService _lab_result_mfService;
+        private readonly Ilab_result_dtService _lab_result_dtService;
+        private readonly Iemr_patientService _emr_patientService;
+        private readonly Ilab_catalogService _lab_catalogService;
+        private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
+        private readonly IStoredProcedureService _procedureService;
+        private readonly Iadm_role_dtService _adm_role_dtService;
+        private readonly IUnitOfWorkAsync _unitOfWorkAsync;
+        private readonly Iadm_user_companyService _adm_user_companyService;
+        public lab_patient_testController(IUnitOfWorkAsync unitOfWorkAsync, Ilab_patient_testService Service,
+            Isys_drop_down_valueService sys_drop_down_valueService, Iadm_user_companyService adm_user_companyService,
+            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_patientService emr_patientService, Ilab_catalogService lab_catalogService, Ilab_result_mfService lab_result_mfService, Ilab_result_dtService lab_result_dtService)
+        {
+            _unitOfWorkAsync = unitOfWorkAsync;
+            _sys_drop_down_valueService = sys_drop_down_valueService;
+            _service = Service;
+            _adm_user_companyService = adm_user_companyService;
+            _procedureService = ProcedureService;
+            _adm_role_dtService = adm_role_dtService;
+            _emr_patientService = emr_patientService;
+            _lab_catalogService = lab_catalogService;
+            _lab_result_mfService = lab_result_mfService;
+            _lab_result_dtService = lab_result_dtService;
+        }
+
+        public async Task<ResponseInfo> Save(lab_patient_test Model)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = MessageStatement.BadRequest;
+                    return objResponse;
+                }
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+
+                decimal ID = 1;
+                if (_service.Queryable().Count() > 0)
+                    ID = _service.Queryable().Max(e => e.ID) + 1;
+
+                var catalogIds = Model.CatalogIds.Split(',')
+                            .Select(x => Convert.ToDecimal(x))
+                            .ToList();
+
+                var catalogs = _lab_catalogService.Queryable()
+                      .Where(x => catalogIds.Contains(x.ID) && x.CompanyId == CompanyID)
+                      .ToList();
+                string prefix = $"TST-{DateTime.Now.Year}-";
+
+                var existingSerials = _service.Queryable()
+          .Where(x => x.CompanyId == CompanyID && x.SerialNo.StartsWith(prefix))
+          .Select(x => x.SerialNo)
+          .ToList();
+                var lastNumber = existingSerials
+          .Select(x =>
+          {
+              var parts = x.Split('-');
+              return int.TryParse(parts.Last(), out int n) ? n : 0;
+          })
+          .DefaultIfEmpty(0)
+          .Max();
+
+
+                var sampleSerialMap = catalogs
+           .GroupBy(x => x.SampleId)
+           .ToDictionary(
+               g => g.Key,
+               g => $"TST-{DateTime.Now.Year}-{(++lastNumber):D3}"
+           );
+
+                var entities = new List<lab_patient_test>();
+
+                foreach (var catalog in catalogs)
+                {
+                    entities.Add(new lab_patient_test
+                    {
+                        ID = ID++,
+                        SerialNo = sampleSerialMap[catalog.SampleId],
+                        PriorityDropdownId = Model.PriorityId != 0
+                   ? (int)sys_dropdown_mfEnum.LabPriorityDropdownId
+                   : 0,
+                        PriorityId = Model.PriorityId,
+                        StatusId = 1,
+                        StatusDropdownId = (int)sys_dropdown_mfEnum.LabStatusDropdownId,
+                        PatientId = Model.PatientId,
+                        Age = Model.Age,
+                        ClinicalNotes = Model.ClinicalNotes,
+                        CatalogId = catalog.ID,
+                        CompanyId = CompanyID,
+                        CreatedBy = UserID,
+                        CreatedDate = DateTime.Now,
+                        ModifiedBy = UserID,
+                        ModifiedDate = DateTime.Now,
+                        ObjectState = ObjectState.Added
+                    });
+                }
+                _service.InsertRange(entities);
+                try
+                {
+                    await _unitOfWorkAsync.SaveChangesAsync();
+                    objResponse.Message = MessageStatement.Save;
+                    objResponse.IsSuccess = true;
+
+                }
+                catch (DbUpdateException)
+                {
+                    if (ModelExists(Model.ID.ToString()))
+                    {
+                        objResponse.IsSuccess = false;
+                        objResponse.ErrorMessage = MessageStatement.Conflict;
+                        return objResponse;
+                    }
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        public ResponseInfo GetList()
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal companyID = Request.CompanyID();
+                objResponse.ResultSet = _service.Queryable().Where(x => x.CompanyId == companyID).ToList();
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("PrioritySearch")]
+        public async Task<ResponseInfo> PrioritySearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _sys_drop_down_valueService.Queryable().AsNoTracking().
+
+                    Where(a =>
+                     (a.DropDownID == 70) &&
+        (
+            a.CompanyID == CompanyID ||
+            a.CompanyID == null
+        ) && a.Value.StartsWith(term))
+
+                    .Select(z => new
+                    {
+                        value = z.ID,
+                        label = z.Value,
+
+                    }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("TestSearch")]
+        public async Task<ResponseInfo> TestSearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _service.Queryable().AsNoTracking().
+                    Where(a => a.CompanyId == CompanyID && a.SerialNo.StartsWith(term))
+                    .Select(z => new
+                    {
+                        value = z.ID,
+                        label = z.SerialNo,
+                    }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("SearchPatient")]
+        public async Task<ResponseInfo> SearchPatient(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var PatientInfo = await _emr_patientService.Queryable()
+            .AsNoTracking()
+            .Where(a => a.CompanyId == CompanyID && (a.Mobile.Contains(term)))
+            .Select(z => new
+            {
+                value = z.ID,
+                label = z.PatientName,
+                PatientName = z.PatientName,
+                Phone = z.Mobile,
+                CNIC = z.CNIC,
+                Age = z.Age,
+                Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
+                MRNO = z.MRNO
+            }).Take(10)
+            .ToListAsync();
+                objResponse.ResultSet = new
+                {
+                    PatientInfo = PatientInfo
+                };
+                objResponse.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpGet]
+        [ActionName("Load")]
+        public ResponseInfo Load()
+        {
+
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                var result = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 70).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+
+        private bool ModelExists(string key)
+        {
+            return _service.Query(e => e.ID.ToString() == key).Select().Any();
+        }
+        [HttpGet]
+        [ActionName("GetById")]
+        public ResponseInfo GetById(string Id)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var CompanyID = Request.CompanyID();
+                decimal id = Convert.ToDecimal(Id);
+                object result = null;
+                var existResult = _lab_result_mfService.Queryable().Where(x => x.CompanyId == CompanyID && x.PatientTestId == id)
+                     .Select(x => new
+                     {
+                         testId = x.lab_patient_test.ID,
+                         ID = x.ID,
+                         serialNo = x.lab_patient_test.SerialNo,
+                         patientid = x.PatientId,
+                         catalogId = x.CatalogId,
+                         catalogName = x.lab_catalog.Name,
+                         department = x.lab_catalog.sys_drop_down_value.Value,
+                         patientName = x.emr_patient_mf.PatientName,
+                         patientMrNo = x.emr_patient_mf.MRNO,
+                         sampleType = x.lab_catalog.sys_drop_down_value1.Value,
+                         priority = x.lab_patient_test.sys_drop_down_value.Value,
+                         comment = x.Comment,
+                         Parameter = x.lab_result_dt.Select(z => new
+                         {
+                             parmId = z.ID,
+                             name = z.lab_parameter.ParameterName,
+                             unit = z.lab_parameter.sys_drop_down_value.Value,
+                             refernce = z.lab_parameter.ReferenceRange,
+                             description = z.lab_parameter.Description,
+                             normalMin = z.lab_parameter.NormalMinimum,
+                             normalMax = z.lab_parameter.NormalMaximum,
+                             criticalLow = z.lab_parameter.CriticalLow,
+                             criticalHigh = z.lab_parameter.CriticalHigh,
+                             result = z.Result,
+                             status = z.Status,
+                             comment = z.Comment
+                         }).ToList(),
+                     }).FirstOrDefault();
+
+                if (existResult == null)
+                {
+                    result = _service.Queryable()
+                .Where(x => x.CompanyId == CompanyID && x.ID == id)
+                .Select(x => new
+                {
+                    ID = 0,
+                    testId = x.ID,
+                    serialNo = x.SerialNo,
+                    patientid = x.PatientId,
+                    catalogId = x.CatalogId,
+                    catalogName = x.lab_catalog.Name,
+                    department = x.lab_catalog.sys_drop_down_value.Value,
+                    patientName = x.emr_patient_mf.PatientName,
+                    patientMrNo = x.emr_patient_mf.MRNO,
+                    sampleType = x.lab_catalog.sys_drop_down_value1.Value,
+                    priority = x.sys_drop_down_value.Value,
+                    comment = string.Empty,
+                    Parameter = x.lab_catalog.lab_parameter.Select(z => new
+                    {
+                        parmId = z.ID,
+                        name = z.ParameterName,
+                        unit = z.sys_drop_down_value.Value,
+                        refernce = z.ReferenceRange,
+                        description = z.Description,
+                        normalMin = z.NormalMinimum,
+                        normalMax = z.NormalMaximum,
+                        criticalLow = z.CriticalLow,
+                        criticalHigh = z.CriticalHigh,
+                        result = string.Empty,
+                        status = string.Empty,
+                        comment = string.Empty,
+                    }).ToList(),
+
+                })
+                .FirstOrDefault();
+                }
+                else
+                {
+                    result = existResult;
+                }
+
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [HttpGet]
+        [ActionName("GetPrintById")]
+        public ResponseInfo GetPrintById(string Id, string serialNo = null)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal parsedId = 0;
+                decimal.TryParse(Id, out parsedId);
+
+                var CompanyID = Request.CompanyID();
+                decimal id = Convert.ToDecimal(Id);
+                var result = _service.Queryable()
+            .Where(x => x.CompanyId == CompanyID)
+            .Where(x => x.ID == parsedId || x.SerialNo == serialNo)
+            .GroupBy(x => new
+            {
+                x.SerialNo,
+                x.emr_patient_mf.PatientName,
+                x.emr_patient_mf.MRNO,
+                x.lab_catalog.sys_drop_down_value1.Value,
+                priority = x.sys_drop_down_value.Value,
+                x.CreatedDate,
+            })
+            .Select(g => new
+            {
+                Header = new
+                {
+                    serialNo = g.Key.SerialNo,
+                    patientName = g.Key.PatientName,
+                    patientCode = g.Key.MRNO,
+                    sampleType = g.Key.Value,
+                    priority = g.Key.priority,
+                    orderedDate=g.Key.CreatedDate,
+                    Details = g.Select(d => new
+                    {
+                        testName = d.lab_catalog.Name
+                    }).ToList()
+                }
+            })
+            .FirstOrDefault();
+
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        public ResponseInfo GetById(string Id, int NextPreviousIndex)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var CompanyID = Request.CompanyID();
+                objResponse.ResultSet = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID.ToString() == Id).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+
+        [HttpGet]
+        [ActionName("Pagination")]
+        public PaginationResult Pagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, bool IgnorePaging = false)
+        {
+            var objResult = new PaginationResult();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                objResult = _service.Pagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, IgnorePaging);
+                var ids = new int[] { 68, 71, 72 };
+                objResult.OtherData3Model = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace.Error(ex);
+            }
+            return objResult;
+        }
+
+        [HttpGet]
+        [ActionName("ExportData")]
+        public ResponseInfo ExportData(int ExportType, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var ObjList = Pagination(0, 0, VisibleColumnInfo, SortName, SortOrder, SearchText, true);
+                objResponse.FilePath = Documents.ExportWithType(ExportType, VisibleColumnInfo, ObjList.DataList);
+
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [HttpPut]
+        [HttpGet]
+        [ActionName("Update")]
+        public async Task<ResponseInfo> Update(lab_patient_test Model)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = MessageStatement.BadRequest;
+                    return objResponse;
+                }
+                if (Model.PriorityId != 0)
+                {
+                    Model.PriorityDropdownId = (int)sys_dropdown_mfEnum.LabPriorityDropdownId;
+                }
+                if (Model.StatusId != 0)
+                {
+                    Model.StatusDropdownId = (int)sys_dropdown_mfEnum.LabStatusDropdownId;
+                }
+                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedDate = Request.DateTimes();
+                Model.ObjectState = ObjectState.Modified;
+                _service.Update(Model);
+                try
+                {
+                    await _unitOfWorkAsync.SaveChangesAsync();
+                    objResponse.Message = MessageStatement.Update;
+                    objResponse.IsSuccess = true;
+                }
+                catch (DbUpdateException)
+                {
+                    if (!ModelExists(Model.ID.ToString()))
+                    {
+                        objResponse.IsSuccess = false;
+                        objResponse.ErrorMessage = MessageStatement.NotFound;
+                        return objResponse;
+                    }
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [HttpPut]
+        [HttpGet]
+        [ActionName("UpdateStatus")]
+        public async Task<ResponseInfo> UpdateStatus(lab_patient_test model)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = MessageStatement.BadRequest;
+                    return objResponse;
+                }
+                var CompanyID = Request.CompanyID();
+                var Model = _service.Queryable().Where(e => e.ID == model.ID && e.CompanyId == CompanyID).FirstOrDefault();
+                if (Model == null)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = MessageStatement.NotFound;
+                    return objResponse;
+                }
+                ;
+                Model.StatusId = model.StatusId;
+                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedDate = Request.DateTimes();
+                Model.ObjectState = ObjectState.Modified;
+                _service.Update(Model);
+                try
+                {
+                    await _unitOfWorkAsync.SaveChangesAsync();
+                    objResponse.Message = MessageStatement.Update;
+                    objResponse.IsSuccess = true;
+                }
+                catch (DbUpdateException)
+                {
+                    if (!ModelExists(Model.ID.ToString()))
+                    {
+                        objResponse.IsSuccess = false;
+                        objResponse.ErrorMessage = MessageStatement.NotFound;
+                        return objResponse;
+                    }
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+
+
+        [HttpGet]
+        [ActionName("Delete")]
+        public async Task<ResponseInfo> Delete(string Id)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal[] IdList = Id.Split(',').Select(decimal.Parse).ToArray();
+
+                List<lab_patient_test> Models = _service.Queryable().Where(e => e.CompanyId == CompanyID && IdList.Contains(e.ID)).ToList();
+
+                if (Models.Count() == 0)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = MessageStatement.NotFound;
+                    return objResponse;
+                }
+
+                foreach (var Model in Models)
+                {
+                    Model.ObjectState = ObjectState.Deleted;
+                    _service.Delete(Model);
+                }
+                await _unitOfWorkAsync.SaveChangesAsync();
+                objResponse.Message = MessageStatement.Delete;
+
+            }
+            catch (Exception ex)
+            {
+                string Message = "";
+                objResponse.IsSuccess = false;
+
+                if (ex.InnerException == null)
+                    Message = ex.Message;
+                else if (ex.InnerException.InnerException == null)
+                    Message = ex.InnerException.Message;
+                else
+                    Message = ex.InnerException.InnerException.Message;
+
+                if (Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                    Message = MessageStatement.RelationExists;
+
+                objResponse.ErrorMessage = Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [ActionName("GetAllScreens")]
+        public ResponseInfo GetAllScreens()
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var AllScreen = _procedureService.GetAllScreen();
+                objResponse.ResultSet = _procedureService.GetAllScreen();
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _unitOfWorkAsync.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+        [HttpGet]
+        [ActionName("PaginationWithParm")]
+        public PaginationResult PaginationWithParm(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)
+        {
+            var objResult = new PaginationResult();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                objResult = _service.PaginationWithParm(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
+                var ids = new int[] { 68, 71, 72 };
+                objResult.OtherData3Model = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace.Error(ex);
+            }
+            return objResult;
+        }
+    }
+}

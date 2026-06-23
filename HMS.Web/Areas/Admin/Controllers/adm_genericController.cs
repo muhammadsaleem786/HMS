@@ -125,7 +125,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var result = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 24 || e.DropDownID == 67).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
+                var result = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 24 || e.DropDownID == 67).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
                 objResponse.ResultSet = new
                 {
                     result = result
@@ -154,7 +154,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                var dropdown = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 24 || e.DropDownID == 67).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
+                var dropdown = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 24 || e.DropDownID == 67).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
                 var result = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID.ToString() == Id).FirstOrDefault();
                 objResponse.ResultSet = new
                 {

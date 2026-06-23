@@ -166,6 +166,18 @@
                         <div class="row">
                             <div class="col-4 text-right">
                                 <label>
+                                    Brand
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="BrandSearch" (click)="LoadBrand()" formControlName="BrandId" [(ngModel)]="model.BrandName" class="form-control form-control-sm form-control-alternative" placeholder="Search Brand" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
                                     Formulation
                                 </label>
                             </div>

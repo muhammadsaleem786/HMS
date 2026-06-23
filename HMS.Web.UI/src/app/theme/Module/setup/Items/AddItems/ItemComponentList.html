@@ -12,7 +12,7 @@
                 </div>
                 <div class="col pl-0">
                     <div class="form-group">
-                        <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
+                        <select [(ngModel)]="selectedValue" (change)="Refresh()" class="form-control">
                             <option *ngFor="let item of CategoryList" [value]="item.ID">
                                 {{item.Value}}
                             </option>
@@ -21,9 +21,18 @@
                 </div>
                 <div class="col pl-0">
                     <div class="form-group">
-                        <select [(ngModel)]="selectedItemValue" (change)="getItemFilterData()" class="form-control">
+                        <select [(ngModel)]="selectedVandorValue" (change)="Refresh()" class="form-control">
                             <option *ngFor="let item of VendorList" [value]="item.ID">
                                 {{item.Name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col pl-0">
+                    <div class="form-group">
+                        <select [(ngModel)]="selectedBrandValue" (change)="Refresh()" class="form-control">
+                            <option *ngFor="let item of BrandList" [value]="item.ID">
+                                {{item.Value}}
                             </option>
                         </select>
                     </div>

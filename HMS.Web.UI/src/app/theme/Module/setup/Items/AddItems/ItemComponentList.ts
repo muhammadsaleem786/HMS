@@ -38,9 +38,11 @@ export class ItemComponentList {
     public RestockControlRights: any;
     public ExpireControlRights: any;
     selectedValue: string = "A";
-    selectedItemValue: string = "A";
+    selectedVandorValue: string = "A";
+    selectedBrandValue: string = "A";
     public CategoryList: any[] = [];
     public VendorList: any[] = [];
+    public BrandList: any[] = [];
     @Output() pageChange: EventEmitter<string> = new EventEmitter<string>();
     constructor(public _CommonService: CommonService, public loader: LoaderService
         , public _router: Router, public _AsidebarService: AsidebarService, public _ItemService: ItemService,
@@ -98,39 +100,26 @@ export class ItemComponentList {
     Refresh() {
         this.loader.ShowLoader();
         this.PModel.VisibleColumnInfo = "Name#Name,Group#Group,Code#Code,CostPrice#CostPrice,Unit#Unit,Stock#Stock,Status#Status";
+        const category = this.selectedValue !== 'A' ? this.selectedValue : '';
+        const vandor = this.selectedVandorValue !== 'A' ? this.selectedVandorValue : '';
+        const brand = this.selectedBrandValue !== 'A' ? this.selectedBrandValue : '';
+        this.PModel.FilterID = `${category},${vandor},${brand}`;
         this._ItemService
             .GetItemByGroupList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PModel.FilterID, this.PModel.VisibleFilter).then(m => {
                 this.pagesRange = [];
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.ItemList = m.DataList;
-                this.CategoryList = m.OtherDataModel;
-                this.VendorList = m.OtherData2Model;
+                this.CategoryList = m.OtherDataModel.filter(a => a.DropDownID == 64);
+                this.BrandList = m.OtherDataModel.filter(a => a.DropDownID == 73);
+                this.BrandList.push({ "ID": "A", "Value": "All" });
+                this.VendorList = m.OtherData2Model;                
                 this.VendorList.push({ "ID": "A", "Name": "All" });
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
                 this.CategoryList.push({ "ID": "A", "Value": "All" });
                 this.loader.HideLoader();
             });
     }
-    getFilterData() {
-        if (this.selectedValue == "A") {
-            this.PModel.FilterID = "I,0";
-            this.PModel.VisibleFilter = false;
-        } else {
-            this.PModel.FilterID = "I," + this.selectedValue
-            this.PModel.VisibleFilter = false;
-        }
-        this.Refresh();
-    }
-    getItemFilterData() {
-        if (this.selectedItemValue == "A") {
-            this.PModel.FilterID = "A,0";
-            this.PModel.VisibleFilter = false;
-        } else {
-            this.PModel.FilterID = "V," + this.selectedItemValue
-            this.PModel.VisibleFilter = false;
-        }
-        this.Refresh();
-    }
+   
     GoBack(DefaultRoute) {
         this._router.navigate([DefaultRoute]);
     }

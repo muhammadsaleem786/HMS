@@ -72,6 +72,10 @@ export class ItemService {
         var data = { 'Id': Id };
         return this.http.Get(this.urlToApi + '/GetById', data).then(e => e);
     }
+    BrandSearch(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/BrandSearch', data).then(e => e);
+    }
     VendorSearch(term: string): Promise<any> {
         var data = { 'term': term };
         return this.http.Get(this.urlToApi + '/VendorSearch', data).then(e => e);

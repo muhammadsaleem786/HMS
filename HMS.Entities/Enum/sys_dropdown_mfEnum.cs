@@ -76,6 +76,7 @@ namespace HMS.Entities.Enum
         OutputType = 62,
         RouteType = 63,
         GroupDropDownId = 64,
+        BrandDropDownId = 73,
         TimeTypeDropDown = 65,
         SMSTypeDropDown = 66,
     }

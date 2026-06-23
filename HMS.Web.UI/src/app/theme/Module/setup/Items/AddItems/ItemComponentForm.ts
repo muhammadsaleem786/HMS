@@ -60,6 +60,7 @@ export class ItemComponentForm {
                         if (m.ResultSet != null) {
                             this.model = m.ResultSet.result;
                             this.model.VendorName = m.ResultSet.vendorName;
+                            this.model.BrandName = m.ResultSet.result.BrandName;
                             if (this.model.Image != null && this.model.Image != undefined && this.model.Image != "") {
                                 this.IsNewImage = true;
                                 this.getImageUrlName(this.model.Image);
@@ -129,6 +130,8 @@ export class ItemComponentForm {
             FormulationName: [''],
             CategoryName: [''],
             UnitName: [''],
+            BrandId: [''],
+            BrandName: [''],
         });
     }
     ShowInventory(event: any) {
@@ -194,6 +197,29 @@ export class ItemComponentForm {
                 $("#IsTrack").removeAttr("disabled");
         }
     }
+    LoadBrand() {
+        $("#BrandSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._ItemService.BrandSearch(request.term).then(m => {
+
+                    if (m.ResultSet.result.length == 0)
+                        $("#BrandSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 2,
+            select: (event, ui) => {
+                this.model.BrandId = ui.item.value;
+                this.model.BrandName = ui.item.label;
+
+                return ui.item.label;
+            }
+        });
+    }
+
     LoadVendor() {
         $("#VendorSearch").autocomplete({
             source: (request, response) => {
@@ -343,6 +369,7 @@ export class ItemComponentForm {
         this.LoadUnit();
         this.LoadCategory();
         this.LoadVendor();
+        this.LoadBrand();
         this.LoadFormulation();
     }
     IsNewImageEvent(FName) {

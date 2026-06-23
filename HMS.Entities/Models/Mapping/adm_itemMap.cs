@@ -65,6 +65,8 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.InstructionId).HasColumnName("InstructionId");
             this.Property(t => t.VendorId).HasColumnName("VendorId");
             this.Property(t => t.GenericId).HasColumnName("GenericId");
+            this.Property(t => t.BrandDropdownId).HasColumnName("BrandDropdownId");
+            this.Property(t => t.BrandId).HasColumnName("BrandId");
 
             // Relationships
             this.HasRequired(t => t.adm_company)
@@ -99,6 +101,10 @@ namespace HMS.Entities.Models.Mapping
             this.HasOptional(t => t.emr_instruction)
                .WithMany(t => t.adm_item)
                .HasForeignKey(d => new { d.InstructionId, d.CompanyId });
+
+            this.HasOptional(t => t.sys_drop_down_value4)
+             .WithMany(t => t.adm_item4)
+             .HasForeignKey(d => new { d.BrandId, d.BrandDropdownId });
         }
     }
 }

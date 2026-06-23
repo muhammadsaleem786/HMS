@@ -25,7 +25,8 @@
     action: string;
     VendorId: number;
     GenericId: number;
-
+    BrandId: number;
+    BrandName: string;
     GroupName: string;
     TypeName: string;
     VendorName: string;

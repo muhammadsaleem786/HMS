@@ -84,6 +84,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.CategoryDropDownID;
                 Model.ItemTypeDropDownID = (int)sys_dropdown_mfEnum.ItemTypeDropDownID;
                 Model.GroupDropDownId = (int)sys_dropdown_mfEnum.GroupDropDownId;
+                Model.BrandDropdownId = (int)sys_dropdown_mfEnum.BrandDropDownId;
                 Model.CreatedBy = Request.LoginID();
                 Model.CreatedDate = Request.DateTimes();
                 Model.ModifiedBy = Request.LoginID();
@@ -91,6 +92,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.ObjectState = ObjectState.Added;
                 Model.sys_drop_down_value = null;
                 Model.sys_drop_down_value1 = null;
+                Model.sys_drop_down_value4 = null;
                 _service.Insert(Model);
 
                 try
@@ -135,6 +137,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
+                Model.UnitDropDownID = (int)sys_dropdown_mfEnum.ItemUnitDropDownID;
+                Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.CategoryDropDownID;
+                Model.ItemTypeDropDownID = (int)sys_dropdown_mfEnum.ItemTypeDropDownID;
+                Model.GroupDropDownId = (int)sys_dropdown_mfEnum.GroupDropDownId;
+                Model.BrandDropdownId = (int)sys_dropdown_mfEnum.BrandDropDownId;
                 Model.Name = Model.Name;
                 Model.sys_drop_down_value = null;
                 Model.sys_drop_down_value1 = null;
@@ -303,6 +310,48 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             return objResponse;
 
         }
+
+        [HttpPost]
+        [HttpGet]
+        [ActionName("BrandSearch")]
+        public async Task<ResponseInfo> BrandSearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _sys_drop_down_valueService.Queryable().AsNoTracking().
+
+                    Where(a =>
+                     (a.DropDownID == 73) &&
+        (
+            a.CompanyID == CompanyID ||
+            a.CompanyID == null
+        ) && a.Value.StartsWith(term))
+
+                    .Select(z => new
+                    {
+                        value = z.ID,
+                        label = z.Value,
+
+                    }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+
+
         [HttpPost]
         [HttpGet]
         [ActionName("ItemTypeSearch")]
@@ -652,6 +701,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                          e.SaveStatus,
                          e.VendorId,
                          e.GenericId,
+                         e.BrandId,
                          e.POSItem,
                          e.CreatedBy,
                          e.CreatedDate,
@@ -662,7 +712,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                          TypeName = e.sys_drop_down_value2.Value,
                          FormulationName = e.adm_generic.GenericName,
                          CategoryName = e.sys_drop_down_value1.Value,
-                         UnitName = e.sys_drop_down_value.Value
+                         UnitName = e.sys_drop_down_value.Value,
+                         BrandName = e.sys_drop_down_value4.Value
                      })
     .FirstOrDefault();
                 var vendorName = _pur_vendorService.Queryable()
@@ -816,10 +867,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _service.PaginationWithGroupParm(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 64).Select(z => new
+                var ids = new int[] { 73, 64 };
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(z => new
                 {
                     z.ID,
                     z.Value,
+                    z.DropDownID
                 }).ToList();
 
                 var VendorList = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(z => new
@@ -846,10 +899,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _inv_stockService.ExpirePagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 64).Select(z => new
+                var ids = new int[] { 73, 64 };
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(z => new
                 {
                     z.ID,
                     z.Value,
+                    z.DropDownID
                 }).ToList();
                 var VendorList = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(z => new
                 {
@@ -874,10 +929,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _inv_stockService.RestockPagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 64).Select(z => new
+                var ids = new int[] { 73, 64 };
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(z => new
                 {
                     z.ID,
                     z.Value,
+                    z.DropDownID
                 }).ToList();
                 var VendorList = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(z => new
                 {

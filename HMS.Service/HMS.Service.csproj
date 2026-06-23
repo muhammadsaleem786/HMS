@@ -168,6 +168,11 @@
     <Compile Include="Services\Items\pur_invoice_mfService.cs" />
     <Compile Include="Services\Items\pur_vendorService.cs" />
     <Compile Include="Services\Items\adm_itemService.cs" />
+    <Compile Include="Services\Lab\lab_result_dtService.cs" />
+    <Compile Include="Services\Lab\lab_result_mfService.cs" />
+    <Compile Include="Services\Lab\lab_patient_testService.cs" />
+    <Compile Include="Services\Lab\lab_parameterService.cs" />
+    <Compile Include="Services\Lab\lab_catalogService.cs" />
     <Compile Include="SmsService.cs" />
     <Compile Include="StoredProcedureService.cs" />
   </ItemGroup>

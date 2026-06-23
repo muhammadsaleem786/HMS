@@ -14,7 +14,7 @@ namespace HMS.Entities.Models
         public decimal CompanyId { get; set; }
         public decimal ItemID { get; set; }
         public decimal Quantity { get; set; }
-        public Nullable<int> BatchSarialNumber { get; set; }
+        public string BatchSarialNumber { get; set; }
         public Nullable<DateTime> ExpiredWarrantyDate { get; set; }
         public decimal CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }

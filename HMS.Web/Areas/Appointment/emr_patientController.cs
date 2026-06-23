@@ -490,7 +490,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
+                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 2).ToList();
                 objResponse.ResultSet = new
                 {
                     GenderList = GenderType
@@ -515,7 +515,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 DateTime todayDate = Convert.ToDateTime(date);
                 int? stid = Convert.ToInt32(StatusId);
                 int userid = Convert.ToInt32(Request.LoginID());
-                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
+                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 2).ToList();
 
                 var AppointmentList = _emr_appointment_mfService.Queryable().Where(a => a.CompanyId == CompanyID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(todayDate))
                    .Include(a => a.adm_user_mf2).Include(a => a.emr_patient_mf).Select(z => new
@@ -621,7 +621,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var MedicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID).Select(a => new { Id = a.ID, Medicine = a.Medicine }).ToList();
                 var ClinicList = _adm_user_companyService.Queryable()
                             .Where(e => e.UserID == userid).Include(x => x.adm_company).Select(x => new { x.CompanyID, x.adm_company.CompanyName }).ToList();
-                var BloodList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 17).ToList();
+                var BloodList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 17).ToList();
                 var ServiceType = _emr_service_mfService.Queryable().Where(e => e.CompanyId == CompanyID && e.ServiceName == "Consultation")
                     .Select(a => new { a.ID, a.ServiceName, a.Price }).FirstOrDefault();
 
@@ -663,7 +663,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal CompanyID = Request.CompanyID();
                 DateTime todayDate = Convert.ToDateTime(date);
                 int? stid = Convert.ToInt32(StatusId);
-                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
+                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 2).ToList();
 
                 var AppointmentList = _emr_appointment_mfService.Queryable().Where(a => a.CompanyId == CompanyID && DbFunctions.TruncateTime(a.AppointmentDate) == DbFunctions.TruncateTime(todayDate))
                    .Include(a => a.adm_user_mf2).Include(a => a.emr_patient_mf).Select(z => new
@@ -830,7 +830,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 DateTime tdayDate = Convert.ToDateTime(tdate);
                 int? stid = Convert.ToInt32(StatusId);
                 decimal UserID = Request.LoginID();
-                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
+                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 2).ToList();
 
                 var LIST = AppointmentInfo(CompanyID, stid, fdayDate, tdayDate);
 

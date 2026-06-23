@@ -524,7 +524,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                     ID = _inv_stockService.Queryable().Max(e => e.ID) + 1;
                                 inv_Stock.ID = ID;
                                 inv_Stock.CompanyId = CompanyID;
-                                inv_Stock.BatchSarialNumber = item.BatchSarialNumber ?? 0;
+                                inv_Stock.BatchSarialNumber = item.BatchSarialNumber ?? "0";
                                 inv_Stock.ExpiredWarrantyDate = item.ExpiredWarrantyDate ?? DateTime.MinValue;
                                 inv_Stock.ItemID = item.ItemID;
                                 inv_Stock.Quantity = Convert.ToDecimal(item.Quantity);

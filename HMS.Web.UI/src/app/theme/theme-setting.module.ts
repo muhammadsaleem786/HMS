@@ -30,6 +30,9 @@ import { ReminderComponentForm } from '../theme/Module/setup/Setting/Reminder/Re
 import { TemplateComponentList } from '../theme/Module/setup/Setting/Template/TemplateComponentList';
 import { SessionComponentList } from '../theme/Module/setup/Setting/UserSession/SessionComponentList';
 
+import { CatalogComponentList } from '../theme/Module/setup/Setting/Catalog/CatalogComponentList';
+
+
 import { DeathRecordComponentForm } from '../theme/Module/setup/Setting/DeathRecord/DeathRecordComponentForm';
 import { DeathRecordComponentList } from '../theme/Module/setup/Setting/DeathRecord/DeathRecordComponentList';
 
@@ -139,6 +142,8 @@ const routes: Routes = [
     { path: 'AdverseDrug/saveAdverseDrug', component: AdverseDrugComponentForm, canActivate: [AuthGuard] },
 
 
+    { path: 'Catalog', component: CatalogComponentList, canActivate: [AuthGuard] },
+   
     { path: 'EquipmentMaintenance', component: EquipmentMaintenanceComponentList, canActivate: [AuthGuard] },
     { path: 'EquipmentMaintenance/saveEquipmentMaintenance:id', component: EquipmentMaintenanceComponentForm, canActivate: [AuthGuard] },
     { path: 'EquipmentMaintenance/saveEquipmentMaintenance', component: EquipmentMaintenanceComponentForm, canActivate: [AuthGuard] },
@@ -226,7 +231,7 @@ const routes: Routes = [
         LocationsComponentList, LocationsComponentForm, holidayComponentList, holidayComponentForm,
         //end
         //setting module
-        EventRegisterComponentList, EventRegisterComponentForm, EquipmentMaintenanceComponentList, EquipmentMaintenanceComponentForm, AdverseDrugComponentList, AdverseDrugComponentForm, DeathRecordComponentForm, DeathRecordComponentList, MedicineInstructionComponentList, ObservationComponentList, ComplaintComponentList, GenericComponentList, InvestigationComponentList, DiagnosComponentList, DropDownComponentList,
+        CatalogComponentList, EventRegisterComponentList, EventRegisterComponentForm, EquipmentMaintenanceComponentList, EquipmentMaintenanceComponentForm, AdverseDrugComponentList, AdverseDrugComponentForm, DeathRecordComponentForm, DeathRecordComponentList, MedicineInstructionComponentList, ObservationComponentList, ComplaintComponentList, GenericComponentList, InvestigationComponentList, DiagnosComponentList, DropDownComponentList,
         ApplicationUserComponentList, ApplicationUserComponentForm, MedicineComponentList, MedicineComponentForm, CompanyComponentForm, UserRoleComponentList
         , ProfileUserComponentForm, ServiceComponentList, ServiceComponentForm, UserShareComponentList, UserShareComponentForm,
         UserRoleComponentForm, SessionComponentList, ReminderComponentList, TemplateComponentList, ReminderComponentForm,

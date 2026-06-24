@@ -81,8 +81,10 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 var catalogs = _lab_catalogService.Queryable()
                       .Where(x => catalogIds.Contains(x.ID) && x.CompanyId == CompanyID)
                       .ToList();
-                string prefix = $"TST-{DateTime.Now.Year}-";
 
+                var (serialNo, invoiceNo) = await GenerateNumbersAsync(CompanyID);
+
+                string prefix = $"SMP-{DateTime.Now:yy}-";
                 var existingSerials = _service.Queryable()
           .Where(x => x.CompanyId == CompanyID && x.SerialNo.StartsWith(prefix))
           .Select(x => x.SerialNo)
@@ -101,7 +103,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
            .GroupBy(x => x.SampleId)
            .ToDictionary(
                g => g.Key,
-               g => $"TST-{DateTime.Now.Year}-{(++lastNumber):D3}"
+               g => $"SMP-{DateTime.Now:yy}-{(++lastNumber):D3}"
            );
 
                 var entities = new List<lab_patient_test>();
@@ -117,6 +119,11 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                    : 0,
                         PriorityId = Model.PriorityId,
                         StatusId = 1,
+                        InvoiceNo = invoiceNo,
+                        ReferringPhysician = Model.ReferringPhysician,
+                        Discount = Model.Discount,
+                        DiscountType = Model.DiscountType,
+                        DiscountAmount = Model.DiscountAmount,
                         StatusDropdownId = (int)sys_dropdown_mfEnum.LabStatusDropdownId,
                         PatientId = Model.PatientId,
                         Age = Model.Age,
@@ -156,6 +163,50 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 Logger.Trace.Error(ex);
             }
             return objResponse;
+        }
+        public async Task<(string SerialNo, string InvoiceNo)> GenerateNumbersAsync(decimal companyId)
+        {
+            string year = DateTime.Now.ToString("yy");
+
+            // Serial No (SMP-26-001)
+            string serialPrefix = $"SMP-{year}-";
+
+            var lastSerialNumber = _service.Queryable()
+                .Where(x => x.CompanyId == companyId &&
+                            x.SerialNo.StartsWith(serialPrefix))
+                .AsEnumerable()
+                .Select(x =>
+                {
+                    var parts = x.SerialNo.Split('-');
+                    return int.TryParse(parts.Last(), out var n) ? n : 0;
+                })
+                .DefaultIfEmpty(0)
+                .Max();
+
+            string serialNo = $"{serialPrefix}{(lastSerialNumber + 1):D3}";
+
+
+            // Invoice No (260000000001)
+            string invoicePrefix = year;
+
+            var lastInvoiceNumber = _service.Queryable()
+                .Where(x => x.CompanyId == companyId &&
+                            x.InvoiceNo.StartsWith(invoicePrefix))
+                .AsEnumerable()
+                .Select(x =>
+                {
+                    var sequencePart = x.InvoiceNo.Length > 2
+                        ? x.InvoiceNo.Substring(2)
+                        : "0";
+
+                    return long.TryParse(sequencePart, out var n) ? n : 0;
+                })
+                .DefaultIfEmpty(0)
+                .Max();
+
+            string invoiceNo = $"{invoicePrefix}{(lastInvoiceNumber + 1):D8}";
+
+            return (serialNo, invoiceNo);
         }
         public ResponseInfo GetList()
         {
@@ -306,7 +357,82 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             }
             return objResponse;
         }
+        [HttpGet]
+        [ActionName("GetBillByInvoiceNo")]
+        public ResponseInfo GetBillByInvoiceNo(string Id)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                var result = _service.Queryable().Where(e => e.InvoiceNo == Id && e.CompanyId == CompanyID)
+                    .Select(z => new
+                    {
+                        ID = z.ID,
+                        CompanyName = z.adm_company.CompanyName,
+                        CompanyAddress = z.adm_company.CompanyAddress1,
+                        CompanyPhone = z.adm_company.Phone,
+                        CompanyEmail = z.adm_company.Email,
+                        PatientName = z.emr_patient_mf.PatientName,
+                        PatientAddress = z.emr_patient_mf.Address,
+                        PatientEmail = z.emr_patient_mf.Email,
+                        PatientMobile = z.emr_patient_mf.Mobile,
+                        requestedDate = z.CreatedDate,
+                        SampleDate = z.SampleDate,
+                        CompletedDate = z.CompletedDate,
+                        CompanyLogo = z.adm_company.CompanyLogo,
+                        invoiceNo = z.InvoiceNo,
+                        MRNo = z.emr_patient_mf.MRNO,
+                        DOB = z.emr_patient_mf.DOB,
+                        gander = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",
+                        Age = z.emr_patient_mf.Age,
+                        Physician = z.ReferringPhysician,
+                        DiscountAmount = z.DiscountAmount,
+                        Discount = z.Discount,
+                        DiscountType = z.DiscountType,
+                        lab_catalog = z.lab_catalog
+                    }).ToList();
+                var results = result.GroupBy(l => l.requestedDate)
+                        .Select(cl => new
+                        {
+                            ID = cl.First().ID,
+                            CompanyName = cl.First().CompanyName,
+                            CompanyAddress = cl.First().CompanyAddress,
+                            CompanyPhone = cl.First().CompanyPhone,
+                            CompanyEmail = cl.First().CompanyEmail,
+                            PatientName = cl.First().PatientName,
+                            PatientAddress = cl.First().PatientAddress,
+                            PatientEmail = cl.First().PatientEmail,
+                            PatientMobile = cl.First().PatientMobile,
+                            invoiceNo = cl.First().invoiceNo,
+                            Physician = cl.First().Physician,
+                            RequestedDate = cl.First().requestedDate,
+                            DOB = cl.First().DOB,
+                            Gender = cl.First().gander,
+                            Age = cl.First().Age,
+                            SampleDate = cl.First().SampleDate,
+                            CompletedDate = cl.First().CompletedDate,
+                            Discount = cl.First().Discount,
+                            DiscountType = cl.First().DiscountType,
+                            DiscountAmount = cl.First().DiscountAmount,
+                            MRNo = cl.First().MRNo,
+                            CompanyLogo = cl.First().CompanyLogo,
+                            InvoiceModel = cl.Select(z => z.lab_catalog),
+                        }).ToList();
 
+                objResponse.ResultSet = new
+                {
+                    result = results,
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
         private bool ModelExists(string key)
         {
             return _service.Query(e => e.ID.ToString() == key).Select().Any();
@@ -443,7 +569,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                     patientCode = g.Key.MRNO,
                     sampleType = g.Key.Value,
                     priority = g.Key.priority,
-                    orderedDate=g.Key.CreatedDate,
+                    orderedDate = g.Key.CreatedDate,
                     Details = g.Select(d => new
                     {
                         testName = d.lab_catalog.Name
@@ -596,8 +722,35 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                     objResponse.ErrorMessage = MessageStatement.NotFound;
                     return objResponse;
                 }
-                ;
-                Model.StatusId = model.StatusId;
+                var oldStatusId = Model.StatusId;
+                var newStatusId = model.StatusId;
+
+                if (oldStatusId == 4 && newStatusId < 4)
+                {
+                    Model.CompletedDate = null;
+                }
+                if (newStatusId < 2)
+                {
+                    Model.SampleDate = null;
+                    Model.CompletedDate = null;
+                    Model.InProgressDate = null;
+                }
+                else if (newStatusId == 2)
+                {
+                    Model.SampleDate = Request.DateTimes();
+                    Model.InProgressDate = null;
+                    Model.CompletedDate = null;
+                }
+                else if (newStatusId == 3)
+                {
+                    Model.InProgressDate = Request.DateTimes();
+                    Model.CompletedDate = null;
+                }
+                else if (newStatusId == 4)
+                {
+                    Model.CompletedDate = Request.DateTimes();
+                }
+                Model.StatusId = newStatusId;
                 Model.ModifiedBy = Request.LoginID();
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Modified;

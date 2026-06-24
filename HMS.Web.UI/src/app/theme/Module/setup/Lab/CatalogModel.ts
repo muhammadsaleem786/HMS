@@ -10,6 +10,13 @@
     CatalogIds: string;
     Age: number;
     Gender: string;
+    SampleDate: Date;
+    CompletedDate: Date;
+    InProgressDate: Date;
+    ReferringPhysician: string;
+    DiscountAmount: number = 0;
+    Discount: number;
+    DiscountType: string;
 }
 export class lab_result_mf {
     constructor() {
@@ -31,6 +38,47 @@ export class lab_result_dt {
     ParameterId: number;
     Result: number;
     Status: string;
-    Comment: string;    
+    Comment: string;
+}
+export class LabReport {
+    Header: LabReportHeader;
+    Patient: PatientInfo;
+    Results: LabResult[];
 }
 
+export class LabReportHeader {
+    reportNo: string;
+    reportDate: Date;
+    departmentName: string;
+    reportTitle: string;
+}
+
+export class PatientInfo {
+    mrno: string;
+    patientName: string;
+    age: string;
+    gender: string;
+    phone: string;
+    address: string;
+
+    orderedBy: string;
+    referringPhysician: string;
+    collectionCenter: string;
+
+    requestedDate: Date;
+    collectedDate: Date;
+    receivedDate: Date;
+    reportedDate: Date;
+}
+
+export class LabResult {
+    testName: string;
+    normalRange: string;
+    unit: string;
+
+    currentResult: string;
+    previousResult1?: string;
+    previousResult2?: string;
+
+    isAbnormal: boolean;
+}

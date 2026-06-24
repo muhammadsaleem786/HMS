@@ -232,7 +232,8 @@ namespace HMS.Repository.Repositories.Lab
                           status = s.sys_drop_down_value1.Value,
                           statusId = s.StatusId,
                           orderedDate = s.CreatedDate,
-                          catalogId = s.CatalogId
+                          catalogId = s.CatalogId,
+                          invoiceno=s.InvoiceNo
                       }).ToList<object>();
                 }
                 else
@@ -253,7 +254,8 @@ namespace HMS.Repository.Repositories.Lab
                         status = s.sys_drop_down_value1.Value,
                         statusId = s.StatusId,
                         orderedDate = s.CreatedDate,
-                        catalogId = s.CatalogId
+                        catalogId = s.CatalogId,
+                        invoiceno = s.InvoiceNo
                     }).ToList<object>();
                 }
             }

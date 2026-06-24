@@ -21,6 +21,14 @@ namespace HMS.Entities.Models
         public string ClinicalNotes { get; set; }
         public string SerialNo { get; set; }
         public decimal CatalogId { get; set; }
+        public string InvoiceNo { get; set; }
+        public Nullable<DateTime> SampleDate { get; set; }
+        public Nullable<DateTime> CompletedDate { get; set; }
+        public Nullable<DateTime> InProgressDate { get; set; }
+        public string ReferringPhysician { get; set; }
+        public Nullable<decimal> DiscountAmount { get; set; }
+        public Nullable<decimal> Discount { get; set; }
+        public string DiscountType { get; set; }
         [NotMapped]
         public string CatalogIds { get; set; }
         public decimal CreatedBy { get; set; }
@@ -31,7 +39,7 @@ namespace HMS.Entities.Models
         public virtual adm_user_mf adm_user_mf { get; set; }
         public virtual adm_user_mf adm_user_mf1 { get; set; }
         public virtual sys_drop_down_value sys_drop_down_value { get; set; }
-        public virtual sys_drop_down_value sys_drop_down_value1{ get; set; }
+        public virtual sys_drop_down_value sys_drop_down_value1 { get; set; }
         public virtual emr_patient_mf emr_patient_mf { get; set; }
         public virtual lab_catalog lab_catalog { get; set; }
         public virtual ICollection<lab_result_mf> lab_result_mf { get; set; }

@@ -51,7 +51,8 @@ export class GenericComponentList {
         this.PConfig.Action.ScreenName = 'Generic';
         this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
-            { Name: "GenericName", Title: "Generic Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            {
+                Name: "GenericName", Title: "Formulation Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "Specialty", Title: "Specialty", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "Category", Title: "Category", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "IsActive", Title: "Is Active", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },

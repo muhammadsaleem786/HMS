@@ -380,19 +380,6 @@ export class InvoiceComponentForm {
     AppendTax(event: any, rowno: number) {
         this.CalculateSubTotal();
     }
-    //loadItemDetail(id: any, rowno: number) {
-    //    var finditem = this.ItemList.filter(f => f.ID == id);
-    //    this.Invoice_itemdynamicArray[rowno].ItemDescription = finditem[0].SaleDescription;
-    //    this.Invoice_itemdynamicArray[rowno].MenualItemDescription = true;
-    //    this.Invoice_itemdynamicArray[rowno].Quantity = 1;
-    //    this.Invoice_itemdynamicArray[rowno].Rate = finditem[0].PurchasePrice;
-    //    this.Invoice_itemdynamicArray[rowno].Amount = (1 * finditem[0].PurchasePrice);
-    //    this.Invoice_itemdynamicArray[rowno].PriceID = 0;
-    //    this.Invoice_itemdynamicArray[rowno].ItemType = finditem[0].Type;
-    //    if (finditem[0].Type == "Batch" || finditem[0].Type == "Sarial")
-    //        this.Invoice_itemdynamicArray[rowno].IsBatch = true;
-    //    this.CalculateSubTotal();
-    //}
     LoadItem(indx: any) {
         var id = ("#txtItem_" + indx);
         $(id).autocomplete({
@@ -600,56 +587,7 @@ export class InvoiceComponentForm {
             this.FileName = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
         }
     }
-    //vandor
-    //AddVendor() {
-    //    this.IsVendorDialogActive = true;
-    //}
-    //VendorAdd() {
-    //    var obj = new pur_vendor_contact();
-    //    this.pur_vendor_dynamicArray.push(obj);
-    //}
-    //VendorRemoveRow(rowno: any) {
-    //    if (this.pur_vendor_dynamicArray.length > 1) {
-    //        this.pur_vendor_dynamicArray.splice(rowno, 1);
-    //    }
-    //}
-    //VendorSave(isValid: boolean): void {
-    //    this.vendorModel.pur_vendor_contact = this.pur_vendor_dynamicArray;
-    //    this.submitted = true; // set form submit to true
-    //    if (isValid && this.vendorModel.Facebook != '' && this.vendorModel.Facebook != undefined) {
-    //        var regex = new RegExp(/^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm);
-    //        if (!regex.test(this.vendorModel.Facebook)) {
-    //            this.toastr.Error('Incorrect Url', 'Please enter valid Facebook url. e.g www.facebook.com (OR) https://www/facebook.com')
-    //            isValid = false;
-    //        }
-    //    }
-    //    if (isValid && this.vendorModel.Twitter != '' && this.vendorModel.Twitter != undefined) {
-    //        var regex = new RegExp(/^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm);
-    //        if (!regex.test(this.vendorModel.Twitter)) {
-    //            this.toastr.Error('Incorrect Url', 'Please enter valid Twitter url. e.g www.twitter.com (OR) https://www/twitter.com')
-    //            isValid = false;
-    //        }
-    //    }
-    //    if (isValid) {
-    //        this.submitted = false;
-    //        this.loader.ShowLoader();
-    //        this._VendorService.SaveOrUpdate(this.vendorModel).then(m => {
-    //            var result = JSON.parse(m._body);
-    //            if (result.IsSuccess) {
-    //                this.toastr.Success(result.Message);
-    //                this.IsAddAddressDialogActive = false;
-    //                this.Isbilling = false;
-    //                this.IsVendorDialogActive = false;
-    //                this.LoadDropDown();
-    //            }
-    //            else {
-    //                this.loader.HideLoader();
-    //                this.toastr.Error('Error', result.ErrorMessage);
-    //            }
-    //        });
-    //    }
-    //}
-    Delete() {
+       Delete() {
         var result = confirm("Are you sure you want to delete selected record.");
         if (result == true) {
             this.loader.ShowLoader();

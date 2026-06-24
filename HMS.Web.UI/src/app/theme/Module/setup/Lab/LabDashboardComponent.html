@@ -1,3 +1,41 @@
+<style>
+    .report-container {
+        background: white;
+        color: black;
+        font-size: 13px;
+    }
+
+        .report-container table {
+            width: 100%;
+        }
+
+        .report-container th {
+            background: #f3f3f3;
+            text-align: center;
+        }
+
+        .report-container td,
+        .report-container th {
+            padding: 6px;
+            vertical-align: middle;
+        }
+
+    @media print {
+
+        .modal-header,
+        .modal-footer {
+            display: none !important;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        #printReport {
+            width: 100%;
+        }
+    }
+</style>
 <div class="margin-t-68 removeAction px-4">
     <!-- Page Header -->
     <div class="row headSection paginationHead">
@@ -21,7 +59,6 @@
             </button>
         </div>
     </div>
-
     <!-- Primary Actions -->
     <div class="row mt-3">
         <div class="col-md-3 col-sm-6 mb-3" *ngFor="let action of primaryActions">
@@ -40,7 +77,6 @@
             </div>
         </div>
     </div>
-
     <!-- KPI Summary -->
     <div class="row mt-3">
         <div class="col-md-3 col-sm-6 mb-3" *ngFor="let stat of summaryStats">
@@ -57,7 +93,6 @@
             </div>
         </div>
     </div>
-
     <!-- Active Cases -->
     <div class="row mt-4">
         <div class="col-12">
@@ -73,15 +108,15 @@
                 </div>
                 <div class="col-md-8 text-md-right">
                     <div class="form-inline justify-content-md-end">
-                        <select class="form-control form-control-sm mr-2 mb-2 mb-md-0"(change)="Refresh()" [(ngModel)]="selectedDepartment">
+                        <select class="form-control form-control-sm mr-2 mb-2 mb-md-0" (change)="Refresh()" [(ngModel)]="selectedDepartment">
                             <option value="">All Departments</option>
                             <option *ngFor="let d of categoryFilters" [value]="d.ID">{{ d.Value }}</option>
                         </select>
-                        <select class="form-control form-control-sm mr-2 mb-2 mb-md-0"(change)="Refresh()" [(ngModel)]="selectedStatus">
+                        <select class="form-control form-control-sm mr-2 mb-2 mb-md-0" (change)="Refresh()" [(ngModel)]="selectedStatus">
                             <option value="">All Status</option>
                             <option *ngFor="let s of statusFilters" [value]="s.ID">{{ s.Value }}</option>
                         </select>
-                        <select class="form-control form-control-sm"(change)="Refresh()" [(ngModel)]="selectedSampleType">
+                        <select class="form-control form-control-sm" (change)="Refresh()" [(ngModel)]="selectedSampleType">
                             <option value="">All Sample Types</option>
                             <option *ngFor="let st of sampleTypeFilters" [value]="st.ID">{{ st.Value }}</option>
                         </select>
@@ -144,12 +179,21 @@
                                     <td>
                                         <span class="badge" [ngClass]="{
                                             'badge-warning-light': item.statusId === 1,
-                                            'badge-info': item.statusId === 2
+                                            'badge-info': item.statusId === 3
                                           }">
                                             {{ item.status }}
                                         </span>
                                     </td>
-                                    <td>{{ item.orderedDate | date: 'MM/dd/yyyy' }}</td>
+                                    <td>
+                                        <div>
+                                            <div class="font-weight-bold TextOverflow" style="max-width: 140px;">
+                                                {{ item.orderedDate | date: 'MM/dd/yyyy' }}
+                                            </div>
+                                            <p class="mb-0">
+                                                <small class="text-muted">#{{ item.invoiceno }}</small>
+                                            </p>
+                                        </div>
+                                    </td>
                                     <td class="text-right">
                                         <select *ngIf="item.statusId !==4" class="form-control form-control-sm d-inline-block w-auto mr-2"
                                                 [(ngModel)]="item.statusId" (change)="onStatusChange(item)">
@@ -157,30 +201,27 @@
                                                 {{ opt.Value }}
                                             </option>
                                         </select>
-                                        <div *ngIf="item.statusId==2">
-                                            <button class="btn btn-light btn-sm mr-1" (click)="openPrintModal(item)">
+                                        <div>
+                                            <button *ngIf="item.statusId==2 || item.statusId==3|| item.statusId==4" class="btn btn-light btn-sm mr-1" (click)="openPrintModal(item)">
                                                 <i class="icon icon-printer"></i> Print
                                             </button>
-                                            <button class="btn btn-danger btn-sm"
+                                            <button class="btn btn-light btn-sm mr-1" (click)="openInvoiceModal(item.invoiceno)">
+                                                <i class="icon icon-printer"></i> Print Invoice
+                                            </button>
+                                            <button *ngIf="item.statusId==3" class="btn btn-danger btn-sm"
                                                     type="button"
                                                     (click)="onOpenEnterResultFromCase(item)">
                                                 Enter Results
                                             </button>
-                                        </div>
-                                        <div *ngIf="item.statusId==3">
-                                            <button class="btn btn-light btn-sm mr-1" (click)="openPrintModal(item)">
-                                                <i class="icon icon-printer"></i> Print
-                                            </button>
-                                        </div>
-                                        <div *ngIf="item.statusId==4">
-                                            <button class="btn btn-light btn-sm mr-1" (click)="openPrintModal(item)">
-                                                <i class="icon icon-printer"></i> Print
-                                            </button>
-                                            <button class="btn btn-light btn-sm mr-1">
+                                            <!--<button *ngIf="item.statusId==4" class="btn btn-light btn-sm mr-1">
                                                 <i class="icon icon-printer"></i> Generate Report
+                                            </button>-->
+                                            <button *ngIf="item.statusId==1" class="btn btn-danger btn-sm"
+                                                    type="button"
+                                                    (click)="Delete(item.testId)">
+                                                Delete
                                             </button>
                                         </div>
-
                                     </td>
                                 </tr>
                                 <tr [hidden]="!(activeCases.length == 0)" style="background:#fff;">
@@ -206,9 +247,103 @@
             </div>
         </div>
     </div>
+    <!-- invoice Modal -->
+    <ng-template #InvoiceModal let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title"> <img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon">Invoice</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" id="printBill-section" style="font-family: Arial, sans-serif; font-size: 14px; color: #555555; background: #FFFFFF;">
+            <div style="width: 100%;">
+                <header style="padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid #AAAAAA; overflow: hidden;">
+                    <div style="float: left; margin-top: 8px;" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null">
+                        <img [src]="InvoiceCompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 100px; height: 70px;">
+                    </div>
+                    <div style="float: left; margin-top: 8px;" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null">
+                        <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px; height: 70px;">
+                    </div>
+
+                    <div style="float: right; text-align: right;">
+                        <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                        <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                        <div>{{InvoiceCompanyInfo.CompanyPhone}}</div>
+                        <div><a href="mailto:company@example.com" style="color: #0087C3; text-decoration: none;">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                    </div>
+                </header>
+
+                <main>
+                    <div style="margin-bottom: 50px; overflow: hidden;">
+                        <div style="padding-left: 6px; border-left: 6px solid #0087C3; float: left;">
+                            <div style="color: #777777;">INVOICE TO:</div>
+                            <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{InvoiceCompanyInfo.PatientName}}</h2>
+                            <div>{{InvoiceCompanyInfo.PatientAddress}}</div>
+                            <div><a href="mailto:john@example.com" style="color: #0087C3; text-decoration: none;">{{InvoiceCompanyInfo.PatientEmail}}</a></div>
+                        </div>
+                        <div style="float: right; text-align: right;">
+                            <h1 style="color: #0087C3; font-size: 2.4em; line-height: 1em; font-weight: normal; margin: 0 0 10px 0;">INVOICE-{{InvoiceCompanyInfo.invoiceNo}}</h1>
+                            <div style="font-size: 1.1em; color: #777777;">Date of Invoice: {{InvoiceCompanyInfo.CreatedDate | date: 'MM/dd/yyyy'}}</div>
+                            <div style="font-size: 1.1em; color: #777777;">Due Date: 30/06/2014</div>
+                        </div>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>
+                                <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
+                                <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF; white-space: nowrap;">Item</th>
+                                <th style="padding: 20px; background: #DDDDDD; text-align: right; border-bottom: 1px solid #FFFFFF;">UNIT PRICE</th>
+                                <th style="padding: 20px; background: #2f3479; text-align: right; color: #FFFFFF; border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let b of InvoiceTestModel">
+                                <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">{{b.ID}}</td>
+                                <td style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">{{b.Name}}</td>
+                                <td style="padding: 20px; background: #DDDDDD; text-align: right; border-bottom: 1px solid #FFFFFF; font-size: 1.2em;">{{b.Price}}</td>
+                                <td style="padding: 20px; background: #2f3479; text-align: right; color: #FFFFFF; border-bottom: 1px solid #FFFFFF; font-size: 1.2em;">{{b.Price}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA;"></td>
+                                <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA; font-size: 1.2em;">SUBTOTAL</td>
+                                <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA; font-size: 1.2em;">{{SubTotal}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA;"></td>
+                                <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA; font-size: 1.2em;">Discount</td>
+                                <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #AAAAAA; font-size: 1.2em;">{{TotalDiscount}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #2f3479;"></td>
+                                <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #2f3479; color: #2f3479; font-size: 1.4em;">GRAND TOTAL</td>
+                                <td style="padding: 10px 20px; background: #FFFFFF; border-top: 1px solid #2f3479; color: #2f3479; font-size: 1.4em;">{{Total}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div style="font-size: 2em; margin-bottom: 50px;">Thank you!</div>
+                    <div style="padding-left: 6px; border-left: 6px solid #0087C3;">
+                        <div>NOTICE:</div>
+                        <div style="font-size: 1.2em;">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                    </div>
+                </main>
+
+                <footer style="color: #777777; width: 100%; height: 30px; border-top: 1px solid #AAAAAA; padding: 8px 0; text-align: left;">
+                    {{valueForUser.RepotFooter}}
+                </footer>
+            </div>
+        </div>
 
 
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
+            <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
+        </div>
 
+    </ng-template>
     <!-- Enter Result Modal -->
     <ng-template #EnterResultModal let-modal>
         <div class="modal-header">
@@ -383,7 +518,6 @@
             </div>
         </div>
     </ng-template>
-
     <!-- New Test Order Modal -->
     <ng-template #NewTestOrderModal let-modal>
         <div class="modal-header">
@@ -421,8 +555,12 @@
 
                         <div class="col-md-3 mb-3">
                             <label class="font-weight-500">Priority <span class="text-danger">*</span></label>
-                            <input type="text" id="PrioritySearch" (click)="LoadPriority()" formControlName="PriorityId" [(ngModel)]="PatientTestmodel.PriorityName" class="form-control form-control-sm" required placeholder="e.g., mg/dL, g/dL, %" autocomplete="off" />
+                            <input type="text" id="PrioritySearch" (click)="LoadPriority()" formControlName="PriorityId" [(ngModel)]="PatientTestmodel.PriorityName" class="form-control form-control-sm" required placeholder="Search Priority" autocomplete="off" />
 
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="font-weight-500">Referring Physician</label>
+                            <input type="text" formControlName="ReferringPhysician" [(ngModel)]="PatientTestmodel.ReferringPhysician" class="form-control form-control-sm" placeholder="Enter Physician" autocomplete="off" />
                         </div>
                         <div class="col-md-9 mb-3">
                             <label class="font-weight-500">Clinical Notes</label>
@@ -487,20 +625,54 @@
                 <!-- Invoice summary section -->
                 <div class="bg-light border-top p-4">
                     <div class="row">
-                        <div class="col-md-7 mb-3 mb-md-0">
+                        <div class="col-md-12 mb-3 mb-md-0">
                             <h6 class="mb-3">Invoice Summary</h6>
-
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7 mb-3 mb-md-0">
+                            <h6 class="mb-3">Sub Total</h6>
                         </div>
                         <div class="col-md-5 d-flex flex-column justify-content-between">
                             <div class="text-right mb-3">
-                                <div class="h6 mb-1">Total Amount:</div>
+                                <div class="h4 text-primary mb-0">
+                                    PKR {{ orderSubTotalAmount | number: '1.2-2' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <h6 class="mb-3">Discount</h6>
+                        </div>
+                        <div class="col-sm-4 text-right pull-right">
+                            <div class="d-flex">
+                                <input type="text" class="form-control text-right input-sm text-" [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientTestmodel.Discount" (change)="DiscountValue(PatientTestmodel.Discount)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                <select class="form-control input-medium-select" (change)="changeDiscountType($event.target.value)" [ngModelOptions]="{standalone:true}" [(ngModel)]="DisType">
+                                    <option *ngFor="let item of DiscountTypeList" [value]="item.id">
+                                        {{item.Name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 pull-right text-right">
+                            <div class="h4 text-primary mb-0">
+                                PKR {{ DiscountAmount | number: '1.2-2' }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7 mb-3 mb-md-0">
+                            <h6 class="mb-3">Total Amount</h6>
+                        </div>
+                        <div class="col-md-5 d-flex flex-column justify-content-between">
+                            <div class="text-right mb-3">
                                 <div class="h4 text-primary mb-0">
                                     PKR {{ orderTotalAmount | number: '1.2-2' }}
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card shadow-none border-0">
@@ -538,6 +710,9 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        <hr>
 
                         <div class="col-sm-12 mt-5">
                             <div class="text-right">
@@ -640,5 +815,203 @@
             <button class="btn btn-primary" useExistingCss="true" printSectionId="print-RxPrintLabModal" ngxPrint>Print</button>
 
         </div>
+    </ng-template>
+    <!-- report Modal -->
+    <ng-template #ReportModal let-modal>
+
+        <div class="modal-header">
+            <h4>Clinical Chemistry Report</h4>
+
+            <button type="button"
+                    class="close"
+                    (click)="modal.dismiss()">
+                <span>&times;</span>
+            </button>
+        </div>
+
+        <div id="printReport" class="modal-body report-container">
+
+            <!-- Header -->
+
+            <div class="text-center mb-3">
+
+                <h4>Shaukat Khanum Memorial Hospital</h4>
+
+                <h5>
+                    {{ ReportModel?.Header?.departmentName }}
+                </h5>
+
+                <h4>
+                    {{ ReportModel?.Header?.reportTitle }}
+                </h4>
+
+            </div>
+
+            <!-- Patient Information -->
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <table class="table table-borderless table-sm">
+
+                        <tr>
+                            <td><b>MRNO</b></td>
+                            <td>{{ ReportModel?.Patient?.mrno }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Name</b></td>
+                            <td>{{ ReportModel?.Patient?.patientName }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Age/Sex</b></td>
+                            <td>
+                                {{ ReportModel?.Patient?.age }}
+                                /
+                                {{ ReportModel?.Patient?.gender }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Phone</b></td>
+                            <td>{{ ReportModel?.Patient?.phone }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Address</b></td>
+                            <td>{{ ReportModel?.Patient?.address }}</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <table class="table table-borderless table-sm">
+
+                        <tr>
+                            <td><b>Ordered By</b></td>
+                            <td>{{ ReportModel?.Patient?.orderedBy }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Referring Physician</b></td>
+                            <td>{{ ReportModel?.Patient?.referringPhysician }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Requested</b></td>
+                            <td>
+                                {{
+ ReportModel?.Patient?.requestedDate
+                            | date:'dd-MMM-yyyy HH:mm'
+                                }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Collected</b></td>
+                            <td>
+                                {{
+ ReportModel?.Patient?.collectedDate
+                            | date:'dd-MMM-yyyy HH:mm'
+                                }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Reported</b></td>
+                            <td>
+                                {{
+ ReportModel?.Patient?.reportedDate
+                            | date:'dd-MMM-yyyy HH:mm'
+                                }}
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- Test Results -->
+
+            <table class="table table-bordered table-sm mt-3">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Test(s)</th>
+
+                        <th>Normal</th>
+
+                        <th>Unit</th>
+
+                        <th>Current</th>
+
+                        <th>Previous 1</th>
+
+                        <th>Previous 2</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of ReportModel?.Results">
+
+                        <td>{{ item.testName }}</td>
+
+                        <td>{{ item.normalRange }}</td>
+
+                        <td>{{ item.unit }}</td>
+
+                        <td>
+                            <span [class.text-danger]="item.isAbnormal"
+                                  [class.font-weight-bold]="item.isAbnormal">
+
+                                {{ item.currentResult }}
+
+                            </span>
+                        </td>
+
+                        <td>{{ item.previousResult1 }}</td>
+
+                        <td>{{ item.previousResult2 }}</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <div class="mt-4">
+                <small>
+                    Note: Lab values should always be correlated
+                    with clinical picture.
+                </small>
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="btn btn-primary"
+                    ngxPrint
+                    printSectionId="printReport"
+                    useExistingCss="true">
+
+                Print
+
+            </button>
+
+        </div>
+
     </ng-template>
 </div>

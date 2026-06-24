@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col max-content">
                     <h3 class="page-heading mt-d-inline-block">
-                        Generic
+                        Formulation
                     </h3>
                 </div>
 
@@ -17,7 +17,7 @@
         <div class="col-sm-4 text-right flex-row flex-end">
 
             <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
-            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Generic</a>
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Formulation</a>
         </div>
     </div>
 
@@ -32,8 +32,8 @@
 
 <ng-template #GenericModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" *ngIf="IsEdit">Update Generic</h4>
-        <h4 class="modal-title" *ngIf="IsEdit==false">Add Generic</h4>
+        <h4 class="modal-title" *ngIf="IsEdit">Update Formulation</h4>
+        <h4 class="modal-title" *ngIf="IsEdit==false">Add Formulation</h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -75,10 +75,10 @@
 
                     <div class="row form-group">
                         <div class="col-4 text-right">
-                            <label class="form-control-label mt-2" for="input-username">Generic Name </label>
+                            <label class="form-control-label mt-2" for="input-username">Formulation Name </label>
                         </div>
                         <div class="col-8">
-                            <input type="text" id="" formControlName="GenericName" [(ngModel)]="model.GenericName" class="form-control form-control-sm form-control-alternative" placeholder="Generic Name">
+                            <input type="text" id="" formControlName="GenericName" [(ngModel)]="model.GenericName" class="form-control form-control-sm form-control-alternative" placeholder="Formulation Name">
                             <small class="text-danger" *ngIf="Form1.controls.GenericName.hasError('required') && submitted">
                                 This value is required.
                             </small>

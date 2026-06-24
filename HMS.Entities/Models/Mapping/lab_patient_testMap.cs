@@ -33,10 +33,17 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.CatalogId).HasColumnName("CatalogId");
             this.Property(t => t.Age).HasColumnName("Age");
             this.Property(t => t.SerialNo).HasColumnName("SerialNo");
+            this.Property(t => t.InvoiceNo).HasColumnName("InvoiceNo");
+            this.Property(t => t.SampleDate).HasColumnName("SampleDate");
+            this.Property(t => t.CompletedDate).HasColumnName("CompletedDate");
+            this.Property(t => t.InProgressDate).HasColumnName("InProgressDate");
             this.Property(t => t.CreatedBy).HasColumnName("CreatedBy");
             this.Property(t => t.CreatedDate).HasColumnName("CreatedDate");
             this.Property(t => t.ModifiedBy).HasColumnName("ModifiedBy");
             this.Property(t => t.ModifiedDate).HasColumnName("ModifiedDate");
+            this.Property(t => t.ReferringPhysician).HasColumnName("ReferringPhysician");
+            this.Property(t => t.DiscountAmount).HasColumnName("DiscountAmount");
+            this.Property(t => t.Discount).HasColumnName("Discount");
 
             // Relationships
             this.HasRequired(t => t.adm_company)

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input, TemplateRef } from '@angular/core';
-import { lab_patient_test, lab_result_mf, lab_result_dt } from '../Lab/CatalogModel';
+import { lab_patient_test, lab_result_mf, lab_result_dt, LabReport } from '../Lab/CatalogModel';
 import { FormGroup, FormControl, FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoaderService } from '../../../../CommonService/LoaderService';
@@ -25,6 +25,8 @@ export class LabDashboardComponent implements OnInit {
     public PConfig = new PaginationConfig();
     public PatientTestmodel = new lab_patient_test();
     public Resultmodel = new lab_result_mf();
+    public ReportModel = new LabReport();
+    public InvoiceCompanyInfo: any;
     public PayrollRegion: string;
     public Rights: number[] = [];
     public Modules: number[] = [];
@@ -42,7 +44,7 @@ export class LabDashboardComponent implements OnInit {
     public primaryActions: any[] = [];
     public summaryStats: any[] = [];
     public activeCases: any[] = [];
-
+    public InvoiceTestModel: any[] = [];
     // Filters / controls
     public searchText: string = '';
     public categoryFilters: any[] = [];
@@ -51,14 +53,25 @@ export class LabDashboardComponent implements OnInit {
     public selectedDepartment: string = '';
     public selectedStatus: string = '';
     public selectedSampleType: string = '';
+    public SubTotal: number = 0;
+    public Total: number = 0;
+    public TotalDiscount: number = 0;
+    public valueForUser: any;
+    public DiscountTypeList = [];
+    public DisType: number = 1;
+    public DiscountAmount: number = 0;
     // Test catalogue, order & result dialogs
     @ViewChild('NewTestOrderModal') NewTestOrderModal: TemplateRef<any>;
     @ViewChild('EnterResultModal') EnterResultModal: TemplateRef<any>;
     @ViewChild('PrintLabelModal') PrintLabelModal: TemplateRef<any>;
+    @ViewChild('InvoiceModal') InvoiceModal: TemplateRef<any>;
+    @ViewChild('ReportModal') ReportModal: TemplateRef<any>;
 
     private _newTestOrderRef: NgbModalRef;
     private _enterResultRef: NgbModalRef;
     private _printLabelRef: NgbModalRef;
+    private _invoiceModalRef: NgbModalRef;
+    private _reportModalRef: NgbModalRef;
 
     public testCatalogList: any[] = [];
     public selectedSample: any;
@@ -66,6 +79,7 @@ export class LabDashboardComponent implements OnInit {
     public filteredOrderTests: any[] = [];
     public groupedOrderSamples: any[] = [];
     public orderTotalAmount: number = 0;
+    public orderSubTotalAmount: number = 0;
     previousPage: number = 1;
     nextPage: number = 1;
     totalPages: number = 0;
@@ -76,8 +90,6 @@ export class LabDashboardComponent implements OnInit {
     public Comment: string = '';
     public selectedResultTest: any;
     public selectedResultParameters: any[] = [];
-
-
     // Result summary for current test (used by header cards in Enter Result dialog)
     public resultSummary = {
         critical: 0,
@@ -94,13 +106,15 @@ export class LabDashboardComponent implements OnInit {
         this.TestControlRights = this.commonservice.ScreenRights("114");
         this.EnterResultControlRights = this.commonservice.ScreenRights("115");
         this.ReportControlRights = this.commonservice.ScreenRights("116");
+        this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
     ngOnInit() {
+        this.DiscountTypeList.push({ "id": 1, "Name": "%" });
+        this.DiscountTypeList.push({ "id": 2, "Name": "PKR" });
         this.PModel.SortName = "";
         this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
         this.selectPage(this.PModel.CurrentPage);
-        //this.TestCatalogData();
         this.patientTestForm = this._fb.group({
             PatientId: [''],
             StatusId: [''],
@@ -110,7 +124,14 @@ export class LabDashboardComponent implements OnInit {
             ClinicalNotes: [''],
             CatalogIds: [''],
             Age: [''],
-            Gender: ['']
+            Gender: [''],
+            SampleDate: [''],
+            CompletedDate: [''],
+            InProgressDate: [''],
+            ReferringPhysician: [''],
+            DiscountAmount: [''],
+            Discount: [''],
+            DiscountType: [''],
         });
         this.resultForm = this._fb.group({
             PatientId: [''],
@@ -160,6 +181,7 @@ export class LabDashboardComponent implements OnInit {
         this._labService
             .GetListWithParm(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PModel.FilterID).then(m => {
                 this.pagesRange = [];
+                this.activeCases = [];
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.activeCases = m.DataList;
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
@@ -191,6 +213,8 @@ export class LabDashboardComponent implements OnInit {
                 this.testCatalogList = m.ResultSet.resultObj;
                 this.filteredOrderTests = this.testCatalogList.map(t => ({ ...t, selected: false }));
                 this.PatientTestmodel = new lab_patient_test();
+                this.PatientTestmodel.PriorityId = 1;
+                this.PatientTestmodel.PriorityName = 'Routine';
                 this.orderTestSearch = '';
                 this.filteredOrderTests = this.testCatalogList.map(t => ({ ...t, selected: false }));
                 this.groupedOrderSamples = [];
@@ -213,8 +237,8 @@ export class LabDashboardComponent implements OnInit {
                     this.loader.HideLoader();
             });
         }
-       
-        }
+
+    }
     LoadPatient() {
         $("#PatientSearch").autocomplete({
             source: (request, response) => {
@@ -292,7 +316,6 @@ export class LabDashboardComponent implements OnInit {
             this.onOpenEnterResult();
         }
     }
-
     public onSavePatient(isValid: boolean): void {
         this.submitted = true;
         if (isValid) {
@@ -302,6 +325,11 @@ export class LabDashboardComponent implements OnInit {
             }
             this.submitted = false;
             this.loader.ShowLoader();
+            this.PatientTestmodel.DiscountAmount = this.DiscountAmount;
+            if (this.DisType == 1)
+                this.PatientTestmodel.DiscountType = "%";
+            else if (this.DisType == 2)
+                this.PatientTestmodel.DiscountType = "PKR";
             this._labService.SaveOrUpdate(this.PatientTestmodel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
@@ -409,15 +437,24 @@ export class LabDashboardComponent implements OnInit {
 
     private recalculateOrderTotals(): void {
         let total = 0;
+        let SubTotal = 0;
         (this.groupedOrderSamples || []).forEach(g => {
             (g.tests || []).forEach(t => {
                 total += Number(t.price) || 0;
+                SubTotal += Number(t.price) || 0;
             });
         });
+        if (this.PatientTestmodel.Discount != null && this.PatientTestmodel.Discount != undefined) {
+            if (this.DisType == 1)
+                this.DiscountAmount = (SubTotal) * this.PatientTestmodel.Discount / 100;
+            else
+                this.DiscountAmount = this.PatientTestmodel.Discount;
+
+            total = total - this.DiscountAmount;
+        }
         this.orderTotalAmount = total;
+        this.orderSubTotalAmount = SubTotal;
     }
-
-
     // Enter Result dialog helpers
     public onOpenEnterResult(): void {
         this.enterResultSearchId = '';
@@ -459,14 +496,25 @@ export class LabDashboardComponent implements OnInit {
         });
     }
     onStatusChange(item: any): void {
+        if (item.statusId === 4) {
+            const confirmed = confirm("Are you sure you want to mark this test as completed?");
+            if (!confirmed) {
+                this.Refresh();
+                return;
+            }
+        }
+        this.updateTestStatus(item);
+    }
+
+    private updateTestStatus(item: any): void {
         this.loader.ShowLoader();
         this.PatientTestmodel = new lab_patient_test();
         this.PatientTestmodel = item;
         this.PatientTestmodel.ID = item.testId;
         this.PatientTestmodel.StatusId = item.statusId;
-
         this._labService.UpdateStatus(this.PatientTestmodel).then(m => {
-            if (m.IsSuccess) {
+            var result = JSON.parse(m._body);
+            if (result.IsSuccess) {
                 this.Refresh();
                 this.loader.HideLoader();
             } else
@@ -620,7 +668,68 @@ export class LabDashboardComponent implements OnInit {
         }
         return {};
     }
+    Delete(id: string) {
+        var result = confirm("Are you sure you want to delete selected record.");
+        if (result == true) {
+            this.loader.ShowLoader();
+            this._labService.Delete(id).then(m => {
+                if (m.ErrorMessage != null) {
+                    alert(m.ErrorMessage);
+                }
+                this.Refresh();
+            });
+        }
+    }
+    openInvoiceModal(id: any) {
+        if (id != null && id !== '') {
+            this.loader.ShowLoader();
+            this._labService.GetBillByInvoiceNo(id).then(m => {
+                if (m.IsSuccess) {
+                    this.InvoiceTestModel = [];
+                    this.SubTotal = 0;
+                    this.Total = 0;
+                    this.TotalDiscount = 0
+                    if (m.ResultSet.result != null) {
+                        this.InvoiceTestModel = m.ResultSet.result[0].InvoiceModel;
+                        this.InvoiceCompanyInfo = m.ResultSet.result[0];
+                        if (m.ResultSet.result[0].CompanyLogo != null)
+                            this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
+                        m.ResultSet.result[0].InvoiceModel.forEach((item, index) => {
+                            this.SubTotal += parseInt(item.Price);
+                        });          
+                        this.TotalDiscount = m.ResultSet.result[0].DiscountAmount;
+                        this.Total = this.SubTotal - this.TotalDiscount;
+                    }
+                    this._invoiceModalRef = this.modalService.open(this.InvoiceModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
+                    this.loader.HideLoader();
+                } else
+                    this.loader.HideLoader();
+            });
+        } else {
+            this.toastr.Error('Error', 'Invalid invoice no.');
+            return;
+        }
+    }
+    openReportModal(id: any) {
+        this.ReportModel = new LabReport();
+        this._reportModalRef = this.modalService.open(this.ReportModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
 
+    }
+    DiscountValue(evt: any) {
+        if (this.PatientTestmodel.Discount != null && this.PatientTestmodel.Discount != undefined) {
+            if (this.DisType == 1 && this.PatientTestmodel.Discount > 100)
+                this.PatientTestmodel.Discount = 0;
+            this.recalculateOrderTotals();
+        }
+    }
+    changeDiscountType(evt: any) {
+        this.DisType = evt;
+        if (this.PatientTestmodel.Discount != null && this.PatientTestmodel.Discount != undefined) {
+            if (this.DisType == 1 && this.PatientTestmodel.Discount > 100)
+                this.PatientTestmodel.Discount = 0;
+            this.recalculateOrderTotals();
+        }
+    }
     Close() {
         this.PatientTestmodel = new lab_patient_test();
     }

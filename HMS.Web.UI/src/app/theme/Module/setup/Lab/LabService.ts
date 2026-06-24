@@ -73,10 +73,13 @@ export class LabService {
         else
             return this.http.Put(this.urlToApiresult + '/Update', entity).then(e => e);
     }
-
+    GetBillByInvoiceNo(Id: string): Promise<any> {
+        var data = { 'Id': Id };
+        return this.http.Get(this.urlToApiPatient + '/GetBillByInvoiceNo', data).then(e => e);
+    }
     Delete(Id: string): Promise<any> {
         var data = { 'Id': Id };
-        return this.http.Delete(this.urlToApi + '/Delete', data).then(e => e);
+        return this.http.Delete(this.urlToApiPatient + '/Delete', data).then(e => e);
     }
     FormLoad(): Promise<any> {
         return this.http.Get(this.urlToApi + '/Load', {}).then(e => e);

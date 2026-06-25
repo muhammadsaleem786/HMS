@@ -25,7 +25,7 @@ export class LabDashboardComponent implements OnInit {
     public PConfig = new PaginationConfig();
     public PatientTestmodel = new lab_patient_test();
     public Resultmodel = new lab_result_mf();
-    public ReportModel = new LabReport();
+    public ReportModel: any;
     public InvoiceCompanyInfo: any;
     public PayrollRegion: string;
     public Rights: number[] = [];
@@ -192,7 +192,6 @@ export class LabDashboardComponent implements OnInit {
                 this.primaryActions = [
                     this.TestControlRights.CreateRights ? { title: 'New Test', subtitle: 'Create a new lab order', icon: 'icon icon-plus' } : null,
                     this.EnterResultControlRights.CreateRights ? { title: 'Enter Results', subtitle: 'Update test findings', icon: 'icon icon-pencil2' } : null,
-                    this.ReportControlRights.CreateRights ? { title: 'Generate Report', subtitle: 'Download patient reports', icon: 'icon icon-file-text' } : null
                 ].filter(x => x !== null);;
 
                 this.summaryStats = [
@@ -696,7 +695,7 @@ export class LabDashboardComponent implements OnInit {
                             this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
                         m.ResultSet.result[0].InvoiceModel.forEach((item, index) => {
                             this.SubTotal += parseInt(item.Price);
-                        });          
+                        });
                         this.TotalDiscount = m.ResultSet.result[0].DiscountAmount;
                         this.Total = this.SubTotal - this.TotalDiscount;
                     }
@@ -711,9 +710,21 @@ export class LabDashboardComponent implements OnInit {
         }
     }
     openReportModal(id: any) {
-        this.ReportModel = new LabReport();
-        this._reportModalRef = this.modalService.open(this.ReportModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
-
+        this.ReportModel = null;
+        if (id != null && id !== '') {
+            this.loader.ShowLoader();
+            this._labService.GenerateReport(id).then(m => {
+                if (m.IsSuccess) {
+                    this.ReportModel = m.ResultSet;
+                    this._reportModalRef = this.modalService.open(this.ReportModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
+                    this.loader.HideLoader();
+                } else
+                    this.loader.HideLoader();
+            });
+        } else {
+            this.toastr.Error('Error', 'Invalid invoice no.');
+            return;
+        }
     }
     DiscountValue(evt: any) {
         if (this.PatientTestmodel.Discount != null && this.PatientTestmodel.Discount != undefined) {

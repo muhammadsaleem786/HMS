@@ -12,8 +12,10 @@ using NPOI.SS.Formula.Functions;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.Entity.Core.Metadata.Edm;
@@ -40,9 +42,10 @@ namespace HMS.Web.API.Areas.Lab.Controllers
         private readonly Iadm_role_dtService _adm_role_dtService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iadm_user_companyService _adm_user_companyService;
+        private readonly ISmsService _smsService;
         public lab_patient_testController(IUnitOfWorkAsync unitOfWorkAsync, Ilab_patient_testService Service,
             Isys_drop_down_valueService sys_drop_down_valueService, Iadm_user_companyService adm_user_companyService,
-            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_patientService emr_patientService, Ilab_catalogService lab_catalogService, Ilab_result_mfService lab_result_mfService, Ilab_result_dtService lab_result_dtService)
+            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_patientService emr_patientService, Ilab_catalogService lab_catalogService, Ilab_result_mfService lab_result_mfService, Ilab_result_dtService lab_result_dtService, ISmsService smsService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -54,6 +57,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             _lab_catalogService = lab_catalogService;
             _lab_result_mfService = lab_result_mfService;
             _lab_result_dtService = lab_result_dtService;
+            _smsService = smsService;
         }
 
         public async Task<ResponseInfo> Save(lab_patient_test Model)
@@ -433,6 +437,68 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             }
             return objResponse;
         }
+        [HttpGet]
+        [ActionName("GenerateReport")]
+        public ResponseInfo GenerateReport(string id)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal companyId = Request.CompanyID();
+
+                var invoice = _service.Queryable().Select(z => new
+                {
+                    z.ID,
+                    z.CompanyId,
+                    ReportNo = z.InvoiceNo,
+                    ReportDate = z.CompletedDate,
+                    DepartmentName = z.lab_catalog.sys_drop_down_value.Value,
+                    ReportTitle = "Laboratory Report",
+                    MRNO = z.emr_patient_mf.MRNO,
+                    PatientName = z.emr_patient_mf.PatientName,
+                    Age = z.emr_patient_mf.Age.ToString(),
+                    Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",
+                    Phone = z.emr_patient_mf.Mobile,
+                    Address = z.emr_patient_mf.Address,
+                    OrderedBy = z.adm_user_mf.Name,
+                    ReferringPhysician = z.ReferringPhysician,
+                    CollectionCenter = z.adm_company.CompanyName,
+                    CollectionCenterAddress = z.adm_company.CompanyAddress1,
+                    CollectionCenterAddress2 = z.adm_company.CompanyAddress2,
+                    CollectionCenterPhone = z.adm_company.Phone,
+                    CollectionCenterWebsite = z.adm_company.Website,
+                    RequestedDate = z.CreatedDate,
+                    CollectedDate = z.SampleDate,
+                    ReceivedDate = z.SampleDate,
+                    ReportedDate = z.CompletedDate,
+                    InvoiceModel = z.lab_catalog.lab_parameter.Select(p => new
+                    {
+                        TestName = p.ParameterName,
+                        NormalRange = p.NormalMinimum + " - " + p.NormalMaximum,
+                        Unit = p.sys_drop_down_value.Value,
+                        CurrentResult = p.lab_result_dt.FirstOrDefault().Result.ToString() ?? "",
+                        Status = p.lab_result_dt.FirstOrDefault().Status.ToString() ?? "",
+                    }).ToList()
+                }).FirstOrDefault(x => x.ID.ToString() == id && x.CompanyId == companyId);
+
+                if (invoice == null)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "Report not found.";
+                    return objResponse;
+                }
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = invoice;
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+
+            return objResponse;
+        }
         private bool ModelExists(string key)
         {
             return _service.Query(e => e.ID.ToString() == key).Select().Any();
@@ -760,6 +826,10 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Update;
                     objResponse.IsSuccess = true;
+                    //if (Model.StatusId == 4)
+                    //{
+                    //    Task.Run(() => SendRemindersAsync(Model.emr_patient_mf,Model, CompanyID));
+                    //}
                 }
                 catch (DbUpdateException)
                 {
@@ -781,6 +851,45 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             return objResponse;
         }
 
+        public async void SendRemindersAsync(emr_patient_mf model, lab_patient_test testModel, decimal CompanyID)
+        {
+            DataAccessManager dataAccessManager = new DataAccessManager();
+            var ht = new Hashtable();
+            ht.Add("@CompanyID", CompanyID);
+            ht.Add("@ReminderId", 0);
+            var allData = dataAccessManager.GetDataSet("SP_GetReminderData", ht);
+            //var reminderTable = allData.Tables[0];
+            var integrationTable = allData.Tables[1];
+            bool isUnicode = false;
+            //if (reminderTable.Rows.Count > 0)
+            //{
+            var smsRow = integrationTable.AsEnumerable()
+       .FirstOrDefault(r => r["Type"].ToString() == "T" && Convert.ToBoolean(r["IsActive"]));
+            var emailRow = integrationTable.AsEnumerable()
+                .FirstOrDefault(r => r["Type"].ToString() == "E" && Convert.ToBoolean(r["IsActive"]));
+            string reportUrl = "https://yourdomain.com/report";
+            string messageBody =
+                $@"Dear {model.PatientName},
+
+                Your laboratory report is available.
+
+                View/Download Report:
+                {reportUrl}
+
+                Invoice No: {testModel.InvoiceNo}
+                Access Code: 1234567
+
+                Thank you.";
+            await _smsService.AuthenticateAsync(
+                 smsRow["UserName"].ToString(),
+                 smsRow["Password"].ToString(),
+                 model.Mobile,
+                 messageBody,
+                 smsRow["Masking"].ToString(),
+                 isUnicode
+             );
+            //}
+        }
 
         [HttpGet]
         [ActionName("Delete")]

@@ -52,12 +52,7 @@
                     </p>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-4 text-right flex-row flex-end">
-            <button class="btn btn-outline-secondary btn-sm mr-2">
-                <i class="icon icon-file-text"></i> Report Templates
-            </button>
-        </div>
+        </div>       
     </div>
     <!-- Primary Actions -->
     <div class="row mt-3">
@@ -213,9 +208,9 @@
                                                     (click)="onOpenEnterResultFromCase(item)">
                                                 Enter Results
                                             </button>
-                                            <!--<button *ngIf="item.statusId==4" class="btn btn-light btn-sm mr-1">
+                                            <button *ngIf="item.statusId==4" (click)="openReportModal(item.testId)" class="btn btn-light btn-sm mr-1">
                                                 <i class="icon icon-printer"></i> Generate Report
-                                            </button>-->
+                                            </button>
                                             <button *ngIf="item.statusId==1" class="btn btn-danger btn-sm"
                                                     type="button"
                                                     (click)="Delete(item.testId)">
@@ -360,12 +355,12 @@
                 <!-- Search by Test ID -->
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="font-weight-500">Search by Test ID</label>
+                        <label class="font-weight-500">Search by Sample ID</label>
                         <div class="input-group input-group-sm">
 
                             <input type="text" id="TestIdSearch" (click)="LoadTestSearch()"
                                    class="form-control"
-                                   placeholder="Enter Test ID (e.g. TST-2024-001)"
+                                   placeholder="Enter Sample ID (e.g. SMP-26-001)"
                                    [(ngModel)]="enterResultSearchValue" />
                         </div>
                     </div>
@@ -835,14 +830,16 @@
 
             <div class="text-center mb-3">
 
-                <h4>Shaukat Khanum Memorial Hospital</h4>
-
+                <h4>{{ReportModel?.CollectionCenter}}</h4>
+                <h4>{{ReportModel?.CollectionCenterAddress}},{{ReportModel?.CollectionCenterAddress2}}</h4>
+                <h4>{{ReportModel?.CollectionCenterPhone}}</h4>
+                <h4>{{ReportModel?.CollectionCenterWebsite}}</h4>
                 <h5>
-                    {{ ReportModel?.Header?.departmentName }}
+                    {{ ReportModel?.DepartmentName }}
                 </h5>
 
                 <h4>
-                    {{ ReportModel?.Header?.reportTitle }}
+                    {{ ReportModel?.ReportTitle }}
                 </h4>
 
             </div>
@@ -857,31 +854,31 @@
 
                         <tr>
                             <td><b>MRNO</b></td>
-                            <td>{{ ReportModel?.Patient?.mrno }}</td>
+                            <td>{{ ReportModel?.MRNO }}</td>
                         </tr>
 
                         <tr>
                             <td><b>Name</b></td>
-                            <td>{{ ReportModel?.Patient?.patientName }}</td>
+                            <td>{{ ReportModel?.PatientName }}</td>
                         </tr>
 
                         <tr>
                             <td><b>Age/Sex</b></td>
                             <td>
-                                {{ ReportModel?.Patient?.age }}
+                                {{ ReportModel?.Age }}
                                 /
-                                {{ ReportModel?.Patient?.gender }}
+                                {{ ReportModel?.Gender }}
                             </td>
                         </tr>
 
                         <tr>
                             <td><b>Phone</b></td>
-                            <td>{{ ReportModel?.Patient?.phone }}</td>
+                            <td>{{ ReportModel?.Phone }}</td>
                         </tr>
 
                         <tr>
                             <td><b>Address</b></td>
-                            <td>{{ ReportModel?.Patient?.address }}</td>
+                            <td>{{ ReportModel?.Address }}</td>
                         </tr>
 
                     </table>
@@ -894,41 +891,32 @@
 
                         <tr>
                             <td><b>Ordered By</b></td>
-                            <td>{{ ReportModel?.Patient?.orderedBy }}</td>
+                            <td>{{ ReportModel?.OrderedBy }}</td>
                         </tr>
 
                         <tr>
                             <td><b>Referring Physician</b></td>
-                            <td>{{ ReportModel?.Patient?.referringPhysician }}</td>
+                            <td>{{ ReportModel?.ReferringPhysician }}</td>
                         </tr>
 
                         <tr>
                             <td><b>Requested</b></td>
                             <td>
-                                {{
- ReportModel?.Patient?.requestedDate
-                            | date:'dd-MMM-yyyy HH:mm'
-                                }}
+                                {{ ReportModel?.RequestedDate| date:'dd-MMM-yyyy HH:mm'}}
                             </td>
                         </tr>
 
                         <tr>
                             <td><b>Collected</b></td>
                             <td>
-                                {{
- ReportModel?.Patient?.collectedDate
-                            | date:'dd-MMM-yyyy HH:mm'
-                                }}
+                                {{ ReportModel?.CollectedDate| date:'dd-MMM-yyyy HH:mm'}}
                             </td>
                         </tr>
 
                         <tr>
                             <td><b>Reported</b></td>
                             <td>
-                                {{
- ReportModel?.Patient?.reportedDate
-                            | date:'dd-MMM-yyyy HH:mm'
-                                }}
+                                {{ReportModel?.ReportedDate| date:'dd-MMM-yyyy HH:mm'}}
                             </td>
                         </tr>
 
@@ -954,36 +942,28 @@
 
                         <th>Current</th>
 
-                        <th>Previous 1</th>
-
-                        <th>Previous 2</th>
-
                     </tr>
 
                 </thead>
 
                 <tbody>
 
-                    <tr *ngFor="let item of ReportModel?.Results">
+                    <tr *ngFor="let item of ReportModel?.InvoiceModel">
 
-                        <td>{{ item.testName }}</td>
+                        <td>{{ item.TestName }}</td>
 
-                        <td>{{ item.normalRange }}</td>
+                        <td>{{ item.NormalRange }}</td>
 
-                        <td>{{ item.unit }}</td>
+                        <td>{{ item.Unit }}</td>
 
                         <td>
-                            <span [class.text-danger]="item.isAbnormal"
-                                  [class.font-weight-bold]="item.isAbnormal">
+                            <span [class.text-danger]="item.Status === 'Critical'"
+                                  [class.font-weight-bold]="item.Status === 'Normal'|| item.Status === 'Abnormal'">
 
-                                {{ item.currentResult }}
+                                {{ item.CurrentResult }}
 
                             </span>
                         </td>
-
-                        <td>{{ item.previousResult1 }}</td>
-
-                        <td>{{ item.previousResult2 }}</td>
 
                     </tr>
 

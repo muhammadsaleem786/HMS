@@ -77,6 +77,10 @@ export class LabService {
         var data = { 'Id': Id };
         return this.http.Get(this.urlToApiPatient + '/GetBillByInvoiceNo', data).then(e => e);
     }
+    GenerateReport(Id: string): Promise<any> {
+        var data = { 'Id': Id };
+        return this.http.Get(this.urlToApiPatient + '/GenerateReport', data).then(e => e);
+    }
     Delete(Id: string): Promise<any> {
         var data = { 'Id': Id };
         return this.http.Delete(this.urlToApiPatient + '/Delete', data).then(e => e);

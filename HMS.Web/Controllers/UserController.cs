@@ -1,31 +1,31 @@
-﻿using HMS.Service;
-using HMS.Web.API.Common;
-using HMS.Entities.CustomModel;
+﻿using HMS.Entities.CustomModel;
+using HMS.Entities.Enum;
 using HMS.Entities.Models;
+using HMS.Service;
 using HMS.Service.Services.Admin;
+using HMS.Service.Services.Appointment;
+using HMS.Service.Services.Employee;
+using HMS.Web.API.Common;
+using NPOI.SS.Formula.Functions;
+using NPOI.SS.Util;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Configuration;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-
-using HMS.Entities.Enum;
-using HMS.Service.Services.Appointment;
-using System.Net.Mail;
-using HMS.Service.Services.Employee;
-using System.IO.IsolatedStorage;
-using System.Net;
-using NPOI.SS.Formula.Functions;
 using static System.Data.Entity.Infrastructure.Design.Executor;
-using System.Configuration;
-using NPOI.SS.Util;
 
 namespace HMS.Web.API.Controllers
 {
@@ -696,6 +696,7 @@ namespace HMS.Web.API.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                 }
                 objResponse = IsEmailExist(Model.Email);
+                var genderList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 2).Select(a => a.ID).ToList();
                 decimal LoginID = Request.LoginID();
                 decimal empID = 1;
                 if (!objResponse.IsSuccess)
@@ -777,10 +778,16 @@ namespace HMS.Web.API.Controllers
                     Model.ActivationTokenDate = Request.DateTimes();
                     Model.ActivatedDate = Request.DateTimes();
                     Model.LastSignIn = Request.DateTimes();
+                    if (genderList != null)
+                    {
+                        string result = string.Join(",", genderList);
+                        Model.IsGenderDropdown = result;
+                    }
                     Model.LoginFailureNo = 0;
                     Model.IsActivated = false;
                     Model.UserLock = false;
                     Model.EmployeeID = empID;
+                    Model.DrugMode = "B";
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);
                     adm_user_token user_token = new adm_user_token();

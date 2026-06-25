@@ -1,102 +1,95 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input, TemplateRef } from '@angular/core';
-import { Company } from '../../models/company.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CompanyService } from '../../setup/Setting/Company/company.service';
+import { lab_patient_test, lab_result_mf, lab_result_dt, LabReport } from '../Lab/CatalogModel';
+import { FormGroup, FormControl, FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoaderService } from '../../../../CommonService/LoaderService';
 import { ValidationVariables } from '../../../../AngularConfig/global';
 import { CommonService } from '../../../../CommonService/CommonService';
 import { CommonToastrService } from '../../../../CommonService/CommonToastrService';
-import { LabDashboardService } from './LabDashboardService';
+import { LabService } from './LabService';
 import { GlobalVariable } from '../../../../AngularConfig/global';
 import { FileService } from '../../../../CommonService/FileService';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EncryptionService } from '../../../../CommonService/encryption.service';
+import { PaginationModel, PaginationConfig } from '../../../../CommonComponent/PaginationComponentConfig'
+declare var $: any;
+import { debounce } from 'lodash';
+import { forEach } from '@angular/router/src/utils/collection';
 @Component({
     selector: 'app-LabDashboard',
     templateUrl: './LabDashboardComponent.html',
-    providers: [FormBuilder, CompanyService, LabDashboardService, FileService],
+    providers: [LabService],
 })
 export class LabDashboardComponent implements OnInit {
-    public model = new Company();
+    public PModel = new PaginationModel();
+    public PConfig = new PaginationConfig();
+    public PatientTestmodel = new lab_patient_test();
+    public Resultmodel = new lab_result_mf();
+    public ReportModel: any;
+    public InvoiceCompanyInfo: any;
     public PayrollRegion: string;
     public Rights: number[] = [];
     public Modules: number[] = [];
     public Keywords: any[] = [];
     public IsEdit: boolean = false;
-    public IsNewImage: boolean = true;   
-    public CompanyObj: any; public UsersObj: any;
-
+    public IsNewImage: boolean = true;
+    public CompanyObj: any;
+    public patientTestForm: FormGroup;
+    public resultForm: FormGroup;
+    public TestControlRights: any;
+    public EnterResultControlRights: any;
+    public ReportControlRights: any;
+    public submitted: boolean;
     // Dashboard UI data
     public primaryActions: any[] = [];
     public summaryStats: any[] = [];
     public activeCases: any[] = [];
-
+    public InvoiceTestModel: any[] = [];
     // Filters / controls
     public searchText: string = '';
-    public departmentFilters: string[] = ['Biochemistry', 'Clinical Pathology'];
-    public statusFilters: string[] = ['Pending', 'In Progress', 'Sample Collected', 'Completed'];
-    public sampleTypeFilters: string[] = ['Blood', 'Urine'];
+    public categoryFilters: any[] = [];
+    public sampleTypeFilters: any[] = [];
+    public statusFilters: any[] = [];
     public selectedDepartment: string = '';
     public selectedStatus: string = '';
     public selectedSampleType: string = '';
-    public actionStatusOptions: string[] = ['Pending', 'In Progress', 'Sample Collected', 'Completed'];
-
+    public SubTotal: number = 0;
+    public Total: number = 0;
+    public TotalDiscount: number = 0;
+    public valueForUser: any;
+    public DiscountTypeList = [];
+    public DisType: number = 1;
+    public DiscountAmount: number = 0;
     // Test catalogue, order & result dialogs
-    @ViewChild('TestCatalogueModal') TestCatalogueModal: TemplateRef<any>;
-    @ViewChild('TestParameterModal') TestParameterModal: TemplateRef<any>;
     @ViewChild('NewTestOrderModal') NewTestOrderModal: TemplateRef<any>;
     @ViewChild('EnterResultModal') EnterResultModal: TemplateRef<any>;
-    private _testCatalogueRef: NgbModalRef;
-    private _testParameterRef: NgbModalRef;
+    @ViewChild('PrintLabelModal') PrintLabelModal: TemplateRef<any>;
+    @ViewChild('InvoiceModal') InvoiceModal: TemplateRef<any>;
+    @ViewChild('ReportModal') ReportModal: TemplateRef<any>;
+
     private _newTestOrderRef: NgbModalRef;
     private _enterResultRef: NgbModalRef;
+    private _printLabelRef: NgbModalRef;
+    private _invoiceModalRef: NgbModalRef;
+    private _reportModalRef: NgbModalRef;
 
-    public testCatalogueSearch: string = '';
-    public testCatalogueTabs: string[] = ['All Tests', 'Biochemistry', 'Hematology', 'Clinical Pathology', 'Microbiology', 'Immunology'];
-    public selectedCatalogueTab: string = 'Biochemistry';
-    public testCatalogueList: any[] = [];
-    public filteredCatalogueList: any[] = [];
-    public selectedTestForParameter: any;
-
-    // Add parameter model
-    public parameterModel: any = {};
-
-    // Catalogue parameters (UI-only, per test code)
-    public catalogueParameters: { [code: string]: any[] } = {};
-    public expandedCatalogueCode: string | null = null;
-
-    // Add new catalogue state (UI only)
-    public isAddingCatalogue: boolean = false;
-    public newCatalogue: any = {
-        name: '',
-        category: '',
-        sample: '',
-        tat: '',
-        price: null
-    };
-
-    // New Test Order state (UI only)
-    public newOrder: any = {
-        patientId: '',
-        patientName: '',
-        age: '',
-        gender: '',
-        priority: '',
-        clinicalNotes: ''
-    };
-    public orderPriorityOptions: string[] = ['Routine', 'Urgent', 'Stat'];
+    public testCatalogList: any[] = [];
+    public selectedSample: any;
     public orderTestSearch: string = '';
     public filteredOrderTests: any[] = [];
     public groupedOrderSamples: any[] = [];
     public orderTotalAmount: number = 0;
-
+    public orderSubTotalAmount: number = 0;
+    previousPage: number = 1;
+    nextPage: number = 1;
+    totalPages: number = 0;
+    pagesRange: number[] = [];
     // Enter Result state (UI only)
     public enterResultSearchId: string = '';
+    public enterResultSearchValue: string = '';
+    public Comment: string = '';
     public selectedResultTest: any;
     public selectedResultParameters: any[] = [];
-    private resultParameterTemplates: { [key: string]: any[] } = {};
-
     // Result summary for current test (used by header cards in Enter Result dialog)
     public resultSummary = {
         critical: 0,
@@ -104,405 +97,261 @@ export class LabDashboardComponent implements OnInit {
         normal: 0
     };
 
-    constructor(public _fb: FormBuilder, public _router: Router, public companyService: CompanyService
+    constructor(public _fb: FormBuilder, public _router: Router
         , public commonservice: CommonService, public toastr: CommonToastrService
-        , public loader: LoaderService, private encrypt: EncryptionService, public _labService: LabDashboardService
-        , private http: FileService, private modalService: NgbModal) {
-        this.Modules = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Modules')))
-        this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')))
+        , public loader: LoaderService, private encrypt: EncryptionService, public _labService: LabService
+        , private modalService: NgbModal) {
+        this.PayrollRegion = this.commonservice.getPayrollRegion();
+        this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
+        this.TestControlRights = this.commonservice.ScreenRights("114");
+        this.EnterResultControlRights = this.commonservice.ScreenRights("115");
+        this.ReportControlRights = this.commonservice.ScreenRights("116");
+        this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
-        this.UsersObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
     }
     ngOnInit() {
-        this.buildDashboardData();
-        this.buildTestCatalogueData();
-    }  
-
-    // Mock data for dashboard UI (UI-only, can be replaced with API later)
-    private buildDashboardData(): void {
-        this.primaryActions = [
-            { title: 'Test Catalog', subtitle: 'Configure and manage tests', icon: 'icon icon-lab' },
-            { title: 'New Test Order', subtitle: 'Create a new lab order', icon: 'icon icon-plus' },
-            { title: 'Enter Results', subtitle: 'Update test findings', icon: 'icon icon-pencil2' },
-            { title: 'Generate Report', subtitle: 'Download patient reports', icon: 'icon icon-file-text' }
-        ];
-
-        this.summaryStats = [
-            { label: 'Pending Tests', value: 1, badgeText: 'Today', badgeClass: 'badge-primary-light' },
-            { label: 'In Progress', value: 1, badgeText: 'Live', badgeClass: 'badge-info' },
-            { label: 'Completed Today', value: 1, badgeText: 'Today', badgeClass: 'badge-success-light' },
-            { label: 'Urgent Tests', value: 1, badgeText: 'High', badgeClass: 'badge-danger' }
-        ];
-
-        this.activeCases = [
-            {
-                testId: 'TST-2024-006',
-                patientName: 'Emily Davis',
-                patientCode: 'PAT-2024-004',
-                sampleId: 'SMP-BLD-003',
-                testName: 'Lipid Profile',
-                sampleType: 'Blood',
-                department: 'Biochemistry',
-                priority: 'Routine',
-                priorityClass: 'badge-secondary',
-                status: 'Pending',
-                statusClass: 'badge-warning-light',
-                orderedDate: new Date(2024, 0, 17),
-                actionStatus: 'Pending'
-            },
-            {
-                testId: 'TST-2024-001',
-                patientName: 'John Doe',
-                patientCode: 'PAT-2024-001',
-                sampleId: 'SMP-BLD-001',
-                testName: 'Complete Blood Count',
-                sampleType: 'Blood',
-                department: 'Biochemistry',
-                priority: 'Routine',
-                priorityClass: 'badge-secondary',
-                status: 'In Progress',
-                statusClass: 'badge-info',
-                orderedDate: new Date(2024, 0, 15),
-                actionStatus: 'In Progress'
-            }
-        ];
-
-        // simple parameter templates keyed by test name
-        this.resultParameterTemplates = {
-            'Lipid Profile': [
-                {
-                    name: 'Total Cholesterol',
-                    unit: 'mg/dL',
-                    reference: '< 200',
-                    normalMin: 0,
-                    normalMax: 199,
-                    criticalLow: null,
-                    criticalHigh: 300,
-                    result: '',
-                    status: '',
-                    comment: ''
-                },
-                {
-                    name: 'HDL Cholesterol',
-                    unit: 'mg/dL',
-                    reference: '> 40',
-                    normalMin: 40,
-                    normalMax: 200,
-                    criticalLow: 25,
-                    criticalHigh: null,
-                    result: '',
-                    status: '',
-                    comment: ''
-                },
-                {
-                    name: 'LDL Cholesterol',
-                    unit: 'mg/dL',
-                    reference: '< 130',
-                    normalMin: 0,
-                    normalMax: 129,
-                    criticalLow: null,
-                    criticalHigh: 200,
-                    result: '',
-                    status: '',
-                    comment: ''
-                },
-                {
-                    name: 'Triglycerides',
-                    unit: 'mg/dL',
-                    reference: '< 150',
-                    normalMin: 0,
-                    normalMax: 149,
-                    criticalLow: null,
-                    criticalHigh: 300,
-                    result: '',
-                    status: '',
-                    comment: ''
-                }
-            ],
-            // Complete Blood Count (CBC) parameters with numeric ranges for automatic status calculation
-            'Complete Blood Count': [
-                {
-                    name: 'White Blood Cells',
-                    unit: 'cells/µL',
-                    reference: '4,000 - 11,000',
-                    normalMin: 4000,
-                    normalMax: 11000,
-                    criticalLow: 2000,
-                    criticalHigh: 20000,
-                    result: '',
-                    status: '',
-                    comment: ''
-                },
-                {
-                    name: 'Red Blood Cells',
-                    unit: 'cells/µL',
-                    reference: '4,200,000 - 5,400,000',
-                    normalMin: 4200000,
-                    normalMax: 5400000,
-                    criticalLow: 2500000,
-                    criticalHigh: 7000000,
-                    result: '',
-                    status: '',
-                    comment: ''
-                },
-                {
-                    name: 'Hemoglobin',
-                    unit: 'g/dL',
-                    reference: '12.0 - 15.5',
-                    normalMin: 12,
-                    normalMax: 15.5,
-                    criticalLow: 7,
-                    criticalHigh: 20,
-                    result: '',
-                    status: '',
-                    comment: ''
-                },
-                {
-                    name: 'Hematocrit',
-                    unit: '%',
-                    reference: '36 - 46',
-                    normalMin: 36,
-                    normalMax: 46,
-                    criticalLow: 20,
-                    criticalHigh: 60,
-                    result: '',
-                    status: '',
-                    comment: ''
-                },
-                {
-                    name: 'Platelet Count',
-                    unit: 'lakhs/µL',
-                    reference: '1.5 - 4.5',
-                    normalMin: 1.5,
-                    normalMax: 4.5,
-                    criticalLow: 0.5,
-                    criticalHigh: 8,
-                    result: '',
-                    status: '',
-                    comment: ''
-                }
-            ]
-        };
-    }
-
-    private buildTestCatalogueData(): void {
-        this.testCatalogueList = [
-            {
-                code: 'BC001',
-                name: 'Blood Sugar - Fasting',
-                price: 15,
-                category: 'Biochemistry',
-                sample: 'Blood',
-                tat: '2-4 hours',
-                parameterCount: 1
-            },
-            {
-                code: 'BC002',
-                name: 'Blood Sugar - Random',
-                price: 12,
-                category: 'Biochemistry',
-                sample: 'Blood',
-                tat: '2-4 hours',
-                parameterCount: 1
-            },
-            {
-                code: 'BC003',
-                name: 'HbA1c (Glycated Hemoglobin)',
-                price: 35,
-                category: 'Biochemistry',
-                sample: 'Blood',
-                tat: '6-8 hours',
-                parameterCount: 1
-            },
-            {
-                code: 'CP001',
-                name: 'Complete Blood Count (CBC)',
-                price: 50,
-                category: 'Hematology',
-                sample: 'Blood',
-                tat: '4-6 hours',
-                parameterCount: 5
-            },
-            {
-                code: 'UR001',
-                name: 'Urine Routine Examination',
-                price: 25,
-                category: 'Clinical Pathology',
-                sample: 'Urine',
-                tat: '2-4 hours',
-                parameterCount: 3
-            }
-        ];
-        this.applyTestCatalogueFilter();
-        // initialise order tests list with catalogue data
-        this.filteredOrderTests = this.testCatalogueList.map(t => ({ ...t, selected: false }));
-
-        // Mock parameter lists for catalogue cards
-        this.catalogueParameters = {
-            'BC001': [
-                { name: 'Glucose (Fasting)', unit: 'mg/dL', range: '70 - 100' }
-            ],
-            'BC002': [
-                { name: 'Glucose (Random)', unit: 'mg/dL', range: '70 - 140' }
-            ],
-            'BC003': [
-                { name: 'HbA1c', unit: '%', range: '< 5.7' }
-            ],
-            'CP001': [
-                { name: 'White Blood Cells', unit: 'cells/µL', range: '4,000 - 11,000' },
-                { name: 'Hemoglobin', unit: 'g/dL', range: '12.0 - 15.5' }
-            ],
-            'UR001': [
-                { name: 'pH', unit: '', range: '4.5 - 8.0' },
-                { name: 'Specific Gravity', unit: '', range: '1.005 - 1.030' }
-            ]
-        };
-    }
-
-    private applyTestCatalogueFilter(): void {
-        const tab = this.selectedCatalogueTab;
-        const search = (this.testCatalogueSearch || '').toLowerCase();
-
-        this.filteredCatalogueList = this.testCatalogueList.filter(t => {
-            const matchesTab = tab === 'All Tests' || t.category === tab;
-            const matchesSearch = !search ||
-                t.name.toLowerCase().includes(search) ||
-                t.code.toLowerCase().includes(search);
-            return matchesTab && matchesSearch;
+        this.DiscountTypeList.push({ "id": 1, "Name": "%" });
+        this.DiscountTypeList.push({ "id": 2, "Name": "PKR" });
+        this.PModel.SortName = "";
+        this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
+        this.selectPage(this.PModel.CurrentPage);
+        this.patientTestForm = this._fb.group({
+            PatientId: [''],
+            StatusId: [''],
+            PatientName: [''],
+            PriorityId: [''],
+            PriorityName: [''],
+            ClinicalNotes: [''],
+            CatalogIds: [''],
+            Age: [''],
+            Gender: [''],
+            SampleDate: [''],
+            CompletedDate: [''],
+            InProgressDate: [''],
+            ReferringPhysician: [''],
+            DiscountAmount: [''],
+            Discount: [''],
+            DiscountType: [''],
+        });
+        this.resultForm = this._fb.group({
+            PatientId: [''],
+            CatalogId: [''],
+            PatientTestId: [''],
+            Comment: ['']
         });
     }
-
-    public toggleCatalogueParameters(test: any): void {
-        if (!test || !test.code) {
-            return;
+    selectPage(page: number) {
+        if (page == 0 || (page != 1 && this.PModel.CurrentPage == page && this.pagesRange.length > 0)) return;
+        this.PModel.CurrentPage = page;
+        this.Refresh();
+    }
+    getPages(totalRecord: number, recordPerPage: number) {
+        if (!isNaN(totalRecord))
+            this.totalPages = this.getTotalPages(totalRecord, recordPerPage);
+        this.getpagesRange();
+    }
+    getpagesRange() {
+        if (this.pagesRange.indexOf(this.PModel.CurrentPage) == -1 || this.totalPages <= 10)
+            this.papulatePagesRange();
+        else if (this.pagesRange.length == 1 && this.totalPages > 10)
+            this.papulatePagesRange();
+    }
+    papulatePagesRange() {
+        this.pagesRange = [];
+        var Result = Math.ceil(Math.max(this.PModel.CurrentPage, 1) / Math.max(this.PModel.RecordPerPage, 1));
+        this.previousPage = ((Result - 1) * this.PModel.RecordPerPage)
+        this.nextPage = (Result * this.PModel.RecordPerPage) + 1;
+        if (this.nextPage > this.totalPages)
+            this.nextPage = this.totalPages;
+        for (var i = 1; i <= 10; i++) {
+            if ((this.previousPage + i) > this.totalPages) return;
+            this.pagesRange.push(this.previousPage + i)
         }
-        this.expandedCatalogueCode = this.expandedCatalogueCode === test.code ? null : test.code;
     }
-
-    // --- Test catalogue: add new catalogue (UI only) ---
-    public onStartAddCatalogue(): void {
-        this.isAddingCatalogue = true;
-        this.newCatalogue = {
-            name: '',
-            category: '',
-            sample: '',
-            tat: '',
-            price: null
-        };
+    getTotalPages(totalRecord: number, recordPerPage: number): number {
+        return Math.ceil(Math.max(totalRecord, 1) / Math.max(recordPerPage, 1));
     }
+    Refresh() {
+        this.loader.ShowLoader();
+        this.PModel.VisibleColumnInfo = "Test#Test,Patient#Patient,Sample#Sample";
+        const department = this.selectedDepartment !== 'All Departments' ? this.selectedDepartment : '';
+        const status = this.selectedStatus !== 'All Status' ? this.selectedStatus : '';
+        const sampleType = this.selectedSampleType !== 'All Sample Types' ? this.selectedSampleType : '';
+        this.PModel.FilterID = `${department},${status},${sampleType}`;
+        this._labService
+            .GetListWithParm(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText, this.PModel.FilterID).then(m => {
+                this.pagesRange = [];
+                this.activeCases = [];
+                this.PModel.TotalRecord = m.TotalRecord;
+                this.activeCases = m.DataList;
+                this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
+                this.categoryFilters = m.OtherData3Model.filter((v: any) => v.DropDownID === 68);
+                this.statusFilters = m.OtherData3Model.filter((v: any) => v.DropDownID === 72);
+                this.sampleTypeFilters = m.OtherData3Model.filter((v: any) => v.DropDownID === 71);
+                const counts = m.OtherDataModel || {};
+                this.primaryActions = [
+                    this.TestControlRights.CreateRights ? { title: 'New Test', subtitle: 'Create a new lab order', icon: 'icon icon-plus' } : null,
+                    this.EnterResultControlRights.CreateRights ? { title: 'Enter Results', subtitle: 'Update test findings', icon: 'icon icon-pencil2' } : null,
+                ].filter(x => x !== null);;
 
-    public onCancelAddCatalogue(): void {
-        this.isAddingCatalogue = false;
+                this.summaryStats = [
+                    { label: 'Pending Tests', value: counts.PendingTests || 0, badgeText: 'Today', badgeClass: 'badge-primary-light' },
+                    { label: 'In Progress', value: counts.InProgressTests || 0, badgeText: 'Live', badgeClass: 'badge-info' },
+                    { label: 'Completed Today', value: counts.CompletedToday || 0, badgeText: 'Today', badgeClass: 'badge-success-light' },
+                    { label: 'Urgent Tests', value: counts.UrgentTests || 0, badgeText: 'High', badgeClass: 'badge-danger' }
+                ];
+                this.loader.HideLoader();
+            });
     }
-
-    public onSaveCatalogue(isValid: boolean): void {
-        if (!isValid) {
-            return;
+    // New Test Order helpers
+    public onOpenNewTestOrder(): void {
+        // reset order state (UI only)
+        this.loader.ShowLoader();
+        this._labService.FormLoad().then(m => {
+            if (m.IsSuccess) {
+                this.testCatalogList = m.ResultSet.resultObj;
+                this.filteredOrderTests = this.testCatalogList.map(t => ({ ...t, selected: false }));
+                this.PatientTestmodel = new lab_patient_test();
+                this.PatientTestmodel.PriorityId = 1;
+                this.PatientTestmodel.PriorityName = 'Routine';
+                this.orderTestSearch = '';
+                this.filteredOrderTests = this.testCatalogList.map(t => ({ ...t, selected: false }));
+                this.groupedOrderSamples = [];
+                this.orderTotalAmount = 0;
+                this._newTestOrderRef = this.modalService.open(this.NewTestOrderModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
+                this.loader.HideLoader();
+            } else
+                this.loader.HideLoader();
+        });
+    }
+    openPrintModal(sample: any): void {
+        if (sample) {
+            this.loader.ShowLoader();
+            this._labService.GetPrintById(sample.testId, sample.serialNo).then(m => {
+                if (m.IsSuccess) {
+                    this.selectedSample = m.ResultSet.result.Header;
+                    this._printLabelRef = this.modalService.open(this.PrintLabelModal, { size: 'md', centered: true, windowClass: 'DashboardWraper' });
+                    this.loader.HideLoader();
+                } else
+                    this.loader.HideLoader();
+            });
         }
 
-        const nextCodeNumber = this.testCatalogueList.length + 1;
-        const code = 'NEW' + nextCodeNumber.toString().padStart(3, '0');
-
-        const newItem = {
-            code: code,
-            name: this.newCatalogue.name,
-            price: Number(this.newCatalogue.price) || 0,
-            category: this.newCatalogue.category,
-            sample: this.newCatalogue.sample,
-            tat: this.newCatalogue.tat,
-            parameterCount: 0
-        };
-
-        this.testCatalogueList = [newItem, ...this.testCatalogueList];
-        this.applyTestCatalogueFilter();
-        this.isAddingCatalogue = false;
-        this.toastr.Success('Test added to catalogue.');
     }
-
+    LoadPatient() {
+        $("#PatientSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._labService.SearchPatient(request.term).then(m => {
+                    if (m.ResultSet.PatientInfo.length == 0)
+                        $("#PatientSearch").val('');
+                    if (m.ResultSet.PatientInfo.length != 0)
+                        response(m.ResultSet.PatientInfo);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.PatientTestmodel.PatientId = ui.item.value;
+                this.PatientTestmodel.PatientName = ui.item.label;
+                this.PatientTestmodel.Age = ui.item.Age;
+                this.PatientTestmodel.Gender = ui.item.Gender;
+                return ui.item.label;
+            }
+        });
+    }
+    LoadPriority() {
+        $("#PrioritySearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._labService.PrioritySearch(request.term).then(m => {
+                    if (m.ResultSet.result.length == 0)
+                        $("#PrioritySearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.PatientTestmodel.PriorityId = ui.item.value;
+                this.PatientTestmodel.PriorityName = ui.item.label;
+                return ui.item.label;
+            }
+        });
+    }
+    LoadTestSearch() {
+        $("#TestIdSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._labService.TestSearch(request.term).then(m => {
+                    if (m.ResultSet.result.length == 0)
+                        $("#TestIdSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.enterResultSearchId = ui.item.value;
+                this.enterResultSearchValue = ui.item.label;
+                this.onSearchResultByTestId();
+                return ui.item.label;
+            }
+        });
+    }
     // UI Events - dashboard
     public onSearch(): void {
         // Hook for future filtering logic (currently UI only)
     }
-
     public onPrimaryActionClick(action: any): void {
         if (!action || !action.title) {
             return;
         }
-
-        if (action.title === 'Test Catalog') {
-            this.onOpenTestCatalogue();
-        } else if (action.title === 'New Test Order') {
+        if (action.title === 'New Test') {
             this.onOpenNewTestOrder();
         } else if (action.title === 'Enter Results') {
             this.onOpenEnterResult();
         }
     }
-
-    // UI Events - Test catalogue
-    public onOpenTestCatalogue(): void {
-        this.applyTestCatalogueFilter();
-        // Using 'lg' here to match available ng-bootstrap modal size typings in this project
-        this._testCatalogueRef = this.modalService.open(this.TestCatalogueModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
-    }
-
-    public onCatalogueSearchChange(): void {
-        this.applyTestCatalogueFilter();
-    }
-
-    public onChangeCatalogueTab(tab: string): void {
-        this.selectedCatalogueTab = tab;
-        this.applyTestCatalogueFilter();
-    }
-
-    public onOpenParameterDialog(test: any): void {
-        this.selectedTestForParameter = test;
-        this.parameterModel = {
-            name: '',
-            unit: '',
-            referenceRange: '',
-            normalMin: '',
-            normalMax: '',
-            criticalLow: '',
-            criticalHigh: '',
-            description: ''
-        };
-        this._testParameterRef = this.modalService.open(this.TestParameterModal, { size: 'lg', centered: true });
-    }
-
-    public onSaveParameter(isValid: boolean): void {
-        if (!isValid) {
-            return;
+    public onSavePatient(isValid: boolean): void {
+        this.submitted = true;
+        if (isValid) {
+            if (!this.PatientTestmodel.CatalogIds.trim()) {
+                this.toastr.Error('Error', 'Please select at least one test');
+                return;
+            }
+            this.submitted = false;
+            this.loader.ShowLoader();
+            this.PatientTestmodel.DiscountAmount = this.DiscountAmount;
+            if (this.DisType == 1)
+                this.PatientTestmodel.DiscountType = "%";
+            else if (this.DisType == 2)
+                this.PatientTestmodel.DiscountType = "PKR";
+            this._labService.SaveOrUpdate(this.PatientTestmodel).then(m => {
+                var result = JSON.parse(m._body);
+                if (result.IsSuccess) {
+                    this.toastr.Success(result.Message);
+                    if (this._newTestOrderRef) {
+                        this._newTestOrderRef.close();
+                    }
+                    this.Refresh();
+                    this.loader.HideLoader();
+                }
+                else {
+                    this.loader.HideLoader();
+                    this.toastr.Error('Error', result.ErrorMessage);
+                }
+            });
         }
-        // For now just close modal and show a toast; can be replaced with API call later
-        this.toastr.Success('Parameter added successfully.');
-        if (this._testParameterRef) {
-            this._testParameterRef.close();
+        else {
+            this.toastr.Error('Error', 'Please select at least one test.');
         }
     }
-
-    // New Test Order helpers
-    public onOpenNewTestOrder(): void {
-        // reset order state (UI only)
-        this.newOrder = {
-            patientId: '',
-            patientName: '',
-            age: '',
-            gender: '',
-            priority: '',
-            clinicalNotes: ''
-        };
-        this.orderTestSearch = '';
-        this.filteredOrderTests = this.testCatalogueList.map(t => ({ ...t, selected: false }));
-        this.groupedOrderSamples = [];
-        this.orderTotalAmount = 0;
-
-        // Use 'lg' size to comply with available NgbModal sizes in this project
-        this._newTestOrderRef = this.modalService.open(this.NewTestOrderModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
-    }
-
     public onOrderTestSearchChange(): void {
         const search = (this.orderTestSearch || '').toLowerCase();
-        this.filteredOrderTests = this.testCatalogueList
+        this.filteredOrderTests = this.testCatalogList
             .map(t => {
                 const selected = this.groupedOrderSamples
                     .some(g => g.tests.some(x => x.code === t.code));
@@ -521,6 +370,21 @@ export class LabDashboardComponent implements OnInit {
         if (!test) {
             return;
         }
+        // Get existing ids
+        const ids = new Set(
+            (this.PatientTestmodel.CatalogIds || '')
+                .split(',')
+                .map((x: string) => x.trim())
+                .filter((x: string) => x)
+        );
+
+        if (test.selected) {
+            ids.add(String(test.code));
+        } else {
+            ids.delete(String(test.code));
+        }
+
+        this.PatientTestmodel.CatalogIds = Array.from(ids).join(',');
 
         const exists = this.groupedOrderSamples
             .some(g => g.tests.some(t => t.code === test.code));
@@ -546,11 +410,18 @@ export class LabDashboardComponent implements OnInit {
         if (!test || !this.groupedOrderSamples) {
             return;
         }
-
         this.groupedOrderSamples.forEach(g => {
             g.tests = g.tests.filter(t => t.code !== test.code);
         });
         this.groupedOrderSamples = this.groupedOrderSamples.filter(g => g.tests.length > 0);
+
+        // Remove from CatalogIds
+        const ids = (this.PatientTestmodel.CatalogIds || '')
+            .split(',')
+            .map((x: string) => x.trim())
+            .filter((x: string) => x && x !== String(test.code));
+
+        this.PatientTestmodel.CatalogIds = ids.join(',');
 
         // sync checkbox state
         this.filteredOrderTests = this.filteredOrderTests.map(t => {
@@ -565,25 +436,28 @@ export class LabDashboardComponent implements OnInit {
 
     private recalculateOrderTotals(): void {
         let total = 0;
+        let SubTotal = 0;
         (this.groupedOrderSamples || []).forEach(g => {
             (g.tests || []).forEach(t => {
                 total += Number(t.price) || 0;
+                SubTotal += Number(t.price) || 0;
             });
         });
+        if (this.PatientTestmodel.Discount != null && this.PatientTestmodel.Discount != undefined) {
+            if (this.DisType == 1)
+                this.DiscountAmount = (SubTotal) * this.PatientTestmodel.Discount / 100;
+            else
+                this.DiscountAmount = this.PatientTestmodel.Discount;
+
+            total = total - this.DiscountAmount;
+        }
         this.orderTotalAmount = total;
+        this.orderSubTotalAmount = SubTotal;
     }
-
-    public canCreateOrder(): boolean {
-        return !!this.newOrder &&
-            !!this.newOrder.patientId &&
-            !!this.newOrder.patientName &&
-            !!this.newOrder.priority &&
-            this.orderTotalAmount > 0;
-    }
-
     // Enter Result dialog helpers
     public onOpenEnterResult(): void {
         this.enterResultSearchId = '';
+        this.enterResultSearchValue = '';
         this.selectedResultTest = null;
         this.selectedResultParameters = [];
         this._enterResultRef = this.modalService.open(this.EnterResultModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
@@ -598,38 +472,92 @@ export class LabDashboardComponent implements OnInit {
     }
 
     public onSearchResultByTestId(): void {
-        const id = (this.enterResultSearchId || '').trim();
+        const id = (this.enterResultSearchId || '');
         if (!id) {
             this.selectedResultTest = null;
             this.selectedResultParameters = [];
             return;
         }
-
-        const match = this.activeCases.find(x => x.testId === id);
-        if (!match) {
-            this.selectedResultTest = null;
-            this.selectedResultParameters = [];
-            return;
+        this.loader.ShowLoader();
+        this._labService.GetById(id).then(m => {
+            if (m.IsSuccess) {
+                this.selectedResultTest = null;
+                this.selectedResultParameters = [];
+                this.selectedResultTest = m.ResultSet.result;
+                this.Comment = m.ResultSet.result.comment;
+                const template = m.ResultSet.result.Parameter || [];
+                // clone so we don't mutate templates
+                this.selectedResultParameters = template.map(p => ({ ...p }));
+                this.recalculateResultSummary();
+                this.loader.HideLoader();
+            } else
+                this.loader.HideLoader();
+        });
+    }
+    onStatusChange(item: any): void {
+        if (item.statusId === 4) {
+            const confirmed = confirm("Are you sure you want to mark this test as completed?");
+            if (!confirmed) {
+                this.Refresh();
+                return;
+            }
         }
-
-        this.selectedResultTest = match;
-        const template = this.resultParameterTemplates[match.testName] || [];
-        // clone so we don't mutate templates
-        this.selectedResultParameters = template.map(p => ({ ...p }));
-        this.recalculateResultSummary();
+        this.updateTestStatus(item);
     }
 
+    private updateTestStatus(item: any): void {
+        this.loader.ShowLoader();
+        this.PatientTestmodel = new lab_patient_test();
+        this.PatientTestmodel = item;
+        this.PatientTestmodel.ID = item.testId;
+        this.PatientTestmodel.StatusId = item.statusId;
+        this._labService.UpdateStatus(this.PatientTestmodel).then(m => {
+            var result = JSON.parse(m._body);
+            if (result.IsSuccess) {
+                this.Refresh();
+                this.loader.HideLoader();
+            } else
+                this.loader.HideLoader();
+        });
+    }
     public onSaveResults(): void {
+        this.submitted = true;
         if (!this.selectedResultTest || !this.selectedResultParameters || !this.selectedResultParameters.length) {
             return;
         }
-        // UI-only: show a success toast, can be replaced with API call
-        this.toastr.Success('Results saved successfully.');
-        if (this._enterResultRef) {
-            this._enterResultRef.close();
-        }
-    }
+        this.Resultmodel = new lab_result_mf();
+        this.Resultmodel.ID = this.selectedResultTest.ID;
+        this.Resultmodel.PatientId = this.selectedResultTest.patientid;
+        this.Resultmodel.CatalogId = this.selectedResultTest.catalogId;
+        this.Resultmodel.PatientTestId = this.selectedResultTest.testId;
+        this.Resultmodel.Comment = this.Comment;
 
+        this.Resultmodel.lab_result_dt = this.selectedResultParameters.map(param => {
+            const obj = new lab_result_dt();
+            obj.ParameterId = param.parmId;
+            obj.Result = param.result;
+            obj.Status = param.status;
+            obj.Comment = param.comment;
+            return obj;
+        });
+        this.submitted = false;
+        this.loader.ShowLoader();
+        this._labService.SaveOrUpdateResult(this.Resultmodel).then(m => {
+            var result = JSON.parse(m._body);
+            if (result.IsSuccess) {
+                this.toastr.Success(result.Message);
+                if (this._enterResultRef) {
+                    this._enterResultRef.close();
+                }
+                this.Refresh();
+                this.loader.HideLoader();
+            }
+            else {
+                this.loader.HideLoader();
+                this.toastr.Error('Error', result.ErrorMessage);
+            }
+        });
+    }
     // --- Helpers for automatic result status calculation (Normal / Abnormal / Critical) ---
     public onChangeParameterResult(param: any, value: any): void {
         if (!param) {
@@ -648,17 +576,38 @@ export class LabDashboardComponent implements OnInit {
             param.status = '';
             return;
         }
+        const normalMin = Number(param.normalMin);
+        const normalMax = Number(param.normalMax);
+        const criticalLow = param.criticalLow != null
+            ? Number(param.criticalLow)
+            : null;
+        const criticalHigh = param.criticalHigh != null
+            ? Number(param.criticalHigh)
+            : null;
 
-        const hasCriticalLow = param.criticalLow != null && param.criticalLow !== undefined;
-        const hasCriticalHigh = param.criticalHigh != null && param.criticalHigh !== undefined;
-
-        if ((hasCriticalLow && val <= param.criticalLow) ||
-            (hasCriticalHigh && val >= param.criticalHigh)) {
-            param.status = 'Critical';
-        } else if (val < param.normalMin || val > param.normalMax) {
-            param.status = 'Abnormal';
-        } else {
+        // Normal range
+        if (val >= normalMin && val <= normalMax) {
             param.status = 'Normal';
+            return;
+        }
+
+        // Below normal range
+        if (val < normalMin) {
+            if (criticalLow != null && val <= criticalLow) {
+                param.status = 'Critical';
+            } else {
+                param.status = 'Abnormal';
+            }
+            return;
+        }
+        // Above normal range
+        if (val > normalMax) {
+            if (criticalHigh != null && val >= criticalHigh) {
+                param.status = 'Critical';
+            } else {
+                param.status = 'Abnormal';
+            }
+            return;
         }
     }
 
@@ -718,8 +667,81 @@ export class LabDashboardComponent implements OnInit {
         }
         return {};
     }
-
+    Delete(id: string) {
+        var result = confirm("Are you sure you want to delete selected record.");
+        if (result == true) {
+            this.loader.ShowLoader();
+            this._labService.Delete(id).then(m => {
+                if (m.ErrorMessage != null) {
+                    alert(m.ErrorMessage);
+                }
+                this.Refresh();
+            });
+        }
+    }
+    openInvoiceModal(id: any) {
+        if (id != null && id !== '') {
+            this.loader.ShowLoader();
+            this._labService.GetBillByInvoiceNo(id).then(m => {
+                if (m.IsSuccess) {
+                    this.InvoiceTestModel = [];
+                    this.SubTotal = 0;
+                    this.Total = 0;
+                    this.TotalDiscount = 0
+                    if (m.ResultSet.result != null) {
+                        this.InvoiceTestModel = m.ResultSet.result[0].InvoiceModel;
+                        this.InvoiceCompanyInfo = m.ResultSet.result[0];
+                        if (m.ResultSet.result[0].CompanyLogo != null)
+                            this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
+                        m.ResultSet.result[0].InvoiceModel.forEach((item, index) => {
+                            this.SubTotal += parseInt(item.Price);
+                        });
+                        this.TotalDiscount = m.ResultSet.result[0].DiscountAmount;
+                        this.Total = this.SubTotal - this.TotalDiscount;
+                    }
+                    this._invoiceModalRef = this.modalService.open(this.InvoiceModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
+                    this.loader.HideLoader();
+                } else
+                    this.loader.HideLoader();
+            });
+        } else {
+            this.toastr.Error('Error', 'Invalid invoice no.');
+            return;
+        }
+    }
+    openReportModal(id: any) {
+        this.ReportModel = null;
+        if (id != null && id !== '') {
+            this.loader.ShowLoader();
+            this._labService.GenerateReport(id).then(m => {
+                if (m.IsSuccess) {
+                    this.ReportModel = m.ResultSet;
+                    this._reportModalRef = this.modalService.open(this.ReportModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
+                    this.loader.HideLoader();
+                } else
+                    this.loader.HideLoader();
+            });
+        } else {
+            this.toastr.Error('Error', 'Invalid invoice no.');
+            return;
+        }
+    }
+    DiscountValue(evt: any) {
+        if (this.PatientTestmodel.Discount != null && this.PatientTestmodel.Discount != undefined) {
+            if (this.DisType == 1 && this.PatientTestmodel.Discount > 100)
+                this.PatientTestmodel.Discount = 0;
+            this.recalculateOrderTotals();
+        }
+    }
+    changeDiscountType(evt: any) {
+        this.DisType = evt;
+        if (this.PatientTestmodel.Discount != null && this.PatientTestmodel.Discount != undefined) {
+            if (this.DisType == 1 && this.PatientTestmodel.Discount > 100)
+                this.PatientTestmodel.Discount = 0;
+            this.recalculateOrderTotals();
+        }
+    }
     Close() {
-        this.model = new Company();
+        this.PatientTestmodel = new lab_patient_test();
     }
 }

@@ -25,11 +25,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
-                                    <select class="form-control form-control-sm form-control-alternative" formControlName="GroupId" [(ngModel)]="model.GroupId">
-                                        <option *ngFor="let item of GroupList" [value]="item.ID">
-                                            {{item.Value}}
-                                        </option>
-                                    </select>
+                                    <input type="text" id="GroupSearch" (click)="LoadGroup()" formControlName="GroupId" [(ngModel)]="model.GroupName" class="form-control form-control-sm form-control-alternative" placeholder="Search Group" autocomplete="off">
                                     <small class="text-danger" *ngIf="Form1.controls.GroupId.hasError('required') && submitted">
                                         This value is required.
                                     </small>
@@ -44,17 +40,15 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
-                                    <select class="form-control form-control-sm form-control-alternative" formControlName="ItemTypeId" (change)="ChangeItemType(model.ItemTypeId)" [(ngModel)]="model.ItemTypeId">
-                                        <option *ngFor="let item of ItemTypeList" [value]="item.ID">
-                                            {{item.Value}}
-                                        </option>
-                                    </select>
+                                    <input type="text" id="TypeSearch" (click)="LoadType()" formControlName="ItemTypeId" [(ngModel)]="model.TypeName" class="form-control form-control-sm form-control-alternative" placeholder="Search Item Type" autocomplete="off">
+
                                     <small class="text-danger" *ngIf="Form1.controls.ItemTypeId.hasError('required') && submitted">
                                         This value is required.
                                     </small>
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-4 text-right">
                                 <label class="form-control-label mt-2 pl-0" for="input-username"> Name*</label>
@@ -86,11 +80,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
-                                    <select class="form-control form-control-sm form-control-alternative" formControlName="UnitID" [(ngModel)]="model.UnitID">
-                                        <option *ngFor="let item of unitList" [value]="item.ID">
-                                            {{item.Value}}
-                                        </option>
-                                    </select>
+                                    <input type="text" id="UnitSearch" (click)="LoadUnit()" formControlName="UnitID" [(ngModel)]="model.UnitName" class="form-control form-control-sm form-control-alternative" placeholder="Search Unit" autocomplete="off">
                                     <small class="text-danger" *ngIf="Form1.controls.UnitID.hasError('required') && submitted">
                                         This value is required.
                                     </small>
@@ -105,11 +95,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
-                                    <select class="form-control form-control-sm form-control-alternative" formControlName="CategoryID" [(ngModel)]="model.CategoryID">
-                                        <option *ngFor="let item of CategoryList" [value]="item.ID">
-                                            {{item.Value}}
-                                        </option>
-                                    </select>
+                                    <input type="text" id="CategorySearch" (click)="LoadCategory()" formControlName="CategoryID" [(ngModel)]="model.CategoryName" class="form-control form-control-sm form-control-alternative" placeholder="Search Category" autocomplete="off">
                                     <small class="text-danger" *ngIf="Form1.controls.CategoryID.hasError('required') && submitted">
                                         This value is required.
                                     </small>
@@ -162,6 +148,42 @@
                                     <small class="text-danger" *ngIf="Form1.controls.SalePrice.hasError('required') && submitted">
                                         This value is required.
                                     </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Preferred Vendor
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="VendorSearch" (click)="LoadVendor()" formControlName="VendorId" [(ngModel)]="model.VendorName" class="form-control form-control-sm form-control-alternative" placeholder="Search Vendor" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Brand
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="BrandSearch" (click)="LoadBrand()" formControlName="BrandId" [(ngModel)]="model.BrandName" class="form-control form-control-sm form-control-alternative" placeholder="Search Brand" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Formulation
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="FormulationSearch" (click)="LoadFormulation()" formControlName="GenericId" [(ngModel)]="model.FormulationName" class="form-control form-control-sm form-control-alternative" placeholder="Search Formulation" autocomplete="off">
                                 </div>
                             </div>
                         </div>

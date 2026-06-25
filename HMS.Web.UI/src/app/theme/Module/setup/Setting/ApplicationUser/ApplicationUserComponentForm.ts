@@ -46,6 +46,7 @@ export class ApplicationUserComponentForm implements OnInit {
     public WasInside: boolean = false;
     public Keywords: any[] = []; public ControlRights: any;
     public TemplateList: any[] = [];
+    public DrugModeList: any[] = [];
     public UserProfileImage: string = '';
     public BrandImage: string = ''; public CompanyObj: any;
     public IsNewImage: boolean = true;
@@ -92,6 +93,11 @@ export class ApplicationUserComponentForm implements OnInit {
             { "ID": 1, "Name": "Standard" },
             { "ID": 2, "Name": "Urdu" }
         ];
+ this.DrugModeList = [
+            { "ID": 'B', "Name": " Brand Mode" },
+            { "ID": 'G', "Name": "Generic Mode" }
+        ];
+        
         this.loadRole();
         this.Form1 = this._fb.group({
             Name: [''],
@@ -127,6 +133,7 @@ export class ApplicationUserComponentForm implements OnInit {
             Instruction: [''],
             BrandImage: [''],
             BrandDescription: [''],
+            DrugMode:[''],
             Pwd: ['', [Validators.required, <any>Validators.minLength(6)]],
         });
         $(".toggle-password").click(function () {

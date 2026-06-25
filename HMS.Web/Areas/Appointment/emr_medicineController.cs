@@ -169,7 +169,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
+                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 2).ToList();
                 objResponse.ResultSet = new
                 {
                     GenderList = GenderType
@@ -195,7 +195,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                var DocumentType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 13).ToList();
+                var DocumentType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 13).ToList();
                 var emr_documentObj = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
                 objResponse.ResultSet = new
                 {
@@ -349,7 +349,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var UnitList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 14 || e.DropDownID == 15).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
+                var UnitList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && (e.DropDownID == 14 || e.DropDownID == 15)).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
                 var MedicineList = _service.Queryable().Where(a => a.CompanyID == CompanyID).Select(a => new { Id = a.ID, Medicine = a.Medicine }).ToList();
                 var InstructionList = _emr_instructionService.Queryable().Where(a => a.CompanyID == CompanyID).Select(a => new { ID = a.ID, Name = a.Instructions }).ToList();
                 objResponse.ResultSet = new

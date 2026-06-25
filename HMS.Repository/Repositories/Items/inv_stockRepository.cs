@@ -200,11 +200,21 @@ namespace HMS.Repository.Repositories.Items
 
         public static PaginationResult RestockPagination(this IRepository<inv_stock> repository, decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)
         {
+            string category = "";
+            string vandor = "";
+            string brand = "";
+            if (!string.IsNullOrWhiteSpace(FilterID))
+            {
+                var filters = FilterID.Split(',');
+                category = filters.Length > 0 ? filters[0] : "";
+                vandor = filters.Length > 1 ? filters[1] : "";
+                brand = filters.Length > 2 ? filters[2] : "";
+            }
             var objResult = new PaginationResult();
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID && (FilterID == "0" || e.adm_item.GroupId.ToString() == FilterID));
+                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID);
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;
 
@@ -221,7 +231,26 @@ namespace HMS.Repository.Repositories.Items
                 }
 
                 IQueryable<inv_stock> filteredData = repository.Queryable().Where(predicate);
+                if (!string.IsNullOrEmpty(category))
+                {
+                    int categoryId = Convert.ToInt32(category);
+                    filteredData = filteredData.Where(x =>
+                        x.adm_item.GroupId == categoryId);
+                }
 
+                if (!string.IsNullOrEmpty(vandor))
+                {
+                    int vandorId = Convert.ToInt32(vandor);
+                    filteredData = filteredData.Where(x =>
+                        x.adm_item.VendorId == vandorId);
+                }
+
+                if (!string.IsNullOrEmpty(brand))
+                {
+                    int brandId = Convert.ToInt32(brand);
+                    filteredData = filteredData.Where(x =>
+                        x.adm_item.BrandId == brandId);
+                }
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
                     PFilter.OrderBy = "ID";
                 OrderByName = PFilter.OrderBy.IndexOf("Name") > -1;
@@ -396,15 +425,26 @@ namespace HMS.Repository.Repositories.Items
 
         public static PaginationResult ExpirePagination(this IRepository<inv_stock> repository, decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)
         {
+            string category = "";
+            string vandor = "";
+            string brand = "";
+            if (!string.IsNullOrWhiteSpace(FilterID))
+            {
+                var filters = FilterID.Split(',');
+                category = filters.Length > 0 ? filters[0] : "";
+                vandor = filters.Length > 1 ? filters[1] : "";
+                brand = filters.Length > 2 ? filters[2] : "";
+            }
+
             var objResult = new PaginationResult();
             try
             {
                 DateTime currentDate = DateTime.Now;
                 DateTime expiryDateLimit = currentDate.AddDays(90);
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID &&
+                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID && 
                                                           e.Quantity > 0 &&
-                                                          e.ExpiredWarrantyDate <= expiryDateLimit && (FilterID == "0" || e.adm_item.GroupId.ToString() == FilterID));
+                                                          e.ExpiredWarrantyDate <= expiryDateLimit);
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;
 
@@ -422,6 +462,26 @@ namespace HMS.Repository.Repositories.Items
 
                 IQueryable<inv_stock> filteredData = repository.Queryable().Where(predicate);
 
+                if (!string.IsNullOrEmpty(category))
+                {
+                    int categoryId = Convert.ToInt32(category);
+                    filteredData = filteredData.Where(x =>
+                        x.adm_item.GroupId == categoryId);
+                }
+
+                if (!string.IsNullOrEmpty(vandor))
+                {
+                    int vandorId = Convert.ToInt32(vandor);
+                    filteredData = filteredData.Where(x =>
+                        x.adm_item.VendorId == vandorId);
+                }
+
+                if (!string.IsNullOrEmpty(brand))
+                {
+                    int brandId = Convert.ToInt32(brand);
+                    filteredData = filteredData.Where(x =>
+                        x.adm_item.BrandId == brandId);
+                }
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
                     PFilter.OrderBy = "ID";
                 OrderByName = PFilter.OrderBy.IndexOf("Name") > -1;

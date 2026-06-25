@@ -69,8 +69,6 @@
                         </div>
                     </div>
                 </div>
-
-
                 <div class="col-md-3 col-sm-6 margin-t-20" *ngIf="Modules.indexOf(4)>-1">
                     <div class="col-md-12 no-padding-lr">
                         <div class="col-md-12 margin-b-20">
@@ -82,7 +80,6 @@
                             <ul class="list-group">
                                 <li class="list-group-item" *ngIf="Rights.indexOf(5)>-1">
                                     <a routerLink="/home/Complaint" class="left-margin link-Company link-color">Complaints</a>
-
                                 </li>
                                 <li class="list-group-item" *ngIf="Rights.indexOf(6)>-1">
                                     <a routerLink="/home/Observation" class="left-margin link-color">Examination / Notes</a>
@@ -95,6 +92,9 @@
                                 </li>
                                 <li class="list-group-item" *ngIf="Rights.indexOf(9)>-1">
                                     <a routerLink="/home/Medicine" class="left-margin link-color">Medicine</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(112)>-1">
+                                    <a routerLink="/home/Generic" class="left-margin link-color">Formulation</a>
                                 </li>
                                 <li class="list-group-item" *ngIf="Rights.indexOf(49)>-1">
                                     <a routerLink="/home/DropDown" class="left-margin link-color">Master</a>
@@ -113,6 +113,9 @@
                                 </li>
                                 <li class="list-group-item" *ngIf="Rights.indexOf(72)>-1">
                                     <a routerLink="/home/integration" class="left-margin link-color">Integration</a>
+                                </li>
+                                <li class="list-group-item" *ngIf="Rights.indexOf(114)>-1">
+                                    <a routerLink="/home/Catalog" class="left-margin link-Company link-color">Catalog</a>
                                 </li>
                             </ul>
                         </div>

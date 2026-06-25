@@ -33,6 +33,8 @@ namespace HMS.Entities.Models
         public Nullable<int> ItemTypeId { get; set; }
         public int CategoryDropDownID { get; set; }
         public Nullable<int> CategoryID { get; set; }
+        public Nullable<int> BrandDropdownId { get; set; }
+        public Nullable<int> BrandId { get; set; }
         public Nullable<int> GroupId { get; set; }
         public Nullable<decimal> InstructionId {  get; set; }
         public int GroupDropDownId { get; set; }
@@ -45,11 +47,14 @@ namespace HMS.Entities.Models
         public Nullable<decimal> InventoryStockPerUnit { get; set; }
         public Nullable<decimal> InventoryStockQuantity { get; set; }
         public int SaveStatus { get; set; }
+        public int? VendorId { get; set; }
+        public decimal? GenericId { get; set; }
         public Boolean POSItem { get; set; }
         public decimal CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<decimal> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
+        public virtual adm_generic adm_generic { get; set; }
         public virtual adm_company adm_company { get; set; }
         public virtual adm_user_mf adm_user_mf { get; set; }
         public virtual adm_user_mf adm_user_mf1 { get; set; }
@@ -57,6 +62,7 @@ namespace HMS.Entities.Models
         public virtual sys_drop_down_value sys_drop_down_value1 { get; set; }
         public virtual sys_drop_down_value sys_drop_down_value2 { get; set; }
         public virtual sys_drop_down_value sys_drop_down_value3 { get; set; }
+        public virtual sys_drop_down_value sys_drop_down_value4 { get; set; }
         public virtual ICollection<pur_invoice_dt> pur_invoice_dt { get; set; }
         public virtual ICollection<pur_sale_dt> pur_sale_dt { get; set; }
         public virtual ICollection<pur_sale_hold_dt> pur_sale_hold_dt { get; set; }

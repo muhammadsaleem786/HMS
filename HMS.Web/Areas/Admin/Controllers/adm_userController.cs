@@ -88,10 +88,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 decimal UserID = Request.LoginID();
                 var userCount = _adm_user_companyService.Queryable().Where(a => a.CompanyID==CompanyID).Count();
                 var userObj = _service.Queryable().Where(a => a.ID == UserID).Select(a=>a.TotalUser).FirstOrDefault();
-                if (userCount >= userObj.Value)
+                if (userObj != null && userCount >= userObj.Value)
                 {
                     objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = "You are not authorized to create a user. Please contact the company.";
+                    objResponse.ErrorMessage = "You cannot create a new user because the maximum number of users allowed for your account has been reached. Please contact EasyHMS to upgrade or increase your user limit.";
                     return objResponse;
                 }
 

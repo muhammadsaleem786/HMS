@@ -31,6 +31,8 @@ namespace HMS.Entities.Models
         [NotMapped]
         public Nullable<decimal> AppointmentId { get; set; }
         [NotMapped]
+        public Boolean IsPrscription { get; set; }
+        [NotMapped]
         public bool IsExistFollowUp { get; set; }
         [NotMapped]
         public string SecondaryDescription { get; set; }

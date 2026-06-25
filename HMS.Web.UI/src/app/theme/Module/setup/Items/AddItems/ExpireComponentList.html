@@ -1,20 +1,44 @@
-﻿<div class="row m-0">
-    <div class="col-sm-8">
-        <h2 class="grid-heading margin-t-15 mb-2"> Expire</h2>
-        <div class="form-group d-flex" style="width: 433px; padding-left: 92px; gap: 12px;position: absolute; top: 15px; left: 350px;">
-            <label>Type</label>
-            <select [(ngModel)]="selectedValue" (change)="getFilterData()" class="form-control">
-                <option *ngFor="let item of CategoryList" [value]="item.ID">
-                    {{item.Value}}
-                </option>
-            </select>
-        </div>
+﻿<div class="row align-items-center mb-3">
+    <div class="col-md-2">
+        <h2 class="grid-heading mb-0">Restock</h2>
+    </div>
+
+    <div class="col-md-3">
 
     </div>
-    <div class="col-sm-4 text-right flex-row flex-end">
 
-        <a class="btn btn-light mr-1 mt-2" routerLink="/home/Item">Back</a>
+    <div class="col-md-2">
+        <select [(ngModel)]="selectedValue"
+                (change)="Refresh()"
+                class="form-control">
+            <option *ngFor="let item of CategoryList" [value]="item.ID">
+                {{ item.Value }}
+            </option>
+        </select>
+    </div>
 
+    <div class="col-md-2">
+        <select [(ngModel)]="selectedVandorValue"
+                (change)="Refresh()"
+                class="form-control">
+            <option *ngFor="let item of VendorList" [value]="item.ID">
+                {{ item.Name }}
+            </option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select [(ngModel)]="selectedBrandValue"
+                (change)="Refresh()"
+                class="form-control">
+            <option *ngFor="let item of BrandList" [value]="item.ID">
+                {{ item.Value }}
+            </option>
+        </select>
+    </div>
+
+    <div class="col-md-1 text-right">
+        <a class="btn btn-light" routerLink="/home/Item">Back</a>
     </div>
 </div>
 

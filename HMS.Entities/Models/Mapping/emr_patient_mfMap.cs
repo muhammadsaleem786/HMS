@@ -92,12 +92,15 @@ namespace HMS.Entities.Models.Mapping
             this.HasRequired(t => t.adm_company)
                 .WithMany(t => t.emr_patient_mf)
                 .HasForeignKey(d => d.CompanyId);
+
             this.HasRequired(t => t.adm_user_mf)
                 .WithMany(t => t.emr_patient_mf)
                 .HasForeignKey(d => d.CreatedBy);
+
             this.HasOptional(t => t.adm_user_mf1)
                 .WithMany(t => t.emr_patient_mf1)
                 .HasForeignKey(d => d.ModifiedBy);
+
             this.HasRequired(t => t.sys_drop_down_value)
                .WithMany(t => t.emr_patient_mf)
                .HasForeignKey(d => new { d.BloodGroupId, d.BloodGroupDropDownId });
@@ -105,6 +108,7 @@ namespace HMS.Entities.Models.Mapping
             this.HasRequired(t => t.sys_drop_down_value1)
               .WithMany(t => t.emr_patient_mf1)
               .HasForeignKey(d => new { d.PrefixTittleId, d.PrefixDropdownId });
+
             this.HasRequired(t => t.sys_drop_down_value2)
               .WithMany(t => t.emr_patient_mf2)
               .HasForeignKey(d => new { d.BillTypeId, d.BillTypeDropdownId });

@@ -49,7 +49,7 @@ namespace HMS.Web.API.Areas.Employee
                 decimal CompanyID = Request.CompanyID();
                 if (string.IsNullOrEmpty(Model.AllowanceName))
                 {
-                    var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
+                    var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
                     Model.AllowanceName = DropDownValue.Value;
                 }
                 pr_allowance Allowance = _service.Queryable().Where(x => x.CompanyID == CompanyID && x.AllowanceName.ToLower() == Model.AllowanceName.ToLower()).FirstOrDefault();
@@ -118,7 +118,7 @@ namespace HMS.Web.API.Areas.Employee
                 decimal CompanyID = Request.CompanyID();
                 if (string.IsNullOrEmpty(Model.AllowanceName))
                 {
-                    var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
+                    var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
                     Model.AllowanceName = DropDownValue.Value;
                 }
                 pr_allowance Allowance = _service.Queryable().Where(x => x.CompanyID == CompanyID && x.AllowanceName.ToLower() == Model.AllowanceName.ToLower()).FirstOrDefault();
@@ -192,7 +192,7 @@ namespace HMS.Web.API.Areas.Employee
                 decimal CompanyID = Request.CompanyID();
                 if (string.IsNullOrEmpty(Model.AllowanceName))
                 {
-                    var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
+                    var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
                     Model.AllowanceName = DropDownValue.Value;
                 }
                 pr_allowance Allowance = _service.Queryable().Where(x => x.CompanyID == CompanyID && x.AllowanceName.ToLower() == Model.AllowanceName.ToLower()).FirstOrDefault();
@@ -366,7 +366,7 @@ namespace HMS.Web.API.Areas.Employee
                 decimal CompanyID = Request.CompanyID();
                 if (string.IsNullOrEmpty(Model.AllowanceName))
                 {
-                    var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
+                    var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
                     Model.AllowanceName = DropDownValue.Value;
                 }
                 pr_allowance Allowance = _service.Queryable().Where(x => x.CompanyID == CompanyID && x.ID != Model.ID && x.AllowanceName.ToLower() == Model.AllowanceName.ToLower()).FirstOrDefault();

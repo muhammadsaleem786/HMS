@@ -54,16 +54,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.zkemkeeper">
-      <HintPath>..\ERPISTO.Web\obj\Debug\Interop.zkemkeeper.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="itextsharp">
-      <HintPath>..\ERPISTO.Web\bin\itextsharp.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI">
-      <HintPath>..\ERPISTO.Web\bin\NPOI.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -96,6 +86,7 @@
     <Compile Include="CustomModel\ImportDataCheckingInDBModel.cs" />
     <Compile Include="CustomModel\InvoiceResponse.cs" />
     <Compile Include="CustomModel\ItemResponse.cs" />
+    <Compile Include="CustomModel\LabReportDto.cs" />
     <Compile Include="CustomModel\LoanAdjustmentModel.cs" />
     <Compile Include="CustomModel\LoanDetailModel.cs" />
     <Compile Include="CustomModel\LoanPaginationModel.cs" />
@@ -118,13 +109,24 @@
     <Compile Include="Enum\sys_dropdown_mfEnum.cs" />
     <Compile Include="Models\adm_company.cs" />
     <Compile Include="Models\adm_company_location.cs" />
+    <Compile Include="Models\adm_generic.cs" />
+    <Compile Include="Models\lab_result_dt.cs" />
+    <Compile Include="Models\lab_result_mf.cs" />
+    <Compile Include="Models\lab_patient_test.cs" />
+    <Compile Include="Models\lab_parameter.cs" />
+    <Compile Include="Models\lab_catalog.cs" />
     <Compile Include="Models\adm_user_session.cs" />
     <Compile Include="Models\ipd_adverse_drug_reaction.cs" />
     <Compile Include="Models\ipd_death_record_register.cs" />
     <Compile Include="Models\ipd_sentinel_event_register.cs" />
     <Compile Include="Models\ipd_specialized_equipment_maintenance.cs" />
-    <Compile Include="Models\lab_order.cs" />
     <Compile Include="Models\adm_user_share.cs" />
+    <Compile Include="Models\Mapping\lab_result_mfMap.cs" />
+    <Compile Include="Models\Mapping\lab_result_dtMap.cs" />
+    <Compile Include="Models\Mapping\lab_patient_testMap.cs" />
+    <Compile Include="Models\Mapping\lab_parameterMap.cs" />
+    <Compile Include="Models\Mapping\lab_catalogMap.cs" />
+    <Compile Include="Models\Mapping\adm_genericMap.cs" />
     <Compile Include="Models\Mapping\adm_user_sessionMap.cs" />
     <Compile Include="Models\Mapping\adm_user_shareMap.cs" />
     <Compile Include="Models\Mapping\ipd_adverse_drug_reactionMap.cs" />

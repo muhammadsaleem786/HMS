@@ -52,11 +52,19 @@ namespace HMS.Entities.Models
             this.adm_item1 = new List<adm_item>();
             this.adm_item2 = new List<adm_item>();
             this.adm_item3 = new List<adm_item>();
+            this.adm_item4 = new List<adm_item>();
             this.pur_payment = new List<pur_payment>();
             this.pur_sale_mf = new List<pur_sale_mf>();
             this.pur_sale_hold_mf = new List<pur_sale_hold_mf>();
             this.adm_reminder_dt = new List<adm_reminder_dt>();
             this.adm_reminder_dt1 = new List<adm_reminder_dt>();
+            this.adm_generic = new List<adm_generic>();
+            this.adm_generic1 = new List<adm_generic>();
+            this.lab_catalog = new List<lab_catalog>();
+            this.lab_catalog1 = new List<lab_catalog>();
+            this.lab_parameter = new List<lab_parameter>();
+            this.lab_patient_test = new List<lab_patient_test>();
+            this.lab_patient_test1 = new List<lab_patient_test>();
         }
         public int ID { get; set; }
         public int DropDownID { get; set; }
@@ -90,6 +98,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<adm_item> adm_item1 { get; set; }
         public virtual ICollection<adm_item> adm_item2 { get; set; }
         public virtual ICollection<adm_item> adm_item3 { get; set; }
+        public virtual ICollection<adm_item> adm_item4 { get; set; }
 
         public virtual ICollection<ipd_admission> ipd_admission1 { get; set; }
         public virtual ICollection<ipd_admission> ipd_admission2 { get; set; }
@@ -118,7 +127,14 @@ namespace HMS.Entities.Models
         public virtual ICollection<pur_sale_hold_mf> pur_sale_hold_mf { get; set; }
         public virtual ICollection<adm_reminder_dt> adm_reminder_dt { get; set; }
         public virtual ICollection<adm_reminder_dt> adm_reminder_dt1 { get; set; }
+        public virtual ICollection<adm_generic> adm_generic { get; set; }
+        public virtual ICollection<adm_generic> adm_generic1 { get; set; }
         public virtual ICollection<ipd_procedure_expense> ipd_procedure_expense { get; set; }
+        public virtual ICollection<lab_catalog> lab_catalog { get; set; }
+        public virtual ICollection<lab_catalog> lab_catalog1 { get; set; }
+        public virtual ICollection<lab_parameter> lab_parameter { get; set; }
+        public virtual ICollection<lab_patient_test> lab_patient_test { get; set; }
+        public virtual ICollection<lab_patient_test> lab_patient_test1 { get; set; }
 
     }
 }

@@ -1,0 +1,305 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Catalog
+                    </h3>
+                    <p class="text-muted mt-3 mb-0">
+                        Browse available laboratory tests with detailed parameters and reference ranges.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-light mr-2" routerLink="/home/setup">Back</a>
+            <button class="btn btn-primary btn-sm"
+                    type="button" (click)="AddCatalog()">
+                + Add New Catalog
+            </button>
+        </div>
+    </div>
+    <div>
+        <div class="Cardview search_onTop search_large_left px-2">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <div class="flex-grow-1">
+                    <div class="input-group input-group-sm">
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Search tests by name, code, or parameter..."
+                               [(ngModel)]="testCatalogSearch"
+                               (keyup)="onCatalogueSearchChange()" />
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group btn-group-toggle d-flex mb-3" data-toggle="buttons">
+                <label class="btn btn-light flex-fill"
+                       *ngFor="let tab of testCatalogTabs"
+                       [class.active]="tab === selectedCatalogTab"
+                       (click)="onChangeCatalogTab(tab)">
+                    {{ tab.Value }}
+                </label>
+            </div>
+
+            <div class="row customscroll" style="max-height: 420px; overflow-y: auto;">
+                <div class="col-md-6 mb-3" *ngFor="let test of filteredCatalogList">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="mb-1">{{ test.name }}</h5>
+                                    <span class="badge badge-secondary-light">{{ test.code }}</span>
+                                </div>
+                                <h5 class="text-success mb-0">
+                                    PKR{{ test.price }}
+                                </h5>
+                            </div>
+                            <div class="mb-2">
+                                <div class="mb-1">
+                                    <strong>Category:</strong>
+                                    <span class="badge badge-success-light ml-1">{{ test.category }}</span>
+                                </div>
+                                <div class="mb-1">
+                                    <strong>Sample:</strong> {{ test.sample }}
+                                </div>
+                                <div class="mb-1">
+                                    <strong>TAT:</strong> {{ test.tat }}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="button"
+                                        class="btn btn-outline-primary btn-sm"
+                                        (click)="UpdateCatalog(test)">
+                                    <i class="fa fa-edit mr-1"></i> Edit
+                                </button>
+                            </div>
+                            <!-- Collapsible parameter list -->
+                            <div class="mt-4">
+                                <div class="d-flex justify-content-between align-items-center border-top pt-2 cursor-pointer pb-2"
+                                     (click)="toggleCatalogParameters(test)">
+                                    <div>
+                                        <small class="font-weight-500">
+                                            Parameters ({{ (test.catalogParameter || []).length || test.parameterCount }})
+                                        </small>
+                                    </div>
+                                    <button type="button"
+                                            class="btn btn-link btn-sm p-0">
+                                        <i class="icon"
+                                           [ngClass]="{
+                                     'icon-chevron-up': expandedCatalogCode === test.code,
+                                     'icon-chevron-down': expandedCatalogCode !== test.code
+                                 }">
+                                        </i>
+                                    </button>
+                                </div>
+
+                                <div class="mt-2"
+                                     *ngIf="expandedCatalogCode === test.code">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm mb-2">
+                                            <thead>
+                                                <tr>
+                                                    <th>Parameter</th>
+                                                    <th>Unit</th>
+                                                    <th>Range</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let p of test.catalogParameter">
+                                                    <td (click)="UpdateParameter(p.Id)">{{ p.name }}</td>
+                                                    <td (click)="UpdateParameter(p.Id)">{{ p.unit || '—' }}</td>
+                                                    <td (click)="UpdateParameter(p.Id)">{{ p.range }}</td>
+                                                </tr>
+                                                <tr *ngIf="!test.catalogParameter || !test.catalogParameter.length">
+                                                    <td colspan="3" class="text-muted text-center">
+                                                        No parameters configured.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="pt-2 border-top">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                    </div>
+                                    <button class="btn btn-light btn-sm"
+                                            type="button"
+                                            (click)="AddParameterDialog(test)">
+                                        + Add Parameter
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12" *ngIf="filteredCatalogList.length === 0">
+                    <p class="text-center text-muted mb-0">No tests found.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Catalog Modal -->
+<ng-template #TestCatalogModal let-modal="close">
+    <div class="modal-header">
+        <h4 class="modal-title">
+            Add Catalog
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="catalogForm" novalidate (ngSubmit)="onSaveCatalog(catalogForm.valid)">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="font-weight-500">Test Name <span class="text-danger">*</span></label>
+                <input type="text" formControlName="Name" [(ngModel)]="Catalogmodel.Name"
+                       class="form-control form-control-sm"
+                       name="name" required
+                       placeholder="e.g. Lipid Profile" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="font-weight-500">Category <span class="text-danger">*</span></label>
+                <input type="text" id="CategorySearch" (click)="LoadCategory()" formControlName="CategoryId" [(ngModel)]="Catalogmodel.CategoryName" class="form-control form-control-sm" required placeholder="e.g. Biochemistry" autocomplete="off" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="font-weight-500">Sample <span class="text-danger">*</span></label>
+                <input type="text" id="SampleSearch" (click)="LoadSample()" formControlName="SampleId" [(ngModel)]="Catalogmodel.SampleName" class="form-control form-control-sm" required placeholder="e.g. Blood, Urine" autocomplete="off" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="font-weight-500">TAT <span class="text-danger">*</span></label>
+                <input type="text" formControlName="TAT" [(ngModel)]="Catalogmodel.TAT"
+                       class="form-control form-control-sm"
+                       name="tat"
+                       required
+                       placeholder="e.g. 2-4 hours" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="font-weight-500">Price <span class="text-danger">*</span></label>
+                <input type="number" formControlName="Price" [(ngModel)]="Catalogmodel.Price"
+                       class="form-control form-control-sm"
+                       name="price"
+                       required
+                       min="0"
+                       placeholder="e.g. 25" />
+            </div>
+        </div>
+        <div class="text-right">
+            <button type="button"
+                    class="btn btn-outline-secondary mr-2"
+                    (click)="onCancelAddCatalog()">
+                Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="!catalogForm.valid" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+        </div>
+    </form>
+</ng-template>
+
+<!-- Parameter Modal -->
+<ng-template #TestParameterModal let-modal="close">
+    <div class="modal-header">
+        <h4 class="modal-title">
+            Add Parameter
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="parameterForm" novalidate (ngSubmit)="onSaveParameter(parameterForm.valid)">
+        <div class="modal-body">
+            <p class="text-muted mb-4">
+                Add a new parameter to {{ selectedTestForParameter?.name }} ({{ selectedTestForParameter?.code }})
+            </p>
+
+            <div class="form-group">
+                <label class="required">Parameter Name</label>
+                <input type="text" formControlName="ParameterName" [(ngModel)]="Parametermodel.ParameterName"
+                       name="name"
+                       class="form-control"
+                       required
+                       placeholder="e.g., Total Cholesterol, Hemoglobin" />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label class="required">Unit</label>
+                    <input type="text" id="UnitSearch" (click)="LoadUnit()" formControlName="UnitId" [(ngModel)]="Parametermodel.UnitName" class="form-control form-control-sm" required placeholder="e.g., mg/dL, g/dL, %" autocomplete="off" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="required">Reference Range</label>
+                    <input type="text" formControlName="ReferenceRange" [(ngModel)]="Parametermodel.ReferenceRange"
+                           name="referenceRange"
+                           class="form-control"
+                           required
+                           placeholder="e.g., 70-100, &lt;200" />
+                </div>
+            </div>
+
+            <hr />
+
+            <h6 class="mb-3">Normal Range (for automatic checking)</h6>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Normal Minimum</label>
+                    <input type="text" formControlName="NormalMinimum" [(ngModel)]="Parametermodel.NormalMinimum"
+                           name="normalMin"
+                           class="form-control"
+                           placeholder="e.g., 70" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Normal Maximum</label>
+                    <input type="text"
+                           formControlName="NormalMaximum"
+                           class="form-control"
+                           [(ngModel)]="Parametermodel.NormalMaximum"
+                           placeholder="e.g., 100" />
+                </div>
+            </div>
+
+            <h6 class="mb-3">Critical Range (optional)</h6>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Critical Low</label>
+                    <input type="text" formControlName="CriticalLow" [(ngModel)]="Parametermodel.CriticalLow"
+                           name="criticalLow"
+                           class="form-control"
+                           placeholder="e.g., 40" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Critical High</label>
+                    <input type="text"
+                           formControlName="CriticalHigh"
+                           class="form-control"
+                           [(ngModel)]="Parametermodel.CriticalHigh"
+                           placeholder="e.g., 400" />
+                </div>
+            </div>
+
+            <div class="form-group mb-0">
+                <label>Description (optional)</label>
+                <textarea name="description"
+                          formControlName="Description"
+                          class="form-control"
+                          rows="3"
+                          [(ngModel)]="Parametermodel.Description"
+                          placeholder="e.g., Diabetes indicator, Cholesterol check"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-transparent" (click)="modal('cancel')">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!parameterForm.valid">
+                + Add Parameter
+            </button>
+        </div>
+    </form>
+</ng-template>
+

@@ -11,6 +11,7 @@ using HMS.Service.Services.Appointment;
 using HMS.Service.Services.Admission;
 using HMS.Service.Services.Employee;
 using HMS.Service.Services.Items;
+using HMS.Service.Services.Lab;
 
 namespace HMS.Web.API
 {
@@ -98,6 +99,14 @@ namespace HMS.Web.API
                   .RegisterType<IRepositoryAsync<ipd_admission_discharge>, Repository<ipd_admission_discharge>>()
                   .RegisterType<IRepositoryAsync<contact>, Repository<contact>>()
                   .RegisterType<IRepositoryAsync<adm_item_log>, Repository<adm_item_log>>()
+                  .RegisterType<IRepositoryAsync<adm_generic>, Repository<adm_generic>>()
+                  .RegisterType<IRepositoryAsync<lab_catalog>, Repository<lab_catalog>>()
+                  .RegisterType<IRepositoryAsync<lab_parameter>, Repository<lab_parameter>>()
+                  .RegisterType<IRepositoryAsync<lab_patient_test>, Repository<lab_patient_test>>()
+
+                  .RegisterType<IRepositoryAsync<lab_result_mf>, Repository<lab_result_mf>>()
+                  .RegisterType<IRepositoryAsync<lab_result_dt>, Repository<lab_result_dt>>()
+
                    //employee
                    .RegisterType<IRepositoryAsync<pr_employee_mf>, Repository<pr_employee_mf>>()
                    .RegisterType<IRepositoryAsync<pr_pay_schedule>, Repository<pr_pay_schedule>>()
@@ -201,6 +210,7 @@ namespace HMS.Web.API
                 .RegisterType<Iadm_reminder_dtService, adm_reminder_dtService>()
                 .RegisterType<Iadm_item_logService, adm_item_logService>()
                 .RegisterType<Iipd_procedure_expenseService, ipd_procedure_expenseService>()
+                .RegisterType<Iadm_genericService, adm_genericService>()
                  //employee
                  .RegisterType<Ipr_employee_mfService, pr_employee_mfService>()
                   .RegisterType<Ipr_pay_scheduleService, pr_pay_scheduleService>()
@@ -247,6 +257,11 @@ namespace HMS.Web.API
                 .RegisterType<Iipd_adverse_drug_reactionService, ipd_adverse_drug_reactionService>()
                 .RegisterType<Iipd_sentinel_event_registerService, ipd_sentinel_event_registerService>()
                 .RegisterType<Iipd_specialized_equipment_maintenanceService, ipd_specialized_equipment_maintenanceService>()
+                .RegisterType<Ilab_catalogService, lab_catalogService>()
+                .RegisterType<Ilab_parameterService, lab_parameterService>()
+                .RegisterType<Ilab_patient_testService, lab_patient_testService>()
+                .RegisterType<Ilab_result_dtService, lab_result_dtService>()
+                .RegisterType<Ilab_result_mfService, lab_result_mfService>()
                 .RegisterType<IStoredProcedureService, StoredProcedureService>();
         }
     }

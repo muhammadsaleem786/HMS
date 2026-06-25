@@ -151,7 +151,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 2).ToList();
+                var GenderType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 2).ToList();
                 objResponse.ResultSet = new
                 {
                     GenderList = GenderType

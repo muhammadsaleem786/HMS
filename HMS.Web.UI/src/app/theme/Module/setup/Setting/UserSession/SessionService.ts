@@ -7,9 +7,9 @@ export class SessionService {
 
     private urlToApi = GlobalVariable.BASE_Api_URL + "/api/Admin/adm_user_session"
     constructor(private http: HttpService) { }
-    GetList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string, IgnorePaging: boolean): Promise<any> {
-        var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': IgnorePaging };
-        return this.http.Get(this.urlToApi + '/Pagination', data).then(e => e);
+    GetList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string, FilterID: string, IgnorePaging: boolean): Promise<any> {
+        var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'FilterID': FilterID, 'IgnorePaging': IgnorePaging };
+        return this.http.Get(this.urlToApi + '/PaginationWithParm', data).then(e => e);
     }
     LoadDropdown(Ids: string): Promise<any> {
         var data = { 'DropdownIds': Ids };

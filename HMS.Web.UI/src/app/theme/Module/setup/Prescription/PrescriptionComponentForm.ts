@@ -356,6 +356,9 @@ export class PrescriptionComponentForm implements OnInit {
                             this.PrescriptionModel.emr_prescription_observation = [];
                             this.emr_prescription_treatment_dynamicArray = [];
                             this.PrescriptionModel = m.ResultSet.result;
+                            if (this.PrescriptionModel.FollowUpTime != null && this.PrescriptionModel.FollowUpTime != undefined)
+                                this.PrescriptionModel.FollowUpTime = this.convertTo12HourFormat(this.PrescriptionModel.FollowUpTime);
+
                             this.PrescriptionModel.AppointmentDate = this._CommonService.GetFormatDate(m.ResultSet.result.AppointmentDate);
                             this.CurntPrevDateList = m.ResultSet.CurntPrevDateList;
                             this.PrescriptionModel.PatientName = m.ResultSet.PatientInfo.PatientName;
@@ -881,16 +884,18 @@ export class PrescriptionComponentForm implements OnInit {
 
     }
     Convert12TO24(time12h: any) {
+        debugger
         const [time, modifier] = time12h.split(' ');
         let [hours, minutes] = time.split(':');
         //if (hours === '12') {
         //    hours = '00';
         //}
-        if (modifier === 'pm') {
+        if (modifier.toLowerCase() === 'pm') {
             hours = parseInt(hours, 10) + 12;
         }
         return hours + ':' + minutes + ':00';
     }
+
     handlePrint(val: any) {
         let selectedDate = new Date(this.AppointmentModel.AppointmentDate);
         let currentDate = new Date();
@@ -1014,6 +1019,12 @@ export class PrescriptionComponentForm implements OnInit {
                 popupWin.document.close();
             }
         }
+    }
+    convertTo12HourFormat(time: string): string {
+        let [hours, minutes] = time.split(':').map(Number);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12; // convert 0 → 12
+        return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
     }
     AppointmentSaveOrUpdate(isValid: boolean): void {
         let selectedDate = new Date(this.AppointmentModel.AppointmentDate);
@@ -1238,7 +1249,7 @@ export class PrescriptionComponentForm implements OnInit {
                     }
                     const items = m.ResultSet.ItemInfo.map(item => ({
                         Name: item.label,
-                        label: item.label + " (qty:" + item.stock + ")",
+                        label: item.label + (item.GenericName && item.GenericName !== "" ? " (" + item.GenericName + ")" : "") + " (qty:" + item.stock + ")",
                         value: item.value,
                         Instructions: item.Instructions,
                         InstructionId: item.InstructionId,
@@ -1724,7 +1735,6 @@ export class PrescriptionComponentForm implements OnInit {
         }
     }
     AddInvestigations(val: any) {
-
         if (val != undefined) {
             var obj = this.investigationModel;
             var findComp = this.emr_prescription_investigation_dynamicArray.filter(a => a.Investigation == val);
@@ -1799,18 +1809,15 @@ export class PrescriptionComponentForm implements OnInit {
             this.PrescriptionModel.emr_prescription_diagnos = [];
             this.PrescriptionModel.emr_prescription_investigation = [];
             this.PrescriptionModel.emr_prescription_observation = [];
-
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;
             this.PrescriptionModel.emr_prescription_complaint = this.emr_prescription_complaint_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_diagnos = this.emr_prescription_diagnos_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_investigation = this.emr_prescription_investigation_dynamicArray.filter(a => a.IsSelected == true);
             this.PrescriptionModel.emr_prescription_observation = this.emr_prescription_observation_dynamicArray.filter(a => a.IsSelected == true);
-
-
-            if (this.PrescriptionModel.FollowUpTime != undefined)
+            if (this.PrescriptionModel.FollowUpTime != undefined) {
                 this.PrescriptionModel.FollowUpTime = this.Convert12TO24(this.PrescriptionModel.FollowUpTime);
+            }
             this.PrescriptionModel.emr_prescription_treatment = this.emr_prescription_treatment_dynamicArray;
-
             this._AppointmentService.PrescriptionSave(this.PrescriptionModel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
@@ -1819,7 +1826,6 @@ export class PrescriptionComponentForm implements OnInit {
                 }
                 else
                     this.toastr.Error('Error', result.ErrorMessage);
-
                 this.loader.HideLoader();
             });
         }
@@ -1911,7 +1917,6 @@ export class PrescriptionComponentForm implements OnInit {
                         item.IsSelected = false;
                         item.DiagnosId = item.id;
                         this.emr_prescription_diagnos_dynamicArray.push(item);
-
                     });
                 }
                 if (m.ResultSet.result.emr_prescription_investigation != null) {
@@ -1947,7 +1952,6 @@ export class PrescriptionComponentForm implements OnInit {
                         item.IsSelected = false;
                         item.InvestigationId = item.id;
                         this.emr_prescription_investigation_dynamicArray.push(item);
-
                     });
                 }
                 if (m.ResultSet.result.emr_prescription_observation != null) {
@@ -2044,6 +2048,9 @@ export class PrescriptionComponentForm implements OnInit {
                 this.PatientVitalList = [];
                 this.PrescriptionModel = new emr_prescription_mf();
                 this.PrescriptionModel = result.ResultSet.Model;
+                if (this.PrescriptionModel.FollowUpTime != null && this.PrescriptionModel.FollowUpTime != undefined)
+                    this.PrescriptionModel.FollowUpTime = this.convertTo12HourFormat(this.PrescriptionModel.FollowUpTime);
+
                 this.MedicineList = result.ResultSet.MedicineList;
                 if (result.ResultSet.patientInfo != null) {
                     this.PatientRXmodel = result.ResultSet.patientInfo;
@@ -2056,7 +2063,7 @@ export class PrescriptionComponentForm implements OnInit {
                     this.PatientRXmodel.Address = result.ResultSet.patientInfo.Address;
                     this.PatientRXmodel.MrNo = result.ResultSet.patientInfo.MRNO;
                     this.PatientRXmodel.NoVisit = result.ResultSet.patientInfo.NoVisit;
-                   }
+                }
                 this.PatientRXmodel.Notes = result.ResultSet.Model.Notes;
                 if (result.ResultSet.Model.ClinicalNote) {
                     this.PatientRXmodel.safeClinicalNote = this.sanitizer.bypassSecurityTrustHtml(result.ResultSet.Model.ClinicalNote);
@@ -2148,11 +2155,11 @@ export class PrescriptionComponentForm implements OnInit {
                     });
                 }
                 if (this.PrescriptionModel.emr_prescription_treatment != null) {
-
                     this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
                         var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
+                            item.GenericName=medicineName.GenericName;
                             item.MedicineType = medicineName.Type;
                             item.TypeId = medicineName.TypeId;
                         }
@@ -2168,6 +2175,12 @@ export class PrescriptionComponentForm implements OnInit {
 
             this.loader.HideLoader();
         });
+    }
+    getMedicineLabel(medicine: any): string {
+      if (this.DoctorInfo.DrugMode === 'G'){
+        return medicine.GenericName || medicine.MedicineName;
+      }
+      return medicine.MedicineName;
     }
     AddFavorite(val: any, Type: any) {
         if (val != undefined && val != null) {

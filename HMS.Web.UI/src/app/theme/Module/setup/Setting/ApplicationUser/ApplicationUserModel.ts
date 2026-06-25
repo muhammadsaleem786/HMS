@@ -41,6 +41,7 @@ export class ApplicationUserModel {
     TemplateId: number=1;
     UserImage: string;
     BrandImage: string;
+    DrugMode:string;
     BrandDescription:string;
     GenderDropdown: number[] = [];
     DoctorIds: number[] = [];

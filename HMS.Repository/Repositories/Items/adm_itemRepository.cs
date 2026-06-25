@@ -250,11 +250,22 @@ namespace HMS.Repository.Repositories.Items
         }
         public static PaginationResult PaginationWithGroupParm(this IRepository<adm_item> repository, decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)
         {
+            string category = "";
+            string vandor = "";
+            string brand = "";
+            if (!string.IsNullOrWhiteSpace(FilterID))
+            {
+                var filters = FilterID.Split(',');
+                category = filters.Length > 0 ? filters[0] : "";
+                vandor = filters.Length > 1 ? filters[1] : "";
+                brand = filters.Length > 2 ? filters[2] : "";
+            }
             var objResult = new PaginationResult();
             try
             {
+
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<adm_item, bool>> predicate = (e => e.CompanyId == CompanyID && (FilterID == "0" || e.GroupId.ToString() == FilterID));
+                Expression<Func<adm_item, bool>> predicate = (e => e.CompanyId == CompanyID);
 
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;
@@ -271,6 +282,26 @@ namespace HMS.Repository.Repositories.Items
                   )));
                 }
                 IQueryable<adm_item> filteredData = repository.Queryable().Where(predicate);
+                if (!string.IsNullOrEmpty(category))
+                {
+                    int categoryId = Convert.ToInt32(category);
+                    filteredData = filteredData.Where(x =>
+                        x.GroupId == categoryId);
+                }
+
+                if (!string.IsNullOrEmpty(vandor))
+                {
+                    int vandorId = Convert.ToInt32(vandor);
+                    filteredData = filteredData.Where(x =>
+                        x.VendorId == vandorId);
+                }
+
+                if (!string.IsNullOrEmpty(brand))
+                {
+                    int brandId = Convert.ToInt32(brand);
+                    filteredData = filteredData.Where(x =>
+                        x.BrandId == brandId);
+                }
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
                     PFilter.OrderBy = "ID";
                 OrderByName = PFilter.OrderBy.IndexOf("Name") > -1;

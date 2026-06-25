@@ -34,6 +34,10 @@ export class ImportItemComponent {
     public ChkImpExistInDB = new Array<CheckImportExistModel>();
     public RecordStatusModel = new ImportRecordStatusModel();
     public importDataModel = new ImportEmpDataModel();
+    public validGroups: string[] = [];
+    public unitGroups: string[] = [];
+    public typeGroups: string[] = [];
+    public categoryGroups: string[] = [];
     data: AOA = [[1, 2], [3, 4]];
     wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
 
@@ -46,13 +50,32 @@ export class ImportItemComponent {
         this.ControlRights = this._CommonService.ScreenRights("68");
     }
     ngOnInit() {
+        this.LoadImportMasters();
     }
 
     GoBack(DefaultRoute) {
         this._router.navigate([DefaultRoute]);
     }
 
+    LoadImportMasters() {
+        this._ItemService.GetImportMasters("64,57,59,58").then(res => {
+            if (res.IsSuccess) {
+                let list = res.ResultSet.dropdownValues;
+                var GroupList = list.filter(f => f.DropDownID === 64);
+                var unitList = list.filter(f => f.DropDownID === 57);
+                var ItemTypeList = list.filter(f => f.DropDownID === 59);
+                var CategoryList = list.filter(f => f.DropDownID === 58);
 
+                this.validGroups = GroupList.map(x => x.Value.toLowerCase());
+
+                this.unitGroups = unitList.map(x => x.Value.toLowerCase());
+
+                this.typeGroups = ItemTypeList.map(x => x.Value.toLowerCase());
+
+                this.categoryGroups = CategoryList.map(x => x.Value.toLowerCase());
+            }
+        });
+    }
     View(id: string) {
         this.loader.ShowLoader();
         this.Id = id;
@@ -68,28 +91,24 @@ export class ImportItemComponent {
             this.ExcelErrorList = [];
             this.ChkImpExistInDB = [];
             this.RecordStatusModel.TotalRecords = this.ExcelDataList.length;
-            const validGroups = ['pharmacy', 'ot', 'lab'];
-            const unitGroups = ['box', 'sqm', 'dz', 'box', 'ft', 'g', 'kg', 'km', 'mg', 'mt', 'pcs'];
-            const typeGroups = ['goods', 'service', 'batch', 'sarial'];
-            const categoryGroups = ['sachet', 'tablet', 'capsules', 'drops', 'injections', 'syrup', 'ot','drip','lab'];
-            this.ImportList.forEach(x => {
+               this.ImportList.forEach(x => {
                 if (x.Group == undefined)
                     this.AddToErrorList(x, 'Grroup is missing', true);
-                else if (!validGroups.includes(x.Group.toLowerCase()))
+                else if (!this.validGroups.includes(x.Group.toLowerCase()))
                     this.AddToErrorList(x, 'Invalid group name', true);
                 else if (x.Type == undefined)
                     this.AddToErrorList(x, 'Type is missing', true);
-                else if (!typeGroups.includes(x.Type.toLowerCase()))
+                else if (!this.typeGroups.includes(x.Type.toLowerCase()))
                     this.AddToErrorList(x, 'Invalid Type name', true);
                 else if (x.Name == undefined)
                     this.AddToErrorList(x, 'Name is missing', true);
                 else if (x.Unit == undefined)
                     this.AddToErrorList(x, 'Unit is missing', true);
-                else if (!unitGroups.includes(x.Unit.toLowerCase()))
+                else if (!this.unitGroups.includes(x.Unit.toLowerCase()))
                     this.AddToErrorList(x, 'Invalid Unit name', true);
                 else if (x.Category == undefined)
                     this.AddToErrorList(x, 'Category is missing', true);
-                else if (!categoryGroups.includes(x.Category.toLowerCase()))
+                else if (!this.categoryGroups.includes(x.Category.toLowerCase()))
                     this.AddToErrorList(x, 'Invalid Category name', true);
                 else if (x.CostPrice == undefined)
                     this.AddToErrorList(x, 'Cost Price is missing', true);
@@ -228,7 +247,7 @@ export class ImportItemComponent {
         reader.readAsBinaryString(target.files[0]);
     }
     ImportItem() {
-        
+
         this.loader.ShowLoader();
         this._ItemService.ImportEmpData(this.ImportList).then(m => {
             var result = JSON.parse(m._body);

@@ -63,6 +63,10 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.GroupDropDownId).HasColumnName("GroupDropDownId");
             this.Property(t => t.POSItem).HasColumnName("POSItem");
             this.Property(t => t.InstructionId).HasColumnName("InstructionId");
+            this.Property(t => t.VendorId).HasColumnName("VendorId");
+            this.Property(t => t.GenericId).HasColumnName("GenericId");
+            this.Property(t => t.BrandDropdownId).HasColumnName("BrandDropdownId");
+            this.Property(t => t.BrandId).HasColumnName("BrandId");
 
             // Relationships
             this.HasRequired(t => t.adm_company)
@@ -74,21 +78,33 @@ namespace HMS.Entities.Models.Mapping
             this.HasOptional(t => t.adm_user_mf1)
                 .WithMany(t => t.adm_item1)
                 .HasForeignKey(d => d.ModifiedBy);
+
+            this.HasOptional(t => t.adm_generic)
+            .WithMany(t => t.adm_item)
+            .HasForeignKey(d => new { d.GenericId, d.CompanyId });
+
             this.HasOptional(t => t.sys_drop_down_value)
                 .WithMany(t => t.adm_item)
                 .HasForeignKey(d => new { d.UnitID, d.UnitDropDownID });
+
             this.HasOptional(t => t.sys_drop_down_value1)
                .WithMany(t => t.adm_item1)
                .HasForeignKey(d => new { d.CategoryID, d.CategoryDropDownID });
+
             this.HasOptional(t => t.sys_drop_down_value2)
             .WithMany(t => t.adm_item2)
             .HasForeignKey(d => new { d.ItemTypeId, d.ItemTypeDropDownID });
+
             this.HasOptional(t => t.sys_drop_down_value3)
             .WithMany(t => t.adm_item3)
             .HasForeignKey(d => new { d.GroupId, d.GroupDropDownId });
             this.HasOptional(t => t.emr_instruction)
                .WithMany(t => t.adm_item)
                .HasForeignKey(d => new { d.InstructionId, d.CompanyId });
+
+            this.HasOptional(t => t.sys_drop_down_value4)
+             .WithMany(t => t.adm_item4)
+             .HasForeignKey(d => new { d.BrandId, d.BrandDropdownId });
         }
     }
 }

@@ -434,9 +434,22 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             return objResponse;
         }
 
+        [HttpGet]
+        [ActionName("PaginationWithParm")]
         public PaginationResult PaginationWithParm(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)
         {
-            throw new NotImplementedException();
+            var objResult = new PaginationResult();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                objResult = _service.PaginationWithParm(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace.Error(ex);
+            }
+            return objResult;
         }
     }
 }

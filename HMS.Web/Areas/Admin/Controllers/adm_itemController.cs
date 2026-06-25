@@ -34,12 +34,14 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iinv_stockService _inv_stockService;
         private readonly Iadm_item_logService _adm_item_logService;
         private readonly Iemr_instructionService _emr_instructionService;
+        private readonly Ipur_vendorService _pur_vendorService;
+        private readonly Iadm_genericService _adm_genericService;
 
         public adm_itemController(IUnitOfWorkAsync unitOfWorkAsync, Iadm_itemService Service,
         Isys_drop_down_valueService sys_drop_down_valueService,
   Iadm_companyService iadm_companyService, Iinv_stockService inv_stockService,
   Iadm_item_logService adm_item_logService,
-        IStoredProcedureService ProcedureService, Iemr_instructionService emr_instructionService)
+        IStoredProcedureService ProcedureService, Iemr_instructionService emr_instructionService, Ipur_vendorService pur_vendorService, Iadm_genericService adm_genericService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -49,6 +51,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _inv_stockService = inv_stockService;
             _adm_item_logService = adm_item_logService;
             _emr_instructionService = emr_instructionService;
+            _pur_vendorService = pur_vendorService;
+            _adm_genericService = adm_genericService;
         }
         public async Task<ResponseInfo> Save(adm_item Model)
         {
@@ -80,6 +84,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.CategoryDropDownID;
                 Model.ItemTypeDropDownID = (int)sys_dropdown_mfEnum.ItemTypeDropDownID;
                 Model.GroupDropDownId = (int)sys_dropdown_mfEnum.GroupDropDownId;
+                Model.BrandDropdownId = (int)sys_dropdown_mfEnum.BrandDropDownId;
                 Model.CreatedBy = Request.LoginID();
                 Model.CreatedDate = Request.DateTimes();
                 Model.ModifiedBy = Request.LoginID();
@@ -87,6 +92,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.ObjectState = ObjectState.Added;
                 Model.sys_drop_down_value = null;
                 Model.sys_drop_down_value1 = null;
+                Model.sys_drop_down_value4 = null;
                 _service.Insert(Model);
 
                 try
@@ -131,6 +137,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
+                Model.UnitDropDownID = (int)sys_dropdown_mfEnum.ItemUnitDropDownID;
+                Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.CategoryDropDownID;
+                Model.ItemTypeDropDownID = (int)sys_dropdown_mfEnum.ItemTypeDropDownID;
+                Model.GroupDropDownId = (int)sys_dropdown_mfEnum.GroupDropDownId;
+                Model.BrandDropdownId = (int)sys_dropdown_mfEnum.BrandDropDownId;
                 Model.Name = Model.Name;
                 Model.sys_drop_down_value = null;
                 Model.sys_drop_down_value1 = null;
@@ -166,6 +177,255 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             }
             return objResponse;
         }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("VendorSearch")]
+        public async Task<ResponseInfo> VendorSearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _pur_vendorService.Queryable().AsNoTracking().Where(a => (a.CompanyID == CompanyID) && (a.CompanyName.StartsWith(term))).Select(z => new
+                {
+                    value = z.ID,
+                    label = z.CompanyName,
+
+                }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("FormulationSearch")]
+        public async Task<ResponseInfo> FormulationSearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _adm_genericService.Queryable().AsNoTracking().Where(a => (a.CompanyId == CompanyID) && (a.GenericName.StartsWith(term))).Select(z => new
+                {
+                    value = z.ID,
+                    label = z.GenericName,
+
+                }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("UnitSearch")]
+        public async Task<ResponseInfo> UnitSearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _sys_drop_down_valueService.Queryable().AsNoTracking().Where(a =>
+                 (a.DropDownID == 57) &&
+        (
+            a.CompanyID == CompanyID ||
+            a.CompanyID == null
+        ) && a.Value.StartsWith(term)).Select(z => new
+        {
+            value = z.ID,
+            label = z.Value,
+        }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("CategorySearch")]
+        public async Task<ResponseInfo> CategorySearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _sys_drop_down_valueService.Queryable().AsNoTracking().
+
+                    Where(a =>
+                     (a.DropDownID == 58) &&
+        (
+            a.CompanyID == CompanyID ||
+            a.CompanyID == null
+        ) && a.Value.StartsWith(term))
+
+                    .Select(z => new
+                    {
+                        value = z.ID,
+                        label = z.Value,
+
+                    }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+
+        [HttpPost]
+        [HttpGet]
+        [ActionName("BrandSearch")]
+        public async Task<ResponseInfo> BrandSearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _sys_drop_down_valueService.Queryable().AsNoTracking().
+
+                    Where(a =>
+                     (a.DropDownID == 73) &&
+        (
+            a.CompanyID == CompanyID ||
+            a.CompanyID == null
+        ) && a.Value.StartsWith(term))
+
+                    .Select(z => new
+                    {
+                        value = z.ID,
+                        label = z.Value,
+
+                    }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+
+
+        [HttpPost]
+        [HttpGet]
+        [ActionName("ItemTypeSearch")]
+        public async Task<ResponseInfo> ItemTypeSearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _sys_drop_down_valueService.Queryable().AsNoTracking().Where(a =>
+                 (a.DropDownID == 59) &&
+        (
+            a.CompanyID == CompanyID ||
+            a.CompanyID == null
+        ) && a.Value.StartsWith(term)).Select(z => new
+        {
+            value = z.ID,
+            label = z.Value,
+
+        }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("GroupSearch")]
+        public async Task<ResponseInfo> GroupSearch(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var result = _sys_drop_down_valueService.Queryable().AsNoTracking().
+                    Where(a =>
+                     (a.DropDownID == 64) &&
+        (
+            a.CompanyID == CompanyID ||
+            a.CompanyID == null
+        ) &&
+        a.Value.StartsWith(term)
+
+                    ).Select(z => new
+                    {
+                        value = z.ID,
+                        label = z.Value,
+                    }).Take(20).ToList();
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+
         [HttpPut]
         [HttpGet]
         [ActionName("ItemPublish")]
@@ -329,7 +589,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
                 dropdownValues = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && Ids.Contains(e.DropDownID)).ToList();
                 var InstructionList = _emr_instructionService.Queryable().Where(a => a.CompanyID == CompanyID).Select(a => new { ID = a.ID, Name = a.Instructions }).ToList();
-
+                var vendorObj = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(a => new { ID = a.ID, Name = a.CompanyName }).ToList();
+                var genericObj = _adm_genericService.Queryable().Where(e => e.CompanyId == CompanyID).Select(a => new { ID = a.ID, Name = a.GenericName }).ToList();
                 if (dropdownValues != null)
                 {
 
@@ -337,9 +598,51 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     {
                         dropdownValues = dropdownValues,
                         InstructionList = InstructionList,
+                        vendorList = vendorObj,
+                        genericList = genericObj,
                     };
                     objResponse.IsSuccess = true;
                     //objResponse.ErrorMessage = "User Name or Password is incorrect.";
+                }
+                else
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "Email does not exist";
+                }
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [HttpGet]
+        [ActionName("LoadExcelMasters")]
+        public ResponseInfo LoadExcelMasters(string DropdownIds)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var CompanyID = Request.CompanyID();
+
+                List<sys_drop_down_value> dropdownValues = new List<sys_drop_down_value>();
+                var Ids = DropdownIds.Split(',').Select(s => int.Parse(s)).ToArray();
+                dropdownValues = _sys_drop_down_valueService
+                            .Queryable()
+                            .Where(e =>
+                                !e.IsDeleted &&
+                                (e.CompanyID == null || e.CompanyID == CompanyID) &&
+                                Ids.Contains(e.DropDownID))
+                            .ToList();
+                if (dropdownValues != null)
+                {
+                    objResponse.ResultSet = new
+                    {
+                        dropdownValues = dropdownValues,
+                    };
+                    objResponse.IsSuccess = true;
                 }
                 else
                 {
@@ -368,10 +671,60 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 var CompanyID = Request.CompanyID();
                 int userid = Convert.ToInt32(Request.LoginID());
-                var result = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID.ToString() == Id).Include(a => a.adm_company).Include(a => a.adm_user_mf).Include(x => x.sys_drop_down_value).FirstOrDefault();
+                var result = _service.Queryable().Where(e => e.CompanyId == CompanyID && e.ID.ToString() == Id)
+                     .Select(e => new
+                     {
+
+                         // All item table fields
+                         e.ID,
+                         e.CompanyId,
+                         e.Name,
+                         e.SKU,
+                         e.Image,
+                         e.UnitDropDownID,
+                         e.UnitID,
+                         e.ItemTypeDropDownID,
+                         e.ItemTypeId,
+                         e.CategoryDropDownID,
+                         e.CategoryID,
+                         e.GroupId,
+                         e.InstructionId,
+                         e.GroupDropDownId,
+                         e.TrackInventory,
+                         e.IsActive,
+                         e.CostPrice,
+                         e.SalePrice,
+                         e.IsAllowNegativeStock,
+                         e.InventoryOpeningStock,
+                         e.InventoryStockPerUnit,
+                         e.InventoryStockQuantity,
+                         e.SaveStatus,
+                         e.VendorId,
+                         e.GenericId,
+                         e.BrandId,
+                         e.POSItem,
+                         e.CreatedBy,
+                         e.CreatedDate,
+                         e.ModifiedBy,
+                         e.ModifiedDate,
+                         // Extra fields
+                         GroupName = e.sys_drop_down_value3.Value,
+                         TypeName = e.sys_drop_down_value2.Value,
+                         FormulationName = e.adm_generic.GenericName,
+                         CategoryName = e.sys_drop_down_value1.Value,
+                         UnitName = e.sys_drop_down_value.Value,
+                         BrandName = e.sys_drop_down_value4.Value
+                     })
+    .FirstOrDefault();
+                var vendorName = _pur_vendorService.Queryable()
+           .AsNoTracking()
+           .Where(v => v.ID == result.VendorId)
+           .Select(v => v.CompanyName)
+           .FirstOrDefault();
                 objResponse.ResultSet = new
                 {
                     result = result,
+                    vendorName = vendorName,
                 };
             }
             catch (Exception ex)
@@ -465,9 +818,28 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         {
             throw new NotImplementedException();
         }
+        [HttpGet]
+        [ActionName("Load")]
         public ResponseInfo Load()
         {
-            throw new NotImplementedException();
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var CompanyID = Request.CompanyID();
+                var InstructionList = _emr_instructionService.Queryable().Where(a => a.CompanyID == CompanyID).Select(a => new { ID = a.ID, Name = a.Instructions }).ToList();
+                objResponse.ResultSet = new
+                {
+                    InstructionList = InstructionList
+                };
+                objResponse.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
         }
         [HttpGet]
         [ActionName("PaginationWithParm")]
@@ -495,12 +867,22 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _service.PaginationWithGroupParm(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 64).Select(z => new
+                var ids = new int[] { 73, 64 };
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(z => new
                 {
                     z.ID,
                     z.Value,
+                    z.DropDownID
                 }).ToList();
+
+                var VendorList = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(z => new
+                {
+                    z.ID,
+                    Name = z.CompanyName,
+                }).ToList();
+
                 objResult.OtherDataModel = categoryList;
+                objResult.OtherData2Model = VendorList;
             }
             catch (Exception ex)
             {
@@ -517,12 +899,20 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _inv_stockService.ExpirePagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 64).Select(z => new
+                var ids = new int[] { 73, 64 };
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(z => new
                 {
                     z.ID,
                     z.Value,
+                    z.DropDownID
+                }).ToList();
+                var VendorList = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(z => new
+                {
+                    z.ID,
+                    Name = z.CompanyName,
                 }).ToList();
                 objResult.OtherDataModel = categoryList;
+                objResult.OtherData2Model = VendorList;
             }
             catch (Exception ex)
             {
@@ -539,12 +929,20 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _inv_stockService.RestockPagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => e.DropDownID == 64).Select(z => new
+                var ids = new int[] { 73, 64 };
+                var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(z => new
                 {
                     z.ID,
                     z.Value,
+                    z.DropDownID
+                }).ToList();
+                var VendorList = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(z => new
+                {
+                    z.ID,
+                    Name = z.CompanyName,
                 }).ToList();
                 objResult.OtherDataModel = categoryList;
+                objResult.OtherData2Model = VendorList;
             }
             catch (Exception ex)
             {

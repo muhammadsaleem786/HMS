@@ -1,0 +1,123 @@
+﻿
+
+
+<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Formulation
+                    </h3>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+
+            <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Formulation</a>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="Cardview search_onTop px-2">
+            <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="GenericList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #GenericModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" *ngIf="IsEdit">Update Formulation</h4>
+        <h4 class="modal-title" *ngIf="IsEdit==false">Add Formulation</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body bg-secondary">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Specialty </label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm form-control-alternative" formControlName="SpecialtyId" [(ngModel)]="model.SpecialtyId">
+                                <option *ngFor="let item of SpecialtyList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <small class="text-danger" *ngIf="Form1.controls.SpecialtyId.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Category </label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm form-control-alternative" formControlName="CategoryID" [(ngModel)]="model.CategoryID">
+                                <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <small class="text-danger" *ngIf="Form1.controls.CategoryID.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Formulation Name </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="GenericName" [(ngModel)]="model.GenericName" class="form-control form-control-sm form-control-alternative" placeholder="Formulation Name">
+                            <small class="text-danger" *ngIf="Form1.controls.GenericName.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Common Use </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="CommonUse" [(ngModel)]="model.CommonUse" class="form-control form-control-sm form-control-alternative" placeholder="Common Use">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Is Active </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="checkbox" class="" formControlName="IsActive" [(ngModel)]="model.IsActive">
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+            <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+            <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </form>
+</ng-template>
+
+
+
+
+
+
+
+
+

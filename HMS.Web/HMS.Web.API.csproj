@@ -347,6 +347,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_companyController.cs" />
+    <Compile Include="Areas\Admin\Controllers\adm_genericController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_user_shareController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_user_sessionController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_reminder_mfController.cs" />
@@ -449,6 +450,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Areas\Lab\lab_result_mfController.cs" />
+    <Compile Include="Areas\Lab\lab_patient_testController.cs" />
+    <Compile Include="Areas\Lab\lab_parameterController.cs" />
+    <Compile Include="Areas\Lab\lab_catalogController.cs" />
     <Compile Include="Common\AWSS3_Operations.cs" />
     <Compile Include="Common\CryptographyPayment.cs" />
     <Compile Include="Common\DocumentInfo.cs" />

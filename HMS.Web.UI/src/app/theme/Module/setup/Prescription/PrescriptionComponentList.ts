@@ -230,6 +230,7 @@ export class PrescriptionComponentList {
                         var medicineName = m.ResultSet.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
+                            item.GenericName=medicineName.GenericName;
                             item.MedicineType = medicineName.Type;
                             item.TypeId = medicineName.TypeId;
                         }
@@ -243,6 +244,12 @@ export class PrescriptionComponentList {
                 this.toastr.Error('Error', m.ErrorMessage);
             this.loader.HideLoader();
         });
+    }
+    getMedicineLabel(medicine: any): string {
+      if (this.DoctorInfo.DrugMode === 'G'){
+        return medicine.GenericName || medicine.MedicineName;
+      }
+      return medicine.MedicineName;
     }
     loadMedicine(Ids: any): string {
         let Name = "";

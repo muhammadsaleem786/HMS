@@ -208,7 +208,20 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="row">
+                                    <div class="col-sm-4 text-right">
+                                        <label>Prescription Drug Mode</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <select formControlName="DrugMode" [(ngModel)]="model.DrugMode" class="form-control">
+                                                <option *ngFor="let item of DrugModeList" [value]="item.ID">
+                                                    {{item.Name}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-sm-4 text-right">
                                         <label>Qualification</label>

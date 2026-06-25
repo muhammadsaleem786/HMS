@@ -260,7 +260,11 @@ export class AppointmentService {
         var data = { 'Id': Id };
         return this.http.Get(this.DocurlToApi + '/GetById', data).then(e => e);
     }
-
+    PrintPrescription(PatientId: number, DoctorId: number): Promise<any> {
+        var data = { 'PatientId': PatientId, 'DoctorId': DoctorId };
+        return this.http.Get(this.PresurlToApiAp + '/PrintPrescription', data).then(e => e);
+    }
+    
     PrescriptionDropdownList(): Promise<any> {
         return this.http.Get(this.MediurlToApiAp + '/Load', {});
     }

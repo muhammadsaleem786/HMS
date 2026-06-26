@@ -17,6 +17,7 @@
     DiscountAmount: number = 0;
     Discount: number;
     DiscountType: string;
+    Total: number;
 }
 export class lab_result_mf {
     constructor() {

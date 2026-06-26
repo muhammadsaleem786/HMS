@@ -9,6 +9,8 @@ import { CommonToastrService } from '../../../../CommonService/CommonToastrServi
 import { LabService } from './LabService';
 import { GlobalVariable } from '../../../../AngularConfig/global';
 import { FileService } from '../../../../CommonService/FileService';
+import { AppointmentService } from '../Appointment/AppointmentService';
+import { emr_patient } from '../Appointment/AppointmentModel';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EncryptionService } from '../../../../CommonService/encryption.service';
 import { PaginationModel, PaginationConfig } from '../../../../CommonComponent/PaginationComponentConfig'
@@ -18,13 +20,14 @@ import { forEach } from '@angular/router/src/utils/collection';
 @Component({
     selector: 'app-LabDashboard',
     templateUrl: './LabDashboardComponent.html',
-    providers: [LabService],
+    providers: [LabService, AppointmentService],
 })
 export class LabDashboardComponent implements OnInit {
     public PModel = new PaginationModel();
     public PConfig = new PaginationConfig();
     public PatientTestmodel = new lab_patient_test();
     public Resultmodel = new lab_result_mf();
+    public model = new emr_patient();
     public ReportModel: any;
     public InvoiceCompanyInfo: any;
     public PayrollRegion: string;
@@ -36,6 +39,7 @@ export class LabDashboardComponent implements OnInit {
     public CompanyObj: any;
     public patientTestForm: FormGroup;
     public resultForm: FormGroup;
+    public Form1: FormGroup;
     public TestControlRights: any;
     public EnterResultControlRights: any;
     public ReportControlRights: any;
@@ -50,6 +54,7 @@ export class LabDashboardComponent implements OnInit {
     public categoryFilters: any[] = [];
     public sampleTypeFilters: any[] = [];
     public statusFilters: any[] = [];
+    public GenderList: any[] = [];
     public selectedDepartment: string = '';
     public selectedStatus: string = '';
     public selectedSampleType: string = '';
@@ -66,13 +71,17 @@ export class LabDashboardComponent implements OnInit {
     @ViewChild('PrintLabelModal') PrintLabelModal: TemplateRef<any>;
     @ViewChild('InvoiceModal') InvoiceModal: TemplateRef<any>;
     @ViewChild('ReportModal') ReportModal: TemplateRef<any>;
+    @ViewChild("content") PatientContent: TemplateRef<any>;
 
     private _newTestOrderRef: NgbModalRef;
     private _enterResultRef: NgbModalRef;
     private _printLabelRef: NgbModalRef;
     private _invoiceModalRef: NgbModalRef;
     private _reportModalRef: NgbModalRef;
-
+    private _patientContentRef: NgbModalRef;
+    public IsCNICMandatory: any;
+    public BillTypeList: any[] = [];
+    public TittleList: any[] = [];
     public testCatalogList: any[] = [];
     public selectedSample: any;
     public orderTestSearch: string = '';
@@ -99,7 +108,7 @@ export class LabDashboardComponent implements OnInit {
 
     constructor(public _fb: FormBuilder, public _router: Router
         , public commonservice: CommonService, public toastr: CommonToastrService
-        , public loader: LoaderService, private encrypt: EncryptionService, public _labService: LabService
+        , public loader: LoaderService, public _AppointmentService: AppointmentService, private encrypt: EncryptionService, public _labService: LabService
         , private modalService: NgbModal) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
@@ -115,6 +124,22 @@ export class LabDashboardComponent implements OnInit {
         this.PModel.SortName = "";
         this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
         this.selectPage(this.PModel.CurrentPage);
+        this.Form1 = this._fb.group({
+            PatientName: ['', [Validators.required]],
+            Gender: ['', [Validators.required]],
+            DOB: [''],
+            Age: ['', [Validators.required]],
+            Email: [''],
+            Mobile: ['', [<any>Validators.required, Validators.pattern(ValidationVariables.NumberPattern), Validators.minLength(11), Validators.maxLength(11)]],
+            CNIC: [''],
+            Image: [''],
+            Notes: [''],
+            MRNO: [''],
+            BillTypeId: [''],
+            PrefixTittleId: [''],
+            Father_Husband: [''],
+            Address: [''],
+        });
         this.patientTestForm = this._fb.group({
             PatientId: [''],
             StatusId: [''],
@@ -188,6 +213,7 @@ export class LabDashboardComponent implements OnInit {
                 this.categoryFilters = m.OtherData3Model.filter((v: any) => v.DropDownID === 68);
                 this.statusFilters = m.OtherData3Model.filter((v: any) => v.DropDownID === 72);
                 this.sampleTypeFilters = m.OtherData3Model.filter((v: any) => v.DropDownID === 71);
+                this.GenderList = m.OtherData3Model.filter((v: any) => v.DropDownID === 2);
                 const counts = m.OtherDataModel || {};
                 this.primaryActions = [
                     this.TestControlRights.CreateRights ? { title: 'New Test', subtitle: 'Create a new lab order', icon: 'icon icon-plus' } : null,
@@ -329,6 +355,7 @@ export class LabDashboardComponent implements OnInit {
                 this.PatientTestmodel.DiscountType = "%";
             else if (this.DisType == 2)
                 this.PatientTestmodel.DiscountType = "PKR";
+            this.PatientTestmodel.Total = this.orderSubTotalAmount;
             this._labService.SaveOrUpdate(this.PatientTestmodel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
@@ -693,9 +720,7 @@ export class LabDashboardComponent implements OnInit {
                         this.InvoiceCompanyInfo = m.ResultSet.result[0];
                         if (m.ResultSet.result[0].CompanyLogo != null)
                             this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
-                        m.ResultSet.result[0].InvoiceModel.forEach((item, index) => {
-                            this.SubTotal += parseInt(item.Price);
-                        });
+                        this.SubTotal = m.ResultSet.result[0].Total;
                         this.TotalDiscount = m.ResultSet.result[0].DiscountAmount;
                         this.Total = this.SubTotal - this.TotalDiscount;
                     }
@@ -709,6 +734,7 @@ export class LabDashboardComponent implements OnInit {
             return;
         }
     }
+
     openReportModal(id: any) {
         this.ReportModel = null;
         if (id != null && id !== '') {
@@ -733,6 +759,40 @@ export class LabDashboardComponent implements OnInit {
             this.recalculateOrderTotals();
         }
     }
+    AgeChange() {
+        this.model.DOB = null;
+    }
+    openNewPatient() {
+        this.loader.ShowLoader();
+        this._AppointmentService.GetEMRNO().then(m => {
+            this.model = new emr_patient();
+            this.model.PrefixTittleId = 1;
+            debugger
+            if (this.GenderList.length == 1) {
+                this.model.Gender = this.GenderList[0].ID;
+                if (this.model.Gender == 2)
+                    this.model.PrefixTittleId = 1;
+                if (this.model.Gender == 1)
+                    this.model.PrefixTittleId = 2;
+                this.GenderChnage(this.model.Gender);
+            }
+            this.model.MRNO = m.ResultSet.MRNO;
+            this.BillTypeList = m.ResultSet.BillTypeList;
+            this.TittleList = m.ResultSet.TittleList;
+            this.model.BillTypeId = 1;
+            this.loader.HideLoader();
+            this._patientContentRef = this.modalService.open(this.PatientContent, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
+
+        });
+
+    }
+    GenderChnage(evnt: any) {
+        var genderid = parseInt(evnt);
+        if (genderid == 2 && this.model.PrefixTittleId == 1)
+            this.model.PrefixTittleId = 2
+        if (genderid == 1 && this.model.PrefixTittleId == 2)
+            this.model.PrefixTittleId = 1
+    }
     changeDiscountType(evt: any) {
         this.DisType = evt;
         if (this.PatientTestmodel.Discount != null && this.PatientTestmodel.Discount != undefined) {
@@ -740,6 +800,60 @@ export class LabDashboardComponent implements OnInit {
                 this.PatientTestmodel.Discount = 0;
             this.recalculateOrderTotals();
         }
+    }
+    PatientSaveOrUpdate(isValid: boolean): void {
+        this.submitted = true; // set form submit to true
+        if (isValid) {
+            this.submitted = false;
+            if (this.IsCNICMandatory) {
+                if (this.model.CNIC === null || this.model.CNIC === "") {
+                    this.toastr.Error("Error", "Please enter CNIC.");
+                    return;
+                }
+            }
+            this.loader.ShowLoader();
+            this._AppointmentService.IsPhoneExist(this.model.Mobile).then(m => {
+                this.loader.HideLoader();
+                if (m.IsSuccess) {
+                    swal({
+                        title: "Are you sure?",
+                        text: "Are you sure want to add another patient against this " + this.model.Mobile + "",
+                        icon: "warning",
+                        buttons: ['Cancel', 'Yes'],
+                        dangerMode: true,
+                    })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                this.AddUpdatePatient();
+                            }
+                        });
+                } else {
+                    this.AddUpdatePatient();
+                }
+            });
+
+        }
+    }
+    AddUpdatePatient() {
+        this.loader.ShowLoader();
+        this._AppointmentService.SaveOrUpdate(this.model).then(m => {
+            var result = JSON.parse(m._body);
+            if (result.IsSuccess) {
+                this.PatientTestmodel.PatientId = result.ResultSet.CurrentModel.ID;
+                this.PatientTestmodel.PatientName = result.ResultSet.CurrentModel.PatientName;
+                this.PatientTestmodel.Age = result.ResultSet.CurrentModel.Age;
+                this.PatientTestmodel.Gender = result.ResultSet.CurrentModel.Gender == 1 ? "Male" : result.ResultSet.CurrentModel.Gender == 2 ? "Female" : "Other"
+                this.toastr.Success(result.Message);
+                if (this._patientContentRef) {
+                    this._patientContentRef.close();
+                }
+                this.loader.HideLoader();
+            }
+            else {
+                this.toastr.Error('Error', result.ErrorMessage);
+                this.loader.HideLoader();
+            }
+        });
     }
     Close() {
         this.PatientTestmodel = new lab_patient_test();

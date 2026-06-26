@@ -29,6 +29,7 @@ namespace HMS.Entities.Models
         public Nullable<decimal> DiscountAmount { get; set; }
         public Nullable<decimal> Discount { get; set; }
         public string DiscountType { get; set; }
+        public decimal Total { get; set; }
         [NotMapped]
         public string CatalogIds { get; set; }
         public decimal CreatedBy { get; set; }

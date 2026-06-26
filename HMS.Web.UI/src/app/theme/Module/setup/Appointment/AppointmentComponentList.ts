@@ -1920,19 +1920,19 @@ export class AppointmentComponentList implements OnInit {
             this._AppointmentService.IsPhoneExist(this.model.Mobile).then(m => {
                 this.loader.HideLoader();
                 if (m.IsSuccess) {
-                    this.AddUpdatePatient();
-                    //swal({
-                    //    title: "Are you sure?",
-                    //    text: "Are you sure want to add another patient against this " + this.model.Mobile + "",
-                    //    icon: "warning",
-                    //    buttons: ['Cancel', 'Yes'],
-                    //    dangerMode: true,
-                    //})
-                    //    .then((willDelete) => {
-                    //        if (willDelete) {
-                    //            this.AddUpdatePatient();
-                    //        }
-                    //    });
+                    //this.AddUpdatePatient();
+                    swal({
+                       title: "Are you sure?",
+                       text: "Are you sure want to add another patient against this " + this.model.Mobile + "",
+                       icon: "warning",
+                       buttons: ['Cancel', 'Yes'],
+                       dangerMode: true,
+                    })
+                       .then((willDelete) => {
+                           if (willDelete) {
+                               this.AddUpdatePatient();
+                           }
+                       });
 
                 } else {
                     this.AddUpdatePatient();

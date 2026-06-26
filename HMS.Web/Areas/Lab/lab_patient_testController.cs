@@ -128,6 +128,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                         Discount = Model.Discount,
                         DiscountType = Model.DiscountType,
                         DiscountAmount = Model.DiscountAmount,
+                        Total = Model.Total,
                         StatusDropdownId = (int)sys_dropdown_mfEnum.LabStatusDropdownId,
                         PatientId = Model.PatientId,
                         Age = Model.Age,
@@ -394,6 +395,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                         DiscountAmount = z.DiscountAmount,
                         Discount = z.Discount,
                         DiscountType = z.DiscountType,
+                        Total = z.Total,
                         lab_catalog = z.lab_catalog
                     }).ToList();
                 var results = result.GroupBy(l => l.requestedDate)
@@ -420,6 +422,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                             DiscountType = cl.First().DiscountType,
                             DiscountAmount = cl.First().DiscountAmount,
                             MRNo = cl.First().MRNo,
+                            Total = cl.First().Total,
                             CompanyLogo = cl.First().CompanyLogo,
                             InvoiceModel = cl.Select(z => z.lab_catalog),
                         }).ToList();
@@ -446,41 +449,49 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             {
                 decimal companyId = Request.CompanyID();
 
-                var invoice = _service.Queryable().Select(z => new
-                {
-                    z.ID,
-                    z.CompanyId,
-                    ReportNo = z.InvoiceNo,
-                    ReportDate = z.CompletedDate,
-                    DepartmentName = z.lab_catalog.sys_drop_down_value.Value,
-                    ReportTitle = "Laboratory Report",
-                    MRNO = z.emr_patient_mf.MRNO,
-                    PatientName = z.emr_patient_mf.PatientName,
-                    Age = z.emr_patient_mf.Age.ToString(),
-                    Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",
-                    Phone = z.emr_patient_mf.Mobile,
-                    Address = z.emr_patient_mf.Address,
-                    OrderedBy = z.adm_user_mf.Name,
-                    ReferringPhysician = z.ReferringPhysician,
-                    CollectionCenter = z.adm_company.CompanyName,
-                    CollectionCenterAddress = z.adm_company.CompanyAddress1,
-                    CollectionCenterAddress2 = z.adm_company.CompanyAddress2,
-                    CollectionCenterPhone = z.adm_company.Phone,
-                    CollectionCenterWebsite = z.adm_company.Website,
-                    RequestedDate = z.CreatedDate,
-                    CollectedDate = z.SampleDate,
-                    ReceivedDate = z.SampleDate,
-                    ReportedDate = z.CompletedDate,
-                    InvoiceModel = z.lab_catalog.lab_parameter.Select(p => new
+                var invoice = _service.Queryable().Where(x => x.ID.ToString() == id && x.CompanyId == companyId)
+                    .Select(z => new
                     {
-                        TestName = p.ParameterName,
-                        NormalRange = p.NormalMinimum + " - " + p.NormalMaximum,
-                        Unit = p.sys_drop_down_value.Value,
-                        CurrentResult = p.lab_result_dt.FirstOrDefault().Result.ToString() ?? "",
-                        Status = p.lab_result_dt.FirstOrDefault().Status.ToString() ?? "",
-                    }).ToList()
-                }).FirstOrDefault(x => x.ID.ToString() == id && x.CompanyId == companyId);
-
+                        z.ID,
+                        z.CompanyId,
+                        ReportNo = z.InvoiceNo,
+                        ReportDate = z.CompletedDate,
+                        DepartmentName = z.lab_catalog.sys_drop_down_value.Value,
+                        ReportTitle = "Laboratory Report",
+                        MRNO = z.emr_patient_mf.MRNO,
+                        PatientName = z.emr_patient_mf.PatientName,
+                        Age = z.emr_patient_mf.Age.ToString(),
+                        Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",
+                        Phone = z.emr_patient_mf.Mobile,
+                        Address = z.emr_patient_mf.Address,
+                        OrderedBy = z.adm_user_mf.Name,
+                        ReferringPhysician = z.ReferringPhysician,
+                        CollectionCenter = z.adm_company.CompanyName,
+                        CollectionCenterAddress = z.adm_company.CompanyAddress1,
+                        CollectionCenterAddress2 = z.adm_company.CompanyAddress2,
+                        CollectionCenterPhone = z.adm_company.Phone,
+                        CollectionCenterWebsite = z.adm_company.Website,
+                        RequestedDate = z.CreatedDate,
+                        CollectedDate = z.SampleDate,
+                        ReceivedDate = z.SampleDate,
+                        ReportedDate = z.CompletedDate,
+                        InvoiceModel = z.lab_catalog.lab_parameter.Select(p => new
+                        {
+                            TestName = p.ParameterName,
+                            NormalRange = p.ReferenceRange,
+                            Unit = p.sys_drop_down_value.Value,
+                            CurrentResult = z.lab_result_mf
+                         .SelectMany(a => a.lab_result_dt)
+                         .Where(r => r.ParameterId == p.ID)
+                         .Select(r => r.Result)
+                         .FirstOrDefault(),
+                            Status = z.lab_result_mf
+                         .SelectMany(a => a.lab_result_dt)
+                         .Where(r => r.ParameterId == p.ID)
+                         .Select(r => r.Status.ToString())
+                         .FirstOrDefault() ?? string.Empty
+                        }).ToList()
+                    }).FirstOrDefault();
                 if (invoice == null)
                 {
                     objResponse.IsSuccess = false;
@@ -864,7 +875,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             //if (reminderTable.Rows.Count > 0)
             //{
             var smsRow = integrationTable.AsEnumerable()
-       .FirstOrDefault(r => r["Type"].ToString() == "T" && Convert.ToBoolean(r["IsActive"]));
+        .FirstOrDefault(r => r["Type"].ToString() == "T" && Convert.ToBoolean(r["IsActive"]));
             var emailRow = integrationTable.AsEnumerable()
                 .FirstOrDefault(r => r["Type"].ToString() == "E" && Convert.ToBoolean(r["IsActive"]));
             string reportUrl = "https://yourdomain.com/report";
@@ -976,7 +987,8 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _service.PaginationWithParm(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var ids = new int[] { 68, 71, 72 };
+
+                var ids = new int[] { 68, 71, 72, 2 };
                 objResult.OtherData3Model = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
 
             }

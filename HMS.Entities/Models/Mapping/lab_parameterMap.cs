@@ -57,7 +57,7 @@ namespace HMS.Entities.Models.Mapping
                 .WithMany(t => t.lab_parameter)
                 .HasForeignKey(d => new { d.UnitId, d.UnitDropdownId });
 
-            this.HasRequired(t => t.lab_catalog)
+            this.HasRequired(t => t.emr_investigation)
                 .WithMany(t => t.lab_parameter)
                 .HasForeignKey(d => new { d.CatalogId, d.CompanyId });
         }

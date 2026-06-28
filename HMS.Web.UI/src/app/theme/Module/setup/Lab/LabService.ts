@@ -4,7 +4,7 @@ import { HttpService } from '../../../../CommonService/HttpService';
 import { lab_patient_test, lab_result_mf } from './CatalogModel';
 @Injectable()
 export class LabService {
-    private urlToApi = GlobalVariable.BASE_Api_URL + "/api/Lab/lab_catalog"
+    private urlToApi = GlobalVariable.BASE_Api_URL + "/api/Appointment/emr_investigation"
     private urlToApiPatient = GlobalVariable.BASE_Api_URL + "/api/Lab/lab_patient_test"
     private urlToApiresult = GlobalVariable.BASE_Api_URL + "/api/Lab/lab_result_mf"
     constructor(private http: HttpService) { }
@@ -31,6 +31,11 @@ export class LabService {
         var data = { 'Id': Id };
         return this.http.Get(this.urlToApiPatient + '/GetById', data).then(e => e);
     }
+    SelectedPatientLoadTest(Id: any): Promise<any> {
+        var data = { 'Id': Id };
+        return this.http.Get(this.urlToApiPatient + '/SelectedPatientLoadTest', data).then(e => e);
+    }
+    
 
     GetPrintById(Id: any, serialNo: any): Promise<any> {
         var data = { 'Id': Id, 'serialNo': serialNo };

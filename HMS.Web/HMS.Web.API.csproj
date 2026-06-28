@@ -453,7 +453,6 @@
     <Compile Include="Areas\Lab\lab_result_mfController.cs" />
     <Compile Include="Areas\Lab\lab_patient_testController.cs" />
     <Compile Include="Areas\Lab\lab_parameterController.cs" />
-    <Compile Include="Areas\Lab\lab_catalogController.cs" />
     <Compile Include="Common\AWSS3_Operations.cs" />
     <Compile Include="Common\CryptographyPayment.cs" />
     <Compile Include="Common\DocumentInfo.cs" />

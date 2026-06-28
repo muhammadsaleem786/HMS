@@ -295,7 +295,7 @@
                         <tbody>
                             <tr *ngFor="let b of InvoiceTestModel">
                                 <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">{{b.ID}}</td>
-                                <td style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">{{b.Name}}</td>
+                                <td style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">{{b.Investigation}}</td>
                                 <td style="padding: 20px; background: #DDDDDD; text-align: right; border-bottom: 1px solid #FFFFFF; font-size: 1.2em;">{{b.Price}}</td>
                                 <td style="padding: 20px; background: #2f3479; text-align: right; color: #FFFFFF; border-bottom: 1px solid #FFFFFF; font-size: 1.2em;">{{b.Price}}</td>
                             </tr>
@@ -498,7 +498,7 @@
 
                 <ng-template #noTestSelected>
                     <p class="text-muted mb-0">
-                        Search by <strong>Test ID</strong> to load a test and enter results.
+                        Search by <strong>Sample ID</strong> to load a test and enter results.
                     </p>
                 </ng-template>
             </div>
@@ -541,7 +541,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
                                 </span>
                             </div>
-                            <small class="text-danger" *ngIf="patientTestForm.controls.PatientName.hasError('required') && submitted">
+                            <small class="text-danger" *ngIf="patientTestForm.controls.PatientId.hasError('required') && submitted">
                                 This value is required.
                             </small>
                         </div>

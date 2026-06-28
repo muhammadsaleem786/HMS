@@ -535,8 +535,6 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Lab\LabDashboardComponent.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Lab\LabService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Catalog\CatalogComponentList.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Catalog\CatalogModel.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\Catalog\CatalogService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\AdverseDrug\AdverseDrugModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\ApplicationUser\ProfileUserComponentForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Appointment\AppointmentComponentList.ts" />

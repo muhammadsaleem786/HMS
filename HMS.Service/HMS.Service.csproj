@@ -172,7 +172,6 @@
     <Compile Include="Services\Lab\lab_result_mfService.cs" />
     <Compile Include="Services\Lab\lab_patient_testService.cs" />
     <Compile Include="Services\Lab\lab_parameterService.cs" />
-    <Compile Include="Services\Lab\lab_catalogService.cs" />
     <Compile Include="SmsService.cs" />
     <Compile Include="StoredProcedureService.cs" />
   </ItemGroup>

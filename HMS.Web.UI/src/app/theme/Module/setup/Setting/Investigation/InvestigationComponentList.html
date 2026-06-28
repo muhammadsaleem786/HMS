@@ -12,9 +12,8 @@
 
         </div>
         <div class="col-sm-4 text-right flex-row flex-end">
-
             <a class="btn btn-light mr-1" routerLink="/home/setup">Back</a>
-            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights"(click)="AddRecord('0',false)">New Investigation</a>
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0',false)">New Investigation</a>
         </div>
     </div>
 
@@ -39,36 +38,152 @@
 
 <ng-template #InvestigationModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title"*ngIf="IsEdit">Update Investigation</h4>
-        <h4 class="modal-title" *ngIf="IsEdit==false">Add Investigation</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
+        <h4 class="modal-title">
+            {{ IsEdit ? 'Update Investigation' : 'Add Investigation' }}
+        </h4>
+
+        <button type="button" class="close" (click)="modal.dismiss()">
+            <span>&times;</span>
         </button>
     </div>
-    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
-        <div class="modal-body bg-secondary">
-            <div class="row">
-                <div class="col-sm-12">
 
-                    <div class="row form-group">
-                        <div class="col-4 text-right">
-                            <label class="form-control-label mt-2" for="input-username">Investigation </label>
-                        </div>
-                        <div class="col-8">
-                            <input type="text" id="" formControlName="Investigation" [(ngModel)]="model.Investigation" class="form-control form-control-sm form-control-alternative" placeholder="Investigation">
-                            <small class="text-danger" *ngIf="Form1.controls.Investigation.hasError('required') && submitted">
-                                This value is required.
-                            </small>
-                        </div>
-                    </div>
+    <form [formGroup]="Form1" (ngSubmit)="SaveOrUpdate(Form1.valid)">
+
+        <div class="modal-body">
+
+            <!-- Investigation -->
+            <div class="form-group row align-items-center">
+                <label class="col-md-3 col-form-label text-md-right">
+                    Investigation
+                </label>
+
+                <div class="col-md-9">
+                    <input type="text"
+                           class="form-control"
+                           formControlName="Investigation"
+                           [(ngModel)]="model.Investigation"
+                           placeholder="Investigation">
+
+                    <small class="text-danger"
+                           *ngIf="submitted && Form1.controls.Investigation.errors?.required">
+                        This value is required.
+                    </small>
                 </div>
             </div>
+
+            <!-- Category -->
+            <div class="form-group row align-items-center">
+                <label class="col-md-3 col-form-label text-md-right">
+                    Category
+                </label>
+
+                <div class="col-md-9">
+                    <input type="text"
+                           id="CategorySearch"
+                           class="form-control"
+                           formControlName="CategoryId"
+                           [(ngModel)]="model.CategoryName"
+                           (click)="LoadCategory()"
+                           autocomplete="off"
+                           placeholder="e.g. Biochemistry">
+
+                    <small class="text-danger"
+                           *ngIf="submitted && Form1.controls.CategoryId.errors?.required">
+                        This value is required.
+                    </small>
+                </div>
+            </div>
+
+            <!-- Sample -->
+            <div class="form-group row align-items-center">
+                <label class="col-md-3 col-form-label text-md-right">
+                    Sample
+                </label>
+
+                <div class="col-md-9">
+                    <input type="text"
+                           id="SampleSearch"
+                           class="form-control"
+                           formControlName="SampleId"
+                           [(ngModel)]="model.SampleName"
+                           (click)="LoadSample()"
+                           autocomplete="off"
+                           placeholder="e.g. Blood, Urine">
+
+                    <small class="text-danger"
+                           *ngIf="submitted && Form1.controls.SampleId.errors?.required">
+                        This value is required.
+                    </small>
+                </div>
+            </div>
+
+            <!-- TAT -->
+            <div class="form-group row align-items-center">
+                <label class="col-md-3 col-form-label text-md-right">
+                    TAT
+                </label>
+
+                <div class="col-md-9">
+                    <input type="text"
+                           class="form-control"
+                           formControlName="TAT"
+                           [(ngModel)]="model.TAT"
+                           placeholder="e.g. 2-4 hours">
+                </div>
+            </div>
+
+            <!-- Price -->
+            <div class="form-group row align-items-center">
+                <label class="col-md-3 col-form-label text-md-right">
+                    Price
+                </label>
+
+                <div class="col-md-9">
+                    <input type="number"
+                           class="form-control"
+                           formControlName="Price"
+                           [(ngModel)]="model.Price"
+                           min="0"
+                           placeholder="500">
+
+                    <small class="text-danger"
+                           *ngIf="submitted && Form1.controls.Price.errors?.required">
+                        This value is required.
+                    </small>
+                </div>
+            </div>
+
         </div>
-        <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
-            <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
-            <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
-            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+
+        <div class="modal-footer justify-content-center">
+
+            <button class="btn btn-primary"
+                    type="submit"
+                    *ngIf="!IsEdit && ControlRights.CreateRights">
+                Save
+            </button>
+
+            <button class="btn btn-primary"
+                    type="submit"
+                    *ngIf="IsEdit && ControlRights.EditRights">
+                Update
+            </button>
+
+            <button class="btn btn-danger"
+                    type="button"
+                    *ngIf="IsEdit && ControlRights.DeleteRights"
+                    (click)="Delete()">
+                Delete
+            </button>
+
+            <button class="btn btn-light"
+                    type="button"
+                    (click)="modal.close()">
+                Close
+            </button>
+
         </div>
+
     </form>
 </ng-template>
+

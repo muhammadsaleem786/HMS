@@ -110,7 +110,6 @@ namespace HMS.Entities.Models
         public DbSet<ipd_specialized_equipment_maintenance> ipd_specialized_equipment_maintenance { get; set; }
         public DbSet<ipd_sentinel_event_register> ipd_sentinel_event_register { get; set; }
         public DbSet<adm_generic> adm_generic { get; set; }
-        public DbSet<lab_catalog> lab_catalog { get; set; }
         public DbSet<lab_parameter> lab_parameter { get; set; }
         public DbSet<lab_patient_test> lab_patient_test { get; set; }
 
@@ -214,7 +213,6 @@ namespace HMS.Entities.Models
             modelBuilder.Configurations.Add(new ipd_sentinel_event_registerMap());
             modelBuilder.Configurations.Add(new ipd_death_record_registerMap());
             modelBuilder.Configurations.Add(new adm_genericMap());
-            modelBuilder.Configurations.Add(new lab_catalogMap());
             modelBuilder.Configurations.Add(new lab_parameterMap());
             modelBuilder.Configurations.Add(new lab_patient_testMap());
             modelBuilder.Configurations.Add(new lab_result_mfMap());

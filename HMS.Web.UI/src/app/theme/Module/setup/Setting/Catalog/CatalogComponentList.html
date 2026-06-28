@@ -50,7 +50,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
                                     <h5 class="mb-1">{{ test.name }}</h5>
-                                    <span class="badge badge-secondary-light">{{ test.code }}</span>
+                                    <span class="badge badge-secondary-light">{{ test.ID }}</span>
                                 </div>
                                 <h5 class="text-success mb-0">
                                     PKR{{ test.price }}
@@ -88,15 +88,15 @@
                                             class="btn btn-link btn-sm p-0">
                                         <i class="icon"
                                            [ngClass]="{
-                                     'icon-chevron-up': expandedCatalogCode === test.code,
-                                     'icon-chevron-down': expandedCatalogCode !== test.code
+                                     'icon-chevron-up': expandedCatalogCode === test.ID,
+                                     'icon-chevron-down': expandedCatalogCode !== test.ID
                                  }">
                                         </i>
                                     </button>
                                 </div>
 
                                 <div class="mt-2"
-                                     *ngIf="expandedCatalogCode === test.code">
+                                     *ngIf="expandedCatalogCode === test.ID">
                                     <div class="table-responsive">
                                         <table class="table table-sm mb-2">
                                             <thead>
@@ -162,7 +162,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="font-weight-500">Test Name <span class="text-danger">*</span></label>
-                <input type="text" formControlName="Name" [(ngModel)]="Catalogmodel.Name"
+                <input type="text" formControlName="Investigation" [(ngModel)]="Catalogmodel.Investigation"
                        class="form-control form-control-sm"
                        name="name" required
                        placeholder="e.g. Lipid Profile" />
@@ -217,7 +217,7 @@
     <form [formGroup]="parameterForm" novalidate (ngSubmit)="onSaveParameter(parameterForm.valid)">
         <div class="modal-body">
             <p class="text-muted mb-4">
-                Add a new parameter to {{ selectedTestForParameter?.name }} ({{ selectedTestForParameter?.code }})
+                Add a new parameter to {{ selectedTestForParameter?.name }} ({{ selectedTestForParameter?.ID }})
             </p>
 
             <div class="form-group">

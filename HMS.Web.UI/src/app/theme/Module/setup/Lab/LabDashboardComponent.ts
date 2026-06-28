@@ -241,7 +241,6 @@ export class LabDashboardComponent implements OnInit {
                 this.PatientTestmodel.PriorityId = 1;
                 this.PatientTestmodel.PriorityName = 'Routine';
                 this.orderTestSearch = '';
-                this.filteredOrderTests = this.testCatalogList.map(t => ({ ...t, selected: false }));
                 this.groupedOrderSamples = [];
                 this.orderTotalAmount = 0;
                 this._newTestOrderRef = this.modalService.open(this.NewTestOrderModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
@@ -282,8 +281,36 @@ export class LabDashboardComponent implements OnInit {
                 this.PatientTestmodel.PatientName = ui.item.label;
                 this.PatientTestmodel.Age = ui.item.Age;
                 this.PatientTestmodel.Gender = ui.item.Gender;
-                return ui.item.label;
+                this.SelectedPatientTestLoad(ui.item.value);
+                return ui.item.label;                
             }
+        });
+    }
+    public SelectedPatientTestLoad(id: any): void {
+        if (!id) {
+            this.toastr.Error("Error", "Please select patient")
+            return;
+        }
+        this.loader.ShowLoader();
+        this._labService.SelectedPatientLoadTest(id).then(m => {
+            if (m.IsSuccess) {
+                debugger;
+                var result = m.ResultSet.result;
+                const selectedIds = new Set(result.map((r: any) => r.InvestigationId));
+                this.filteredOrderTests = this.testCatalogList.map(t => ({
+                    ...t,
+                    selected: selectedIds.has(t.ID)
+                }));
+                this.PatientTestmodel.CatalogIds = '';
+                this.groupedOrderSamples = [];
+
+                // Call only for selected items
+                this.filteredOrderTests
+                    .filter(t => t.selected)
+                    .forEach(t => this.onToggleTestSelection(t));
+                this.loader.HideLoader();
+            } else
+                this.loader.HideLoader();
         });
     }
     LoadPriority() {
@@ -348,6 +375,10 @@ export class LabDashboardComponent implements OnInit {
                 this.toastr.Error('Error', 'Please select at least one test');
                 return;
             }
+            if (!this.PatientTestmodel.PatientId) {
+                this.toastr.Error('Error', 'Please select the patient');
+                return;
+            }
             this.submitted = false;
             this.loader.ShowLoader();
             this.PatientTestmodel.DiscountAmount = this.DiscountAmount;
@@ -381,7 +412,7 @@ export class LabDashboardComponent implements OnInit {
         this.filteredOrderTests = this.testCatalogList
             .map(t => {
                 const selected = this.groupedOrderSamples
-                    .some(g => g.tests.some(x => x.code === t.code));
+                    .some(g => g.tests.some(x => x.ID === t.ID));
                 return { ...t, selected };
             })
             .filter(t => {
@@ -389,7 +420,7 @@ export class LabDashboardComponent implements OnInit {
                     return true;
                 }
                 return t.name.toLowerCase().includes(search) ||
-                    t.code.toLowerCase().includes(search);
+                    String(t.ID).includes(search);
             });
     }
 
@@ -406,15 +437,15 @@ export class LabDashboardComponent implements OnInit {
         );
 
         if (test.selected) {
-            ids.add(String(test.code));
+            ids.add(String(test.ID));
         } else {
-            ids.delete(String(test.code));
+            ids.delete(String(test.ID));
         }
 
         this.PatientTestmodel.CatalogIds = Array.from(ids).join(',');
 
         const exists = this.groupedOrderSamples
-            .some(g => g.tests.some(t => t.code === test.code));
+            .some(g => g.tests.some(t => t.ID === test.ID));
 
         if (test.selected && !exists) {
             // add
@@ -438,7 +469,7 @@ export class LabDashboardComponent implements OnInit {
             return;
         }
         this.groupedOrderSamples.forEach(g => {
-            g.tests = g.tests.filter(t => t.code !== test.code);
+            g.tests = g.tests.filter(t => t.ID !== test.ID);
         });
         this.groupedOrderSamples = this.groupedOrderSamples.filter(g => g.tests.length > 0);
 
@@ -446,13 +477,13 @@ export class LabDashboardComponent implements OnInit {
         const ids = (this.PatientTestmodel.CatalogIds || '')
             .split(',')
             .map((x: string) => x.trim())
-            .filter((x: string) => x && x !== String(test.code));
+            .filter((x: string) => x && x !== String(test.ID));
 
         this.PatientTestmodel.CatalogIds = ids.join(',');
 
         // sync checkbox state
         this.filteredOrderTests = this.filteredOrderTests.map(t => {
-            if (t.code === test.code) {
+            if (t.ID === test.ID) {
                 return { ...t, selected: false };
             }
             return t;

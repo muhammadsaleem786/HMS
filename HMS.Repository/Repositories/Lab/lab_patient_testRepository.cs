@@ -87,9 +87,9 @@ namespace HMS.Repository.Repositories.Lab
                           patientName = s.emr_patient_mf.PatientName,
                           patientCode = s.emr_patient_mf.MRNO,
                           serialNo = s.SerialNo,
-                          testName = s.lab_catalog.Name,
-                          sampleType = s.lab_catalog.sys_drop_down_value1.Value,
-                          department = s.lab_catalog.sys_drop_down_value.Value,
+                          testName = s.emr_investigation.Investigation,
+                          sampleType = s.emr_investigation.sys_drop_down_value1.Value,
+                          department = s.emr_investigation.sys_drop_down_value.Value,
                           priority = s.sys_drop_down_value.Value,
                           status = s.sys_drop_down_value1.Value,
                           statusId = s.StatusId,
@@ -108,9 +108,9 @@ namespace HMS.Repository.Repositories.Lab
                         patientName = s.emr_patient_mf.PatientName,
                         patientCode = s.emr_patient_mf.MRNO,
                         serialNo = s.SerialNo,
-                        testName = s.lab_catalog.Name,
-                        sampleType = s.lab_catalog.sys_drop_down_value1.Value,
-                        department = s.lab_catalog.sys_drop_down_value.Value,
+                        testName = s.emr_investigation.Investigation,
+                        sampleType = s.emr_investigation.sys_drop_down_value1.Value,
+                        department = s.emr_investigation.sys_drop_down_value.Value,
                         priority = s.sys_drop_down_value.Value,
                         status = s.sys_drop_down_value1.Value,
                         statusId = s.StatusId,
@@ -165,7 +165,7 @@ namespace HMS.Repository.Repositories.Lab
                 {
                     int deptId = Convert.ToInt32(departmentId);
                     filteredData = filteredData.Where(x =>
-                        x.lab_catalog.CategoryId == deptId);
+                        x.emr_investigation.CategoryId == deptId);
                 }
 
                 if (!string.IsNullOrEmpty(statusId))
@@ -179,7 +179,7 @@ namespace HMS.Repository.Repositories.Lab
                 {
                     int sampleId = Convert.ToInt32(sampleTypeId);
                     filteredData = filteredData.Where(x =>
-                        x.lab_catalog.SampleId == sampleId);
+                        x.emr_investigation.SampleId == sampleId);
                 }
                 var baseQuery = repository.Queryable().Where(x => x.CompanyId == CompanyID);
                 var dashboardCounts = baseQuery
@@ -225,9 +225,9 @@ namespace HMS.Repository.Repositories.Lab
                           patientName = s.emr_patient_mf.PatientName,
                           patientCode = s.emr_patient_mf.MRNO,
                           serialNo = s.SerialNo,
-                          testName = s.lab_catalog.Name,
-                          sampleType = s.lab_catalog.sys_drop_down_value1.Value,
-                          department = s.lab_catalog.sys_drop_down_value.Value,
+                          testName = s.emr_investigation.Investigation,
+                          sampleType = s.emr_investigation.sys_drop_down_value1.Value,
+                          department = s.emr_investigation.sys_drop_down_value.Value,
                           priority = s.sys_drop_down_value.Value,
                           status = s.sys_drop_down_value1.Value,
                           statusId = s.StatusId,
@@ -247,9 +247,9 @@ namespace HMS.Repository.Repositories.Lab
                         patientName = s.emr_patient_mf.PatientName,
                         patientCode = s.emr_patient_mf.MRNO,
                         serialNo = s.SerialNo,
-                        testName = s.lab_catalog.Name,
-                        sampleType = s.lab_catalog.sys_drop_down_value1.Value,
-                        department = s.lab_catalog.sys_drop_down_value.Value,
+                        testName = s.emr_investigation.Investigation,
+                        sampleType = s.emr_investigation.sys_drop_down_value1.Value,
+                        department = s.emr_investigation.sys_drop_down_value.Value,
                         priority = s.sys_drop_down_value.Value,
                         status = s.sys_drop_down_value1.Value,
                         statusId = s.StatusId,

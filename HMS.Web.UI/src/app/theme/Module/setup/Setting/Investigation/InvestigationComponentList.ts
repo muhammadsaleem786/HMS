@@ -9,6 +9,7 @@ import { CommonService } from '../../../../../CommonService/CommonService';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';
 import { CommonToastrService } from '../../../../../CommonService/CommonToastrService';
+declare var $: any;
 @Component({
     moduleId: module.id,
     templateUrl: 'InvestigationComponentList.html',
@@ -29,23 +30,29 @@ export class InvestigationComponentList {
     public ControlRights: any;
     public submitted: boolean; public IsEdit: boolean = false;
     @ViewChild("InvestigationModal") ModelContent: TemplateRef<any>;
-    constructor(public _fb: FormBuilder, private encrypt: EncryptionService, private modalService: NgbModal,public _CommonService: CommonService, public loader: LoaderService, public _InvestigationService: InvestigationService
-        , public _router: Router, public toastr: CommonToastrService, ) {
+    constructor(public _fb: FormBuilder, private encrypt: EncryptionService, private modalService: NgbModal, public _CommonService: CommonService, public loader: LoaderService, public _InvestigationService: InvestigationService
+        , public _router: Router, public toastr: CommonToastrService,) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("8");
         //this.Keywords = this._CommonService.GetKeywords("Investigation");
     }
     ngOnInit() {
-    this.Form1 = this._fb.group({
-        Investigation: ['', [Validators.required]],
-    });
+        this.Form1 = this._fb.group({
+            Investigation: ['', [Validators.required]],
+            CategoryId: [''],
+            CategoryName: [''],
+            SampleId: [''],
+            SampleName: [''],
+            TAT: [''],
+            Price: ['']
+        });
         this.PConfig.PrimaryColumn = "ID";
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PConfig.Action.ScreenName = 'Investigation';
         this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
-            { Name: "Investigation", Title: "Investigation", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Name", Title: "Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
         ];
     }
     Refresh() {
@@ -60,13 +67,17 @@ export class InvestigationComponentList {
             });
     }
     AddRecord(id: string) {
-    this.IsEdit = false;
+        this.IsEdit = false;
         if (id != "0") {
             this.loader.ShowLoader(); this.IsEdit = true;
             this._InvestigationService.GetById(id).then(m => {
                 if (m.ResultSet != null) {
                     this.model = m.ResultSet.Result;
+                    this.model.CategoryName = m.ResultSet.Result.sys_drop_down_value.Value;
+                    this.model.SampleName = m.ResultSet.Result.sys_drop_down_value1.Value;
                     this.modalService.open(this.ModelContent, { size: 'md' });
+                    this.LoadCategory();
+                    this.LoadSample();
                 }
                 this.loader.HideLoader();
             });
@@ -74,6 +85,8 @@ export class InvestigationComponentList {
         else {
             this.loader.ShowLoader();
             this.model = new emr_investigation();
+            this.LoadCategory();
+            this.LoadSample();
             this.modalService.open(this.ModelContent, { size: 'md' });
             this.loader.HideLoader();
         }
@@ -102,23 +115,63 @@ export class InvestigationComponentList {
             });
         }
     }
-    Delete(id: string) {
-            var result = confirm("Are you sure you want to delete selected record.");
-            if (result == true) {
+    LoadCategory() {
+        $("#CategorySearch").autocomplete({
+            source: (request, response) => {
                 this.loader.ShowLoader();
-                this._InvestigationService.Delete(this.model.ID.toString()).then(m => {
-
-                    if (m.ErrorMessage != null) {
-
-                        alert(m.ErrorMessage);
-                    }
-                    else {
-                        this.modalService.dismissAll(this.ModelContent);
-                        this.Refresh();
-                    }
+                this._InvestigationService.CategorySearch(request.term, 68).then(m => {
+                    if (m.ResultSet.result.length == 0)
+                        $("#CategorySearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
                     this.loader.HideLoader();
                 });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.CategoryId = ui.item.value;
+                this.model.CategoryName = ui.item.label;
+                return ui.item.label;
             }
+        });
+    }
+    LoadSample() {
+        $("#SampleSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._InvestigationService.CategorySearch(request.term, 71).then(m => {
+                    if (m.ResultSet.result.length == 0)
+                        $("#SampleSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.SampleId = ui.item.value;
+                this.model.SampleName = ui.item.label;
+                return ui.item.label;
+            }
+        });
+    }
+    Delete(id: string) {
+        var result = confirm("Are you sure you want to delete selected record.");
+        if (result == true) {
+            this.loader.ShowLoader();
+            this._InvestigationService.Delete(this.model.ID.toString()).then(m => {
+
+                if (m.ErrorMessage != null) {
+
+                    alert(m.ErrorMessage);
+                }
+                else {
+                    this.modalService.dismissAll(this.ModelContent);
+                    this.Refresh();
+                }
+                this.loader.HideLoader();
+            });
+        }
     }
     GetList() {
         this.Refresh();

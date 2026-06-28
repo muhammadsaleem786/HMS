@@ -150,9 +150,6 @@ namespace HMS.Entities.Models
             this.ipd_adverse_drug_reaction = new List<ipd_adverse_drug_reaction>();
             this.ipd_adverse_drug_reaction1 = new List<ipd_adverse_drug_reaction>();
 
-            this.lab_catalog = new List<lab_catalog>();
-            this.lab_catalog1 = new List<lab_catalog>();
-
             this.lab_parameter = new List<lab_parameter>();
             this.lab_parameter1 = new List<lab_parameter>();
 
@@ -164,8 +161,8 @@ namespace HMS.Entities.Models
             this.lab_result_mf1 = new List<lab_result_mf>();
 
             this.lab_result_dt = new List<lab_result_dt>();
-            this.lab_result_dt1 = new List<lab_result_dt>();          
-            
+            this.lab_result_dt1 = new List<lab_result_dt>();
+
         }
         public decimal ID { get; set; }
         public string Email { get; set; }
@@ -416,9 +413,6 @@ namespace HMS.Entities.Models
         public virtual ICollection<ipd_sentinel_event_register> ipd_sentinel_event_register1 { get; set; }
         public virtual ICollection<ipd_adverse_drug_reaction> ipd_adverse_drug_reaction1 { get; set; }
         public virtual ICollection<ipd_death_record_register> ipd_death_record_register1 { get; set; }
-        public virtual ICollection<lab_catalog> lab_catalog { get; set; }
-        public virtual ICollection<lab_catalog> lab_catalog1 { get; set; }
-
         public virtual ICollection<lab_parameter> lab_parameter { get; set; }
         public virtual ICollection<lab_parameter> lab_parameter1 { get; set; }
 

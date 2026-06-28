@@ -5,6 +5,7 @@ using HMS.Service.Services.Admin;
 using HMS.Service.Services.Admission;
 using HMS.Service.Services.Appointment;
 using HMS.Service.Services.Items;
+using HMS.Service.Services.Lab;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using Repository.Pattern.UnitOfWork;
@@ -39,6 +40,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iemr_prescription_mfService _emr_prescription_mfService;
         private readonly Ipur_sale_mfService _pur_sale_mfService;
         private readonly Iipd_paymentService _ipd_paymentService;
+        private readonly Ilab_patient_testService _lab_patient_testService;
 
 
 
@@ -51,8 +53,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
            Iadm_user_companyService adm_User_CompanyService, Iipd_procedure_expenseService ipd_procedure_expenseService
             , Iemr_prescription_mfService emr_prescription_mfService
             , Ipur_sale_mfService pur_sale_mfService,
-           Iipd_paymentService ipd_paymentService
-
+           Iipd_paymentService ipd_paymentService,
+           Ilab_patient_testService lab_patient_testService
             )
         {
             _unitOfWorkAsync = unitOfWorkAsync;
@@ -71,6 +73,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _emr_prescription_mfService = emr_prescription_mfService;
             _pur_sale_mfService = pur_sale_mfService;
             _ipd_paymentService = ipd_paymentService;
+            _lab_patient_testService = lab_patient_testService;
         }
 
         [HttpGet]
@@ -244,7 +247,20 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 var totalSales = _pur_sale_mfService.Queryable().Where(i => i.CompanyID == CompanyID && i.Date >= start && i.Date < end && i.ReturnInvoiceId == null).Sum(a => a.Total);
                 var pharmacyIncome = totalSales - totalReturns;
                 var ipdIncome = _ipd_paymentService.Queryable().Where(i => i.CompanyId == CompanyID && i.PaymentDate >= start && i.PaymentDate < end).Sum(a => (decimal?)a.Amount) ?? 0m;
-                var pathologyIncome = 0;
+                var pathologyData = _lab_patient_testService.Queryable()
+    .Where(i => i.CompanyId == CompanyID &&
+                i.CreatedDate >= start &&
+                i.CreatedDate < end)
+    .GroupBy(x => 1)
+    .Select(g => new
+    {
+        TotalAmount = g.Sum(x => (decimal?)x.Total) ?? 0m,
+        TotalDiscount = g.Sum(x => (decimal?)x.DiscountAmount) ?? 0m
+    })
+    .FirstOrDefault();
+                var pathologyAmount = pathologyData?.TotalAmount ?? 0m;
+                var pathologyDiscount = pathologyData?.TotalDiscount ?? 0m;
+                var pathologyIncome = pathologyAmount - pathologyDiscount;
                 var generalIncome = incomeByCategory.Sum(x => x.TotalReceived);
                 var outStandingIncome = incomeByCategory.Sum(x => x.TotalDue);
 

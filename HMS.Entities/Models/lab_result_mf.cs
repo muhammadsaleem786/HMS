@@ -23,7 +23,7 @@ namespace HMS.Entities.Models
         public virtual adm_company adm_company { get; set; }
         public virtual adm_user_mf adm_user_mf { get; set; }
         public virtual adm_user_mf adm_user_mf1 { get; set; }
-        public virtual lab_catalog lab_catalog { get; set; }
+        public virtual emr_investigation emr_investigation { get; set; }
         public virtual lab_patient_test lab_patient_test { get; set; }
         public virtual ICollection<lab_result_dt> lab_result_dt { get; set; }
         public virtual emr_patient_mf emr_patient_mf { get; set; }

@@ -100,7 +100,6 @@ namespace HMS.Web.API
                   .RegisterType<IRepositoryAsync<contact>, Repository<contact>>()
                   .RegisterType<IRepositoryAsync<adm_item_log>, Repository<adm_item_log>>()
                   .RegisterType<IRepositoryAsync<adm_generic>, Repository<adm_generic>>()
-                  .RegisterType<IRepositoryAsync<lab_catalog>, Repository<lab_catalog>>()
                   .RegisterType<IRepositoryAsync<lab_parameter>, Repository<lab_parameter>>()
                   .RegisterType<IRepositoryAsync<lab_patient_test>, Repository<lab_patient_test>>()
 
@@ -257,7 +256,6 @@ namespace HMS.Web.API
                 .RegisterType<Iipd_adverse_drug_reactionService, ipd_adverse_drug_reactionService>()
                 .RegisterType<Iipd_sentinel_event_registerService, ipd_sentinel_event_registerService>()
                 .RegisterType<Iipd_specialized_equipment_maintenanceService, ipd_specialized_equipment_maintenanceService>()
-                .RegisterType<Ilab_catalogService, lab_catalogService>()
                 .RegisterType<Ilab_parameterService, lab_parameterService>()
                 .RegisterType<Ilab_patient_testService, lab_patient_testService>()
                 .RegisterType<Ilab_result_dtService, lab_result_dtService>()

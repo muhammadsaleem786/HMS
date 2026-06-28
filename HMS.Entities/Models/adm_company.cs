@@ -81,7 +81,7 @@ namespace HMS.Entities.Models
             this.ipd_sentinel_event_register = new List<ipd_sentinel_event_register>();
             this.ipd_death_record_register = new List<ipd_death_record_register>();
             this.ipd_specialized_equipment_maintenance = new List<ipd_specialized_equipment_maintenance>();
-            this.lab_catalog = new List<lab_catalog>();
+            this.emr_investigation = new List<emr_investigation>();
             this.lab_parameter = new List<lab_parameter>();
             this.lab_patient_test = new List<lab_patient_test>();
 
@@ -208,7 +208,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<ipd_sentinel_event_register> ipd_sentinel_event_register { get; set; }
         public virtual ICollection<ipd_adverse_drug_reaction> ipd_adverse_drug_reaction { get; set; }
         public virtual ICollection<ipd_death_record_register> ipd_death_record_register { get; set; }
-        public virtual ICollection<lab_catalog> lab_catalog { get; set; }
+        public virtual ICollection<emr_investigation> emr_investigation { get; set; }
         public virtual ICollection<lab_parameter> lab_parameter { get; set; }
         public virtual ICollection<lab_patient_test> lab_patient_test { get; set; }
         public virtual ICollection<lab_result_mf> lab_result_mf { get; set; }

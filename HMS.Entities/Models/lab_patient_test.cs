@@ -42,7 +42,7 @@ namespace HMS.Entities.Models
         public virtual sys_drop_down_value sys_drop_down_value { get; set; }
         public virtual sys_drop_down_value sys_drop_down_value1 { get; set; }
         public virtual emr_patient_mf emr_patient_mf { get; set; }
-        public virtual lab_catalog lab_catalog { get; set; }
+        public virtual emr_investigation emr_investigation { get; set; }
         public virtual ICollection<lab_result_mf> lab_result_mf { get; set; }
 
     }

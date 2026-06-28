@@ -137,6 +137,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Model.ID = adm_userID;
                     Model.AccountType = "A";
                     Model.ForgotToken = guid;
+                    Model.DrugMode = "B";
                     Model.ForgotTokenDate = Request.DateTimes();
                     Model.MultilingualId = Model.MultilingualId;
                     Model.ObjectState = ObjectState.Added;

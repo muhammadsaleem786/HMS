@@ -3,6 +3,7 @@ using HMS.Entities.Enum;
 using HMS.Entities.Models;
 using HMS.Service;
 using HMS.Service.Services.Admin;
+using HMS.Service.Services.Appointment;
 using HMS.Service.Services.Lab;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
@@ -26,7 +27,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
     public class lab_parameterController : ApiController, IERPAPIInterface<lab_parameter>, IDisposable
     {
         private readonly Ilab_parameterService _service;
-        private readonly Ilab_catalogService _lab_catalogService;
+        private readonly Iemr_investigationService _emr_investigationService;
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly IStoredProcedureService _procedureService;
         private readonly Iadm_role_dtService _adm_role_dtService;
@@ -34,7 +35,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
         private readonly Iadm_user_companyService _adm_user_companyService;
         public lab_parameterController(IUnitOfWorkAsync unitOfWorkAsync, Ilab_parameterService Service,
             Isys_drop_down_valueService sys_drop_down_valueService, Iadm_user_companyService adm_user_companyService,
-            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Ilab_catalogService lab_catalogService)
+            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_investigationService emr_investigationService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -42,7 +43,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             _adm_user_companyService = adm_user_companyService;
             _procedureService = ProcedureService;
             _adm_role_dtService = adm_role_dtService;
-            _lab_catalogService = lab_catalogService;
+            _emr_investigationService = emr_investigationService;
         }
 
         public async Task<ResponseInfo> Save(lab_parameter Model)
@@ -76,11 +77,11 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
-                    var resultObj = _lab_catalogService.Queryable().Where(e => e.CompanyId == CompanyID)
+                    var resultObj = _emr_investigationService.Queryable().Where(e => e.CompanyID == CompanyID)
                         .Select(z => new
                         {
-                            code = z.ID,
-                            name = z.Name,
+                            ID = z.ID,
+                            name = z.Investigation,
                             price = z.Price,
                             category = z.sys_drop_down_value.Value,
                             sample = z.sys_drop_down_value1.Value,
@@ -358,11 +359,11 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Update;
                     objResponse.IsSuccess = true;
-                    var resultObj = _lab_catalogService.Queryable().Where(e => e.CompanyId == CompanyID)
+                    var resultObj = _emr_investigationService.Queryable().Where(e => e.CompanyID == CompanyID)
                         .Select(z => new
                         {
-                            code = z.ID,
-                            name = z.Name,
+                            ID = z.ID,
+                            name = z.Investigation,
                             price = z.Price,
                             category = z.sys_drop_down_value.Value,
                             sample = z.sys_drop_down_value1.Value,

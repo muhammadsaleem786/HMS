@@ -1,9 +1,9 @@
 ﻿import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input, TemplateRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CatalogService } from './CatalogService';
+import { InvestigationService } from '../Investigation/InvestigationService';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { lab_catalog, lab_parameter } from '../Catalog/CatalogModel';
+import { emr_investigation, lab_parameter } from '../Investigation/InvestigationModel';
 import { PaginationModel, PaginationConfig } from '../../../../../CommonComponent/PaginationComponentConfig';
 import { CommonService } from '../../../../../CommonService/CommonService';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
@@ -13,7 +13,7 @@ declare var $: any;
 @Component({
     moduleId: module.id,
     templateUrl: 'CatalogComponentList.html',
-    providers: [CatalogService],
+    providers: [InvestigationService],
 })
 export class CatalogComponentList {
     public ActiveToggle: boolean = false;
@@ -29,7 +29,7 @@ export class CatalogComponentList {
     public ControlRights: any;
 
     public submitted: boolean;
-    public Catalogmodel = new lab_catalog();
+    public Catalogmodel = new emr_investigation();
     public Parametermodel = new lab_parameter();
     public catalogForm: FormGroup;
     public parameterForm: FormGroup;
@@ -46,16 +46,16 @@ export class CatalogComponentList {
     private _testCatalogRef: NgbModalRef;
     private _testParameterRef: NgbModalRef;
 
-    constructor(public _fb: FormBuilder, public _CommonService: CommonService, private encrypt: EncryptionService, public loader: LoaderService, public _CatalogService: CatalogService
+    constructor(public _fb: FormBuilder, public _CommonService: CommonService, private encrypt: EncryptionService, public loader: LoaderService, public _InvestigationService: InvestigationService
         , public _router: Router, private modalService: NgbModal, public toastr: CommonToastrService,) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
-        this.ControlRights = this._CommonService.ScreenRights("113");
+        this.ControlRights = this._CommonService.ScreenRights("114");
     }
     ngOnInit() {
         this.TestCatalogData();
         this.catalogForm = this._fb.group({
-            Name: [''],
+            Investigation: [''],
             CategoryId: [''],
             CategoryName: [''],
             SampleId: [''],
@@ -78,7 +78,7 @@ export class CatalogComponentList {
     }
     private TestCatalogData(): void {
         this.loader.ShowLoader();
-        this._CatalogService.FormLoad().then(m => {
+        this._InvestigationService.FormLoad().then(m => {
             if (m.IsSuccess) {
                 this.testCatalogTabs = m.ResultSet.result;
                 this.testCatalogTabs.unshift({ ID: 0, Value: "All", DropDownID: 68 });
@@ -94,7 +94,7 @@ export class CatalogComponentList {
 
     }
     public AddCatalog(): void {
-        this.Catalogmodel = new lab_catalog();
+        this.Catalogmodel = new emr_investigation();
         this._testCatalogRef = this.modalService.open(this.TestCatalogModal, { size: 'lg', centered: true });
         this.LoadCategory();
     }
@@ -103,7 +103,7 @@ export class CatalogComponentList {
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();
-            this._CatalogService.SaveOrUpdate(this.Catalogmodel).then(m => {
+            this._InvestigationService.SaveOrUpdate(this.Catalogmodel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
                     this.testCatalogList = result.ResultSet.resultObj
@@ -126,11 +126,11 @@ export class CatalogComponentList {
     }
     UpdateCatalog(test: any): void {
         this.loader.ShowLoader();
-        this._CatalogService.GetById(test.code).then(m => {
+        this._InvestigationService.GetById(test.ID).then(m => {
             if (m.IsSuccess) {
-                this.Catalogmodel = m.ResultSet.result;
-                this.Catalogmodel.CategoryName = m.ResultSet.result.sys_drop_down_value.Value;
-                this.Catalogmodel.SampleName = m.ResultSet.result.sys_drop_down_value1.Value;
+                this.Catalogmodel = m.ResultSet.Result;
+                this.Catalogmodel.CategoryName = m.ResultSet.Result.sys_drop_down_value.Value;
+                this.Catalogmodel.SampleName = m.ResultSet.Result.sys_drop_down_value1.Value;
                 this._testCatalogRef = this.modalService.open(this.TestCatalogModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
                 this.LoadCategory();
                 this.LoadSample();
@@ -143,7 +143,7 @@ export class CatalogComponentList {
         $("#CategorySearch").autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._CatalogService.CategorySearch(request.term, 68).then(m => {
+                this._InvestigationService.CategorySearch(request.term, 68).then(m => {
                     if (m.ResultSet.result.length == 0)
                         $("#CategorySearch").val('');
                     if (m.ResultSet.result.length != 0)
@@ -163,7 +163,7 @@ export class CatalogComponentList {
         $("#SampleSearch").autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._CatalogService.CategorySearch(request.term, 71).then(m => {
+                this._InvestigationService.CategorySearch(request.term, 71).then(m => {
                     if (m.ResultSet.result.length == 0)
                         $("#SampleSearch").val('');
                     if (m.ResultSet.result.length != 0)
@@ -181,8 +181,7 @@ export class CatalogComponentList {
     }
     public onChangeCatalogTab(tab: any): void {
         this.loader.ShowLoader();
-        this.IsEdit = true;
-        this._CatalogService.GetByCategoryId(tab.ID).then(m => {
+        this._InvestigationService.GetByCategoryId(tab.ID).then(m => {
             if (m.IsSuccess) {
                 this.filteredCatalogList = m.ResultSet.result;
                 this.selectedCatalogTab = tab.Value;
@@ -192,13 +191,18 @@ export class CatalogComponentList {
         });
 
     }
+    public onCancelAddCatalog(): void {
+        if (this._testCatalogRef) {
+            this._testCatalogRef.close();
+        }
+    }
     public onCatalogueSearchChange(): void {
         this.applyTestCatalogFilter();
     }
     // Parameter method
     public AddParameterDialog(test: any): void {
         this.Parametermodel = new lab_parameter();
-        this.Parametermodel.CatalogId = test.code;
+        this.Parametermodel.CatalogId = test.ID;
         this.selectedTestForParameter = test;
         this._testParameterRef = this.modalService.open(this.TestParameterModal, { size: 'lg', centered: true });
         this.LoadUnit();
@@ -208,7 +212,7 @@ export class CatalogComponentList {
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();
-            this._CatalogService.SaveOrUpdateParameter(this.Parametermodel).then(m => {
+            this._InvestigationService.SaveOrUpdateParameter(this.Parametermodel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
                     this.testCatalogList = result.ResultSet.resultObj;
@@ -232,12 +236,12 @@ export class CatalogComponentList {
     }
     public UpdateParameter(id: any): void {
         this.loader.ShowLoader();
-        this._CatalogService.GetParameterById(id).then(m => {
+        this._InvestigationService.GetParameterById(id).then(m => {
             if (m.IsSuccess) {
                 this.Parametermodel = m.ResultSet.result;
                 this.Parametermodel.UnitName = m.ResultSet.result.sys_drop_down_value.Value;
                 this.Parametermodel.CatalogId = this.Parametermodel.CatalogId;
-                this.selectedTestForParameter = this.testCatalogList.filter(a => a.code == this.Parametermodel.CatalogId)[0];
+                this.selectedTestForParameter = this.testCatalogList.filter(a => a.ID == this.Parametermodel.CatalogId)[0];
                 this._testParameterRef = this.modalService.open(this.TestParameterModal, { size: 'lg', centered: true });
                 this.LoadUnit();
                 this.loader.HideLoader();
@@ -249,7 +253,7 @@ export class CatalogComponentList {
         $("#UnitSearch").autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._CatalogService.UnitSearch(request.term).then(m => {
+                this._InvestigationService.UnitSearch(request.term).then(m => {
                     if (m.ResultSet.result.length == 0)
                         $("#UnitSearch").val('');
                     if (m.ResultSet.result.length != 0)
@@ -268,10 +272,10 @@ export class CatalogComponentList {
 
     // common method
     public toggleCatalogParameters(test: any): void {
-        if (!test || !test.code) {
+        if (!test || !test.ID) {
             return;
         }
-        this.expandedCatalogCode = this.expandedCatalogCode === test.code ? null : test.code;
+        this.expandedCatalogCode = this.expandedCatalogCode === test.ID ? null : test.ID;
     }
     private applyTestCatalogFilter(): void {
         const tab = this.selectedCatalogTab;
@@ -281,7 +285,7 @@ export class CatalogComponentList {
             const matchesTab = tab === 'All' || t.category === tab;
             const matchesSearch = !search ||
                 t.name.toLowerCase().includes(search) ||
-                t.code.toLowerCase().includes(search);
+                t.ID.toString().includes(search);
             return matchesTab && matchesSearch;
         });
     }
@@ -289,7 +293,7 @@ export class CatalogComponentList {
         if (this.PModel.SearchText == '')
             this.loader.ShowLoader();
         this.Id = "0";
-        this._CatalogService
+        this._InvestigationService
             .GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.CatalogList = m.DataList;
@@ -314,7 +318,7 @@ export class CatalogComponentList {
         var result = confirm("Are you sure you want to delete selected record.");
         if (result == true) {
             this.loader.ShowLoader();
-            this._CatalogService.Delete(id).then(m => {
+            this._InvestigationService.Delete(id).then(m => {
                 if (m.ErrorMessage != null) {
                     alert(m.ErrorMessage);
                 }
@@ -337,7 +341,7 @@ export class CatalogComponentList {
     }
     ExportData(ExportType: number) {
         this.loader.ShowLoader();
-        this._CatalogService.ExportData(ExportType, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+        this._InvestigationService.ExportData(ExportType, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
             this.loader.HideLoader();
         });
     }

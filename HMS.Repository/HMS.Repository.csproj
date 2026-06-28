@@ -172,7 +172,6 @@
     <Compile Include="Repositories\Lab\lab_result_mfRepository.cs" />
     <Compile Include="Repositories\Lab\lab_patient_testRepository.cs" />
     <Compile Include="Repositories\Lab\lab_parameterRepository.cs" />
-    <Compile Include="Repositories\Lab\lab_catalogRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Frameworks\Repository.Pattern.Ef6\Repository.Pattern.Ef6.csproj">

@@ -4,6 +4,7 @@ using HMS.Repository.Common;
 using Repository.Pattern.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -45,19 +46,28 @@ namespace HMS.Repository.Repositories.Appointment
                 if (IgnorePaging)
                 {
                     objResult.DataList = filteredData
-                        .Select(s => new
-                        {
-                            ID = s.ID,
-                            Investigation = s.Investigation,
-                        }).OrderByDescending(a => a.ID).ToList<object>();
+                        .Include(i => i.sys_drop_down_value)
+                      .Select(s => new
+                      {
+                          s.ID,
+                          Name = s.Investigation,
+                          Sample = s.sys_drop_down_value1.Value,
+                          s.Price,
+                          s.TAT,
+                          Category = s.sys_drop_down_value.Value,
+                      }).ToList<object>();
                 }
                 else
                 {
-                    objResult.DataList = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
+                    objResult.DataList = filteredData.Include(i => i.sys_drop_down_value).Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
                        .Select(s => new
                        {
-                          ID= s.ID,
-                           Investigation = s.Investigation,
+                           s.ID,
+                           Name = s.Investigation,
+                           Sample = s.sys_drop_down_value1.Value,
+                           s.Price,
+                           s.TAT,
+                           Category = s.sys_drop_down_value.Value,
                        }).OrderByDescending(a => a.ID).ToList<object>();
                 }
             }

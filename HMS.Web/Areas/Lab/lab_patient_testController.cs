@@ -36,7 +36,8 @@ namespace HMS.Web.API.Areas.Lab.Controllers
         private readonly Ilab_result_mfService _lab_result_mfService;
         private readonly Ilab_result_dtService _lab_result_dtService;
         private readonly Iemr_patientService _emr_patientService;
-        private readonly Ilab_catalogService _lab_catalogService;
+        private readonly Iemr_prescription_investigationService _emr_prescription_investigationService;
+        private readonly Iemr_investigationService _emr_investigationService;
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly IStoredProcedureService _procedureService;
         private readonly Iadm_role_dtService _adm_role_dtService;
@@ -45,7 +46,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
         private readonly ISmsService _smsService;
         public lab_patient_testController(IUnitOfWorkAsync unitOfWorkAsync, Ilab_patient_testService Service,
             Isys_drop_down_valueService sys_drop_down_valueService, Iadm_user_companyService adm_user_companyService,
-            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_patientService emr_patientService, Ilab_catalogService lab_catalogService, Ilab_result_mfService lab_result_mfService, Ilab_result_dtService lab_result_dtService, ISmsService smsService)
+            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_patientService emr_patientService, Iemr_investigationService emr_investigationService, Ilab_result_mfService lab_result_mfService, Ilab_result_dtService lab_result_dtService, ISmsService smsService, Iemr_prescription_investigationService emr_prescription_investigationService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -54,10 +55,11 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             _procedureService = ProcedureService;
             _adm_role_dtService = adm_role_dtService;
             _emr_patientService = emr_patientService;
-            _lab_catalogService = lab_catalogService;
+            _emr_investigationService = emr_investigationService;
             _lab_result_mfService = lab_result_mfService;
             _lab_result_dtService = lab_result_dtService;
             _smsService = smsService;
+            _emr_prescription_investigationService = emr_prescription_investigationService;
         }
 
         public async Task<ResponseInfo> Save(lab_patient_test Model)
@@ -82,8 +84,8 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                             .Select(x => Convert.ToDecimal(x))
                             .ToList();
 
-                var catalogs = _lab_catalogService.Queryable()
-                      .Where(x => catalogIds.Contains(x.ID) && x.CompanyId == CompanyID)
+                var catalogs = _emr_investigationService.Queryable()
+                      .Where(x => catalogIds.Contains(x.ID) && x.CompanyID == CompanyID)
                       .ToList();
 
                 var (serialNo, invoiceNo) = await GenerateNumbersAsync(CompanyID);
@@ -121,6 +123,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                         PriorityDropdownId = Model.PriorityId != 0
                    ? (int)sys_dropdown_mfEnum.LabPriorityDropdownId
                    : 0,
+                        lab_result_mf = null,
                         PriorityId = Model.PriorityId,
                         StatusId = 1,
                         InvoiceNo = invoiceNo,
@@ -396,7 +399,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                         Discount = z.Discount,
                         DiscountType = z.DiscountType,
                         Total = z.Total,
-                        lab_catalog = z.lab_catalog
+                        emr_investigation = z.emr_investigation
                     }).ToList();
                 var results = result.GroupBy(l => l.requestedDate)
                         .Select(cl => new
@@ -424,7 +427,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                             MRNo = cl.First().MRNo,
                             Total = cl.First().Total,
                             CompanyLogo = cl.First().CompanyLogo,
-                            InvoiceModel = cl.Select(z => z.lab_catalog),
+                            InvoiceModel = cl.Select(z => z.emr_investigation),
                         }).ToList();
 
                 objResponse.ResultSet = new
@@ -456,7 +459,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                         z.CompanyId,
                         ReportNo = z.InvoiceNo,
                         ReportDate = z.CompletedDate,
-                        DepartmentName = z.lab_catalog.sys_drop_down_value.Value,
+                        DepartmentName = z.emr_investigation.sys_drop_down_value.Value,
                         ReportTitle = "Laboratory Report",
                         MRNO = z.emr_patient_mf.MRNO,
                         PatientName = z.emr_patient_mf.PatientName,
@@ -475,7 +478,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                         CollectedDate = z.SampleDate,
                         ReceivedDate = z.SampleDate,
                         ReportedDate = z.CompletedDate,
-                        InvoiceModel = z.lab_catalog.lab_parameter.Select(p => new
+                        InvoiceModel = z.emr_investigation.lab_parameter.Select(p => new
                         {
                             TestName = p.ParameterName,
                             NormalRange = p.ReferenceRange,
@@ -532,11 +535,11 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                          serialNo = x.lab_patient_test.SerialNo,
                          patientid = x.PatientId,
                          catalogId = x.CatalogId,
-                         catalogName = x.lab_catalog.Name,
-                         department = x.lab_catalog.sys_drop_down_value.Value,
+                         catalogName = x.emr_investigation.Investigation,
+                         department = x.emr_investigation.sys_drop_down_value.Value,
                          patientName = x.emr_patient_mf.PatientName,
                          patientMrNo = x.emr_patient_mf.MRNO,
-                         sampleType = x.lab_catalog.sys_drop_down_value1.Value,
+                         sampleType = x.emr_investigation.sys_drop_down_value1.Value,
                          priority = x.lab_patient_test.sys_drop_down_value.Value,
                          comment = x.Comment,
                          Parameter = x.lab_result_dt.Select(z => new
@@ -567,14 +570,14 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                     serialNo = x.SerialNo,
                     patientid = x.PatientId,
                     catalogId = x.CatalogId,
-                    catalogName = x.lab_catalog.Name,
-                    department = x.lab_catalog.sys_drop_down_value.Value,
+                    catalogName = x.emr_investigation.Investigation,
+                    department = x.emr_investigation.sys_drop_down_value.Value,
                     patientName = x.emr_patient_mf.PatientName,
                     patientMrNo = x.emr_patient_mf.MRNO,
-                    sampleType = x.lab_catalog.sys_drop_down_value1.Value,
+                    sampleType = x.emr_investigation.sys_drop_down_value1.Value,
                     priority = x.sys_drop_down_value.Value,
                     comment = string.Empty,
-                    Parameter = x.lab_catalog.lab_parameter.Select(z => new
+                    Parameter = x.emr_investigation.lab_parameter.Select(z => new
                     {
                         parmId = z.ID,
                         name = z.ParameterName,
@@ -614,6 +617,37 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             return objResponse;
         }
         [HttpGet]
+        [ActionName("SelectedPatientLoadTest")]
+        public ResponseInfo SelectedPatientLoadTest(string Id)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var CompanyID = Request.CompanyID();
+                decimal id = Convert.ToDecimal(Id);
+                var result = _emr_prescription_investigationService.Queryable().Where(x => x.CompanyID == CompanyID && x.PatientId == id && DbFunctions.TruncateTime(x.CreatedDate) == DbFunctions.TruncateTime(DateTime.Now))
+                     .Select(x => new
+                     {
+                         x.ID,
+                         x.InvestigationId,
+                     }).ToList();
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+
+        [HttpGet]
         [ActionName("GetPrintById")]
         public ResponseInfo GetPrintById(string Id, string serialNo = null)
         {
@@ -633,7 +667,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 x.SerialNo,
                 x.emr_patient_mf.PatientName,
                 x.emr_patient_mf.MRNO,
-                x.lab_catalog.sys_drop_down_value1.Value,
+                x.emr_investigation.sys_drop_down_value1.Value,
                 priority = x.sys_drop_down_value.Value,
                 x.CreatedDate,
             })
@@ -649,7 +683,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                     orderedDate = g.Key.CreatedDate,
                     Details = g.Select(d => new
                     {
-                        testName = d.lab_catalog.Name
+                        testName = d.emr_investigation.Investigation
                     }).ToList()
                 }
             })

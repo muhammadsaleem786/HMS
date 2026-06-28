@@ -3,6 +3,7 @@ using HMS.Entities.Enum;
 using HMS.Entities.Models;
 using HMS.Service;
 using HMS.Service.Services.Admin;
+using HMS.Service.Services.Appointment;
 using HMS.Service.Services.Lab;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
@@ -27,7 +28,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
     {
         private readonly Ilab_result_mfService _service;
         private readonly Ilab_result_dtService _lab_result_dtService;
-        private readonly Ilab_catalogService _lab_catalogService;
+        private readonly Iemr_investigationService _emr_investigationService;
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly IStoredProcedureService _procedureService;
         private readonly Iadm_role_dtService _adm_role_dtService;
@@ -35,7 +36,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
         private readonly Iadm_user_companyService _adm_user_companyService;
         public lab_result_mfController(IUnitOfWorkAsync unitOfWorkAsync, Ilab_result_mfService Service,
             Isys_drop_down_valueService sys_drop_down_valueService, Iadm_user_companyService adm_user_companyService,
-            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Ilab_catalogService lab_catalogService, Ilab_result_dtService lab_result_dtService)
+            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_investigationService emr_investigationService, Ilab_result_dtService lab_result_dtService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -43,7 +44,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             _adm_user_companyService = adm_user_companyService;
             _procedureService = ProcedureService;
             _adm_role_dtService = adm_role_dtService;
-            _lab_catalogService = lab_catalogService;
+            _emr_investigationService = emr_investigationService;
             _lab_result_dtService = lab_result_dtService;
         }
 
@@ -265,7 +266,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 Model.adm_user_mf = null;
                 Model.adm_user_mf1 = null;
                 Model.adm_company = null;
-                Model.lab_catalog = null;
+                Model.emr_investigation = null;
                 Model.lab_patient_test = null;
                 Model.CompanyId = CompanyID;
                 Model.CreatedBy = Request.LoginID();

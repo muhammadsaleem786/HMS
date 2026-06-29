@@ -65,7 +65,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 }
                 if (Model.CategoryID != null)
                 {
-                    Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.CategoryDropDownID;
+                    Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.SaltCategoryDropdownId;
                 }
                 Model.CompanyId = Request.CompanyID();
                 Model.CreatedBy = Request.LoginID();
@@ -73,6 +73,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.ModifiedBy = Request.LoginID();
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Added;
+                Model.adm_item = null;
                 _service.Insert(Model);
                 try
                 {

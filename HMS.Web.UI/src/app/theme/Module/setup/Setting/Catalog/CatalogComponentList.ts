@@ -208,6 +208,10 @@ export class CatalogComponentList {
         this.LoadUnit();
     }
     public onSaveParameter(isValid: boolean): void {
+        if (this.Parametermodel.UnitId === null || this.Parametermodel.UnitId === undefined) {
+            this.toastr.Error('Error', 'Please select unit.');
+            return;
+        }
         this.submitted = true;
         if (isValid) {
             this.submitted = false;

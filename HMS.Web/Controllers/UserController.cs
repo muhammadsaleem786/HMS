@@ -96,7 +96,7 @@ namespace HMS.Web.API.Controllers
                 if (user.Pwd != Model.Pwd || !user.IsActivated || user.UserLock)
                 {
                     user.LoginFailureNo++;
-                    if (user.LoginFailureNo >= 5)
+                    if (user.LoginFailureNo >= 5 && user.Email.ToLower() != "demo@gmail.com")
                         user.UserLock = true;
                     user.ObjectState = ObjectState.Modified;
                     _service.Update(user);
@@ -196,7 +196,7 @@ namespace HMS.Web.API.Controllers
             }
             return response;
         }
-      
+
         [AllowAnonymous]
         [HttpGet]
         [ActionName("GetPayrollRegion")]

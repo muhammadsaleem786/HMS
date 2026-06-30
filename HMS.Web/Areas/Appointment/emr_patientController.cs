@@ -202,10 +202,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             var objResponse = new ResponseInfo();
             try
             {
+                decimal CompanyID = Request.CompanyID();
                 emr_patient_mf obj = new emr_patient_mf();
                 try
                 {
-                    obj = _service.Queryable().Where(e => e.Mobile == Phone).FirstOrDefault();
+                    obj = _service.Queryable().Where(e => e.Mobile == Phone && e.CompanyId == CompanyID).FirstOrDefault();
                     if (obj != null)
                     {
                         objResponse.IsSuccess = true;
@@ -317,7 +318,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Age = z.Age,
                 Gender = z.Gender,
                 MRNO = z.MRNO,
-                Address=z.Address,
+                Address = z.Address,
                 z.Father_Husband
             }).Take(10)
             .ToListAsync();
@@ -333,7 +334,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.Age,
                         z.Gender,
                         z.MRNO,
-                        z.Address,z.Father_Husband
+                        z.Address,
+                        z.Father_Husband
 
                     })
                 };
@@ -372,7 +374,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Age = z.Age,
                 Gender = z.Gender,
                 MRNO = z.MRNO,
-                Address=z.Address,z.Father_Husband
+                Address = z.Address,
+                z.Father_Husband
             }).Take(10)
             .ToListAsync();
                 objResponse.ResultSet = new
@@ -387,7 +390,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.Age,
                         z.Gender,
                         z.MRNO,
-                        z.Address,z.Father_Husband
+                        z.Address,
+                        z.Father_Husband
                     })
                 };
             }
@@ -1230,8 +1234,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var AppointmentList = AppointmentInfo(CompanyID);
 
 
-                var dropDownIds = new[] { 2, 17, 1,22,23 };
-                var allDropDownValues =  _sys_drop_down_valueService.Queryable()
+                var dropDownIds = new[] { 2, 17, 1, 22, 23 };
+                var allDropDownValues = _sys_drop_down_valueService.Queryable()
     .Where(x => dropDownIds.Contains(x.DropDownID)
                 && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
                 {

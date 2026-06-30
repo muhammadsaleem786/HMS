@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input, TemplateRef } from '@angular/core';
-import { lab_patient_test, lab_result_mf, lab_result_dt, LabReport } from '../Lab/CatalogModel';
+import { lab_patient_test, lab_result_mf, lab_result_dt } from '../Lab/CatalogModel';
 import { FormGroup, FormControl, FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoaderService } from '../../../../CommonService/LoaderService';

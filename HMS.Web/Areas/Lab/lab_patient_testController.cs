@@ -8,6 +8,7 @@ using HMS.Service.Services.Lab;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
+using MathNet.Numerics.Distributions;
 using NPOI.SS.Formula.Functions;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
@@ -22,6 +23,7 @@ using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Configuration;
 using System.Web.Http;
 using System.Web.Http.Results;
 using System.Web.UI.WebControls;
@@ -44,9 +46,11 @@ namespace HMS.Web.API.Areas.Lab.Controllers
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iadm_user_companyService _adm_user_companyService;
         private readonly ISmsService _smsService;
+        private readonly Iadm_integrationService _adm_integrationService;
+        private readonly Random _random = new Random();
         public lab_patient_testController(IUnitOfWorkAsync unitOfWorkAsync, Ilab_patient_testService Service,
             Isys_drop_down_valueService sys_drop_down_valueService, Iadm_user_companyService adm_user_companyService,
-            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_patientService emr_patientService, Iemr_investigationService emr_investigationService, Ilab_result_mfService lab_result_mfService, Ilab_result_dtService lab_result_dtService, ISmsService smsService, Iemr_prescription_investigationService emr_prescription_investigationService)
+            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_patientService emr_patientService, Iemr_investigationService emr_investigationService, Ilab_result_mfService lab_result_mfService, Ilab_result_dtService lab_result_dtService, ISmsService smsService, Iemr_prescription_investigationService emr_prescription_investigationService, Iadm_integrationService adm_integrationService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -60,8 +64,8 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             _lab_result_dtService = lab_result_dtService;
             _smsService = smsService;
             _emr_prescription_investigationService = emr_prescription_investigationService;
+            _adm_integrationService = adm_integrationService;
         }
-
         public async Task<ResponseInfo> Save(lab_patient_test Model)
         {
             var objResponse = new ResponseInfo();
@@ -111,7 +115,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                g => g.Key,
                g => $"SMP-{DateTime.Now:yy}-{(++lastNumber):D3}"
            );
-
+                var accesscode = GenerateUniqueAccessCode(CompanyID);
                 var entities = new List<lab_patient_test>();
 
                 foreach (var catalog in catalogs)
@@ -124,9 +128,11 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                    ? (int)sys_dropdown_mfEnum.LabPriorityDropdownId
                    : 0,
                         lab_result_mf = null,
+                        emr_investigation = null,
                         PriorityId = Model.PriorityId,
                         StatusId = 1,
                         InvoiceNo = invoiceNo,
+                        AccessCode = accesscode,
                         ReferringPhysician = Model.ReferringPhysician,
                         Discount = Model.Discount,
                         DiscountType = Model.DiscountType,
@@ -151,7 +157,13 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Save;
                     objResponse.IsSuccess = true;
-
+                    var patient = _emr_patientService.Queryable().Include(a => a.adm_company)
+                        .FirstOrDefault(x => x.ID == Model.PatientId);
+                    if (patient != null)
+                    {
+                        var company = patient.adm_company;
+                        _ = Task.Run(() => SendRemindersAsync(patient, entities.FirstOrDefault(), company));
+                    }
                 }
                 catch (DbUpdateException)
                 {
@@ -171,6 +183,17 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 Logger.Trace.Error(ex);
             }
             return objResponse;
+        }
+
+        public string GenerateUniqueAccessCode(decimal CompanyID)
+        {
+            string accessCode;
+            do
+            {
+                accessCode = _random.Next(100000, 10000000).ToString(); // 6-7 digits
+
+            } while (_service.Queryable().Any(x => x.AccessCode == accessCode && x.CompanyId == CompanyID));
+            return accessCode;
         }
         public async Task<(string SerialNo, string InvoiceNo)> GenerateNumbersAsync(decimal companyId)
         {
@@ -875,10 +898,6 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Update;
                     objResponse.IsSuccess = true;
-                    //if (Model.StatusId == 4)
-                    //{
-                    //    Task.Run(() => SendRemindersAsync(Model.emr_patient_mf,Model, CompanyID));
-                    //}
                 }
                 catch (DbUpdateException)
                 {
@@ -900,35 +919,30 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             return objResponse;
         }
 
-        public async void SendRemindersAsync(emr_patient_mf model, lab_patient_test testModel, decimal CompanyID)
+        public async void SendRemindersAsync(emr_patient_mf model, lab_patient_test testModel, adm_company company)
         {
+            if (model == null || testModel == null || company == null)
+                return;
+            string webUrl = System.Configuration.ConfigurationManager.AppSettings["WebUrl"];
+            string reportUrl = webUrl + "/#/your-lab-results";
+
             DataAccessManager dataAccessManager = new DataAccessManager();
             var ht = new Hashtable();
-            ht.Add("@CompanyID", CompanyID);
+            ht.Add("@CompanyID", company.ID);
             ht.Add("@ReminderId", 0);
             var allData = dataAccessManager.GetDataSet("SP_GetReminderData", ht);
-            //var reminderTable = allData.Tables[0];
             var integrationTable = allData.Tables[1];
             bool isUnicode = false;
-            //if (reminderTable.Rows.Count > 0)
-            //{
             var smsRow = integrationTable.AsEnumerable()
         .FirstOrDefault(r => r["Type"].ToString() == "T" && Convert.ToBoolean(r["IsActive"]));
-            var emailRow = integrationTable.AsEnumerable()
-                .FirstOrDefault(r => r["Type"].ToString() == "E" && Convert.ToBoolean(r["IsActive"]));
-            string reportUrl = "https://yourdomain.com/report";
-            string messageBody =
-                $@"Dear {model.PatientName},
-
-                Your laboratory report is available.
-
-                View/Download Report:
-                {reportUrl}
-
-                Invoice No: {testModel.InvoiceNo}
-                Access Code: 1234567
-
-                Thank you.";
+            var totalAmount = testModel.Total - testModel.DiscountAmount;
+            string messageBody = $@"Dear {model.PatientName}, ({model.MRNO}).
+            Thank you for visiting {company.CompanyName}. Please note that PKR {totalAmount:N0}/- has been received against your laboratory test(s) booking.
+            You can view/download your report(s) online at:
+            {reportUrl}
+            Invoice #: {testModel.InvoiceNo}
+            Access Code: {testModel.AccessCode}
+            Thank you for choosing {company.CompanyName}.".Trim();
             await _smsService.AuthenticateAsync(
                  smsRow["UserName"].ToString(),
                  smsRow["Password"].ToString(),
@@ -937,7 +951,6 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                  smsRow["Masking"].ToString(),
                  isUnicode
              );
-            //}
         }
 
         [HttpGet]

@@ -101,8 +101,11 @@ import { PayScheduleComponentList } from '../theme/Module/setup/Employee/Paysche
 import { PayScheduleComponentForm } from '../theme/Module/setup/Employee/Payschedule/PayScheduleComponentForm';
 import { VacationSickLeaveComponentList } from '../theme/Module/setup/Employee/VacationSickLeave/VacationSickLeaveComponentList';
 import { VacationSickLeaveComponentForm } from '../theme/Module/setup/Employee/VacationSickLeave/VacationSickLeaveComponentForm';
+
+
+
 const routes: Routes = [
-    { path: 'report', component: ReportComponentForm, canActivate: [AuthGuard] },    
+    { path: 'report', component: ReportComponentForm, canActivate: [AuthGuard] },
     //setting module
     { path: 'DropDown', component: DropDownComponentList, canActivate: [AuthGuard] },
     { path: 'reminder', component: ReminderComponentList, canActivate: [AuthGuard] },
@@ -143,7 +146,7 @@ const routes: Routes = [
 
 
     { path: 'Catalog', component: CatalogComponentList, canActivate: [AuthGuard] },
-   
+
     { path: 'EquipmentMaintenance', component: EquipmentMaintenanceComponentList, canActivate: [AuthGuard] },
     { path: 'EquipmentMaintenance/saveEquipmentMaintenance:id', component: EquipmentMaintenanceComponentForm, canActivate: [AuthGuard] },
     { path: 'EquipmentMaintenance/saveEquipmentMaintenance', component: EquipmentMaintenanceComponentForm, canActivate: [AuthGuard] },
@@ -165,7 +168,7 @@ const routes: Routes = [
     { path: 'Vendor', component: VendorComponentList },
     { path: 'Invoice/saveinvoice:id', component: InvoiceComponentForm },
     { path: 'Invoice/saveinvoice', component: InvoiceComponentForm },
-    { path: 'Invoice', component: InvoiceComponentList },    
+    { path: 'Invoice', component: InvoiceComponentList },
     { path: 'Payment/savepayment:id', component: ItemPaymentComponentForm },
     { path: 'Payment/savepayment', component: ItemPaymentComponentForm },
     { path: 'Payment', component: PaymentComponentList },
@@ -214,6 +217,9 @@ const routes: Routes = [
     { path: 'Schedule', component: PayScheduleComponentList, canActivate: [AuthGuard] },
     { path: 'vacationsickleave', component: VacationSickLeaveComponentList },
     //end
+    
+
+
 ];
 @NgModule({
     declarations: [
@@ -237,7 +243,7 @@ const routes: Routes = [
         UserRoleComponentForm, SessionComponentList, ReminderComponentList, TemplateComponentList, ReminderComponentForm,
         //end
         //Item Module
-        IncomeComponentForm, IncomeComponentList, ItemComponentList,ItemComponentForm, VendorComponentList, VendorComponentForm,
+        IncomeComponentForm, IncomeComponentList, ItemComponentList, ItemComponentForm, VendorComponentList, VendorComponentForm,
         InvoiceComponentList, InvoiceComponentForm, ItemPaymentComponentForm
         , ExpenseComponentList, ExpenseComponentForm, ItemPaymentComponentList, RestockComponentList, ExpireComponentList, ImportItemComponent,
         //end
@@ -245,7 +251,7 @@ const routes: Routes = [
         PaymentComponentForm, PaymentComponentList, SubscriberComponentList, RegisterComponentForm,
         IntegrationComponent
         //end
-       
+
 
     ],
     imports: [

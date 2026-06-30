@@ -489,6 +489,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     decimal LogID = 1;
                     if (_adm_item_logService.Queryable().Count() > 0)
                         LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+                    decimal InvID = 1;
+                    if (_inv_stockService.Queryable().Count() > 0)
+                        InvID = _inv_stockService.Queryable().Max(e => e.ID) + 1;
 
                     foreach (pur_invoice_dt item in purorderitem)
                     {
@@ -496,7 +499,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         adm_item_log adm_item_log_obj = new adm_item_log();
                         if (findItem.TrackInventory)
                         {
-
                             inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID && (e.BatchSarialNumber == null && item.BatchSarialNumber == null || e.BatchSarialNumber.ToString() == item.BatchSarialNumber.ToString()) && e.CompanyId == CompanyID).FirstOrDefault();
                             if (inv_stockModel != null)
                             {
@@ -519,10 +521,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                             else
                             {
                                 inv_stock inv_Stock = new inv_stock();
-                                decimal ID = 1;
-                                if (_inv_stockService.Queryable().Count() > 0)
-                                    ID = _inv_stockService.Queryable().Max(e => e.ID) + 1;
-                                inv_Stock.ID = ID;
+                                inv_Stock.ID = InvID;
                                 inv_Stock.CompanyId = CompanyID;
                                 inv_Stock.BatchSarialNumber = item.BatchSarialNumber ?? "0";
                                 inv_Stock.ExpiredWarrantyDate = item.ExpiredWarrantyDate ?? DateTime.MinValue;
@@ -534,6 +533,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                 inv_Stock.ModifiedDate = Request.DateTimes();
                                 inv_Stock.ObjectState = ObjectState.Added;
                                 _inv_stockService.Insert(inv_Stock);
+                                InvID++;
                                 //log maintain                               
                                 adm_item_log_obj.ID = LogID;
                                 adm_item_log_obj.CompanyId = CompanyID;

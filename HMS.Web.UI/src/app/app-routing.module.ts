@@ -7,6 +7,9 @@ import { ForgotpasswordComponent } from './Module/account/forgotpassword/forgotp
 import { ResetpasswordComponent } from './Module/account/resetpassword/resetpassword.component';
 import { ForgotpassconfirmationComponent } from './Module/account/forgotpassconfirmation/forgotpassconfirmation.component';
 import { PasswordchangedComponent } from './Module/account/passwordchanged/passwordchanged.component';
+//view lab result
+import { LabResultComponent } from './Module/account/LabResult/LabResultComponent';
+
 const routes: Routes = [
     {
         path: 'login',
@@ -31,6 +34,11 @@ const routes: Routes = [
         path: 'passwordchanged',
         component: AccountComponent,
         children: [{ path: '', component: PasswordchangedComponent }]
+    },
+    //lab result
+    {
+        path: 'your-lab-results',
+        component: LabResultComponent
     },
     {
         path: 'home',

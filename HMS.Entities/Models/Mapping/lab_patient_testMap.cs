@@ -45,6 +45,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.DiscountAmount).HasColumnName("DiscountAmount");
             this.Property(t => t.Discount).HasColumnName("Discount");
             this.Property(t => t.Total).HasColumnName("Total");
+            this.Property(t => t.AccessCode).HasColumnName("AccessCode");
 
             // Relationships
             this.HasRequired(t => t.adm_company)

@@ -41,45 +41,4 @@ export class lab_result_dt {
     Status: string;
     Comment: string;
 }
-export class LabReport {
-    Header: LabReportHeader;
-    Patient: PatientInfo;
-    Results: LabResult[];
-}
 
-export class LabReportHeader {
-    reportNo: string;
-    reportDate: Date;
-    departmentName: string;
-    reportTitle: string;
-}
-
-export class PatientInfo {
-    mrno: string;
-    patientName: string;
-    age: string;
-    gender: string;
-    phone: string;
-    address: string;
-
-    orderedBy: string;
-    referringPhysician: string;
-    collectionCenter: string;
-
-    requestedDate: Date;
-    collectedDate: Date;
-    receivedDate: Date;
-    reportedDate: Date;
-}
-
-export class LabResult {
-    testName: string;
-    normalRange: string;
-    unit: string;
-
-    currentResult: string;
-    previousResult1?: string;
-    previousResult2?: string;
-
-    isAbnormal: boolean;
-}

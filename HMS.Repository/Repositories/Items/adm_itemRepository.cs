@@ -276,7 +276,7 @@ namespace HMS.Repository.Repositories.Items
                     DisplaySKU = PFilter.VisibleColumnInfoList.IndexOf("SKU") > -1;
                     DisplayDescription = PFilter.VisibleColumnInfoList.IndexOf("SaleDescription") > -1;
                     DisplayRate = PFilter.VisibleColumnInfoList.IndexOf("SalePrice") > -1;
-                    predicate = (c => c.CompanyId == CompanyID && (FilterID == "0" || c.GroupId.ToString() == FilterID) &&
+                    predicate = (c => c.CompanyId == CompanyID &&
                     (DisplayName && (c.Name).Contains(PFilter.SearchText.ToLower()) ||
                     (DisplaySKU && (c.SKU).ToLower().Contains(PFilter.SearchText.ToLower())
                   )));

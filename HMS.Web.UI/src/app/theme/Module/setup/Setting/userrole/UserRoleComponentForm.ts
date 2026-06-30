@@ -195,9 +195,9 @@ export class UserRoleComponentForm implements OnInit {
                     if (result.IsSuccess) {
                         this.toastr.Success(result.Message);
                         if (result.ResultSet.ControlLevelRights != null) {
-                            localStorage.removeItem('ControlLevelRights');
-                            var coltrollevel = JSON.stringify(result.ResultSet.ControlLevelRights);
-                            localStorage.setItem('ControlLevelRights', this.encrypt.encryptionAES(coltrollevel));
+                            // localStorage.removeItem('ControlLevelRights');
+                            // var coltrollevel = JSON.stringify(result.ResultSet.ControlLevelRights);
+                            // localStorage.setItem('ControlLevelRights', this.encrypt.encryptionAES(coltrollevel));
                         }
                         this._router.navigate(['/home/userrole']);
                     }

@@ -46,12 +46,15 @@ export class PaymentComponentForm implements OnInit {
     public Rights: any;
     public ControlRights: any;
     public user_paymentdynamicArray = [];
+    public valueForUser: any;
+
     constructor(public _CommonService: CommonService, private encrypt: EncryptionService, public _fb: FormBuilder, public loader: LoaderService
         , public _AdminService: PaymentService, public commonservice: CommonService
         , public toastr: CommonToastrService, public route: ActivatedRoute, public _router: Router) {
-        this.PayrollRegion =  this.commonservice.getPayrollRegion();
+        this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("14");
+        this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
     }
     ngOnInit() {
         this.Form1 = this._fb.group({
@@ -89,11 +92,11 @@ export class PaymentComponentForm implements OnInit {
                     this.IsEdit = true;
                     this.loader.ShowLoader();
                     this._AdminService.GetById(this.id).then(m => {
-                        
+
                         this.model = m.ResultSet.UserObj;
                         this.user_paymentdynamicArray = [];
                         if (this.model.user_payment2.length > 0)
-                            this.user_paymentdynamicArray=this.model.user_payment2;
+                            this.user_paymentdynamicArray = this.model.user_payment2;
                         this.loader.HideLoader();
                     });
                 } else {
@@ -105,7 +108,7 @@ export class PaymentComponentForm implements OnInit {
         if (event) {
         }
     }
-    
+
     AddPayment() {
         var obj = new user_payment();
         this.user_paymentdynamicArray.push(obj);

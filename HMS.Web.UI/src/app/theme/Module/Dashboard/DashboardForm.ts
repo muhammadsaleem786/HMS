@@ -147,14 +147,7 @@ export class DashboardForm {
                     this.IncomeList.push(item.Income);
                     this.ExpenseList.push(item.ExAmount);
                     this.MonthList.push(item.MonthName);
-                });                
-                //this.BirthDayData = this.dashboardSummary.todaysBirthdays.map(function (item) {
-                //    return {
-                //        Id: item.Id,
-                //        Name: item.patientName,
-                //        Image: item.image ? GlobalVariable.BASE_Temp_File_URL + item.image : item.image
-                //    };
-                //});
+                });   
                 this.loadPiChart();
                 this.LoadIncomeChart();
                 this.loader.HideLoader();

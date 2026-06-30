@@ -773,8 +773,8 @@ export class LabDashboardComponent implements OnInit {
             this._labService.GenerateReport(id).then(m => {
                 if (m.IsSuccess) {
                     this.ReportModel = m.ResultSet;
-                    if (m.ResultSet.CompanyLogo != null)
-                        this.ReportModel.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.CompanyLogo;
+                    if (m.ResultSet.CollectionCenterImage != null)
+                        this.ReportModel.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.CollectionCenterImage;
                     this._reportModalRef = this.modalService.open(this.ReportModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
                     this.loader.HideLoader();
                 } else

@@ -126,7 +126,7 @@
                             </a>
                         </li>
 
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive"*ngIf="Modules.indexOf(4)>-1">
+                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(118)>-1">
                             <a routerLink="/home/setup">
                                 <span><i class="icon-cog iconImage"></i></span>
                                 <span class="title">Setting</span>

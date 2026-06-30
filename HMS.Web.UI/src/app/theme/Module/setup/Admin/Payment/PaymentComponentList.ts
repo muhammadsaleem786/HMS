@@ -24,12 +24,13 @@ export class PaymentComponentList {
     public Keywords: any[] = [];
     public ControlRights: any;
     selectedValue: string = "A";
+    public valueForUser: any;
     constructor(public _CommonService: CommonService, private encrypt: EncryptionService, public loader: LoaderService, public _AdminService: PaymentService
         , public _router: Router, public toastr: CommonToastrService,) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("14");
-        // this.Keywords = this._CommonService.GetKeywords("Expense");
+        this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
     }
     ngOnInit() {
         this.StatusList = [

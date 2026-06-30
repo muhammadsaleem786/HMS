@@ -1035,7 +1035,6 @@
     </ng-template>
     <!-- report Modal -->
     <ng-template #ReportModal let-modal>
-
         <div class="modal-header">
             <h4>Clinical Chemistry Report</h4>
 
@@ -1045,175 +1044,112 @@
                 <span>&times;</span>
             </button>
         </div>
+        <style>
+            @page {
+                size: A4;
+                margin: 12mm
+            }
 
-        <div id="printReport" class="modal-body report-container">
+            @media print {
+                body {
+                    margin: 0
+                }
+            }
+        </style>
+        <div id="printReport" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#000;margin:0;padding:12mm;max-width:210mm;box-sizing:border-box">
 
             <!-- Header -->
-
-            <div class="text-center mb-3">
-
-                <h4>{{ReportModel?.CollectionCenter}}</h4>
-                <h4>{{ReportModel?.CollectionCenterAddress}},{{ReportModel?.CollectionCenterAddress2}}</h4>
-                <h4>{{ReportModel?.CollectionCenterPhone}}</h4>
-                <h4>{{ReportModel?.CollectionCenterWebsite}}</h4>
-                <h5>
-                    {{ ReportModel?.DepartmentName }}
-                </h5>
-
-                <h4>
-                    {{ ReportModel?.ReportTitle }}
-                </h4>
-
-            </div>
-
-            <!-- Patient Information -->
-
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <table class="table table-borderless table-sm">
-
-                        <tr>
-                            <td><b>MRNO</b></td>
-                            <td>{{ ReportModel?.MRNO }}</td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Name</b></td>
-                            <td>{{ ReportModel?.PatientName }}</td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Age/Sex</b></td>
-                            <td>
-                                {{ ReportModel?.Age }}
-                                /
-                                {{ ReportModel?.Gender }}
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Phone</b></td>
-                            <td>{{ ReportModel?.Phone }}</td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Address</b></td>
-                            <td>{{ ReportModel?.Address }}</td>
-                        </tr>
-
-                    </table>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <table class="table table-borderless table-sm">
-
-                        <tr>
-                            <td><b>Ordered By</b></td>
-                            <td>{{ ReportModel?.OrderedBy }}</td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Referring Physician</b></td>
-                            <td>{{ ReportModel?.ReferringPhysician }}</td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Requested</b></td>
-                            <td>
-                                {{ ReportModel?.RequestedDate| date:'dd-MMM-yyyy HH:mm'}}
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Collected</b></td>
-                            <td>
-                                {{ ReportModel?.CollectedDate| date:'dd-MMM-yyyy HH:mm'}}
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><b>Reported</b></td>
-                            <td>
-                                {{ReportModel?.ReportedDate| date:'dd-MMM-yyyy HH:mm'}}
-                            </td>
-                        </tr>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-            <!-- Test Results -->
-
-            <table class="table table-bordered table-sm mt-3">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Test(s)</th>
-
-                        <th>Normal</th>
-
-                        <th>Unit</th>
-
-                        <th>Current</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr *ngFor="let item of ReportModel?.InvoiceModel">
-
-                        <td>{{ item.TestName }}</td>
-
-                        <td>{{ item.NormalRange }}</td>
-
-                        <td>{{ item.Unit }}</td>
-
-                        <td>
-                            <span [class.text-danger]="item.Status === 'Critical'"
-                                  [class.font-weight-bold]="item.Status === 'Normal'|| item.Status === 'Abnormal'">
-
-                                {{ item.CurrentResult }}
-
-                            </span>
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
+            <table style="width:100%;border-collapse:collapse;margin-bottom:4px">
+                <tr>
+                    <td style="width:60px;vertical-align:top">
+                        <div *ngIf="ReportModel.CompanyLogo != '' && ReportModel.CompanyLogo != null" style="width:50px;height:50px;border:2px solid #c00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#c00;font-weight:bold"><img [src]="ReportModel.CompanyLogo" class="img-fluid radius" /></div>
+                        <div *ngIf="ReportModel.CompanyLogo =='' || ReportModel.CompanyLogo == null" style="width:50px;height:50px;border:2px solid #c00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#c00;font-weight:bold"><img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius"/></div>
+                    </td>
+                    <td style="vertical-align:top;text-align:center">
+                        <div style="font-size:14px;font-weight:bold">{{ReportModel?.CollectionCenter}} &amp; Research Centre</div>
+                        <div style="font-size:9px;margin-top:2px">{{ReportModel?.CollectionCenterAddress}},{{ReportModel?.CollectionCenterAddress2}} Phone:{{ReportModel?.CollectionCenterPhone}}, Fax: {{ReportModel?.CollectionFax}}</div>
+                        <div style="font-size:9px">Email:{{ReportModel?.CollectionEmail}}, Website: {{ReportModel?.CollectionCenterWebsite}}</div>
+                    </td>
+                    <td style="width:70px;vertical-align:top;text-align:right;font-size:8px;font-weight:bold;color:#0066cc"><!--CAP<br>ACCREDITED--></td>
+                </tr>
             </table>
 
-            <div class="mt-4">
-                <small>
-                    Note: Lab values should always be correlated
-                    with clinical picture.
-                </small>
+            <!-- Report title header -->
+            <div style="text-align:center;margin-top:8px;font-size:11px">Department of Pathology</div>
+            <div style="border-top:2px solid #000;margin-top:4px"></div>
+            <table style="width:100%;border-collapse:collapse;background:#e8e8e8;border-bottom:1px solid #000;margin-bottom:10px">
+                <tr>
+                    <td style="width:28%;padding:5px 6px;font-size:9px;vertical-align:middle">VIEW: 07-Jun-2026 12:35:47</td>
+                    <td style="width:44%;text-align:center;font-weight:bold;font-size:14px;padding:5px 6px;vertical-align:middle">Clinical Chemistry Report</td>
+                    <td style="width:28%;text-align:right;padding:5px 6px;font-size:9px;vertical-align:middle">Page 1 of 1</td>
+                </tr>
+            </table>
+
+            <!-- Patient Info -->
+            <table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:10px">
+                <tr>
+                    <td style="width:50%;vertical-align:top;padding-right:10px">
+                        <table style="width:100%;border-collapse:collapse">
+                            <tr><td style="width:100px">MRNO:</td><td style="font-weight:bold">{{ ReportModel?.MRNO }}</td></tr>
+                            <tr><td>Name:</td><td style="font-weight:bold">{{ ReportModel?.PatientName }}</td></tr>
+                            <tr><td>Date of Birth:</td><td>{{ ReportModel?.DOB }}</td></tr>
+                            <tr><td>Age/Sex:</td><td>{{ReportModel?.Age | number:'1.0-2'}} Year(s)/{{ ReportModel?.Gender }}</td></tr>
+                            <tr><td>Phone:</td><td>{{ ReportModel?.Phone }}</td></tr>
+                            <tr><td>Address:</td><td>{{ ReportModel?.Address }}</td></tr>
+                        </table>
+                    </td>
+                    <td style="width:50%;vertical-align:top">
+                        <table style="width:100%;border-collapse:collapse">
+                            <tr><td style="width:130px">Ordered By:</td><td>{{ ReportModel?.OrderedBy }}</td></tr>
+                            <tr><td>Referring Physician:</td><td>{{ ReportModel?.ReferringPhysician }}</td></tr>
+                            <tr><td>In-house Consultant:</td><td></td></tr>
+                            <tr><td>Report Destination:</td><td>{{ReportModel?.CollectionCenter}}</td></tr>
+                            <tr><td>Requested:</td><td>{{ReportModel?.RequestedDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
+                            <tr><td>Specimen Collected:</td><td>{{ReportModel?.CollectedDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
+                            <tr><td>Reported:</td><td>{{ReportModel?.ReportedDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Results -->
+            <div style="font-weight:bold;font-size:10px;margin-bottom:4px">Chemistry - {{ReportModel?.SampleName}}</div>
+            <table style="width:100%;border-collapse:collapse;font-size:9px;border:1px solid #000">
+                <tr style="background:#e8e8e8;font-weight:bold">
+                    <td style="border:1px solid #000;padding:3px 5px;width:22%">TEST(s)</td>
+                    <td style="border:1px solid #000;padding:3px 5px;width:14%">NORMAL</td>
+                    <td style="border:1px solid #000;padding:3px 5px;width:10%">UNIT(s)</td>
+                    <td style="border:1px solid #000;padding:3px 5px;text-align:center">Result</td>
+                </tr>
+                <tr *ngFor="let item of ReportModel?.InvoiceModel;let even = even; let odd = odd"  [style.background-color]="even ? '#f2f2f2' : '#ffffff'">
+                    <td style="border:1px solid #000;padding:3px 5px">{{ item.TestName }}</td>
+                    <td style="border:1px solid #000;padding:3px 5px">{{ item.NormalRange }}</td>
+                    <td style="border:1px solid #000;padding:3px 5px">{{ item.Unit }}</td>
+                    <td style="border:1px solid #000;padding:3px 5px;text-align:center">
+                        <span [class.text-danger]="item.Status === 'Critical'"
+                              [class.font-weight-bold]="item.Status === 'Normal'|| item.Status === 'Abnormal'">
+
+                            {{item.CurrentResult}}
+
+                        </span>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Notes -->
+            <div style="margin-top:14px;font-size:9px;font-weight:bold;line-height:1.5">
+                <div>Note: Lab values should always be correlated with clinical picture.</div>
+                <div>Normal Range(s) and Unit(s) shown are for most recent results.</div>
+                <div>* American Diabetes Association has defined fasting glucose values of 100 to 125 mg/dl as 'Impaired Fasting Glucose'. Normal fasting glucose values are below 100 mg/dl.</div>
+                <div>A repeat fasting glucose, with a minimum of 8 hours of fasting, as well as a haemoglobin A1C test, are recommended by the American Diabetes Association (Standards of Medical Care in Diabetes, 2026).</div>
             </div>
-
-        </div>
-
-        <div class="modal-footer">
-
+        </div>        <div class="modal-footer">
             <button class="btn btn-primary"
                     ngxPrint
                     printSectionId="printReport"
                     useExistingCss="true">
-
                 Print
-
             </button>
-
         </div>
-
     </ng-template>
 </div>

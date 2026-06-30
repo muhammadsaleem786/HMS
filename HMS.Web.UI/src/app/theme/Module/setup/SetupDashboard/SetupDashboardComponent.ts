@@ -59,20 +59,10 @@ export class SetupDashboardComponent implements OnInit {
         this.commonservice.LoadDropdown("1,2,3,4,6,7,8,9").then(m => {
             if (m.IsSuccess) {
                 let list = m.ResultSet.dropdownValues;
-                //this.CompanyTypes = list.filter(f => f.DropDownID == 1);
-                //this.TotalEmployees = list.filter(f => f.DropDownID == 2);
-                //this.BusinessLocationType = list.filter(f => f.DropDownID == 3);
-                //this.CityTypeList = list.filter(f => f.DropDownID == 4);
-                //this.FiscalYearList = list.filter(f => f.DropDownID == 6);
-                //this.CurrencyList = list.filter(f => f.DropDownID == 7);
-                //this.TimeZoneList = list.filter(f => f.DropDownID == 8);
-                //this.DateFormatList = list.filter(f => f.DropDownID == 9);
                 this.LanguageTypes = m.ResultSet.languaheList;
             }
-            //this.loader.HideLoader();
         });
         this.PayrollRegion = localStorage.getItem("PayrollRegion");
-        //this.GetNotifications();
     }
     AddProfile() {
         var id = this.UsersObj.ID;
@@ -86,20 +76,8 @@ export class SetupDashboardComponent implements OnInit {
     }
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true; // set form submit to true
-        //this.isShowError = this.isWrkingDaySelected(true);
         if (isValid)
             isValid = this.isShowError;
-
-        //if (isValid && this.model.Website != '') {
-        //    var regex = new RegExp(/^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm);
-        //    if (!regex.test(this.model.Website)) {
-        //        this.toastr.Error('Incorrect Url', 'Please enter valid website url. e.g www.google.com (OR) https://www.google.com')
-        //        isValid = false;
-        //    }
-        //}
-
-
-
         if (isValid) {
             this.loader.ShowLoader();
             this.submitted = false;

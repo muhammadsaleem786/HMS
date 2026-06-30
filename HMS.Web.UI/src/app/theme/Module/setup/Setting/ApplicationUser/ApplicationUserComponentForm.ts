@@ -367,7 +367,7 @@ export class ApplicationUserComponentForm implements OnInit {
                 if (m.ErrorMessage != null) {
                     this.toastr.Error('Error', m.ErrorMessage);
                 } else {
-                    this._router.navigate(['home/Admin']);
+                    this._router.navigate(['home/aplicationUser']);
                 }
                 this.loader.HideLoader();
             });

@@ -1,4 +1,4 @@
-﻿<div class="margin-t-68 removeAction">
+﻿<div class="margin-t-68 removeAction" *ngIf="valueForUser.Email == 'saleem4292@gmail.com'">
     <div class="row headSection paginationHead">
         <div class="col-sm-8">
             <div class="row">
@@ -21,7 +21,7 @@
         <div class="col-sm-4 text-right flex-row flex-end">
             <a class="btn btn-danger" (click)="AddSignUp('0')">Sign Up</a>
         </div>
-    </div>    
+    </div>
     <div class="Cardview search_onTop px-3 pt-0">
         <div class="TableView">
             <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="UserList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>

@@ -11,7 +11,7 @@ namespace HMS.Entities.Models
         public decimal CompanyId { get; set; }
         public decimal ResultId { get; set; }
         public decimal ParameterId { get; set; }
-        public decimal Result { get; set; }
+        public string Result { get; set; }
         public string Status { get; set; }
         public string Comment { get; set; }       
         public decimal CreatedBy { get; set; }

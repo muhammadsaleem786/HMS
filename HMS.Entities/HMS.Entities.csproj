@@ -87,6 +87,7 @@
     <Compile Include="CustomModel\InvoiceResponse.cs" />
     <Compile Include="CustomModel\ItemResponse.cs" />
     <Compile Include="CustomModel\LabReportDto.cs" />
+    <Compile Include="CustomModel\lab_result.cs" />
     <Compile Include="CustomModel\LoanAdjustmentModel.cs" />
     <Compile Include="CustomModel\LoanDetailModel.cs" />
     <Compile Include="CustomModel\LoanPaginationModel.cs" />

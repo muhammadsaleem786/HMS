@@ -105,7 +105,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
                 decimal CompanyID = Request.CompanyID();
                 sys_drop_down_value Value = _sys_drop_down_valueService.Queryable()
-                    .Where(x => x.DropDownID == Model.DropDownID && (Model.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID) && (x.Value).ToLower() == Model.Value.ToLower()).FirstOrDefault();
+                    .Where(x => x.DropDownID == Model.DropDownID && (Model.DependedDropDownValueID == null || x.DependedDropDownValueID == Model.DependedDropDownValueID) && (x.Value).ToLower() == Model.Value.ToLower() && x.CompanyID==CompanyID).FirstOrDefault();
                 sys_drop_down_value Value1 = _sys_drop_down_valueService.Queryable().Where(a => a.ID == Model.DependedDropDownValueID).FirstOrDefault();
                 if (Value == null)
                 {

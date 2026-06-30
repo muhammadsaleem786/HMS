@@ -14,6 +14,7 @@ import { LoaderService } from './CommonService/LoaderService';
 import { AsidebarService } from './CommonService/AsidebarService';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpModule } from '@angular/http';
+import { RecaptchaModule } from 'ng-recaptcha'
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AccountService } from './Module/account/account.service';
@@ -24,6 +25,7 @@ import { ForgotpasswordComponent } from './Module/account/forgotpassword/forgotp
 import { ResetpasswordComponent } from './Module/account/resetpassword/resetpassword.component';
 import { ForgotpassconfirmationComponent } from './Module/account/forgotpassconfirmation/forgotpassconfirmation.component';
 import { PasswordchangedComponent } from './Module/account/passwordchanged/passwordchanged.component';
+import { LabResultComponent } from './Module/account/LabResult/LabResultComponent';
 @NgModule({
     declarations: [
         AppComponent,
@@ -33,10 +35,13 @@ import { PasswordchangedComponent } from './Module/account/passwordchanged/passw
         ResetpasswordComponent,
         ForgotpassconfirmationComponent,
         PasswordchangedComponent,
+        LabResultComponent,
+
     ],
     imports: [
         CommonUtilsModule,
         LayoutModule,
+        RecaptchaModule,
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,

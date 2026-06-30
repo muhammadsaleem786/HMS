@@ -1,0 +1,148 @@
+<div class="report-page">
+
+    <!-- Header -->
+    <div class="report-header text-center">
+        <div class="icon-circle">
+            <i class="fa fa-flask"></i>
+        </div>
+
+        <h1>View Your Lab Reports</h1>
+
+        <p>
+            Enter your Invoice Number and Access Code to securely access your laboratory reports.
+        </p>
+    </div>
+
+    <!-- Search Card -->
+    <div class="card search-card shadow">
+
+        <div class="card-body">
+
+            <h4 class="mb-4">
+                <i class="fa fa-lock text-primary mr-2"></i>
+                Secure Report Access
+            </h4>
+
+            <form [formGroup]="Form1"
+                  (ngSubmit)="SearchReports(Form1.valid)"
+                  novalidate>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <label>Invoice Number</label>
+
+                        <input class="form-control"
+                               type="text"
+                               placeholder="Enter Invoice Number"
+                               formControlName="InvoiceNo"
+                               [(ngModel)]="model.InvoiceNo">
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label>Access Code</label>
+
+                        <input class="form-control"
+                               type="text"
+                               placeholder="Enter Access Code"
+                               formControlName="AccessCode"
+                               [(ngModel)]="model.AccessCode">
+
+                    </div>
+                    <!-- Google reCAPTCHA -->
+                    <div class="captcha-box my-4">
+                        <re-captcha [siteKey]="siteKey"
+                                    (resolved)="resolved($event)">
+                        </re-captcha>
+
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+
+                    <button class="btn btn-primary btn-search"
+                            [disabled]="!Form1.valid">
+
+                        <i class="fa fa-search mr-2"></i>
+                        Find Report
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div class="secure-note">
+
+                <i class="fa fa-shield-alt"></i>
+
+                Your reports are securely protected. Reports can only be viewed using your Invoice Number and Access Code.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<div class="card report-card mt-5 shadow" *ngIf="ReportList.length">
+
+    <div class="card-header">
+
+        <h4>
+            <i class="fa fa-file-medical"></i>
+            Available Reports
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="report-item"
+             *ngFor="let item of ReportList">
+
+            <div>
+
+                <h5>{{item.TestName}}</h5>
+
+                <small>
+                    {{item.CreatedDate | date}}
+                </small>
+
+            </div>
+
+            <div>
+
+                <span class="badge badge-success"
+                      *ngIf="item.Status=='Completed'">
+
+                    Completed
+
+                </span>
+
+                <span class="badge badge-warning"
+                      *ngIf="item.Status!='Completed'">
+                    {{item.Status}}
+                </span>
+            </div>
+
+            <div>
+
+                <button class="btn btn-success"
+                        *ngIf="item.Status=='Completed'"
+                        (click)="DownloadReport(item)">
+                    <i class="fa fa-download"></i>
+                    Download
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

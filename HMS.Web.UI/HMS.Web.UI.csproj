@@ -145,6 +145,8 @@
     <Content Include="src\app\Module\account\forgotpassconfirmation\forgotpassconfirmation.component.html" />
     <Content Include="src\app\Module\account\forgotpassword\forgotpassword.component.css" />
     <Content Include="src\app\Module\account\forgotpassword\forgotpassword.component.html" />
+    <Content Include="src\app\Module\account\LabResult\LabResultComponent.css" />
+    <Content Include="src\app\Module\account\LabResult\LabResultComponent.html" />
     <Content Include="src\app\Module\account\login\login.component.css" />
     <Content Include="src\app\Module\account\login\login.component.html" />
     <Content Include="src\app\Module\account\passwordchanged\passwordchanged.component.html" />
@@ -397,6 +399,9 @@
     <TypeScriptCompile Include="src\app\common\passwordValidator.ts" />
     <TypeScriptCompile Include="src\app\Module\account\forgotpassconfirmation\forgotpassconfirmation.component.ts" />
     <TypeScriptCompile Include="src\app\Module\account\forgotpassword\forgotpassword.component.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\LabResult\LabResultComponent.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\LabResult\LabResultModel.ts" />
+    <TypeScriptCompile Include="src\app\Module\account\LabResult\LabResultService.ts" />
     <TypeScriptCompile Include="src\app\Module\account\passwordchanged\passwordchanged.component.ts" />
     <TypeScriptCompile Include="src\app\Module\account\resetpassword\resetpassword.component.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\ProfitLossRptForm.ts" />

@@ -5,6 +5,7 @@ using HMS.Service;
 using HMS.Service.Services.Admin;
 using HMS.Service.Services.Appointment;
 using HMS.Service.Services.Employee;
+using HMS.Service.Services.Lab;
 using HMS.Web.API.Common;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.Util;
@@ -47,6 +48,7 @@ namespace HMS.Web.API.Controllers
         private readonly Ipr_deduction_contributionService _pr_deduction_contributionService;
         private readonly Ipr_allowanceService _pr_allowanceService;
         private readonly Ipr_pay_scheduleService _pr_pay_scheduleService;
+        private readonly Ilab_patient_testService _lab_patient_testService;
         public UserController(IUnitOfWorkAsync unitOfWorkAsync, Iadm_userService Service, Iemr_service_mfService emr_service_mfService,
             Iadm_companyService adm_companyService, Iadm_multilingual_mfService adm_multilingual_mfservice,
             Iadm_role_dtService adm_role_dtService,
@@ -59,7 +61,7 @@ namespace HMS.Web.API.Controllers
            Ipr_deduction_contributionService pr_deduction_contributionService,
             Ipr_pay_scheduleService pr_pay_scheduleService,
            Ipr_allowanceService pr_allowanceService,
-            Iadm_user_tokenService iadm_user_tokenService)
+            Iadm_user_tokenService iadm_user_tokenService, Ilab_patient_testService lab_patient_testService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = Service;
@@ -77,6 +79,7 @@ namespace HMS.Web.API.Controllers
             _adm_user_tokenService = iadm_user_tokenService;
             _adm_multilingual_mfservice = adm_multilingual_mfservice;
             _pr_employee_mfService = pr_employee_mfService;
+            _lab_patient_testService = lab_patient_testService;
         }
         [AllowAnonymous]
         [HttpPost]
@@ -1453,6 +1456,38 @@ namespace HMS.Web.API.Controllers
                 }
             }
 
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        [ActionName("GetById")]
+        public ResponseInfo GetById(string InvoiceNo, string AccessCode)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var result = _lab_patient_testService.Queryable().Where(x => x.InvoiceNo == InvoiceNo && x.AccessCode == AccessCode)
+                     .Select(x => new
+                     {
+                         TestName = x.emr_investigation.Investigation,
+                         CreatedDate = x.CreatedDate,
+                         Status = x.sys_drop_down_value1.Value,
+                         StatusId = x.StatusId,
+                         patientMrNo = x.emr_patient_mf.MRNO,
+                     }).ToList();
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = new
+                {
+                    result = result
+                };
+
+            }
             catch (Exception ex)
             {
                 objResponse.IsSuccess = false;

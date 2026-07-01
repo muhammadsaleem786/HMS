@@ -1475,12 +1475,25 @@ namespace HMS.Web.API.Controllers
                 var result = _lab_patient_testService.Queryable().Where(x => x.InvoiceNo == InvoiceNo && x.AccessCode == AccessCode)
                      .Select(x => new
                      {
+                         ID=x.ID,
                          TestName = x.emr_investigation.Investigation,
+                         Parameters = x.emr_investigation.lab_parameter
+                            .Select(a => a.ParameterName),
                          CreatedDate = x.CreatedDate,
                          Status = x.sys_drop_down_value1.Value,
                          StatusId = x.StatusId,
                          patientMrNo = x.emr_patient_mf.MRNO,
-                     }).ToList();
+                     }).ToList().Select(x => new
+                     {
+                         x.ID,
+                         x.TestName,
+                         Parameter = string.Join(", ", x.Parameters),
+                         x.CreatedDate,
+                         x.Status,
+                         x.StatusId,
+                         x.patientMrNo
+                     })
+                .ToList();
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {
@@ -1496,5 +1509,80 @@ namespace HMS.Web.API.Controllers
             }
             return objResponse;
         }
+        [AllowAnonymous]
+        [HttpGet]
+        [ActionName("ReportGenerate")]
+        public ResponseInfo ReportGenerate(string id)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal companyId = Request.CompanyID();
+                var invoice = _lab_patient_testService.Queryable().Where(x => x.ID.ToString() == id)
+                    .Select(z => new
+                    {
+                        z.ID,
+                        z.CompanyId,
+                        ReportNo = z.InvoiceNo,
+                        ReportDate = z.CompletedDate,
+                        DepartmentName = z.emr_investigation.sys_drop_down_value.Value,
+                        SampleName = z.emr_investigation.sys_drop_down_value1.Value,
+                        MRNO = z.emr_patient_mf.MRNO,
+                        PatientName = z.emr_patient_mf.PatientName,
+                        DOB = z.emr_patient_mf.DOB,
+                        Age = z.emr_patient_mf.Age.ToString(),
+                        Gender = z.emr_patient_mf.Gender == 1 ? "Male" : z.emr_patient_mf.Gender == 2 ? "Female" : "Other",
+                        Phone = z.emr_patient_mf.Mobile,
+                        Address = z.emr_patient_mf.Address,
+                        OrderedBy = z.adm_user_mf.Name,
+                        ReferringPhysician = z.ReferringPhysician,
+                        CollectionCenter = z.adm_company.CompanyName,
+                        CollectionCenterAddress = z.adm_company.CompanyAddress1,
+                        CollectionCenterAddress2 = z.adm_company.CompanyAddress2,
+                        CollectionFax = z.adm_company.Fax,
+                        CollectionEmail = z.adm_company.Email,
+                        CollectionCenterPhone = z.adm_company.Phone,
+                        CollectionCenterWebsite = z.adm_company.Website,
+                        CollectionCenterImage = z.adm_company.CompanyLogo,
+                        RequestedDate = z.CreatedDate,
+                        CollectedDate = z.SampleDate,
+                        ReceivedDate = z.SampleDate,
+                        ReportedDate = z.CompletedDate,
+                        InvoiceModel = z.emr_investigation.lab_parameter.Select(p => new
+                        {
+                            TestName = p.ParameterName,
+                            NormalRange = p.ReferenceRange,
+                            Unit = p.sys_drop_down_value.Value,
+                            CurrentResult = z.lab_result_mf
+                         .SelectMany(a => a.lab_result_dt)
+                         .Where(r => r.ParameterId == p.ID)
+                         .Select(r => r.Result)
+                         .FirstOrDefault(),
+                            Status = z.lab_result_mf
+                         .SelectMany(a => a.lab_result_dt)
+                         .Where(r => r.ParameterId == p.ID)
+                         .Select(r => r.Status.ToString())
+                         .FirstOrDefault() ?? string.Empty
+                        }).ToList()
+                    }).FirstOrDefault();
+                if (invoice == null)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "Report not found.";
+                    return objResponse;
+                }
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = invoice;
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+
+            return objResponse;
+        }
+
     }
 }

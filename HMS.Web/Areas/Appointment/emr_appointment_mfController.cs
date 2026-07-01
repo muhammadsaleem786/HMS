@@ -184,7 +184,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e=>e.CompanyId==CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyId = Request.CompanyID();
                 Model.CreatedBy = Request.LoginID();
@@ -197,7 +197,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 {
                     decimal diagnosisID = 1;
                     if (_ipd_diagnosisService.Queryable().Count() > 0)
-                        diagnosisID = _ipd_diagnosisService.Queryable().Max(e => e.ID) + 1;
+                        diagnosisID = (_ipd_diagnosisService.Queryable().Where(e=>e.CompanyID==CompanyID).Max(x => (decimal?)x.ID) ?? 0)  + 1;
                     if (Model.PrimaryDescription != null)
                     {
                         ipd_diagnosis obj = new ipd_diagnosis();
@@ -239,7 +239,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     emr_patient_bill obj = new emr_patient_bill();
                     decimal BillID = 1;
                     if (_emr_patient_billService.Queryable().Count() > 0)
-                        BillID = _emr_patient_billService.Queryable().Max(e => e.ID) + 1;
+                        BillID = (_emr_patient_billService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     obj.ID = BillID;
                     obj.AppointmentId = Model.ID;
                     obj.DoctorId = Model.DoctorId;

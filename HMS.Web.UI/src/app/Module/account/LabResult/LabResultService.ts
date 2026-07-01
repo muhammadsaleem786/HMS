@@ -18,6 +18,11 @@ export class LabResultService {
         var data = { 'InvoiceNo': InvoiceNo, 'AccessCode': AccessCode };
         return this.http.Get(this.urlToApi + '/GetById', data).then(e => e);
     }
+
+    ReportGenerate(Id: string): Promise<any> {
+        var data = { 'Id': Id};
+        return this.http.Get(this.urlToApi + '/ReportGenerate', data).then(e => e);
+    }
     FormLoad(): Promise<any> {
         return this.http.Get(this.urlToApi + '/Load', {}).then(e => e);
     }

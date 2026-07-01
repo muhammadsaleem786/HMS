@@ -74,7 +74,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyId = Request.CompanyID();
                 Model.CreatedBy = Request.LoginID();
@@ -172,6 +172,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             var objResponse = new ResponseInfo();
             try
             {
+                decimal CompanyID = Request.CompanyID();
+
                 if (!ModelState.IsValid)
                 {
                     objResponse.IsSuccess = false;
@@ -188,7 +190,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                 decimal billdtID = 1;
                 if (_emr_patient_bill_paymentService.Queryable().Count() > 0)
-                    billdtID = _emr_patient_bill_paymentService.Queryable().Max(e => e.ID) + 1;
+                    billdtID = (_emr_patient_bill_paymentService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 emr_patient_bill_payment billdtObj = new emr_patient_bill_payment();
                 billdtObj.ID = billdtID;
                 billdtObj.BillId = Model.ID;

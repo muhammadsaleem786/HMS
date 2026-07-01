@@ -1144,10 +1144,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 decimal companyId = Request.CompanyID();
                 int userid = Convert.ToInt32(Request.LoginID());
-                var mrNo = _service.Queryable()
-.Where(p => p.CompanyId == companyId)
-.Max(p => (int?)p.ID) ?? 0;
-                mrNo += 1;
+                var lastMrNo = (_service.Queryable()
+                .Where(p => p.CompanyId == companyId)
+                .Select(p => p.MRNO)
+                .ToList())
+                .Select(x => int.TryParse(x, out var n) ? n : 0)
+                .DefaultIfEmpty(0)
+                .Max();
+                var nextMrNo = (lastMrNo + 1).ToString("D9");
                 var dropDownIds = new[] { 2, 22, 23 };
                 var allDropDownValues = _sys_drop_down_valueService.Queryable()
     .Where(x => dropDownIds.Contains(x.DropDownID)
@@ -1165,9 +1169,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
    .Where(x => x.DropDownID == 22).ToList();
                 var titleList = allDropDownValues
    .Where(x => x.DropDownID == 23).ToList();
-                decimal getMaxMRNO = mrNo;
-                string MRNO = "";
-                MRNO = (getMaxMRNO).ToString("000000000");
+                string MRNO = nextMrNo;
 
                 var GenderList = genderList;
                 var BillTypeList = billTypeList;

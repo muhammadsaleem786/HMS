@@ -1,148 +1,243 @@
 <div class="report-page">
-
     <!-- Header -->
     <div class="report-header text-center">
         <div class="icon-circle">
             <i class="fa fa-flask"></i>
         </div>
-
         <h1>View Your Lab Reports</h1>
-
         <p>
             Enter your Invoice Number and Access Code to securely access your laboratory reports.
         </p>
     </div>
-
     <!-- Search Card -->
     <div class="card search-card shadow">
-
         <div class="card-body">
-
             <h4 class="mb-4">
                 <i class="fa fa-lock text-primary mr-2"></i>
                 Secure Report Access
             </h4>
-
             <form [formGroup]="Form1"
                   (ngSubmit)="SearchReports(Form1.valid)"
                   novalidate>
-
                 <div class="row">
-
                     <div class="col-md-6">
-
                         <label>Invoice Number</label>
-
                         <input class="form-control"
                                type="text"
                                placeholder="Enter Invoice Number"
                                formControlName="InvoiceNo"
                                [(ngModel)]="model.InvoiceNo">
-
                     </div>
-
                     <div class="col-md-6">
-
                         <label>Access Code</label>
-
                         <input class="form-control"
                                type="text"
                                placeholder="Enter Access Code"
                                formControlName="AccessCode"
                                [(ngModel)]="model.AccessCode">
-
                     </div>
                     <!-- Google reCAPTCHA -->
                     <div class="captcha-box my-4">
                         <re-captcha [siteKey]="siteKey"
                                     (resolved)="resolved($event)">
                         </re-captcha>
-
                     </div>
                 </div>
-
                 <div class="text-center mt-4">
-
                     <button class="btn btn-primary btn-search"
                             [disabled]="!Form1.valid">
-
                         <i class="fa fa-search mr-2"></i>
                         Find Report
-
                     </button>
-
                 </div>
-
             </form>
-
             <div class="secure-note">
-
                 <i class="fa fa-shield-alt"></i>
-
                 Your reports are securely protected. Reports can only be viewed using your Invoice Number and Access Code.
-
             </div>
-
         </div>
-
     </div>
-
 </div>
-<div class="card report-card mt-5 shadow" *ngIf="ReportList.length">
+<!-- Completed Reports -->
+<div class="card mt-5 shadow">
 
     <div class="card-header">
-
         <h4>
             <i class="fa fa-file-medical"></i>
             Available Reports
         </h4>
-
     </div>
 
-    <div class="card-body">
+    <div *ngIf="ReportList && ReportList.length > 0; else noRecords">
 
-        <div class="report-item"
-             *ngFor="let item of ReportList">
+        <div class="card-body p-0">
+            <table class="table table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th width="120">CPT Code</th>
+                        <th>Test Name</th>
+                        <th width="150">Status</th>
+                        <th width="220">Report Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
 
-            <div>
-
-                <h5>{{item.TestName}}</h5>
-
-                <small>
-                    {{item.CreatedDate | date}}
-                </small>
-
-            </div>
-
-            <div>
-
-                <span class="badge badge-success"
-                      *ngIf="item.Status=='Completed'">
-
-                    Completed
-
-                </span>
-
-                <span class="badge badge-warning"
-                      *ngIf="item.Status!='Completed'">
-                    {{item.Status}}
-                </span>
-            </div>
-
-            <div>
-
-                <button class="btn btn-success"
-                        *ngIf="item.Status=='Completed'"
-                        (click)="DownloadReport(item)">
-                    <i class="fa fa-download"></i>
-                    Download
-
-                </button>
-
-            </div>
-
+                <tbody>
+                    <tr *ngFor="let item of ReportList" class="table-success">
+                        <td>{{item.ID}}</td>
+                        <td>{{item.TestName}} ({{item.Parameter}})</td>
+                        <td>
+                            <span class="badge badge-success">
+                                {{item.Status}}
+                            </span>
+                        </td>
+                        <td>
+                            {{item.CreatedDate | date:'dd-MMM-yyyy hh:mm:ss a'}}
+                        </td>
+                        <td>
+                            <button class="btn btn-danger"
+                                    (click)="ReportView(item.ID)">
+                                View Report
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
     </div>
 
+    <ng-template #noRecords>
+        <div class="card-body text-center p-4">
+            <h5 class="text-muted mb-0">
+                No record found.
+            </h5>
+        </div>
+    </ng-template>
+
 </div>
+
+<!-- report Modal -->
+<ng-template #ReportModal let-modal>
+    <div class="modal-header">
+        <h4>Clinical Chemistry Report</h4>
+
+        <button type="button"
+                class="close"
+                (click)="modal.dismiss()">
+            <span>&times;</span>
+        </button>
+    </div>
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm
+        }
+
+        @media print {
+            body {
+                margin: 0
+            }
+        }
+    </style>
+    <div id="printReport" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#000;margin:0;padding:12mm;max-width:210mm;box-sizing:border-box">
+
+        <!-- Header -->
+        <table style="width:100%;border-collapse:collapse;margin-bottom:4px">
+            <tr>
+                <td style="width:60px;vertical-align:top">
+                    <div *ngIf="ReportModel.CompanyLogo != '' && ReportModel.CompanyLogo != null" style="width:50px;height:50px;border:2px solid #c00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#c00;font-weight:bold"><img [src]="ReportModel.CompanyLogo" class="img-fluid radius" /></div>
+                    <div *ngIf="ReportModel.CompanyLogo =='' || ReportModel.CompanyLogo == null" style="width:50px;height:50px;border:2px solid #c00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#c00;font-weight:bold"><img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" /></div>
+                </td>
+                <td style="vertical-align:top;text-align:center">
+                    <div style="font-size:14px;font-weight:bold">{{ReportModel?.CollectionCenter}} &amp; Research Centre</div>
+                    <div style="font-size:9px;margin-top:2px">{{ReportModel?.CollectionCenterAddress}},{{ReportModel?.CollectionCenterAddress2}} Phone:{{ReportModel?.CollectionCenterPhone}}, Fax: {{ReportModel?.CollectionFax}}</div>
+                    <div style="font-size:9px">Email:{{ReportModel?.CollectionEmail}}, Website: {{ReportModel?.CollectionCenterWebsite}}</div>
+                </td>
+                <td style="width:70px;vertical-align:top;text-align:right;font-size:8px;font-weight:bold;color:#0066cc"><!--CAP<br>ACCREDITED--></td>
+            </tr>
+        </table>
+
+        <!-- Report title header -->
+        <div style="text-align:center;margin-top:8px;font-size:11px">Department of Pathology</div>
+        <div style="border-top:2px solid #000;margin-top:4px"></div>
+        <table style="width:100%;border-collapse:collapse;background:#e8e8e8;border-bottom:1px solid #000;margin-bottom:10px">
+            <tr>
+                <td style="width:28%;padding:5px 6px;font-size:9px;vertical-align:middle">VIEW:{{ReportModel?.ViewDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td>
+
+                <td style="width:44%;text-align:center;font-weight:bold;font-size:14px;padding:5px 6px;vertical-align:middle">Clinical Chemistry Report</td>
+                <td style="width:28%;text-align:right;padding:5px 6px;font-size:9px;vertical-align:middle"></td>
+
+            </tr>
+        </table>
+
+        <!-- Patient Info -->
+        <table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:10px">
+            <tr>
+                <td style="width:50%;vertical-align:top;padding-right:10px">
+                    <table style="width:100%;border-collapse:collapse">
+                        <tr><td style="width:100px">MRNO:</td><td style="font-weight:bold">{{ ReportModel?.MRNO }}</td></tr>
+                        <tr><td>Name:</td><td style="font-weight:bold">{{ ReportModel?.PatientName }}</td></tr>
+                        <tr><td>Date of Birth:</td><td>{{ ReportModel?.DOB }}</td></tr>
+                        <tr><td>Age/Sex:</td><td>{{ReportModel?.Age | number:'1.0-2'}} Year(s)/{{ ReportModel?.Gender }}</td></tr>
+                        <tr><td>Phone:</td><td>{{ ReportModel?.Phone }}</td></tr>
+                        <tr><td>Address:</td><td>{{ ReportModel?.Address }}</td></tr>
+                    </table>
+                </td>
+                <td style="width:50%;vertical-align:top">
+                    <table style="width:100%;border-collapse:collapse">
+                        <tr><td style="width:130px">Ordered By:</td><td>{{ ReportModel?.OrderedBy }}</td></tr>
+                        <tr><td>Referring Physician:</td><td>{{ ReportModel?.ReferringPhysician }}</td></tr>
+                        <tr><td>In-house Consultant:</td><td></td></tr>
+                        <tr><td>Report Destination:</td><td>{{ReportModel?.CollectionCenter}}</td></tr>
+                        <tr><td>Requested:</td><td>{{ReportModel?.RequestedDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
+                        <tr><td>Specimen Collected:</td><td>{{ReportModel?.CollectedDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
+                        <tr><td>Reported:</td><td>{{ReportModel?.ReportedDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Results -->
+        <div style="font-weight:bold;font-size:10px;margin-bottom:4px">Chemistry - {{ReportModel?.SampleName}}</div>
+        <table style="width:100%;border-collapse:collapse;font-size:9px;border:1px solid #000">
+            <tr style="background:#e8e8e8;font-weight:bold">
+                <td style="border:1px solid #000;padding:3px 5px;width:22%">TEST(s)</td>
+                <td style="border:1px solid #000;padding:3px 5px;width:14%">NORMAL</td>
+                <td style="border:1px solid #000;padding:3px 5px;width:10%">UNIT(s)</td>
+                <td style="border:1px solid #000;padding:3px 5px;text-align:center">Result</td>
+            </tr>
+            <tr *ngFor="let item of ReportModel?.InvoiceModel;let even = even; let odd = odd" [style.background-color]="even ? '#f2f2f2' : '#ffffff'">
+                <td style="border:1px solid #000;padding:3px 5px">{{ item.TestName }}</td>
+                <td style="border:1px solid #000;padding:3px 5px">{{ item.NormalRange }}</td>
+                <td style="border:1px solid #000;padding:3px 5px">{{ item.Unit }}</td>
+                <td style="border:1px solid #000;padding:3px 5px;text-align:center">
+                    <span [class.text-danger]="item.Status === 'Critical'"
+                          [class.font-weight-bold]="item.Status === 'Normal'|| item.Status === 'Abnormal'">
+
+                        {{item.CurrentResult}}
+
+                    </span>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Notes -->
+        <div style="margin-top:14px;font-size:9px;font-weight:bold;line-height:1.5">
+            <div>Note: Lab values should always be correlated with clinical picture.</div>
+            <div>Normal Range(s) and Unit(s) shown are for most recent results.</div>
+            <div>* American Diabetes Association has defined fasting glucose values of 100 to 125 mg/dl as 'Impaired Fasting Glucose'. Normal fasting glucose values are below 100 mg/dl.</div>
+            <div>A repeat fasting glucose, with a minimum of 8 hours of fasting, as well as a haemoglobin A1C test, are recommended by the American Diabetes Association (Standards of Medical Care in Diabetes, 2026).</div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger mr-2"
+                (click)="ViewPdf()">
+            View PDF
+        </button>
+        <button class="btn btn-danger"
+                (click)="DownloadPDF()">
+            Download PDF
+        </button>
+    </div>
+</ng-template>

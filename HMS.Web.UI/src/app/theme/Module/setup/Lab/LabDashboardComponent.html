@@ -124,7 +124,7 @@
                     <div class="uk-overflow-container col-sm-12 p-0">
                         <table id="lab_dashboard_table" class="uk-table table" cellspacing="0" style="width: 100%; min-width: 1100px;">
                             <thead class="grid-header">
-                                <tr>
+                                <tr>  <th style="width: 10px;"></th>
                                     <th style="width: 110px;">Test</th>
                                     <th style="min-width: 220px;">Patient</th>
                                     <th style="width: 110px;">Sample</th>
@@ -138,7 +138,10 @@
                             <tbody>
                                 <tr *ngFor="let item of activeCases">
                                     <td>
-                                        <span class="font-weight-bold">{{ item.testId }}</span>
+                                         <span class="font-weight-bold">{{ item.testId }}</span>
+                                    </td>
+                                    <td>
+                                       
                                         <div class="TextOverflow" style="max-width: 190px;">
                                             {{ item.testName }}
                                         </div>
@@ -174,9 +177,10 @@
                                     <td>
                                         <span class="badge" [ngClass]="{
                                             'badge-warning-light': item.statusId === 1,
-                                            'badge-info': item.statusId === 3
+                                            'badge-info': item.statusId === 3,
+                                            'badge-success': item.statusId === 4
                                           }">
-                                            {{ item.status }}
+                                            {{ item.status }} 
                                         </span>
                                     </td>
                                     <td>
@@ -203,13 +207,14 @@
                                             <button class="btn btn-light btn-sm mr-1" (click)="openInvoiceModal(item.invoiceno)">
                                                 <i class="icon icon-printer"></i> Print Invoice
                                             </button>
+                                            
+                                            <button *ngIf="item.statusId==4" (click)="openReportModal(item.testId)" class="btn btn-light btn-sm mr-1">
+                                                <i class="icon icon-printer"></i> Generate Report
+                                            </button>
                                             <button *ngIf="item.statusId==3" class="btn btn-danger btn-sm"
                                                     type="button"
                                                     (click)="onOpenEnterResultFromCase(item)">
                                                 Enter Results
-                                            </button>
-                                            <button *ngIf="item.statusId==4" (click)="openReportModal(item.testId)" class="btn btn-light btn-sm mr-1">
-                                                <i class="icon icon-printer"></i> Generate Report
                                             </button>
                                             <button *ngIf="item.statusId==1" class="btn btn-danger btn-sm"
                                                     type="button"
@@ -533,14 +538,16 @@
                             <h5 class="mb-1">Patient Information</h5>
                             <p class="text-muted mb-2">Create a new test order for a patient. Fill in patient details and select tests.</p>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-5 mb-3">
                             <label class="font-weight-500">Patient <span class="text-danger">*</span></label>
-                            <input type="text" id="PatientSearch" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="PatientTestmodel.PatientName" (click)="LoadPatient()" placeholder="Search by mobile no" autocomplete="off">
+                        <div class="d-flex">
+                             <input type="text" id="PatientSearch" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="PatientTestmodel.PatientName" (click)="LoadPatient()" placeholder="Search by mobile no" autocomplete="off">
                             <div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient()">
                                 <span class="svgIcon">
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
                                 </span>
                             </div>
+                        </div>
                             <small class="text-danger" *ngIf="patientTestForm.controls.PatientId.hasError('required') && submitted">
                                 This value is required.
                             </small>
@@ -579,7 +586,7 @@
                             <h5 class="mb-1">Select Tests <span class="text-danger">*</span></h5>
                         </div>
                         <div class="col-12 mb-3">
-                            <div class="input-group input-group-sm">
+                            <div class="input-group input-group-md">
 
                                 <input type="text"
                                        class="form-control"
@@ -1036,7 +1043,7 @@
     <!-- report Modal -->
     <ng-template #ReportModal let-modal>
         <div class="modal-header">
-            <h4>Clinical Chemistry Report</h4>
+            <h4>Clinical Report</h4>
 
             <button type="button"
                     class="close"
@@ -1062,8 +1069,8 @@
             <table style="width:100%;border-collapse:collapse;margin-bottom:4px">
                 <tr>
                     <td style="width:60px;vertical-align:top">
-                        <div *ngIf="ReportModel.CompanyLogo != '' && ReportModel.CompanyLogo != null" style="width:50px;height:50px;border:2px solid #c00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#c00;font-weight:bold"><img [src]="ReportModel.CompanyLogo" class="img-fluid radius" /></div>
-                        <div *ngIf="ReportModel.CompanyLogo =='' || ReportModel.CompanyLogo == null" style="width:50px;height:50px;border:2px solid #c00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#c00;font-weight:bold"><img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius"/></div>
+                        <div *ngIf="ReportModel.CompanyLogo != '' && ReportModel.CompanyLogo != null" style="width:50px;height:50px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#c00;font-weight:bold"><img [src]="ReportModel.CompanyLogo" style="max-width:50px;max-height:50px;" class="img-fluid radius" /></div>
+                        <div *ngIf="ReportModel.CompanyLogo =='' || ReportModel.CompanyLogo == null" style="width:50px;height:50px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#c00;font-weight:bold"><img src="../assets/app/media/img/icons/doctor-logo.png"   style="max-width:50px;max-height:50px;" class="img-fluid radius"/></div>
                     </td>
                     <td style="vertical-align:top;text-align:center">
                         <div style="font-size:14px;font-weight:bold">{{ReportModel?.CollectionCenter}} &amp; Research Centre</div>
@@ -1089,7 +1096,7 @@
             <table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:10px">
                 <tr>
                     <td style="width:50%;vertical-align:top;padding-right:10px">
-                        <table style="width:100%;border-collapse:collapse">
+                        <table style="font-family:Arial,Helvetica,sans-serif;width:100%;border-collapse:collapse;font-size:12px;">
                             <tr><td style="width:100px">MRNO:</td><td style="font-weight:bold">{{ ReportModel?.MRNO }}</td></tr>
                             <tr><td>Name:</td><td style="font-weight:bold">{{ ReportModel?.PatientName }}</td></tr>
                             <tr><td>Date of Birth:</td><td>{{ ReportModel?.DOB }}</td></tr>
@@ -1099,7 +1106,7 @@
                         </table>
                     </td>
                     <td style="width:50%;vertical-align:top">
-                        <table style="width:100%;border-collapse:collapse">
+                        <table style="font-family:Arial,Helvetica,sans-serif;width:100%;border-collapse:collapse;font-size:12px;">
                             <tr><td style="width:130px">Ordered By:</td><td>{{ ReportModel?.OrderedBy }}</td></tr>
                             <tr><td>Referring Physician:</td><td>{{ ReportModel?.ReferringPhysician }}</td></tr>
                             <tr><td>In-house Consultant:</td><td></td></tr>
@@ -1114,7 +1121,7 @@
 
             <!-- Results -->
             <div style="font-weight:bold;font-size:10px;margin-bottom:4px">Chemistry - {{ReportModel?.SampleName}}</div>
-            <table style="width:100%;border-collapse:collapse;font-size:9px;border:1px solid #000">
+            <table style="font-family:Arial,Helvetica,sans-serif;width:100%;border-collapse:collapse;font-size:9px;border:1px solid #000;font-size:12px;">
                 <tr style="background:#e8e8e8;font-weight:bold">
                     <td style="border:1px solid #000;padding:3px 5px;width:22%">TEST(s)</td>
                     <td style="border:1px solid #000;padding:3px 5px;width:14%">NORMAL</td>
@@ -1143,7 +1150,8 @@
                 <div>* American Diabetes Association has defined fasting glucose values of 100 to 125 mg/dl as 'Impaired Fasting Glucose'. Normal fasting glucose values are below 100 mg/dl.</div>
                 <div>A repeat fasting glucose, with a minimum of 8 hours of fasting, as well as a haemoglobin A1C test, are recommended by the American Diabetes Association (Standards of Medical Care in Diabetes, 2026).</div>
             </div>
-        </div>        <div class="modal-footer">
+        </div>
+        <div class="modal-footer">
             <button class="btn btn-primary"
                     ngxPrint
                     printSectionId="printReport"

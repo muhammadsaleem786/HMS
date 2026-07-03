@@ -112,9 +112,9 @@ export class LabDashboardComponent implements OnInit {
         , private modalService: NgbModal) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
-        this.TestControlRights = this.commonservice.ScreenRights("114");
-        this.EnterResultControlRights = this.commonservice.ScreenRights("115");
-        this.ReportControlRights = this.commonservice.ScreenRights("116");
+        this.TestControlRights = this.commonservice.ScreenRights("115");
+        this.EnterResultControlRights = this.commonservice.ScreenRights("116");
+        this.ReportControlRights = this.commonservice.ScreenRights("117");
         this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }

@@ -571,7 +571,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                          comment = x.Comment,
                          Parameter = x.lab_result_dt.Select(z => new
                          {
-                             parmId = z.ID,
+                             parmId = z.ParameterId,
                              name = z.lab_parameter.ParameterName,
                              unit = z.lab_parameter.sys_drop_down_value.Value,
                              refernce = z.lab_parameter.ReferenceRange,

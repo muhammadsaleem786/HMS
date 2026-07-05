@@ -21,6 +21,7 @@ namespace HMS.Entities.Models
             this.emr_service_item = new List<emr_service_item>();
             this.ipd_procedure_charged = new List<ipd_procedure_charged>();
             this.ipd_admission_medication = new List<ipd_admission_medication>();
+            this.emr_investigation_Item = new List<emr_investigation_Item>();
         }
         public decimal ID { get; set; }
         public decimal CompanyId { get; set; }
@@ -72,5 +73,6 @@ namespace HMS.Entities.Models
         public virtual ICollection<ipd_procedure_charged> ipd_procedure_charged { get; set; }
         public virtual ICollection<ipd_admission_medication> ipd_admission_medication { get; set; }
         public virtual emr_instruction emr_instruction { get; set; }
+        public virtual ICollection<emr_investigation_Item> emr_investigation_Item { get; set; } 
     }
 }

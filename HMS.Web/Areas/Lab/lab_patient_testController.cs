@@ -4,6 +4,7 @@ using HMS.Entities.Models;
 using HMS.Service;
 using HMS.Service.Services.Admin;
 using HMS.Service.Services.Appointment;
+using HMS.Service.Services.Items;
 using HMS.Service.Services.Lab;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
@@ -27,6 +28,7 @@ using System.Web.Configuration;
 using System.Web.Http;
 using System.Web.Http.Results;
 using System.Web.UI.WebControls;
+using static iTextSharp.text.pdf.AcroFields;
 using static NPOI.HSSF.Util.HSSFColor;
 
 namespace HMS.Web.API.Areas.Lab.Controllers
@@ -35,8 +37,10 @@ namespace HMS.Web.API.Areas.Lab.Controllers
     public class lab_patient_testController : ApiController, IERPAPIInterface<lab_patient_test>, IDisposable
     {
         private readonly Ilab_patient_testService _service;
+        private readonly Iinv_stockService _inv_stockService;
         private readonly Ilab_result_mfService _lab_result_mfService;
         private readonly Ilab_result_dtService _lab_result_dtService;
+        private readonly Iemr_investigation_ItemService _emr_investigation_ItemService;
         private readonly Iemr_patientService _emr_patientService;
         private readonly Iemr_prescription_investigationService _emr_prescription_investigationService;
         private readonly Iemr_investigationService _emr_investigationService;
@@ -46,11 +50,13 @@ namespace HMS.Web.API.Areas.Lab.Controllers
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iadm_user_companyService _adm_user_companyService;
         private readonly ISmsService _smsService;
+        private readonly Iadm_itemService _adm_itemService;
+        private readonly Iadm_item_logService _adm_item_logService;
         private readonly Iadm_integrationService _adm_integrationService;
         private readonly Random _random = new Random();
         public lab_patient_testController(IUnitOfWorkAsync unitOfWorkAsync, Ilab_patient_testService Service,
             Isys_drop_down_valueService sys_drop_down_valueService, Iadm_user_companyService adm_user_companyService,
-            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_patientService emr_patientService, Iemr_investigationService emr_investigationService, Ilab_result_mfService lab_result_mfService, Ilab_result_dtService lab_result_dtService, ISmsService smsService, Iemr_prescription_investigationService emr_prescription_investigationService, Iadm_integrationService adm_integrationService)
+            IStoredProcedureService ProcedureService, Iadm_role_dtService adm_role_dtService, Iemr_patientService emr_patientService, Iemr_investigationService emr_investigationService, Ilab_result_mfService lab_result_mfService, Ilab_result_dtService lab_result_dtService, ISmsService smsService, Iemr_prescription_investigationService emr_prescription_investigationService, Iadm_integrationService adm_integrationService, Iemr_investigation_ItemService emr_investigation_ItemService, Iinv_stockService inv_stockService, Iadm_item_logService adm_item_logService, Iadm_itemService adm_itemService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -65,6 +71,10 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             _smsService = smsService;
             _emr_prescription_investigationService = emr_prescription_investigationService;
             _adm_integrationService = adm_integrationService;
+            _emr_investigation_ItemService = emr_investigation_ItemService;
+            _inv_stockService = inv_stockService;
+            _adm_item_logService = adm_item_logService;
+            _adm_itemService = adm_itemService;
         }
         public async Task<ResponseInfo> Save(lab_patient_test Model)
         {
@@ -92,7 +102,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                       .Where(x => catalogIds.Contains(x.ID) && x.CompanyID == CompanyID)
                       .ToList();
 
-                var (serialNo, invoiceNo) = await GenerateNumbersAsync(CompanyID);
+                var invoiceNo = await GenerateNumbersAsync(CompanyID);
 
                 string prefix = $"SMP-{DateTime.Now:yy}-";
                 var existingSerials = _service.Queryable()
@@ -118,6 +128,49 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 var accesscode = GenerateUniqueAccessCode(CompanyID);
                 var entities = new List<lab_patient_test>();
 
+                var invItemlist = _emr_investigation_ItemService.Queryable()
+                   .Where(x => catalogIds.Contains(x.InvestigationId) && x.CompanyId == CompanyID)
+                   .ToList();
+                var itemIds = invItemlist
+    .Select(i => i.ItemId)
+    .ToList();
+
+                var itemlist = _adm_itemService.Queryable()
+      .Where(x => itemIds.Contains(x.ID)
+               && x.CompanyId == CompanyID)
+      .ToList();
+                adm_item_log adm_item_log_obj = new adm_item_log();
+                decimal LogID = 1;
+                if (_adm_item_logService.Queryable().Count() > 0)
+                    LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+
+                foreach (var item in invItemlist)
+                {
+                    var itemObj = itemlist.Where(a => a.CompanyId == CompanyID && a.ID == item.ItemId).FirstOrDefault();
+                    if (itemObj != null)
+                    {
+                        inv_stock inv_stockModel = _inv_stockService.Queryable().
+                        Where(e => e.ItemID == item.ItemId && e.CompanyId == CompanyID).FirstOrDefault();
+                        if (inv_stockModel != null)
+                        {
+                            inv_stockModel.Quantity -= Convert.ToDecimal(item.Quantity);
+                            _inv_stockService.Update(inv_stockModel);
+                            //log maintain                               
+                            adm_item_log_obj.ID = LogID;
+                            adm_item_log_obj.CompanyId = CompanyID;
+                            adm_item_log_obj.ItemId = item.ItemId;
+                            adm_item_log_obj.Quantity = "-" + item.Quantity;
+                            adm_item_log_obj.Type = "Lab Quantity";
+                            adm_item_log_obj.CreatedBy = Request.LoginID();
+                            adm_item_log_obj.CreatedDate = Request.DateTimes();
+                            adm_item_log_obj.ModifiedBy = Request.LoginID();
+                            adm_item_log_obj.ModifiedDate = Request.DateTimes();
+                            adm_item_log_obj.ObjectState = ObjectState.Added;
+                            _adm_item_logService.Insert(adm_item_log_obj);
+                            LogID++;
+                        }
+                    }
+                }
                 foreach (var catalog in catalogs)
                 {
                     entities.Add(new lab_patient_test
@@ -152,6 +205,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                     });
                 }
                 _service.InsertRange(entities);
+
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
@@ -195,28 +249,9 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             } while (_service.Queryable().Any(x => x.AccessCode == accessCode && x.CompanyId == CompanyID));
             return accessCode;
         }
-        public async Task<(string SerialNo, string InvoiceNo)> GenerateNumbersAsync(decimal companyId)
+        public async Task<string> GenerateNumbersAsync(decimal companyId)
         {
             string year = DateTime.Now.ToString("yy");
-
-            // Serial No (SMP-26-001)
-            string serialPrefix = $"SMP-{year}-";
-
-            var lastSerialNumber = _service.Queryable()
-                .Where(x => x.CompanyId == companyId &&
-                            x.SerialNo.StartsWith(serialPrefix))
-                .AsEnumerable()
-                .Select(x =>
-                {
-                    var parts = x.SerialNo.Split('-');
-                    return int.TryParse(parts.Last(), out var n) ? n : 0;
-                })
-                .DefaultIfEmpty(0)
-                .Max();
-
-            string serialNo = $"{serialPrefix}{(lastSerialNumber + 1):D3}";
-
-
             // Invoice No (260000000001)
             string invoicePrefix = year;
 
@@ -234,10 +269,8 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 })
                 .DefaultIfEmpty(0)
                 .Max();
-
             string invoiceNo = $"{invoicePrefix}{(lastInvoiceNumber + 1):D8}";
-
-            return (serialNo, invoiceNo);
+            return invoiceNo;
         }
         public ResponseInfo GetList()
         {
@@ -943,14 +976,17 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             Invoice #: {testModel.InvoiceNo}
             Access Code: {testModel.AccessCode}
             Thank you for choosing {company.CompanyName}.".Trim();
-            await _smsService.AuthenticateAsync(
-                 smsRow["UserName"].ToString(),
-                 smsRow["Password"].ToString(),
-                 model.Mobile,
-                 messageBody,
-                 smsRow["Masking"].ToString(),
-                 isUnicode
-             );
+            if (smsRow != null)
+            {
+                await _smsService.AuthenticateAsync(
+                                smsRow["UserName"].ToString(),
+                                smsRow["Password"].ToString(),
+                                model.Mobile,
+                                messageBody,
+                                smsRow["Masking"].ToString(),
+                                isUnicode
+                            );
+            }
         }
 
         [HttpGet]

@@ -1,8 +1,10 @@
 ﻿using HMS.Entities.CustomModel;
 using HMS.Entities.Enum;
 using HMS.Entities.Models;
+using HMS.Entities.Models.Mapping;
 using HMS.Service.Services.Admin;
 using HMS.Service.Services.Appointment;
+using HMS.Service.Services.Items;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
@@ -26,6 +28,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
     public class emr_investigationController : ApiController, IERPAPIInterface<emr_investigation>, IDisposable
     {
         private readonly Iemr_investigationService _service;
+        private readonly Iemr_investigation_ItemService _emr_investigation_ItemService;
         private readonly Iemr_appointment_mfService _emr_appointment_mfService;
         private readonly Iadm_user_companyService _adm_user_companyService;
         private readonly Iadm_role_mfService _adm_role_mfService;
@@ -34,10 +37,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly Iadm_userService _adm_userService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
+        private readonly Iadm_itemService _adm_itemService;
 
         public emr_investigationController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_investigationService service, Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
-            Isys_notification_alertService sys_notification_alertService)
+            Isys_notification_alertService sys_notification_alertService, Iemr_investigation_ItemService emr_investigation_ItemService, Iadm_itemService adm_itemService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service; _sys_drop_down_valueService = sys_drop_down_valueService;
@@ -47,6 +51,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _adm_role_mfService = adm_role_mfService;
             _adm_user_tokenService = adm_user_tokenService;
             _sys_notification_alertService = sys_notification_alertService;
+            _emr_investigation_ItemService = emr_investigation_ItemService;
+            _adm_itemService = adm_itemService;
         }
         [HttpPost]
         [HttpGet]
@@ -64,7 +70,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-
+                List<emr_investigation_Item> Objemr_investigation_item = new List<emr_investigation_Item>();
+                if (Model.emr_investigation_Item.Count() > 0)
+                {
+                    Objemr_investigation_item.AddRange(Model.emr_investigation_Item);
+                }
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
                     ID = _service.Queryable().Max(e => e.ID) + 1;
@@ -82,8 +92,36 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.CreatedDate = Request.DateTimes();
                 Model.ModifiedBy = Request.LoginID();
                 Model.ModifiedDate = Request.DateTimes();
+                Model.emr_investigation_Item = null;
+                Model.lab_parameter = null;
+                Model.lab_patient_test = null;
+                Model.lab_result_mf = null;
                 Model.ObjectState = ObjectState.Added;
                 _service.Insert(Model);
+                //insert item
+                decimal dtID = 1;
+                if (_emr_investigation_ItemService.Queryable().Count() > 0)
+                    dtID = _emr_investigation_ItemService.Queryable().Max(e => e.ID) + 1;
+
+                foreach (emr_investigation_Item item in Objemr_investigation_item)
+                {
+                    item.ID = dtID;
+                    item.InvestigationId = Model.ID;
+                    item.CompanyId = CompanyID;
+                    item.ItemId = item.ItemId;
+                    item.Quantity = item.Quantity;
+                    item.CreatedBy = Request.LoginID();
+                    item.CreatedDate = Request.DateTimes();
+                    item.ModifiedBy = Request.LoginID();
+                    item.ModifiedDate = Request.DateTimes();
+                    item.ObjectState = ObjectState.Added;
+                    item.emr_investigation = null;
+                    item.adm_user_mf = null;
+                    item.adm_user_mf1 = null;
+                    _emr_investigation_ItemService.Insert(item);
+                    dtID++;
+                }
+
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
@@ -187,6 +225,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
+                List<emr_investigation_Item> Objemr_investigation_Item = new List<emr_investigation_Item>();
+                Objemr_investigation_Item.AddRange(Model.emr_investigation_Item);
+
+
                 if (Model.CategoryId != 0)
                 {
                     Model.CategoryDropdownId = (int)sys_dropdown_mfEnum.LabCategoryDropdownId;
@@ -200,7 +242,41 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.ObjectState = ObjectState.Modified;
                 Model.sys_drop_down_value = null;
                 Model.sys_drop_down_value1 = null;
+                Model.emr_investigation_Item = null;
+                Model.lab_parameter = null;
+                Model.lab_patient_test = null;
+                Model.lab_result_mf = null;
                 _service.Update(Model);
+                //delete charged
+                var DelAlLItem = _emr_investigation_ItemService.Queryable().Where(e => e.InvestigationId == Model.ID && e.CompanyId == CompanyID).ToList();
+                foreach (var obj in DelAlLItem)
+                {
+                    obj.ObjectState = ObjectState.Deleted;
+                    _emr_investigation_ItemService.Delete(obj);
+                }
+                decimal seviceID = 1;
+                if (_emr_investigation_ItemService.Queryable().Count() > 0)
+                    seviceID = _emr_investigation_ItemService.Queryable().Max(e => e.ID) + 1;
+
+                foreach (emr_investigation_Item item in Objemr_investigation_Item)
+                {
+                    item.ID = seviceID;
+                    item.InvestigationId = Model.ID;
+                    item.CompanyId = CompanyID;
+                    item.ItemId = item.ItemId;
+                    item.Quantity = item.Quantity;
+                    item.CreatedBy = Request.LoginID();
+                    item.CreatedDate = Request.DateTimes();
+                    item.ModifiedBy = Request.LoginID();
+                    item.ModifiedDate = Request.DateTimes();
+                    item.ObjectState = ObjectState.Added;
+                    item.emr_investigation = null;
+                    item.adm_user_mf = null;
+                    item.adm_user_mf1 = null;
+                    item.adm_company= null;
+                    _emr_investigation_ItemService.Insert(item);
+                    seviceID++;
+                }
 
                 try
                 {
@@ -285,10 +361,19 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                var Result = _service.Queryable().Include(a=>a.sys_drop_down_value).Include(a=>a.sys_drop_down_value1).Where(e => e.ID.ToString() == Id && e.CompanyID== CompanyID).FirstOrDefault();
+                var Result = _service.Queryable().Include(a=>a.emr_investigation_Item).Include(a=>a.sys_drop_down_value).Include(a=>a.sys_drop_down_value1).Where(e => e.ID.ToString() == Id && e.CompanyID== CompanyID).FirstOrDefault();
+                var itemids = Result.emr_investigation_Item.Select(a => a.ItemId).ToList();
+                var itemList = _adm_itemService.Queryable().Where(a => itemids.Contains(a.ID) && a.CompanyId == CompanyID)
+                                 .Select(z => new
+                                 {
+                                     z.ID,
+                                     z.Name,
+                                     z.ItemTypeId
+                                 }).ToList();
                 objResponse.ResultSet = new
                 {
                     Result = Result,
+                    itemList = itemList
                 };
             }
             catch (Exception ex)
@@ -368,7 +453,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     objResponse.ErrorMessage = MessageStatement.NotFound;
                     return objResponse;
                 }
+                var DelAlLitem = _emr_investigation_ItemService.Queryable().Where(e => e.InvestigationId == model.ID && e.CompanyId == CompanyID).ToList();
 
+                foreach (var obj in DelAlLitem)
+                {
+                    obj.ObjectState = ObjectState.Deleted;
+                    _emr_investigation_ItemService.Delete(obj);
+                }
 
                 model.ObjectState = ObjectState.Deleted;
                 _service.Delete(model);

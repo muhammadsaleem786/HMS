@@ -3,17 +3,18 @@ import { FormGroup, FormControl, FormBuilder, Validators, FormsModule } from '@a
 import { Router } from '@angular/router';
 import { InvestigationService } from '../Investigation/InvestigationService';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { emr_investigation, lab_parameter } from '../Investigation/InvestigationModel';
+import { emr_investigation, lab_parameter, emr_investigation_Item } from '../Investigation/InvestigationModel';
 import { PaginationModel, PaginationConfig } from '../../../../../CommonComponent/PaginationComponentConfig';
 import { CommonService } from '../../../../../CommonService/CommonService';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';
 import { CommonToastrService } from '../../../../../CommonService/CommonToastrService';
+import { SaleService } from './../../Items/Sale/SaleService';
 declare var $: any;
 @Component({
     moduleId: module.id,
     templateUrl: 'CatalogComponentList.html',
-    providers: [InvestigationService],
+    providers: [InvestigationService, SaleService],
 })
 export class CatalogComponentList {
     public ActiveToggle: boolean = false;
@@ -27,7 +28,7 @@ export class CatalogComponentList {
     public Rights: any;
     public Keywords: any[] = [];
     public ControlRights: any;
-
+    public isChecked: boolean = false;
     public submitted: boolean;
     public Catalogmodel = new emr_investigation();
     public Parametermodel = new lab_parameter();
@@ -41,13 +42,14 @@ export class CatalogComponentList {
     public testCatalogSearch: string = '';
     public expandedCatalogCode: string | null = null;
     public selectedTestForParameter: any;
+    public itemdynamicArray = [];
     @ViewChild('TestCatalogModal') TestCatalogModal: TemplateRef<any>;
     @ViewChild('TestParameterModal') TestParameterModal: TemplateRef<any>;
     private _testCatalogRef: NgbModalRef;
     private _testParameterRef: NgbModalRef;
 
     constructor(public _fb: FormBuilder, public _CommonService: CommonService, private encrypt: EncryptionService, public loader: LoaderService, public _InvestigationService: InvestigationService
-        , public _router: Router, private modalService: NgbModal, public toastr: CommonToastrService,) {
+        ,public _SaleService: SaleService, public _router: Router, private modalService: NgbModal, public toastr: CommonToastrService,) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.ControlRights = this._CommonService.ScreenRights("114");
@@ -61,7 +63,8 @@ export class CatalogComponentList {
             SampleId: [''],
             SampleName: [''],
             TAT: [''],
-            Price: ['']
+            Price: [''],
+            IsItem: ['']
         });
         this.parameterForm = this._fb.group({
             ParameterName: [''],
@@ -103,6 +106,12 @@ export class CatalogComponentList {
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();
+            if (this.Catalogmodel.IsItem) {
+                if (this.itemdynamicArray[0].ItemId != 0) {
+                    this.Catalogmodel.emr_investigation_Item = this.itemdynamicArray;
+                }
+            } else
+                this.Catalogmodel.emr_investigation_Item = [];
             this._InvestigationService.SaveOrUpdate(this.Catalogmodel).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
@@ -129,6 +138,17 @@ export class CatalogComponentList {
         this._InvestigationService.GetById(test.ID).then(m => {
             if (m.IsSuccess) {
                 this.Catalogmodel = m.ResultSet.Result;
+                const itemList = m.ResultSet.itemList;
+                this.itemdynamicArray = [];
+                this.Catalogmodel.emr_investigation_Item.forEach((item, index) => {
+                    let itemObj = itemList.filter(x => x.ID == item.ItemId);
+                    item.ItemName = itemObj[0].Name;
+                    this.itemdynamicArray.push(item);
+                });
+                if (this.itemdynamicArray.length > 0)
+                    this.isChecked = true;
+                else
+                    this.isChecked = false;
                 this.Catalogmodel.CategoryName = m.ResultSet.Result.sys_drop_down_value.Value;
                 this.Catalogmodel.SampleName = m.ResultSet.Result.sys_drop_down_value1.Value;
                 this._testCatalogRef = this.modalService.open(this.TestCatalogModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
@@ -347,6 +367,61 @@ export class CatalogComponentList {
         this.loader.ShowLoader();
         this._InvestigationService.ExportData(ExportType, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
             this.loader.HideLoader();
+        });
+    }
+    Add() {
+        var obj = new emr_investigation_Item();
+        this.itemdynamicArray.push(obj);
+    }
+    toggleDiv(event: any) {
+        this.isChecked = event.target.checked;
+        if (this.itemdynamicArray.length == 0)
+            this.Add();
+    }
+    RemoveRow(rowno: any) {
+        if (this.itemdynamicArray.length > 1) {
+            this.itemdynamicArray.splice(rowno, 1);
+        }
+    }
+    LoadItem(val: any) {
+        //Search By Name
+        $('#txtDrug_' + val).autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._SaleService.ServiceItemByName(request.term).then(m => {
+                    const items = m.ResultSet.ItemInfo.map(item => ({
+                        label: item.label + " (qty:" + item.stock + ")",
+                        value: item.value,
+                        CostPrice: item.CostPrice,
+                        ItemTypeId: item.Type,
+                        stock: item.stock,
+                        CategoryId: item.CategoryId,
+                        TypeValue: item.TypeValue,
+                        IsAllowNegativeStock: item.IsAllowNegativeStock,
+                    }));
+                    response(items);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+
+                if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
+                    this.toastr.Error("Error", "The item is out of stock.");
+                    ui.item.value = "";
+                    ui.item.label = "";
+                    return;
+                }
+                if (ui.item.stock == 0) {
+                    this.toastr.Error("Error", "Stock must be greater than zero");
+                    ui.item.value = "";
+                    ui.item.label = "";
+                    return;
+                }
+                this.itemdynamicArray[val].ItemName = ui.item.label;
+                this.itemdynamicArray[val].ItemId = ui.item.value;
+                this.itemdynamicArray[val].Quantity = 1;
+            }
         });
     }
 }

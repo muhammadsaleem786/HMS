@@ -113,6 +113,7 @@
     <Compile Include="Services\Admission\ipd_paymentService.cs" />
     <Compile Include="Services\Appointment\emr_notes_favoriteService.cs" />
     <Compile Include="Services\Appointment\emr_patient_bill_paymentService.cs" />
+    <Compile Include="Services\Appointment\emr_investigation_ItemService.cs" />
     <Compile Include="Services\Appointment\emr_service_itemService.cs" />
     <Compile Include="Services\Appointment\emr_vitalService.cs" />
     <Compile Include="Services\Appointment\emr_service_mfService.cs" />

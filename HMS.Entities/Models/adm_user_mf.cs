@@ -162,6 +162,9 @@ namespace HMS.Entities.Models
 
             this.lab_result_dt = new List<lab_result_dt>();
             this.lab_result_dt1 = new List<lab_result_dt>();
+            this.emr_investigation_Item = new List<emr_investigation_Item>();
+            this.emr_investigation_Item1 = new List<emr_investigation_Item>();
+
 
         }
         public decimal ID { get; set; }
@@ -424,6 +427,8 @@ namespace HMS.Entities.Models
         public virtual ICollection<lab_result_mf> lab_result_mf1 { get; set; }
         public virtual ICollection<lab_result_dt> lab_result_dt { get; set; }
         public virtual ICollection<lab_result_dt> lab_result_dt1 { get; set; }
+        public virtual ICollection<emr_investigation_Item> emr_investigation_Item { get; set; }
+        public virtual ICollection<emr_investigation_Item> emr_investigation_Item1 { get; set; }
 
     }
 }

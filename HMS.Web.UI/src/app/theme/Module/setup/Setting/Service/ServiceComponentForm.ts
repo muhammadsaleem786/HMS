@@ -52,7 +52,8 @@ export class ServiceComponentForm implements OnInit {
             Price: [''],
             IsItem: [''],
             RefCode: [''],
-            SpecialityId: ['']
+            SpecialityId: [''],
+          
         });
         this.sub = this.route.queryParams
             .pipe(filter(params => params.id))
@@ -95,7 +96,7 @@ export class ServiceComponentForm implements OnInit {
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true;
         if (isValid) {
-            
+
             this.submitted = false;
             this.loader.ShowLoader();
             if (this.model.IsItem) {
@@ -153,7 +154,7 @@ export class ServiceComponentForm implements OnInit {
             },
             minLength: 3,
             select: (event, ui) => {
-                
+
                 if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
                     this.toastr.Error("Error", "The item is out of stock.");
                     ui.item.value = "";

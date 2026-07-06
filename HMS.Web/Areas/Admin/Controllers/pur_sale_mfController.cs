@@ -705,10 +705,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     var findItem = _adm_itemService.Queryable().Where(a => a.ID == item.ItemID).FirstOrDefault();
                     if (findItem.TrackInventory)
                     {
-                        inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID
-                    && (e.BatchSarialNumber == null && item.BatchSarialNumber == null
-                    || e.BatchSarialNumber.ToString() == item.BatchSarialNumber.ToString())
-                    && e.CompanyId == CompanyID).FirstOrDefault();
+                        var batchNo = (item.BatchSarialNumber ?? "0").ToString();
+                        inv_stock inv_stockModel = _inv_stockService.Queryable()
+                        .Where(e => e.ItemID == item.ItemID
+                            && e.CompanyId == CompanyID
+                            && (e.BatchSarialNumber ?? "0") == batchNo)
+                        .FirstOrDefault();
                         if (inv_stockModel != null)
                         {
                             inv_stockModel.Quantity -= Convert.ToDecimal(item.Quantity);

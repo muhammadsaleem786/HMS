@@ -499,7 +499,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         adm_item_log adm_item_log_obj = new adm_item_log();
                         if (findItem.TrackInventory)
                         {
-                            inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID && (e.BatchSarialNumber == null && item.BatchSarialNumber == null || e.BatchSarialNumber.ToString() == item.BatchSarialNumber.ToString()) && e.CompanyId == CompanyID).FirstOrDefault();
+                            var batchNo = (item.BatchSarialNumber ?? "0").ToString();
+                            inv_stock inv_stockModel = _inv_stockService.Queryable()
+                        .Where(e => e.ItemID == item.ItemID
+                            && e.CompanyId == CompanyID
+                            && (e.BatchSarialNumber ?? "0") == batchNo)
+                        .FirstOrDefault();
                             if (inv_stockModel != null)
                             {
                                 inv_stockModel.Quantity += Convert.ToDecimal(item.Quantity);

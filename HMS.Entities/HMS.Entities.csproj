@@ -111,6 +111,7 @@
     <Compile Include="Models\adm_company.cs" />
     <Compile Include="Models\adm_company_location.cs" />
     <Compile Include="Models\adm_generic.cs" />
+    <Compile Include="Models\emr_investigation_Item.cs" />
     <Compile Include="Models\lab_result_dt.cs" />
     <Compile Include="Models\lab_result_mf.cs" />
     <Compile Include="Models\lab_patient_test.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Models\ipd_sentinel_event_register.cs" />
     <Compile Include="Models\ipd_specialized_equipment_maintenance.cs" />
     <Compile Include="Models\adm_user_share.cs" />
+    <Compile Include="Models\Mapping\emr_investigation_ItemMap.cs" />
     <Compile Include="Models\Mapping\lab_result_mfMap.cs" />
     <Compile Include="Models\Mapping\lab_result_dtMap.cs" />
     <Compile Include="Models\Mapping\lab_patient_testMap.cs" />

@@ -75,6 +75,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iadm_integrationService _adm_integrationService;
         private readonly Iadm_itemService _adm_itemService;
         private readonly ISmsService _smsService;
+        private readonly IWhatsAppService _whatsAppService;
         private readonly Iemr_vitalService _emr_vitalService;
         private readonly Ipr_employee_mfService _pr_employee_mfService;
         private readonly Iadm_user_sessionService _adm_user_sessionService;
@@ -103,8 +104,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             Iemr_documentService emr_documentService,
             Iadm_itemService adm_itemService,
             Iemr_vitalService emr_vitalService,
-            Ipr_employee_mfService pr_employee_mfService, Iadm_user_sessionService adm_user_sessionService
-
+            Ipr_employee_mfService pr_employee_mfService, Iadm_user_sessionService adm_user_sessionService,
+            IWhatsAppService whatsAppService
             )
         {
             _ipd_diagnosisService = ipd_diagnosisService;
@@ -112,6 +113,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _emr_patient_billService = emr_patient_billService;
             _unitOfWorkAsync = unitOfWorkAsync;
             _smsService = smsService;
+            _whatsAppService = whatsAppService;
             _service = service;
             _adm_companyService = adm_companyService;
             _emr_notes_favoriteService = emr_notes_favoriteService;
@@ -184,7 +186,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = (_service.Queryable().Where(e=>e.CompanyId==CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyId = Request.CompanyID();
                 Model.CreatedBy = Request.LoginID();
@@ -197,7 +199,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 {
                     decimal diagnosisID = 1;
                     if (_ipd_diagnosisService.Queryable().Count() > 0)
-                        diagnosisID = (_ipd_diagnosisService.Queryable().Where(e=>e.CompanyID==CompanyID).Max(x => (decimal?)x.ID) ?? 0)  + 1;
+                        diagnosisID = (_ipd_diagnosisService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     if (Model.PrimaryDescription != null)
                     {
                         ipd_diagnosis obj = new ipd_diagnosis();
@@ -290,20 +292,20 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     if (Model.IsPrscription)
                     {
                         DateTime todayDate = DateTime.UtcNow;
-                         patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
-                                              .Select(z => new
-                                              {
-                                                  z.PatientName,
-                                                  z.Age,
-                                                  Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
-                                                  ClinicIogo = z.adm_company.CompanyLogo,
-                                                  z.Mobile,
-                                                  z.MRNO,
-                                                  z.Address,
-                                                  NoVisit = z.emr_appointment_mf
-                                .Where(a => a.CompanyId == z.CompanyId && DbFunctions.TruncateTime(a.AppointmentDate) <= DbFunctions.TruncateTime(todayDate))
-                                .Count()
-                                              }).FirstOrDefault();
+                        patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.PatientId)
+                                             .Select(z => new
+                                             {
+                                                 z.PatientName,
+                                                 z.Age,
+                                                 Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "Female" : "Other",
+                                                 ClinicIogo = z.adm_company.CompanyLogo,
+                                                 z.Mobile,
+                                                 z.MRNO,
+                                                 z.Address,
+                                                 NoVisit = z.emr_appointment_mf
+                               .Where(a => a.CompanyId == z.CompanyId && DbFunctions.TruncateTime(a.AppointmentDate) <= DbFunctions.TruncateTime(todayDate))
+                               .Count()
+                                             }).FirstOrDefault();
                         var role = _adm_user_companyService.Queryable()
                              .Where(u => u.UserID == UserID && u.CompanyID == CompanyID)
                              .Select(u => u.adm_role_mf.RoleName)
@@ -347,10 +349,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                                 HeaderDescription = mf.HeaderDescription,
                                 HeaderDescriptionUrdu = mf.HeaderDescriptionUrdu,
                                 IsOverLap = mf.IsOverLap,
-                                Instruction=mf.Instruction,
+                                Instruction = mf.Instruction,
                             };
                         }).ToList();
-                       
+
                         if (role == "Administrator")
                         {
                             doctorResult = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
@@ -419,10 +421,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             bool isUnicode = false;
             if (reminderTable.Rows.Count > 0)
             {
-                var smsRow = integrationTable.AsEnumerable()
-           .FirstOrDefault(r => r["Type"].ToString() == "T" && Convert.ToBoolean(r["IsActive"]));
-                var emailRow = integrationTable.AsEnumerable()
-                    .FirstOrDefault(r => r["Type"].ToString() == "E" && Convert.ToBoolean(r["IsActive"]));
+                var smsRow = integrationTable.AsEnumerable().FirstOrDefault(r => r["Type"].ToString() == "T" && Convert.ToBoolean(r["IsActive"]));
+                var emailRow = integrationTable.AsEnumerable().FirstOrDefault(r => r["Type"].ToString() == "E" && Convert.ToBoolean(r["IsActive"]));
+                var whatappRow = integrationTable.AsEnumerable().FirstOrDefault(r => r["Type"].ToString() == "W" && Convert.ToBoolean(r["IsActive"]));
+               
                 foreach (DataRow row in reminderTable.Rows)
                 {
                     int smsTypeId = Convert.ToInt32(row["SMSTypeId"]);
@@ -439,6 +441,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                              smsRow["Masking"].ToString(),
                              isUnicode
                          );
+                    }
+                    if (whatappRow != null)
+                    {
+                        string AccessToken = whatappRow["Password"].ToString();
+                        string PhoneNumberId = whatappRow["UserName"].ToString();
+                        string phoneNo = mobileno.StartsWith("0") ? "92" + mobileno.Substring(1) : mobileno;
+                        _ = _whatsAppService.SendAppointmentMessage(phoneNo, messageBody, PhoneNumberId, AccessToken);
                     }
                     if (emailRow != null && !string.IsNullOrEmpty(email))
                     {
@@ -898,7 +907,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var inventoryids = prescription?.emr_prescription_treatment.Where(a => a.IsInventory)?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
                 var medicineIds = prescription?.emr_prescription_treatment.Where(a => !a.IsInventory)?.Select(a => a.MedicineId).ToList() ?? new List<decimal?>();
                 var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine });
-                var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == companyId && inventoryids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.adm_generic != null? a.Name + " (" + a.adm_generic.GenericName + ")": a.Name});
+                var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == companyId && inventoryids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.adm_generic != null ? a.Name + " (" + a.adm_generic.GenericName + ")" : a.Name });
                 var MedicineList = medicineList.Union(itemList).ToList();
                 var userobj = _adm_userService.Queryable().Where(a => a.ID == doctorId).FirstOrDefault();
                 var vitalObj = new List<object>();
@@ -1007,8 +1016,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         OutAmount = z.emr_patient_mf.emr_patient_bill.Where(c => c.PatientId == z.emr_patient_mf.ID && (decimal?)c.DoctorId == (decimal?)z.DoctorId).Sum(c => (decimal?)c.OutstandingBalance),
                     }).OrderByDescending(a => a.AppointmentDate).ToList();
                 var ids = prescriptionresult.SelectMany(p => p.emr_prescription_treatment).Select(t => t.MedicineId).Distinct().ToList();
-                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName="", Type = a.sys_drop_down_value1.Value });
-                var itemList = _adm_itemService.Queryable().Include(a=>a.adm_generic).Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName=a.adm_generic.GenericName, Type = a.sys_drop_down_value1.Value });
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName = "", Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName = a.adm_generic.GenericName, Type = a.sys_drop_down_value1.Value });
                 var MedicineList = itemList.Union(medicineList).ToList();
                 var ipdAdmissions = _ipd_admissionService.Queryable()
                                  .Where(a => a.PatientId == patientid && a.CompanyId == companyId)

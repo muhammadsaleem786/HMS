@@ -28,7 +28,7 @@ namespace HMS.Entities.Models
         public virtual adm_company adm_company { get; set; }
         public virtual adm_item adm_item { get; set; }
         public virtual pur_sale_mf pur_sale_mf { get; set; }
-        public int? BatchSarialNumber {  get; set; }
+        public string BatchSarialNumber {  get; set; }
         public Nullable<System.DateTime> ExpiredWarrantyDate {  get; set; }
     }
 }

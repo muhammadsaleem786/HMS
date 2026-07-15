@@ -42,21 +42,22 @@ namespace HMS.Web.API.Areas.Employee
                 }
 
                 decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
                 pr_pay_schedule schedule = _service.Queryable().Where(x => x.CompanyID == CompanyID && x.ScheduleName.ToLower() == Model.ScheduleName.ToLower()).FirstOrDefault();
                 if (schedule == null)
                 {
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     Model.ID = ID;
-                    Model.CompanyID = Request.CompanyID();
+                    Model.CompanyID = CompanyID;
                     Model.FallInHolidayDropDownID = (int)sys_dropdown_mfEnum.PayDayFallOnHoliday;
                     Model.PayTypeDropDownID = (int)sys_dropdown_mfEnum.PayType;
                     Model.Active = Model.Active;
-                    Model.CreatedBy = Request.LoginID();
+                    Model.CreatedBy = UserID;
                     Model.CreatedDate = Request.DateTimes();
-                    Model.ModifiedBy = Request.LoginID();
+                    Model.ModifiedBy = UserID;
                     Model.ModifiedDate = Request.DateTimes();
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);
@@ -108,21 +109,22 @@ namespace HMS.Web.API.Areas.Employee
                 }
 
                 decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
                 pr_pay_schedule schedule = _service.Queryable().Where(x => x.CompanyID == CompanyID && x.ScheduleName.ToLower() == Model.ScheduleName.ToLower()).FirstOrDefault();
                 if (schedule == null)
                 {
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     Model.ID = ID;
-                    Model.CompanyID = Request.CompanyID();
+                    Model.CompanyID = CompanyID;
                     Model.FallInHolidayDropDownID = (int)sys_dropdown_mfEnum.PayDayFallOnHoliday;
                     Model.PayTypeDropDownID = (int)sys_dropdown_mfEnum.PayType;
                     Model.Active = Model.Active;
-                    Model.CreatedBy = Request.LoginID();
+                    Model.CreatedBy = UserID;
                     Model.CreatedDate = Request.DateTimes();
-                    Model.ModifiedBy = Request.LoginID();
+                    Model.ModifiedBy = UserID;
                     Model.ModifiedDate = Request.DateTimes();
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);

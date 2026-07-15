@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -36,7 +36,7 @@ import { EncryptionService } from '../../../../CommonService/encryption.service'
     templateUrl: 'AppointmentComponentList.html',
     providers: [AppointmentService, PrescriptionService, ApplicationUserService, BillingService, PatientService, SaleService],
 })
-export class AppointmentComponentList implements OnInit {
+export class AppointmentComponentList implements OnInit, OnDestroy {
     mySubscription: Subscription;
     hour: number;
     minute: number;
@@ -306,10 +306,14 @@ export class AppointmentComponentList implements OnInit {
         this.IsCNICMandatory = this.CompanyObj.IsCNICMandatory;
 
         this.GenderIds = this.UsersObj.IsGenderDropdown;
-        this.mySubscription = interval(60000).subscribe((x => {
-        }));
+
     }
     ngOnInit() {
+        this.mySubscription = interval(60000).subscribe((x => {
+            let date = this._CommonService.GetFormatDate(new Date());
+            let StatusID = this.AppointmentModel.StatusId;
+            this.GetPatientList(date, StatusID);
+        }));
         this.DurationList = [
             { "ID": 1, "Name": "Day (s)" },
             { "ID": 2, "Name": "Week (s)" },
@@ -507,6 +511,11 @@ export class AppointmentComponentList implements OnInit {
 
         });
     }
+    ngOnDestroy() {
+        if (this.mySubscription) {
+            this.mySubscription.unsubscribe();
+        }
+    }
     LoadEditor() {
         setTimeout(() => {
             const CKEDITOR = (window as any).CKEDITOR;
@@ -614,7 +623,6 @@ export class AppointmentComponentList implements OnInit {
                 this.BloodList = m.BloodList;
                 this.UnitList = m.UnitList;
                 this.MadicineTypeList = m.MadicineTypeList;
-                ;
                 this.ServiceList = m.ServiceType;
                 var ServiceObj = m.ServiceType.filter(z => z.ServiceName == "Consultation")[0];
                 this.ServiceType = ServiceObj;
@@ -630,64 +638,64 @@ export class AppointmentComponentList implements OnInit {
                 this.loader.HideLoader();
             });
     }
-    Reload() {
-        let date = this._CommonService.GetFormatDate(new Date());
-        let StatusID = '0';
-        this.GetLatestPatientList(date, StatusID);
-    }
-    GetLatestPatientList(date: any, StatusID: any) {
-        this.AppointmentDate = new Date(date);
-        this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
-        this._AppointmentService
-            .GetPatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-                this.PModel.TotalRecord = m.TotalRecord;
-                if (this.GenderIds != null) {
-                    this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
-                }
-                else
-                    this.GenderList = m.GenderList;
-                this.DoctorList = m.DoctorList;
-                this.DoctorClanderList = m.DoctorCalander;
-                this.AppointmentList = m.AppointmentList;
-                this.IsBackDatedAppointment = m.IsBackDatedAppointment;
-                if (this.AppointmentList != null) {
-                    this.AppointmentList.forEach(x => {
-                        if (x.Image != null && x.Image != undefined && x.Image != "") {
-                            x.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
-                        }
-                    });
-                }
-                let CurntDate = this._CommonService.GetFormatDate(new Date());
-                var appdate = this._CommonService.GetFormatDate(this.AppointmentDate);
-                if (appdate < CurntDate)
-                    this.IsPreviousApp = true;
-                else
-                    this.IsPreviousApp = false;
-                this.StatusList = m.AllStatusList.filter(a => a.ID != 1);
-                this.AllStatusList = m.AllStatusList;
-                this.ReminderList = m.Reminderlist;
-                this.Followuplist = m.Followuplist;
-                this.IsShowDoctorIds = m.IsShowDoctorIds;
-                this.ClinicList = m.ClinicList;
-                this.BloodList = m.BloodList;
-                this.UnitList = m.UnitList;
-                this.MadicineTypeList = m.MadicineTypeList;
+    // Reload() {
+    //     let date = this._CommonService.GetFormatDate(new Date());
+    //     let StatusID = '0';
+    //     this.GetLatestPatientList(date, StatusID);
+    // }
+    // GetLatestPatientList(date: any, StatusID: any) {
+    //     this.AppointmentDate = new Date(date);
+    //     this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
+    //     this._AppointmentService
+    //         .GetPatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+    //             this.PModel.TotalRecord = m.TotalRecord;
+    //             if (this.GenderIds != null) {
+    //                 this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
+    //             }
+    //             else
+    //                 this.GenderList = m.GenderList;
+    //             this.DoctorList = m.DoctorList;
+    //             this.DoctorClanderList = m.DoctorCalander;
+    //             this.AppointmentList = m.AppointmentList;
+    //             this.IsBackDatedAppointment = m.IsBackDatedAppointment;
+    //             if (this.AppointmentList != null) {
+    //                 this.AppointmentList.forEach(x => {
+    //                     if (x.Image != null && x.Image != undefined && x.Image != "") {
+    //                         x.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
+    //                     }
+    //                 });
+    //             }
+    //             let CurntDate = this._CommonService.GetFormatDate(new Date());
+    //             var appdate = this._CommonService.GetFormatDate(this.AppointmentDate);
+    //             if (appdate < CurntDate)
+    //                 this.IsPreviousApp = true;
+    //             else
+    //                 this.IsPreviousApp = false;
+    //             this.StatusList = m.AllStatusList.filter(a => a.ID != 1);
+    //             this.AllStatusList = m.AllStatusList;
+    //             this.ReminderList = m.Reminderlist;
+    //             this.Followuplist = m.Followuplist;
+    //             this.IsShowDoctorIds = m.IsShowDoctorIds;
+    //             this.ClinicList = m.ClinicList;
+    //             this.BloodList = m.BloodList;
+    //             this.UnitList = m.UnitList;
+    //             this.MadicineTypeList = m.MadicineTypeList;
 
-                this.ServiceList = m.ServiceType;
-                var ServiceObj = m.ServiceType.filter(z => z.ServiceName == "Consultation")[0];
-                this.ServiceType = ServiceObj;
-                this.TokenNo = m.TokenNo;
-                if (ServiceObj != null) {
-                    this.AppointmentModel.ServiceId = ServiceObj.ID;
-                    this.AppointmentModel.ServiceName = ServiceObj.ServiceName;
-                    this.AppointmentModel.Price = ServiceObj.Price;
-                }
-                this.BindEvent();
-                this.LoadCalendar(date);
-                this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
-                this.loader.HideLoader();
-            });
-    }
+    //             this.ServiceList = m.ServiceType;
+    //             var ServiceObj = m.ServiceType.filter(z => z.ServiceName == "Consultation")[0];
+    //             this.ServiceType = ServiceObj;
+    //             this.TokenNo = m.TokenNo;
+    //             if (ServiceObj != null) {
+    //                 this.AppointmentModel.ServiceId = ServiceObj.ID;
+    //                 this.AppointmentModel.ServiceName = ServiceObj.ServiceName;
+    //                 this.AppointmentModel.Price = ServiceObj.Price;
+    //             }
+    //             this.BindEvent();
+    //             this.LoadCalendar(date);
+    //             this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
+    //             this.loader.HideLoader();
+    //         });
+    // }
     onFocusOutEvent(event: any, Id: any) {
         if (event != null && event != undefined) {
             this.loader.ShowLoader();
@@ -1184,7 +1192,7 @@ export class AppointmentComponentList implements OnInit {
                 var time = dateTime.split('T');
                 let CalendarDate = time[0];
                 let CalendarTime = time[1];
-                
+
                 var Appobj = this.AppointmentList.filter(a => a.ID == parseInt(event.id));
                 var serviceType = this.ServiceList.filter(a => a.ID == Appobj[0].ServiceId);
                 this.AppointmentModel = new emr_Appointment();
@@ -1241,7 +1249,7 @@ export class AppointmentComponentList implements OnInit {
             },
         });
     }
-    CheckDayClik(date: any, time: any) {        
+    CheckDayClik(date: any, time: any) {
         let selectedDate = new Date(date);
         let currentDate = new Date();
         selectedDate.setHours(0, 0, 0, 0);
@@ -1264,7 +1272,7 @@ export class AppointmentComponentList implements OnInit {
         this.Form1.controls['CNIC'].setValue(input, { emitEvent: false });
     }
     OnClickAppointment(date: any, time: any, doctorId: any, appointmentId: any) {
-        
+
         var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));
         var Appobj = this.AppointmentList.filter(a => a.DoctorId == parseInt(doctorId) && a.StartDate.split("T")[1] == time && a.ID == appointmentId);
         var slotTime = new Date();
@@ -1922,17 +1930,17 @@ export class AppointmentComponentList implements OnInit {
                 if (m.IsSuccess) {
                     //this.AddUpdatePatient();
                     swal({
-                       title: "Are you sure?",
-                       text: "Are you sure want to add another patient against this " + this.model.Mobile + "",
-                       icon: "warning",
-                       buttons: ['Cancel', 'Yes'],
-                       dangerMode: true,
+                        title: "Are you sure?",
+                        text: "Are you sure want to add another patient against this " + this.model.Mobile + "",
+                        icon: "warning",
+                        buttons: ['Cancel', 'Yes'],
+                        dangerMode: true,
                     })
-                       .then((willDelete) => {
-                           if (willDelete) {
-                               this.AddUpdatePatient();
-                           }
-                       });
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                this.AddUpdatePatient();
+                            }
+                        });
 
                 } else {
                     this.AddUpdatePatient();
@@ -3505,7 +3513,7 @@ export class AppointmentComponentList implements OnInit {
                 if (this.DoctorInfo.HeaderDescriptionUrdu) {
                     this.DoctorInfo.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.DoctorInfo.HeaderDescriptionUrdu);
                 }
-                
+
                 if (this.DoctorInfo.Instruction) {
                     this.PatientRXmodel.Notes = this.DoctorInfo.Instruction;
                 }

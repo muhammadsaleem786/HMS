@@ -58,7 +58,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 {
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     List<adm_role_dt> roledtList = new List<adm_role_dt>();
                     roledtList.AddRange(Model.adm_role_dt);
 

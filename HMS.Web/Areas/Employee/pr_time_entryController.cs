@@ -51,6 +51,7 @@ namespace HMS.Web.API.Areas.Employee
                     return objResponse;
                 }
                 decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
                 //pr_time_entry dept = _service.Queryable()
                 //    .Where(x => x.CompanyID == CompanyID && x.EmployeeID == Model.EmployeeID && x.CreatedDate.Date == Model.CreatedDate.Date)
                 //    .FirstOrDefault();
@@ -76,13 +77,13 @@ namespace HMS.Web.API.Areas.Employee
                     Model.TimeOut = null;
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.AttendanceDate = Model.AttendanceDate;
-                Model.CompanyID = Request.CompanyID();
-                Model.CreatedBy = Request.LoginID();
+                Model.CompanyID = CompanyID;
+                Model.CreatedBy = UserID;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
                 Model.StatusDropDownID = (int)sys_dropdown_mfEnum.TimeStatus;
                 Model.ObjectState = ObjectState.Added;

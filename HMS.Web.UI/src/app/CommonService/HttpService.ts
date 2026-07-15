@@ -60,7 +60,7 @@ export class HttpService {
                     const user = JSON.parse(userStr);
                     if (user.ID) {
                         headers.append("UserID", user.ID.toString());
-                        headers.append("User", JSON.stringify(user)); // must be string
+                        //headers.append("User", JSON.stringify(user)); // must be string
                     }
                 }
             }

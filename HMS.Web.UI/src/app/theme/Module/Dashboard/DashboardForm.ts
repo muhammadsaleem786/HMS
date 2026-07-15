@@ -1,4 +1,4 @@
-﻿import { Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, TemplateRef } from '@angular/core';
+﻿import { Component, Input, Output, OnInit, OnDestroy, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, TemplateRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { interval, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -29,7 +29,8 @@ declare var $: any;
     moduleId: module.id,
     providers: [DashboardService, AppointmentService, DatePipe]
 })
-export class DashboardForm {
+export class DashboardForm implements OnInit, OnDestroy {
+    mySubscription: Subscription;
     public Id: string;
     public IsList: boolean = true;
     public ID: number = 10;
@@ -132,6 +133,14 @@ export class DashboardForm {
             Remarks: [''],
             OutstandingBalance: [''],
         });
+        this.mySubscription = interval(60000).subscribe((x => {
+            this.Refresh(this.model.ToDate, this.model.ToDate);
+        }));
+    }
+    ngOnDestroy() {
+        if (this.mySubscription) {
+            this.mySubscription.unsubscribe();
+        }
     }
     Refresh(fDate: any, ToDate: any) {
         this.loader.ShowLoader();

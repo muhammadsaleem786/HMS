@@ -64,12 +64,12 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 decimal UserID = Request.LoginID();
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
-                Model.CompanyId = Request.CompanyID();
-                Model.CreatedBy = Request.LoginID();
+                Model.CompanyId = CompanyID;
+                Model.CreatedBy = UserID;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
                 Model.RouteDropdownId = (int)sys_dropdown_mfEnum.RouteType;
                 Model.ObjectState = ObjectState.Added;
@@ -78,7 +78,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 adm_item_log adm_item_log_obj = new adm_item_log();
                 decimal LogID = 1;
                 if (_adm_item_logService.Queryable().Count() > 0)
-                    LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+                    LogID = (_adm_item_logService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) +1;
 
                 inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == Model.DrugId && e.CompanyId == CompanyID).FirstOrDefault();
                 if (inv_stockModel != null)

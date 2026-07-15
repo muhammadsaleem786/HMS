@@ -87,6 +87,7 @@ namespace HMS.Entities.Models
 
             this.lab_result_mf = new List<lab_result_mf>();
             this.lab_result_dt = new List<lab_result_dt>();
+            this.emr_investigation_Item = new List<emr_investigation_Item>();
 
 
         }
@@ -213,6 +214,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<lab_patient_test> lab_patient_test { get; set; }
         public virtual ICollection<lab_result_mf> lab_result_mf { get; set; }
         public virtual ICollection<lab_result_dt> lab_result_dt { get; set; }
+        public virtual ICollection<emr_investigation_Item> emr_investigation_Item { get; set; }
 
 
     }

@@ -51,8 +51,6 @@ export class PayrollComponentList {
     public UnSelectedContributionList: any[] = [];
     public UnSelectedDeductionList: any[] = [];
     public AllowanceCategoryTypes = [];
-    //public EmployeeAllowancesList = [];
-    //public EmployeeDedConList: any[] = [];
     public PrEmployeeList: any[] = [];
     public PrLocationList: any[] = [];
     public PrDesignationList: any[] = [];
@@ -107,7 +105,6 @@ export class PayrollComponentList {
     };
     public ColumnTexts: IMultiSelectTexts = {
         checkAll: 'Select all',
-        //uncheckAll: 'Uncheck all',
         checked: 'checked',
         checkedPlural: 'checked',
         searchPlaceholder: 'Search...',
@@ -160,7 +157,6 @@ export class PayrollComponentList {
         ];
 
         this.PDetConfig.Action.Add = false;
-        //this.PDetConfig.Action.AddText = "fa fa-filter";
         this.PDetConfig.Action.IsShowScreenName = false;
         this.PDetConfig.Fields = [
             { Name: "EmployeeName", Title: "Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "", IsShowCurrency: false },
@@ -248,24 +244,11 @@ export class PayrollComponentList {
 
     RefreshPayrollMasterList() {
         this.loader.ShowLoader();
-        //this.cdr.detectChanges();
-
-        //PanictUtil.getRequestObservable().subscribe(data => setTimeout(() => this.requesting = data, 0));
         this.Id = "0";
-
-
-        //this._PayrollService
-        //    .GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText)
-        //    .then(m => setTimeout(()=> {
-        //        this.PModel.TotalRecord = m.TotalRecord;
-        //        this.PayrollList = m.DataList;
-        //        this.loader.HideLoader();
-        //    },0));
-
         this._PayrollService
             .GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText)
             .then(m => {
-                
+
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.PayrollList = m.DataList;
                 this.loader.HideLoader();
@@ -276,7 +259,7 @@ export class PayrollComponentList {
         //this.Status = this.Status == '' ? 'Open' : this.Status;
         this._PayrollService
             .GetDetList(this.PayrollUniqueID, this.PDetModel.CurrentPage, this.PDetModel.RecordPerPage, this.PDetModel.VisibleColumnInfo, this.PDetModel.SortName, this.PDetModel.SortOrder, this.PDetModel.SearchText).then(m => {
-                
+
                 this.PDetModel.TotalRecord = m.TotalRecord;
                 this.PayrollDetList = m.DataList;
                 this.PayScheduleName = this.PayrollDetList.length > 0 ? this.PayrollDetList[0].ScheduleName : '';
@@ -531,7 +514,7 @@ export class PayrollComponentList {
         });
     }
     ShowListModal(ModalType) {
-        
+
         //this.IsShowListPopModal = true;
         this.IsShowPayStubModal = false;
         //this.IsShowAllowancesListModal = false;
@@ -558,7 +541,7 @@ export class PayrollComponentList {
                 document.getElementById('ClosePayStubModalId').click();
             }
         }
-        
+
     }
     ShowPayStubModal() {
         this.IsShowPayStubModal = true;

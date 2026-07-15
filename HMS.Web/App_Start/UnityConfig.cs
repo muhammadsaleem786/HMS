@@ -102,6 +102,7 @@ namespace HMS.Web.API
                   .RegisterType<IRepositoryAsync<adm_generic>, Repository<adm_generic>>()
                   .RegisterType<IRepositoryAsync<lab_parameter>, Repository<lab_parameter>>()
                   .RegisterType<IRepositoryAsync<lab_patient_test>, Repository<lab_patient_test>>()
+                  .RegisterType<IRepositoryAsync<emr_investigation_Item>, Repository<emr_investigation_Item>>()
 
                   .RegisterType<IRepositoryAsync<lab_result_mf>, Repository<lab_result_mf>>()
                   .RegisterType<IRepositoryAsync<lab_result_dt>, Repository<lab_result_dt>>()
@@ -244,6 +245,7 @@ namespace HMS.Web.API
                 .RegisterType<Iipd_input_outputService, ipd_input_outputService>()
                 .RegisterType<Iipd_medication_logService, ipd_medication_logService>()
                 .RegisterType<ISmsService, SmsService>()
+                .RegisterType<IWhatsAppService, WhatsAppService>()
                 .RegisterType<IDeepSeekService, DeepSeekService>()
                 .RegisterType<Iadm_integrationService, adm_integrationService>()
                 .RegisterType<Ipr_attendanceService, pr_attendanceService>()
@@ -260,6 +262,7 @@ namespace HMS.Web.API
                 .RegisterType<Ilab_patient_testService, lab_patient_testService>()
                 .RegisterType<Ilab_result_dtService, lab_result_dtService>()
                 .RegisterType<Ilab_result_mfService, lab_result_mfService>()
+                .RegisterType<Iemr_investigation_ItemService, emr_investigation_ItemService>()
                 .RegisterType<IStoredProcedureService, StoredProcedureService>();
         }
     }

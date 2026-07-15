@@ -200,23 +200,10 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
-                decimal CompanyID = Request.CompanyID();
-                //var alreadyPayment = _service.Queryable()
-                //    .Where(a => a.CompanyId == CompanyID)
-                //    .Select(z => (decimal?)z.Amount)
-                //    .Sum() ?? 0;
-                //alreadyPayment += Model.Amount;
-                //if (alreadyPayment > Totalamount)
-                //{
-                //    objResponse.IsSuccess = false;
-                //    objResponse.ErrorMessage = "You cannot exceed the purchase order amount.";
-                //    return objResponse;
-                //}
-                //else
-                //{
+                decimal CompanyID = Request.CompanyID();                
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyId = CompanyID;
                 Model.CreatedBy = Request.LoginID();
@@ -269,7 +256,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 decimal CompanyID = Request.CompanyID();
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 foreach (ipd_payment item in Model)
                 {
                     var payment = _service.Queryable().Where(x => x.ID == item.ID && x.CompanyId == CompanyID).FirstOrDefault();

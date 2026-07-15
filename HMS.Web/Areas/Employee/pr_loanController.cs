@@ -53,17 +53,19 @@ namespace HMS.Web.API.Areas.Employee
                     return objResponse;
                 }
 
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) +1;
 
                 Model.ID = ID;
-                Model.CompanyID = Request.CompanyID();
+                Model.CompanyID = CompanyID;
                 Model.PaymentMethodDropdownID = (int)sys_dropdown_mfEnum.LoanPaymentMethod;
                 Model.LoanTypeDropdownID = (int)sys_dropdown_mfEnum.LoanType;
-                Model.CreatedBy = Request.LoginID();
+                Model.CreatedBy = UserID;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
 
                 Model.pr_loan_payment_dt = null;

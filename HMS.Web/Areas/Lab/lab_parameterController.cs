@@ -61,16 +61,16 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 decimal UserID = Request.LoginID();
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 if (Model.UnitId != 0)
                 {
                     Model.UnitDropdownId = (int)sys_dropdown_mfEnum.LabUnitDropdownId;
                 }
-                Model.CompanyId = Request.CompanyID();
-                Model.CreatedBy = Request.LoginID();
+                Model.CompanyId = CompanyID;
+                Model.CreatedBy = UserID;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Added;
                 _service.Insert(Model);

@@ -47,7 +47,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 decimal CompanyID = Request.CompanyID();
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyId = CompanyID;
                 Model.CreatedBy = Request.LoginID();

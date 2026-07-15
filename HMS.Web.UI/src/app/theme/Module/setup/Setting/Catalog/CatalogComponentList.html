@@ -325,93 +325,214 @@
 
 <!-- Catalog Modal -->
 <ng-template #TestCatalogModal let-modal="close">
+
     <div class="modal-header">
-        <h4 class="modal-title">Add Catalog</h4>
+        <h4 class="modal-title font-weight-bold">Add Catalog</h4>
 
         <button type="button"
                 class="close"
                 aria-label="Close"
                 (click)="modal('Cross click')">
-            <span aria-hidden="true">&times;</span>
+            <span>&times;</span>
         </button>
     </div>
 
     <form [formGroup]="catalogForm"
-          novalidate
-          (ngSubmit)="onSaveCatalog(catalogForm.valid)">
+          (ngSubmit)="onSaveCatalog(catalogForm.valid)"
+          novalidate>
 
         <div class="modal-body">
 
+            <!-- First Row -->
             <div class="row">
 
+                <!-- Test Name -->
                 <div class="col-md-6 mb-3">
-                    <label class="font-weight-500">
-                        Test Name <span class="text-danger">*</span>
+                    <label>
+                        Test Name
+                        <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text"
-                           class="form-control"
+                    <input class="form-control"
+                           type="text"
                            formControlName="Investigation"
                            [(ngModel)]="Catalogmodel.Investigation"
-                           name="name"
-                           placeholder="e.g. Lipid Profile">
+                           placeholder="Enter Test Name">
                 </div>
 
+                <!-- Category -->
                 <div class="col-md-6 mb-3">
-                    <label class="font-weight-500">
-                        Category <span class="text-danger">*</span>
+                    <label>
+                        Category
+                        <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text"
+                    <input class="form-control"
+                           type="text"
                            id="CategorySearch"
-                           class="form-control"
                            formControlName="CategoryId"
                            [(ngModel)]="Catalogmodel.CategoryName"
                            (click)="LoadCategory()"
                            autocomplete="off"
-                           placeholder="e.g. Biochemistry">
+                           placeholder="Select Category">
                 </div>
 
+                <!-- Sample -->
                 <div class="col-md-4 mb-3">
-                    <label class="font-weight-500">
-                        Sample <span class="text-danger">*</span>
+                    <label>
+                        Sample
+                        <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text"
+                    <input class="form-control"
+                           type="text"
                            id="SampleSearch"
-                           class="form-control"
                            formControlName="SampleId"
                            [(ngModel)]="Catalogmodel.SampleName"
                            (click)="LoadSample()"
                            autocomplete="off"
-                           placeholder="e.g. Blood, Urine">
+                           placeholder="Select Sample">
                 </div>
 
+                <!-- TAT -->
                 <div class="col-md-4 mb-3">
-                    <label class="font-weight-500">
-                        TAT <span class="text-danger">*</span>
+                    <label>
+                        TAT
+                        <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text"
-                           class="form-control"
+                    <input class="form-control"
+                           type="text"
                            formControlName="TAT"
                            [(ngModel)]="Catalogmodel.TAT"
-                           name="tat"
-                           placeholder="e.g. 2-4 hours">
+                           placeholder="2-4 Hours">
                 </div>
 
+                <!-- Price -->
                 <div class="col-md-4 mb-3">
-                    <label class="font-weight-500">
-                        Price <span class="text-danger">*</span>
+                    <label>
+                        Price
+                        <span class="text-danger">*</span>
                     </label>
 
-                    <input type="number"
-                           class="form-control"
+                    <input class="form-control"
+                           type="number"
+                           min="0"
                            formControlName="Price"
                            [(ngModel)]="Catalogmodel.Price"
-                           name="price"
-                           min="0"
-                           placeholder="e.g. 25">
+                           placeholder="Enter Price">
+                </div>
+
+            </div>
+
+            <!-- Checkbox -->
+
+            <div class="form-group">
+
+                <div class="custom-control custom-checkbox">
+
+                    <input class="custom-control-input"
+                           type="checkbox"
+                           id="IsItem"
+                           formControlName="IsItem"
+                           [(ngModel)]="Catalogmodel.IsItem"
+                           (change)="toggleDiv($event)">
+
+                    <label class="custom-control-label"
+                           for="IsItem">
+
+                        Is Consumable
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <!-- Item Section -->
+
+            <div class="card mt-3" *ngIf="isChecked">
+
+                <div class="card-header bg-light">
+
+                    <strong>Consumable Items</strong>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row font-weight-bold mb-2 d-none d-md-flex">
+
+                        <div class="col-md-5">
+                            Item
+                        </div>
+
+                        <div class="col-md-3">
+                            Quantity
+                        </div>
+
+                        <div class="col-md-2">
+                            Action
+                        </div>
+
+                    </div>
+
+                    <div class="row align-items-center mb-2"
+                         *ngFor="let dynamic of itemdynamicArray; let i=index">
+
+                        <!-- Item -->
+
+                        <div class="col-md-5 mb-2">
+
+                            <input type="text"
+                                   id="txtDrug_{{i}}"
+                                   class="form-control"
+                                   [(ngModel)]="dynamic.ItemName"
+                                   [ngModelOptions]="{standalone:true}"
+                                   (click)="LoadItem(i)"
+                                   autocomplete="off"
+                                   placeholder="Search Item">
+
+                        </div>
+
+                        <!-- Qty -->
+
+                        <div class="col-md-3 mb-2">
+
+                            <input type="number"
+                                   class="form-control"
+                                   [(ngModel)]="dynamic.Quantity"
+                                   [ngModelOptions]="{standalone:true}"
+                                   min="1">
+
+                        </div>
+
+                        <!-- Remove -->
+
+                        <div class="col-md-2 mb-2">
+
+                            <button class="btn btn-outline-danger btn-block"
+                                    type="button"
+                                    (click)="RemoveRow(i)">
+
+                                <i class="fa fa-times"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <button class="btn btn-outline-primary mt-3"
+                            type="button"
+                            (click)="Add()">
+
+                        <i class="fa fa-plus"></i>
+
+                        Add Item
+
+                    </button>
+
                 </div>
 
             </div>
@@ -420,22 +541,27 @@
 
         <div class="modal-footer">
 
-            <button type="button"
-                    class="btn btn-outline-secondary"
+            <button class="btn btn-light"
+                    type="button"
                     (click)="onCancelAddCatalog()">
+
                 Cancel
+
             </button>
 
-            <button type="submit"
-                    class="btn btn-primary"
+            <button class="btn btn-primary"
+                    type="submit"
                     [disabled]="!catalogForm.valid"
                     *ngIf="!IsEdit && ControlRights.CreateRights">
+
                 Save
+
             </button>
 
         </div>
 
     </form>
+
 </ng-template>
 
 <!-- Parameter Modal -->

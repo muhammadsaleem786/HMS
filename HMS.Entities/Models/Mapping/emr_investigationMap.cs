@@ -41,6 +41,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.SampleDropdownId).HasColumnName("SampleDropdownId");
             this.Property(t => t.TAT).HasColumnName("TAT");
             this.Property(t => t.Price).HasColumnName("Price");
+            this.Property(t => t.IsItem).HasColumnName("IsItem");
             // Relationships
             this.HasRequired(t => t.adm_user_mf)
                 .WithMany(t => t.emr_investigation)

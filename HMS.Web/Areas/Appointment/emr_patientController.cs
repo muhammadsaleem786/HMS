@@ -82,9 +82,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 if (Model.CNIC != null)
                     CNICExist = _service.Queryable().Where(y => y.CNIC.ToLower() == Model.CNIC.ToLower()).FirstOrDefault();
 
-                //if (Model.Mobile != null)
-                //    CNICExist = _service.Queryable().Where(y => y.Mobile == Model.Mobile).FirstOrDefault();
-
                 if (CNICExist == null || CNICExist.CNIC == null)
                 {
                     decimal CompanyID = Request.CompanyID();
@@ -92,16 +89,16 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     Model.ID = ID;
                     if (Model.BloodGroupId != 0 && Model.BloodGroupId != null)
                         Model.BloodGroupDropDownId = (int)sys_dropdown_mfEnum.BloodDropdownId;
                     Model.BillTypeDropdownId = (int)sys_dropdown_mfEnum.BillTypeDropdownId;
                     Model.PrefixDropdownId = (int)sys_dropdown_mfEnum.PrefixDropdownId;
-                    Model.CompanyId = Request.CompanyID();
-                    Model.CreatedBy = Request.LoginID();
+                    Model.CompanyId = CompanyID;
+                    Model.CreatedBy = UserID;
                     Model.CreatedDate = Request.DateTimes();
-                    Model.ModifiedBy = Request.LoginID();
+                    Model.ModifiedBy = UserID;
                     Model.ModifiedDate = Request.DateTimes();
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);

@@ -427,7 +427,7 @@ namespace HMS.Web.API.Areas.Employee
 
                 decimal payrolldetID = 1;
                 if (_pr_employee_payroll_dtService.Queryable().Count() > 0)
-                    payrolldetID = _pr_employee_payroll_dtService.Queryable().Max(e => e.ID) + 1;
+                    payrolldetID = (_pr_employee_payroll_dtService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (pr_employee_payroll_dt item in PayrollDetList.ToList())
                 {

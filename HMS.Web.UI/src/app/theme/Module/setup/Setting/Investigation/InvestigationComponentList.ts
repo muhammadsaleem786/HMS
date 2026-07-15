@@ -101,6 +101,7 @@ export class InvestigationComponentList {
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();
+            this.model.emr_investigation_Item = [];
             this._InvestigationService.SaveOrUpdate(this.model).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {

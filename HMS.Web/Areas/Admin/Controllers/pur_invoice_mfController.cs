@@ -365,7 +365,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //insert pur_invoice_mf
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) +1;
                 Model.ID = ID;
                 Model.CompanyID = CompanyID;
                 Model.CreatedBy = Request.LoginID();
@@ -382,7 +382,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //insert sale_order_item
                 decimal invoicItemID = 1;
                 if (_pur_invoice_dtService.Queryable().Count() > 0)
-                    invoicItemID = _pur_invoice_dtService.Queryable().Max(e => e.ID) + 1;
+                    invoicItemID = (_pur_invoice_dtService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) +1;
                 foreach (pur_invoice_dt item in purorderitem)
                 {
                     item.ID = invoicItemID;
@@ -470,7 +470,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 }
                 decimal invoicItemID = 1;
                 if (_pur_invoice_dtService.Queryable().Count() > 0)
-                    invoicItemID = _pur_invoice_dtService.Queryable().Max(e => e.ID) + 1;
+                    invoicItemID = (_pur_invoice_dtService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 foreach (pur_invoice_dt item in purorderitem)
                 {
                     item.ID = invoicItemID;
@@ -488,10 +488,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 {
                     decimal LogID = 1;
                     if (_adm_item_logService.Queryable().Count() > 0)
-                        LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+                        LogID = (_adm_item_logService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     decimal InvID = 1;
                     if (_inv_stockService.Queryable().Count() > 0)
-                        InvID = _inv_stockService.Queryable().Max(e => e.ID) + 1;
+                        InvID = (_inv_stockService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     foreach (pur_invoice_dt item in purorderitem)
                     {
@@ -499,7 +499,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         adm_item_log adm_item_log_obj = new adm_item_log();
                         if (findItem.TrackInventory)
                         {
-                            inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID && (e.BatchSarialNumber == null && item.BatchSarialNumber == null || e.BatchSarialNumber.ToString() == item.BatchSarialNumber.ToString()) && e.CompanyId == CompanyID).FirstOrDefault();
+                            var batchNo = (item.BatchSarialNumber ?? "0").ToString();
+                            inv_stock inv_stockModel = _inv_stockService.Queryable()
+                        .Where(e => e.ItemID == item.ItemID
+                            && e.CompanyId == CompanyID
+                            && (e.BatchSarialNumber ?? "0") == batchNo)
+                        .FirstOrDefault();
                             if (inv_stockModel != null)
                             {
                                 inv_stockModel.Quantity += Convert.ToDecimal(item.Quantity);

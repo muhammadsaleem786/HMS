@@ -84,13 +84,13 @@ namespace HMS.Web.API.Areas.Admission.Controllers
 
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CPTCodeDropdownId = (int)sys_dropdown_mfEnum.CPTCodeDropdownId;
-                Model.CompanyId = Request.CompanyID();
-                Model.CreatedBy = Request.LoginID();
+                Model.CompanyId = CompanyID;
+                Model.CreatedBy = UserID;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ipd_procedure_medication = null;
                 Model.ipd_procedure_charged = null;
@@ -101,11 +101,11 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 //insert charge
                 decimal chargeID = 1;
                 if (_ipd_procedure_chargedservice.Queryable().Count() > 0)
-                    chargeID = _ipd_procedure_chargedservice.Queryable().Max(e => e.ID) + 1;
+                    chargeID = (_ipd_procedure_chargedservice.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 adm_item_log adm_item_log_obj = new adm_item_log();
                 decimal LogID = 1;
                 if (_adm_item_logService.Queryable().Count() > 0)
-                    LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+                    LogID = (_adm_item_logService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 foreach (ipd_procedure_charged item in Objipd_procedure_charged)
                 {
                     item.ID = chargeID;
@@ -123,11 +123,12 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                     item.adm_user_mf1 = null;
                     _ipd_procedure_chargedservice.Insert(item);
                     chargeID++;
-                    inv_stock inv_stockModel = _inv_stockService.Queryable().
-                        Where(e => e.ItemID == item.ItemId
-                         && (e.BatchSarialNumber == null && item.Batch == null
-                    || e.BatchSarialNumber.ToString() == item.Batch)
-                        && e.CompanyId == CompanyID).FirstOrDefault();
+                    var batchNo = (item.Batch ?? "0").ToString();
+                    inv_stock inv_stockModel = _inv_stockService.Queryable()
+                .Where(e => e.ItemID == item.ItemId
+                    && e.CompanyId == CompanyID
+                    && (e.BatchSarialNumber ?? "0") == batchNo)
+                .FirstOrDefault();
                     if (inv_stockModel != null)
                     {
                         inv_stockModel.Quantity -= Convert.ToDecimal(item.Quantity);
@@ -151,7 +152,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 //insert medication
                 decimal medicationID = 1;
                 if (_ipd_procedure_medicationservice.Queryable().Count() > 0)
-                    medicationID = _ipd_procedure_medicationservice.Queryable().Max(e => e.ID) + 1;
+                    medicationID = (_ipd_procedure_medicationservice.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (ipd_procedure_medication item in Objipd_procedure_medication)
                 {
@@ -174,7 +175,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 //insert procedure_expense
                 decimal proExpID = 1;
                 if (_ipd_procedure_expenseService.Queryable().Count() > 0)
-                    proExpID = _ipd_procedure_expenseService.Queryable().Max(e => e.ID) + 1;
+                    proExpID = (_ipd_procedure_expenseService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (ipd_procedure_expense item in Objipd_procedure_expense)
                 {
@@ -279,7 +280,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 //insert charge
                 decimal chargeID = 1;
                 if (_ipd_procedure_chargedservice.Queryable().Count() > 0)
-                    chargeID = _ipd_procedure_chargedservice.Queryable().Max(e => e.ID) + 1;
+                    chargeID = (_ipd_procedure_chargedservice.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (ipd_procedure_charged item in Objipd_procedure_charged)
                 {
@@ -303,7 +304,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 //insert medication
                 decimal medicationID = 1;
                 if (_ipd_procedure_medicationservice.Queryable().Count() > 0)
-                    medicationID = _ipd_procedure_medicationservice.Queryable().Max(e => e.ID) + 1;
+                    medicationID = (_ipd_procedure_medicationservice.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (ipd_procedure_medication item in Objipd_procedure_medication)
                 {
@@ -326,7 +327,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 //insert procedure_expense
                 decimal proExpID = 1;
                 if (_ipd_procedure_expenseService.Queryable().Count() > 0)
-                    proExpID = _ipd_procedure_expenseService.Queryable().Max(e => e.ID) + 1;
+                    proExpID = (_ipd_procedure_expenseService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (ipd_procedure_expense item in Objipd_procedure_expense)
                 {

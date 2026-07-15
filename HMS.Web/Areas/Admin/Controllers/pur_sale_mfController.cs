@@ -665,7 +665,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //insert pur_sale_mf
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyID = CompanyID;
                 Model.CreatedBy = Request.LoginID();
@@ -683,11 +683,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //insert pur_sale_dt
                 decimal saleItemID = 1;
                 if (_pur_sale_dtService.Queryable().Count() > 0)
-                    saleItemID = _pur_sale_dtService.Queryable().Max(e => e.ID) + 1;
+                    saleItemID = (_pur_sale_dtService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) +1;
                 adm_item_log adm_item_log_obj = new adm_item_log();
                 decimal LogID = 1;
                 if (_adm_item_logService.Queryable().Count() > 0)
-                    LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+                    LogID = (_adm_item_logService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (pur_sale_dt item in purorderitem)
                 {
@@ -705,10 +705,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     var findItem = _adm_itemService.Queryable().Where(a => a.ID == item.ItemID).FirstOrDefault();
                     if (findItem.TrackInventory)
                     {
-                        inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID
-                    && (e.BatchSarialNumber == null && item.BatchSarialNumber == null
-                    || e.BatchSarialNumber.ToString() == item.BatchSarialNumber.ToString())
-                    && e.CompanyId == CompanyID).FirstOrDefault();
+                        var batchNo = (item.BatchSarialNumber ?? "0").ToString();
+                        inv_stock inv_stockModel = _inv_stockService.Queryable()
+                        .Where(e => e.ItemID == item.ItemID
+                            && e.CompanyId == CompanyID
+                            && (e.BatchSarialNumber ?? "0") == batchNo)
+                        .FirstOrDefault();
                         if (inv_stockModel != null)
                         {
                             inv_stockModel.Quantity -= Convert.ToDecimal(item.Quantity);
@@ -812,7 +814,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyID = CompanyID;
                 Model.CreatedBy = Request.LoginID();
@@ -831,10 +833,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //insert pur_sale_dt
                 decimal saleItemID = 1;
                 if (_pur_sale_dtService.Queryable().Count() > 0)
-                    saleItemID = _pur_sale_dtService.Queryable().Max(e => e.ID) + 1;
+                    saleItemID = (_pur_sale_dtService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 decimal LogID = 1;
                 if (_adm_item_logService.Queryable().Count() > 0)
-                    LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+                    LogID = (_adm_item_logService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 foreach (pur_sale_dt item in purorderitem)
                 {
                     item.ID = saleItemID;

@@ -69,7 +69,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 decimal UserID = Request.LoginID();
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 int sequenceNumber = (int)ID;
                 var date = DateTime.Now.ToString("yy");
@@ -102,7 +102,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 {
                     emr_appointment_mf appoint = new emr_appointment_mf();
                     if (_emr_appointment_mfService.Queryable().Count() > 0)
-                        AppID = _emr_appointment_mfService.Queryable().Max(e => e.ID) + 1;
+                        AppID = (_emr_appointment_mfService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     appoint.ID = AppID;
                     appoint.AdmissionId = Model.ID;
                     appoint.PatientId = Model.PatientId;

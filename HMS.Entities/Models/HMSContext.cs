@@ -113,6 +113,7 @@ namespace HMS.Entities.Models
         public DbSet<lab_parameter> lab_parameter { get; set; }
         public DbSet<lab_patient_test> lab_patient_test { get; set; }
 
+        public DbSet<emr_investigation_Item> emr_investigation_Item { get; set; }
         public DbSet<lab_result_mf> lab_result_mf { get; set; }
         public DbSet<lab_result_dt> lab_result_dt { get; set; }
 
@@ -217,6 +218,7 @@ namespace HMS.Entities.Models
             modelBuilder.Configurations.Add(new lab_patient_testMap());
             modelBuilder.Configurations.Add(new lab_result_mfMap());
             modelBuilder.Configurations.Add(new lab_result_dtMap());
+            modelBuilder.Configurations.Add(new emr_investigation_ItemMap());
         }
     }
 }

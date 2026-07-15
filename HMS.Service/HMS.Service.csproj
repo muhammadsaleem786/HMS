@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="DeepSeekService.cs" />
     <Compile Include="IDeepSeekService.cs" />
+    <Compile Include="IWhatsAppService.cs" />
     <Compile Include="ISmsService.cs" />
     <Compile Include="IStoredProcedureService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Services\Admission\ipd_paymentService.cs" />
     <Compile Include="Services\Appointment\emr_notes_favoriteService.cs" />
     <Compile Include="Services\Appointment\emr_patient_bill_paymentService.cs" />
+    <Compile Include="Services\Appointment\emr_investigation_ItemService.cs" />
     <Compile Include="Services\Appointment\emr_service_itemService.cs" />
     <Compile Include="Services\Appointment\emr_vitalService.cs" />
     <Compile Include="Services\Appointment\emr_service_mfService.cs" />
@@ -172,6 +174,7 @@
     <Compile Include="Services\Lab\lab_result_mfService.cs" />
     <Compile Include="Services\Lab\lab_patient_testService.cs" />
     <Compile Include="Services\Lab\lab_parameterService.cs" />
+    <Compile Include="WhatsAppService.cs" />
     <Compile Include="SmsService.cs" />
     <Compile Include="StoredProcedureService.cs" />
   </ItemGroup>

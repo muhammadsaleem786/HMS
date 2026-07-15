@@ -60,44 +60,20 @@ namespace HMS.Repository.Repositories.Employee
                 //var PayrollDtl = dataList.SelectMany(s => s.Payrolldetail).ToList();
 
                 List<PayrollMasterPaginationSearchSortModel> list = new List<PayrollMasterPaginationSearchSortModel>();
-                if (IgnorePaging)
-                {
-                    list = (from s in dataList
-                            group s by new { s.PayScheduleID, s.PayScheduleName, s.Status, s.PayDate, s.PayScheduleFromDate, s.PayScheduleToDate } into grp
-                            select new PayrollMasterPaginationSearchSortModel
-                            {
-                                UniqueID = grp.Key.PayScheduleID + "#" + grp.Key.PayDate,
-                                ScheduleName = grp.Key.PayScheduleName,
-                                Status = (grp.Key.Status == "O") ? "Open" : "Published",
-                                PayPeriod = grp.Key.PayScheduleFromDate.ToString("dd/MM/yyyy") + " - " + grp.Key.PayScheduleToDate.ToString("dd/MM/yyyy"),
-                                PayDate =grp.Key.PayDate,
-                                NoOfEmp = grp.Select(x => x.EmpID).Distinct().Count(),
-                                Tax = 0,
-                                NetSalary = Math.Round(((grp.Select(x => x.BasicSalary).Sum()) + grp.Select(x => x.Payrolldetail.Where(y => y.PayScheduleID == grp.Key.PayScheduleID && y.PayScheduleFromDate == grp.Key.PayScheduleFromDate && y.PayScheduleToDate == grp.Key.PayScheduleToDate && y.Type == "A").Select(z => z.Amount).Sum()).Sum() - grp.Select(x => x.Payrolldetail.Where(y => y.PayScheduleID == grp.Key.PayScheduleID && y.PayScheduleFromDate == grp.Key.PayScheduleFromDate && y.PayScheduleToDate == grp.Key.PayScheduleToDate && y.Type == "D").Select(z => z.Amount).Sum()).Sum()) ?? 0),
-                            })
-                            .ToList();
-                }
-                else
-                {
 
-                    list = (from s in dataList
-                            group s by new { s.PayScheduleID, s.PayScheduleName, s.Status, s.PayDate, s.PayScheduleFromDate, s.PayScheduleToDate } into grp
-                            select new PayrollMasterPaginationSearchSortModel
-                            {
-                                UniqueID = grp.Key.PayScheduleID + "#" + grp.Key.PayDate,
-                                ScheduleName = grp.Key.PayScheduleName,
-                                Status = (grp.Key.Status == "O") ? "Open" : "Published",
-                                PayPeriod = grp.Key.PayScheduleFromDate.ToString("dd/MM/yyyy") + " - " + grp.Key.PayScheduleToDate.ToString("dd/MM/yyyy"),
-                                PayDate = grp.Key.PayDate,
-                                NoOfEmp = grp.Select(x => x.EmpID).Distinct().Count(),
-                                Tax = 0,
-                                NetSalary = Math.Round(((grp.Select(x => x.BasicSalary).Sum()) + grp.Select(x => x.Payrolldetail.Where(y => y.PayScheduleID == grp.Key.PayScheduleID && y.PayScheduleFromDate == grp.Key.PayScheduleFromDate && y.PayScheduleToDate == grp.Key.PayScheduleToDate && y.Type == "A").Select(z => z.Amount).Sum()).Sum() - grp.Select(x => x.Payrolldetail.Where(y => y.PayScheduleID == grp.Key.PayScheduleID && y.PayScheduleFromDate == grp.Key.PayScheduleFromDate && y.PayScheduleToDate == grp.Key.PayScheduleToDate && y.Type == "D").Select(z => z.Amount).Sum()).Sum()) ?? 0),
-                            }).Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
-                            //.OrderBy(o => o.UniqueID).OrderBy(x=>x.PayDate)
-                            .ToList();
-
-                }
-
+                list = (from s in dataList
+                        group s by new { s.PayScheduleID, s.PayScheduleName, s.Status, s.PayDate, s.PayScheduleFromDate, s.PayScheduleToDate } into grp
+                        select new PayrollMasterPaginationSearchSortModel
+                        {
+                            UniqueID = grp.Key.PayScheduleID + "#" + grp.Key.PayDate,
+                            ScheduleName = grp.Key.PayScheduleName,
+                            Status = (grp.Key.Status == "O") ? "Open" : "Published",
+                            PayPeriod = grp.Key.PayScheduleFromDate.ToString("dd/MM/yyyy") + " - " + grp.Key.PayScheduleToDate.ToString("dd/MM/yyyy"),
+                            PayDate = grp.Key.PayDate,
+                            NoOfEmp = grp.Select(x => x.EmpID).Distinct().Count(),
+                            Tax = 0,
+                            NetSalary = Math.Round(((grp.Select(x => x.BasicSalary).Sum()) + grp.Select(x => x.Payrolldetail.Where(y => y.PayScheduleID == grp.Key.PayScheduleID && y.PayScheduleFromDate == grp.Key.PayScheduleFromDate && y.PayScheduleToDate == grp.Key.PayScheduleToDate && y.Type == "A").Select(z => z.Amount).Sum()).Sum() - grp.Select(x => x.Payrolldetail.Where(y => y.PayScheduleID == grp.Key.PayScheduleID && y.PayScheduleFromDate == grp.Key.PayScheduleFromDate && y.PayScheduleToDate == grp.Key.PayScheduleToDate && y.Type == "D").Select(z => z.Amount).Sum()).Sum()) ?? 0),
+                        }).OrderByDescending(a=>a.PayDate).ToList();
                 if (!string.IsNullOrEmpty(PFilter.SearchText))
                 {
                     DisplayName = PFilter.VisibleColumnInfoList.IndexOf("ScheduleName") > -1;
@@ -119,7 +95,7 @@ namespace HMS.Repository.Repositories.Employee
                     //
                     )))))))).ToList();
                 }
-
+                objResult.TotalRecord = list.Count();
                 OrderByName = PFilter.OrderBy.IndexOf("ScheduleName") > -1;
                 OrderByStatus = PFilter.OrderBy.IndexOf("Status") > -1;
                 OrderByPayPeriod = PFilter.OrderBy.IndexOf("PayPeriod") > -1;
@@ -143,8 +119,13 @@ namespace HMS.Repository.Repositories.Employee
                     prList = prList.OrderBy(orderingFunction);
                 else
                     prList = prList.OrderByDescending(orderingFunction);
+                if (!IgnorePaging)
+                {
+                    prList = prList
+                        .Skip(PFilter.SkipRecord)
+                        .Take(PFilter.TakeRecord);
+                }
 
-                objResult.TotalRecord = prList.Count();
                 objResult.DataList = prList.ToList<Object>();
             }
             catch (Exception ex)
@@ -206,7 +187,7 @@ namespace HMS.Repository.Repositories.Employee
                         Locations = "",// x.pr_employee_mf.adm_company_location == null ? null : new { id = x.pr_employee_mf.adm_company_location.ID, name = x.pr_employee_mf.adm_company_location.LocationName },
                         Departments = "",//x.pr_employee_mf.pr_department == null ? null : new { id = x.pr_employee_mf.pr_department.ID, name = x.pr_employee_mf.pr_department.DepartmentName },
                         Designations = "",// x.pr_employee_mf.pr_designation == null ? null : new { id = x.pr_employee_mf.pr_designation.ID, name = x.pr_employee_mf.pr_designation.DesignationName },
-                        EmpTypes ="",// x.pr_employee_mf.EmployeeTypeList == null ? null : new { id = x.pr_employee_mf.EmployeeTypeList.ID, name = x.pr_employee_mf.EmployeeTypeList.Value },
+                        EmpTypes = "",// x.pr_employee_mf.EmployeeTypeList == null ? null : new { id = x.pr_employee_mf.EmployeeTypeList.ID, name = x.pr_employee_mf.EmployeeTypeList.Value },
 
                     }).ToList();
 

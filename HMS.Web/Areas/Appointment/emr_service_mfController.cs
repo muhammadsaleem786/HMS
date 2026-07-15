@@ -80,14 +80,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
-                Model.CompanyId = Request.CompanyID();
-                Model.CreatedBy = Request.LoginID();
+                Model.CompanyId = CompanyID;
+                Model.CreatedBy = UserID;
                 Model.IsSystemGenerated = false;
                 Model.SpecialityDropdownId = (int)sys_dropdown_mfEnum.SpecialtyDropdownId;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Added;
                 Model.emr_service_item = null;
@@ -97,7 +97,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 //insert item
                 decimal seviceID = 1;
                 if (_emr_service_item.Queryable().Count() > 0)
-                    seviceID = _emr_service_item.Queryable().Max(e => e.ID) + 1;
+                    seviceID = (_emr_service_item.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_service_item item in Objemr_service_item)
                 {
@@ -182,7 +182,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
                 decimal seviceID = 1;
                 if (_emr_service_item.Queryable().Count() > 0)
-                    seviceID = _emr_service_item.Queryable().Max(e => e.ID) + 1;
+                    seviceID = (_emr_service_item.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_service_item item in Objemr_service_item)
                 {

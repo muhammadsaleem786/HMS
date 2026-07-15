@@ -97,7 +97,7 @@ namespace HMS.Web.API.Areas.Employee
 
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     Model.ID = ID;
                     Model.CompanyID = CompanyID;
@@ -156,7 +156,7 @@ namespace HMS.Web.API.Areas.Employee
 
                     decimal EmpAllowID = 1;
                     if (_pr_employee_allowanceService.Queryable().Count() > 0)
-                        EmpAllowID = _pr_employee_allowanceService.Queryable().Max(e => e.ID) + 1;
+                        EmpAllowID = (_pr_employee_allowanceService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     foreach (pr_employee_allowance item in employee_allowance)
                     {
@@ -170,7 +170,7 @@ namespace HMS.Web.API.Areas.Employee
 
                     decimal DedConID = 1;
                     if (_pr_employee_ded_contributionService.Queryable().Count() > 0)
-                        DedConID = _pr_employee_ded_contributionService.Queryable().Max(e => e.ID) + 1;
+                        DedConID = (_pr_employee_ded_contributionService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     foreach (pr_employee_ded_contribution item in employee_ded_contribution)
                     {
@@ -185,7 +185,7 @@ namespace HMS.Web.API.Areas.Employee
 
                     decimal EmpLeaveID = 1;
                     if (_pr_employee_leaveService.Queryable().Count() > 0)
-                        EmpLeaveID = _pr_employee_leaveService.Queryable().Max(e => e.ID) + 1;
+                        EmpLeaveID = (_pr_employee_leaveService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     foreach (pr_employee_leave item in employee_leave)
                     {
@@ -199,7 +199,7 @@ namespace HMS.Web.API.Areas.Employee
 
                     decimal DocID = 1;
                     if (_pr_employee_documentService.Queryable().Count() > 0)
-                        DocID = _pr_employee_documentService.Queryable().Max(e => e.ID) + 1;
+                        DocID = (_pr_employee_documentService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     foreach (pr_employee_document item in employee_document)
                     {
@@ -218,7 +218,7 @@ namespace HMS.Web.API.Areas.Employee
 
                     decimal DependentID = 1;
                     if (_pr_employee_dependentService.Queryable().Count() > 0)
-                        DependentID = _pr_employee_dependentService.Queryable().Max(e => e.ID) + 1;
+                        DependentID = (_pr_employee_dependentService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     foreach (pr_employee_Dependent item in employee_dependent)
                     {
@@ -346,13 +346,6 @@ namespace HMS.Web.API.Areas.Employee
             var objResponse = new ResponseInfo();
             try
             {
-                //objResponse.ResultSet = _service.Queryable()
-                //    .Where(e => e.CompanyID == CompanyID && e.ID.ToString() == Id)
-                //.Include(x => x.pr_employee_allowance)
-                //.Include(x => x.pr_employee_ded_contribution)
-                //.Include(x => x.pr_employee_leave)
-                //.Include(x => x.adm_user_company)
-                //.FirstOrDefault();
 
                 decimal CompanyID = Request.CompanyID();
 
@@ -1009,7 +1002,7 @@ namespace HMS.Web.API.Areas.Employee
 
                     decimal EmpAllowID = 1;
                     if (_pr_employee_allowanceService.Queryable().Count() > 0)
-                        EmpAllowID = _pr_employee_allowanceService.Queryable().Max(e => e.ID) + 1;
+                        EmpAllowID = (_pr_employee_allowanceService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     foreach (pr_employee_allowance item in employee_allowanceList)
                     {
                         item.ID = EmpAllowID;
@@ -1031,7 +1024,7 @@ namespace HMS.Web.API.Areas.Employee
 
                     decimal DedConID = 1;
                     if (_pr_employee_ded_contributionService.Queryable().Count() > 0)
-                        DedConID = _pr_employee_ded_contributionService.Queryable().Max(e => e.ID) + 1;
+                        DedConID = (_pr_employee_ded_contributionService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
 
                     foreach (pr_employee_ded_contribution item in employee_ded_contributionList)
@@ -1055,7 +1048,7 @@ namespace HMS.Web.API.Areas.Employee
                     }
                     decimal EmpLeaveID = 1;
                     if (_pr_employee_leaveService.Queryable().Count() > 0)
-                        EmpLeaveID = _pr_employee_leaveService.Queryable().Max(e => e.ID) + 1;
+                        EmpLeaveID = (_pr_employee_leaveService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     foreach (pr_employee_leave item in employee_leaveList)
                     {

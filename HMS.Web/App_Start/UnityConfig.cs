@@ -245,6 +245,7 @@ namespace HMS.Web.API
                 .RegisterType<Iipd_input_outputService, ipd_input_outputService>()
                 .RegisterType<Iipd_medication_logService, ipd_medication_logService>()
                 .RegisterType<ISmsService, SmsService>()
+                .RegisterType<IWhatsAppService, WhatsAppService>()
                 .RegisterType<IDeepSeekService, DeepSeekService>()
                 .RegisterType<Iadm_integrationService, adm_integrationService>()
                 .RegisterType<Ipr_attendanceService, pr_attendanceService>()

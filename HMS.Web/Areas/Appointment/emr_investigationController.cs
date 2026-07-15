@@ -77,7 +77,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 if (Model.CategoryId != 0)
                 {
@@ -87,10 +87,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 {
                     Model.SampleDropdownId = (int)sys_dropdown_mfEnum.LabSampleDropdownId;
                 }
-                Model.CompanyID = Request.CompanyID();
-                Model.CreatedBy = Request.LoginID();
+                Model.CompanyID = CompanyID;
+                Model.CreatedBy = UserID;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
                 Model.emr_investigation_Item = null;
                 Model.lab_parameter = null;

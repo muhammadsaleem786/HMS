@@ -47,6 +47,7 @@ namespace HMS.Web.API.Areas.Employee
                 }
 
                 decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
                 if (string.IsNullOrEmpty(Model.AllowanceName))
                 {
                     var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
@@ -57,14 +58,14 @@ namespace HMS.Web.API.Areas.Employee
                 {
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     Model.ID = ID;
-                    Model.CompanyID = Request.CompanyID();
+                    Model.CompanyID = CompanyID;
                     Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.AllowanceCategory;
-                    Model.CreatedBy = Request.LoginID();
+                    Model.CreatedBy = UserID;
                     Model.CreatedDate = Request.DateTimes();
-                    Model.ModifiedBy = Request.LoginID();
+                    Model.ModifiedBy = UserID;
                     Model.ModifiedDate = Request.DateTimes();
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);
@@ -116,6 +117,7 @@ namespace HMS.Web.API.Areas.Employee
                 }
 
                 decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
                 if (string.IsNullOrEmpty(Model.AllowanceName))
                 {
                     var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
@@ -126,14 +128,14 @@ namespace HMS.Web.API.Areas.Employee
                 {
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     Model.ID = ID;
-                    Model.CompanyID = Request.CompanyID();
+                    Model.CompanyID = CompanyID;
                     Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.AllowanceCategory;
-                    Model.CreatedBy = Request.LoginID();
+                    Model.CreatedBy = UserID;
                     Model.CreatedDate = Request.DateTimes();
-                    Model.ModifiedBy = Request.LoginID();
+                    Model.ModifiedBy = UserID;
                     Model.ModifiedDate = Request.DateTimes();
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);
@@ -190,6 +192,7 @@ namespace HMS.Web.API.Areas.Employee
                 }
 
                 decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
                 if (string.IsNullOrEmpty(Model.AllowanceName))
                 {
                     var DropDownValue = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == (int)sys_dropdown_mfEnum.AllowanceCategory && e.ID == Model.CategoryID).FirstOrDefault();
@@ -200,14 +203,14 @@ namespace HMS.Web.API.Areas.Employee
                 {
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     Model.ID = ID;
-                    Model.CompanyID = Request.CompanyID();
+                    Model.CompanyID = CompanyID;
                     Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.AllowanceCategory;
-                    Model.CreatedBy = Request.LoginID();
+                    Model.CreatedBy = UserID;
                     Model.CreatedDate = Request.DateTimes();
-                    Model.ModifiedBy = Request.LoginID();
+                    Model.ModifiedBy = UserID;
                     Model.ModifiedDate = Request.DateTimes();
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);

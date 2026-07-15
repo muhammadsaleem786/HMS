@@ -68,13 +68,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.VitalDropdownId = (int)sys_dropdown_mfEnum.VitalDropdownId;
-                Model.CompanyID = Request.CompanyID();
-                Model.CreatedBy = Request.LoginID();
+                Model.CompanyID = CompanyID;
+                Model.CreatedBy = UserID;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Added;
                 _service.Insert(Model);
@@ -134,7 +134,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal UserID = Request.LoginID();
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 var vitalMappings = new List<(string Value, int VitalId)>
         {
@@ -157,11 +157,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                             Measure = value,
                             VitalDropdownId = (int)sys_dropdown_mfEnum.VitalDropdownId,
                             VitalId = vitalId,
-                            CompanyID = Request.CompanyID(),
+                            CompanyID = CompanyID,
                             PatientId = Model.PatientId,
-                            CreatedBy = Request.LoginID(),
+                            CreatedBy = UserID,
                             CreatedDate = Request.DateTimes(),
-                            ModifiedBy = Request.LoginID(),
+                            ModifiedBy = UserID,
                             ModifiedDate = Request.DateTimes(),
                             Date = Model.Date
                         };

@@ -49,6 +49,35 @@
             <div class="col-md-6 mb-4">
                 <div class=" bg-secondary p-4 h-100 border-radius">
                     <div class="d-flex align-items-center mb-3">
+                        <img src="../../../../../assets/app/media/img/whatsapp.png" alt="HMS" style="height: 40px;" class="me-3" />
+                        <div>
+                            <h3 class="mb-1">Integration with WhatsApp</h3>
+                            <p class="text-muted small mb-1">
+                                Integration with WhatsApp enhances EasyHMS by enabling seamless communication between hospital systems and patients. It supports automated messaging for appointment reminders and improving patient engagement, operational efficiency, and overall service delivery.
+                            </p>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled mb-4" style="height:100px;">
+                        <li><strong>Phone No:</strong> {{ WhatAppModel.UserName }}</li>
+                        <li>
+                            <strong>Access Token:</strong>  {{ '*'.repeat(WhatAppModel.Password?.length || 0) }}
+                        </li>
+                    </ul>
+                    <div *ngIf="WhatAppModel.ID==0">
+                        <button class="btn btn-primary" (click)="openWhatAppModel(adWhatApp)">Add</button>
+                    </div>
+                    <div *ngIf="WhatAppModel.IsActive==false && WhatAppModel.ID!=0">
+                        <button class="btn btn-primary" *ngIf="ControlRights.EditRights" (click)="WhatsAppActivate()">Activate</button>
+                    </div>
+                    <div *ngIf="WhatAppModel.IsActive==true">
+                        <button class="btn btn-primary" *ngIf="ControlRights.EditRights" (click)="WhatsAppDectivate()">Deactivate</button>
+                        <button class="btn btn-primary ml-2" (click)="openWhatAppModel(adWhatApp)">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class=" bg-secondary p-4 h-100 border-radius">
+                    <div class="d-flex align-items-center mb-3">
                         <img src="../../../../../assets/app/media/img/gmail_logo.png" alt="HMS" style="height: 40px;" class="me-3" />
                         <div>
                             <h3 class="mb-1">Integration with Email</h3>
@@ -81,7 +110,7 @@
             <div class="col-md-6 mb-4">
                 <div class=" bg-secondary p-4 h-100 border-radius">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="../../../../../assets/app/media/img/gmail_logo.png" alt="HMS" style="height: 40px;" class="me-3" />
+                        <img src="../../../../../assets/app/media/img/zkt.png" alt="HMS" style="height: 40px;" class="me-3" />
                         <div>
                             <h3 class="mb-1">Integration with ZKT</h3>
                             <p class="text-muted small mb-1">
@@ -208,6 +237,53 @@
             </div>
         </div>
         <input type="hidden" formControlName="Type" [value]="E" />
+
+        <div class="modal-footer">
+            <button type="submit"
+                    class="btn btn-primary"
+                    *ngIf="ControlRights.CreateRights && model.IsActive==false">
+                Save
+            </button>
+            <button type="submit"
+                    class="btn btn-primary"
+                    *ngIf="ControlRights.EditRights && model.IsActive==true">
+                Update
+            </button>
+        </div>
+    </form>
+
+</ng-template>
+
+<ng-template #adWhatApp let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title"> WhatsApp Configuration</h4>
+        <span type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <i class="icon icon-cross"></i>
+        </span>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="Email" class="form-label text-danger">Phone No</label>
+                <input type="text"
+                       id="Email"
+                       class="form-control form-control-sm"
+                       formControlName="UserName"
+                       [(ngModel)]="model.UserName"
+                       placeholder="Enter Phone No" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Password" class="form-label text-danger">Access Token</label>
+                <input type="text"
+                       id="Password"
+                       class="form-control form-control-sm"
+                       formControlName="Password"
+                       [(ngModel)]="model.Password"
+                       placeholder="Enter password" />
+            </div>
+        </div>
+        <input type="hidden" formControlName="Type" [value]="W" />
 
         <div class="modal-footer">
             <button type="submit"

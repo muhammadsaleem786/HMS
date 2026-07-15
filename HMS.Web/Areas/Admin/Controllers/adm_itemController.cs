@@ -77,7 +77,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 }
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyId = CompanyID;
                 Model.UnitDropDownID = (int)sys_dropdown_mfEnum.ItemUnitDropDownID;
@@ -1033,7 +1033,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
                 decimal ItemID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ItemID = _service.Queryable().Max(e => e.ID) + 1;
+                    ItemID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 ExcelDataList.ForEach(item =>
                 {

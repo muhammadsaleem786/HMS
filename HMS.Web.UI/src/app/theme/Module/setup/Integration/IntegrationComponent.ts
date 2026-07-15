@@ -31,6 +31,7 @@ export class IntegrationComponent {
     public submitted: boolean;
     @ViewChild("adEmail") adEmail: TemplateRef<any>;
     @ViewChild("adSMS") adSMS: TemplateRef<any>;
+    @ViewChild("adWhatApp") adWhatApp: TemplateRef<any>;
     public model = new IntegrationModel();
     public Rights: any;
     public IsEdit: boolean = false;
@@ -38,7 +39,7 @@ export class IntegrationComponent {
     public valueForUser: any;    
     SMSModel: any = {};
     EmailModel: any = {};
-
+    WhatAppModel: any = {};
     constructor(public _CommonService: CommonService, private encrypt: EncryptionService, public _fb: FormBuilder, public loader: LoaderService, public _IntegrationService: IntegrationService
         , public _router: Router, public _ZKTService: ZKTService, public toastr: CommonToastrService, private modalService: NgbModal) {
         this.loader.ShowLoader();
@@ -83,6 +84,16 @@ export class IntegrationComponent {
                     Type: 'E',
                     IsActive: false
                 };
+                this.WhatAppModel = integrations.find((x: any) => x.Type === 'W') || {
+                    ID: 0,
+                    UserName: '',
+                    EmailFrom: '',
+                    Password: '',
+                    SMTP: '',
+                    PortNo: '',
+                    Type: 'W',
+                    IsActive: false
+                };
             }
             this.loader.HideLoader();
         });
@@ -96,6 +107,11 @@ export class IntegrationComponent {
         this.model = {} as IntegrationModel;
         this.model = this.EmailModel;
         this.modalService.open(adEmail, { size: 'md' });
+    }
+    openWhatAppModel(adWhatApp: any) {
+        this.model = {} as IntegrationModel;
+        this.model = this.WhatAppModel;
+        this.modalService.open(adWhatApp, { size: 'md' });
     }
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true;
@@ -122,18 +138,28 @@ export class IntegrationComponent {
         this.model.IsActive = true;
         this.SaveOrUpdate(true);
     }
-    EmailActivate() {
-        this.model = this.EmailModel;
-        this.model.IsActive = true;
-        this.SaveOrUpdate(true);
-    }
     SmsDectivate() {
         this.model = this.SMSModel;
         this.model.IsActive = false;
         this.SaveOrUpdate(true);
     }
+    EmailActivate() {
+        this.model = this.EmailModel;
+        this.model.IsActive = true;
+        this.SaveOrUpdate(true);
+    }   
     EmailDectivate() {
         this.model = this.EmailModel;
+        this.model.IsActive = false;
+        this.SaveOrUpdate(true);
+    }
+    WhatsAppActivate() {
+        this.model = this.WhatAppModel;
+        this.model.IsActive = true;
+        this.SaveOrUpdate(true);
+    }
+    WhatsAppDectivate() {
+        this.model = this.WhatAppModel;
         this.model.IsActive = false;
         this.SaveOrUpdate(true);
     }

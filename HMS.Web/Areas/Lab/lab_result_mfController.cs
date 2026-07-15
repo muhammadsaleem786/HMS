@@ -65,12 +65,12 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 lab_Result_Dts.AddRange(Model.lab_result_dt);
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
-                Model.CompanyId = Request.CompanyID();
-                Model.CreatedBy = Request.LoginID();
+                Model.CompanyId = CompanyID;
+                Model.CreatedBy = UserID;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Added;
                 Model.lab_result_dt = null;
@@ -78,7 +78,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 //insert lab result details
                 decimal detailID = 1;
                 if (_lab_result_dtService.Queryable().Count() > 0)
-                    detailID = _lab_result_dtService.Queryable().Max(e => e.ID) + 1;
+                    detailID = (_lab_result_dtService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 foreach (lab_result_dt item in lab_Result_Dts)
                 {
                     item.ID = detailID;
@@ -283,7 +283,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 //insert lab result details
                 decimal detailID = 1;
                 if (_lab_result_dtService.Queryable().Count() > 0)
-                    detailID = _lab_result_dtService.Queryable().Max(e => e.ID) + 1;
+                    detailID = (_lab_result_dtService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 foreach (lab_result_dt item in lab_Result_Dts)
                 {
                     item.ID = detailID;

@@ -92,7 +92,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
 
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 var catalogIds = Model.CatalogIds.Split(',')
                             .Select(x => Convert.ToDecimal(x))
@@ -142,7 +142,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                 adm_item_log adm_item_log_obj = new adm_item_log();
                 decimal LogID = 1;
                 if (_adm_item_logService.Queryable().Count() > 0)
-                    LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+                    LogID = (_adm_item_logService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (var item in invItemlist)
                 {

@@ -144,14 +144,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 emr_prescription_treatment.AddRange(Model.emr_prescription_treatment);
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = _service.Queryable().Max(e => e.ID) + 1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 Model.ID = ID;
                 Model.CompanyID = CompanyID;
                 Model.CreatedBy = UserID;
                 Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = Request.LoginID();
-                Model.ModifiedBy = Request.LoginID();
+                Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Modified;
                 Model.emr_prescription_complaint = null;
@@ -167,7 +166,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 //insert complaint
                 decimal complaintID = 1;
                 if (_emr_prescription_complaintService.Queryable().Count() > 0)
-                    complaintID = _emr_prescription_complaintService.Queryable().Max(e => e.ID) + 1;
+                    complaintID = (_emr_prescription_complaintService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_complaint item in emr_prescription_complaint)
                 {
@@ -190,7 +189,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 //insert diagnos
                 decimal diagnosID = 1;
                 if (_emr_prescription_diagnosService.Queryable().Count() > 0)
-                    diagnosID = _emr_prescription_diagnosService.Queryable().Max(e => e.ID) + 1;
+                    diagnosID = (_emr_prescription_diagnosService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_diagnos item in emr_prescription_diagnos)
                 {
@@ -213,7 +212,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 //insert investigation
                 decimal investigationID = 1;
                 if (_emr_prescription_investigationService.Queryable().Count() > 0)
-                    investigationID = _emr_prescription_investigationService.Queryable().Max(e => e.ID) + 1;
+                    investigationID = (_emr_prescription_investigationService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_investigation item in emr_prescription_investigation)
                 {
@@ -236,7 +235,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 //insert Observation
                 decimal observationID = 1;
                 if (_emr_prescription_observationService.Queryable().Count() > 0)
-                    observationID = _emr_prescription_observationService.Queryable().Max(e => e.ID) + 1;
+                    observationID = (_emr_prescription_observationService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_observation item in emr_prescription_observation)
                 {
@@ -259,7 +258,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 //insert treatment
                 decimal treatmentID = 1;
                 if (_emr_prescription_treatmentService.Queryable().Count() > 0)
-                    treatmentID = _emr_prescription_treatmentService.Queryable().Max(e => e.ID) + 1;
+                    treatmentID = (_emr_prescription_treatmentService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_treatment item in emr_prescription_treatment)
                 {
@@ -284,7 +283,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 {
                     decimal TemplateID = 1;
                     if (_emr_prescription_treatment_templateService.Queryable().Count() > 0)
-                        TemplateID = _emr_prescription_treatment_templateService.Queryable().Max(e => e.ID) + 1;
+                        TemplateID = (_emr_prescription_treatment_templateService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     emr_prescription_treatment_template obj = new emr_prescription_treatment_template();
                     obj.ID = TemplateID;
@@ -308,7 +307,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     emr_appointment_mf appObj = new emr_appointment_mf();
                     decimal AppID = 0;
                     if (_emr_appointment_mfService.Queryable().Count() > 0)
-                        AppID = _emr_appointment_mfService.Queryable().Max(e => e.ID) + 1;
+                        AppID = (_emr_appointment_mfService.Queryable().Where(e => e.CompanyId == Request.CompanyID()).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     appObj.ID = AppID;
                     appObj.StatusId = (int)sys_dropdown_mfEnum.StatusId;
                     appObj.CompanyId = Request.CompanyID();
@@ -336,7 +335,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 }
                 decimal vitalID = 1;
                 if (_emr_vitalService.Queryable().Count() > 0)
-                    vitalID = _emr_vitalService.Queryable().Max(e => e.ID) + 1;
+                    vitalID = (_emr_vitalService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 foreach (var item in Model.emr_vital)
                 {
                     var vital = new emr_vital
@@ -597,7 +596,7 @@ Model?.emr_prescription_treatment
                 //insert complaint
                 decimal complaintID = 1;
                 if (_emr_prescription_complaintService.Queryable().Count() > 0)
-                    complaintID = _emr_prescription_complaintService.Queryable().Max(e => e.ID) + 1;
+                    complaintID = (_emr_prescription_complaintService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_complaint item in emr_prescription_complaint)
                 {
@@ -620,7 +619,7 @@ Model?.emr_prescription_treatment
                 //insert diagnos
                 decimal diagnosID = 1;
                 if (_emr_prescription_diagnosService.Queryable().Count() > 0)
-                    diagnosID = _emr_prescription_diagnosService.Queryable().Max(e => e.ID) + 1;
+                    diagnosID = (_emr_prescription_diagnosService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_diagnos item in emr_prescription_diagnos)
                 {
@@ -643,7 +642,7 @@ Model?.emr_prescription_treatment
                 //insert investigation
                 decimal investigationID = 1;
                 if (_emr_prescription_investigationService.Queryable().Count() > 0)
-                    investigationID = _emr_prescription_investigationService.Queryable().Max(e => e.ID) + 1;
+                    investigationID = (_emr_prescription_investigationService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_investigation item in emr_prescription_investigation)
                 {
@@ -666,7 +665,7 @@ Model?.emr_prescription_treatment
                 //insert Observation
                 decimal observationID = 1;
                 if (_emr_prescription_observationService.Queryable().Count() > 0)
-                    observationID = _emr_prescription_observationService.Queryable().Max(e => e.ID) + 1;
+                    observationID = (_emr_prescription_observationService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_observation item in emr_prescription_observation)
                 {
@@ -689,7 +688,7 @@ Model?.emr_prescription_treatment
                 //insert treatment
                 decimal treatmentID = 1;
                 if (_emr_prescription_treatmentService.Queryable().Count() > 0)
-                    treatmentID = _emr_prescription_treatmentService.Queryable().Max(e => e.ID) + 1;
+                    treatmentID = (_emr_prescription_treatmentService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (emr_prescription_treatment item in emr_prescription_treatment)
                 {
@@ -715,7 +714,7 @@ Model?.emr_prescription_treatment
                 {
                     decimal TemplateID = 1;
                     if (_emr_prescription_treatment_templateService.Queryable().Count() > 0)
-                        TemplateID = _emr_prescription_treatment_templateService.Queryable().Max(e => e.ID) + 1;
+                        TemplateID = (_emr_prescription_treatment_templateService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     emr_prescription_treatment_template obj = new emr_prescription_treatment_template();
                     obj.ID = TemplateID;
@@ -739,7 +738,7 @@ Model?.emr_prescription_treatment
                     emr_appointment_mf appObj = new emr_appointment_mf();
                     decimal AppID = 0;
                     if (_emr_appointment_mfService.Queryable().Count() > 0)
-                        AppID = _emr_appointment_mfService.Queryable().Max(e => e.ID) + 1;
+                        AppID = (_emr_appointment_mfService.Queryable().Where(e => e.CompanyId == Request.CompanyID()).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     appObj.ID = AppID;
                     appObj.StatusId = (int)sys_dropdown_mfEnum.StatusId;
                     appObj.CompanyId = Request.CompanyID();

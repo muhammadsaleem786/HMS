@@ -55,10 +55,10 @@ namespace HMS.Web.API.Areas.Employee
                 {
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     Model.ID = ID;
-                    Model.CompanyID = Request.CompanyID();
+                    Model.CompanyID = CompanyID;
                     Model.CityDropDownID = (int)sys_dropdown_mfEnum.City;
                     Model.CountryDropDownID = (int)sys_dropdown_mfEnum.Country;
                     Model.ObjectState = ObjectState.Added;
@@ -119,10 +119,10 @@ namespace HMS.Web.API.Areas.Employee
                 {
                     decimal ID = 1;
                     if (_service.Queryable().Count() > 0)
-                        ID = _service.Queryable().Max(e => e.ID) + 1;
+                        ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     Model.ID = ID;
-                    Model.CompanyID = Request.CompanyID();
+                    Model.CompanyID = CompanyID;
                     Model.CityDropDownID = (int)sys_dropdown_mfEnum.City;
                     Model.CountryDropDownID = (int)sys_dropdown_mfEnum.Country;
                     Model.ObjectState = ObjectState.Added;

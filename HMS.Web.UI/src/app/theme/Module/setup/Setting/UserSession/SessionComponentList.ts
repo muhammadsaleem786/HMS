@@ -188,6 +188,11 @@ export class SessionComponentList {
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();
+            if (this.model.ID == 0 && this.model.ShiftStartTime == undefined) {
+                this.loader.HideLoader();
+                this.toastr.Error("Start time is required.");
+                return;
+            }
             if (this.model.ID != 0 && this.model.TotalCollection != this.model.ClosingBalance) {
                 this.loader.HideLoader();
                 this.toastr.Error("Closing balance must be equal to total revenue.");

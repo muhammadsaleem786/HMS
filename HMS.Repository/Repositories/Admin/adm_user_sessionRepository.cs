@@ -72,7 +72,8 @@ namespace HMS.Repository.Repositories.Admin
                             ClosingComments = s.ClosingComments,
                             OpeningComments = s.OpeningComments,
                             ClosingBalance = s.ClosingBalance,
-                            Name=s.adm_user_mf.Name
+                            Name = s.adm_user_mf.Name,
+                            UserId=s.UserId
                         }).ToList<object>();
                 }
                 else
@@ -90,7 +91,8 @@ namespace HMS.Repository.Repositories.Admin
                            ClosingComments = s.ClosingComments,
                            OpeningComments = s.OpeningComments,
                            ClosingBalance = s.ClosingBalance,
-                           Name = s.adm_user_mf.Name
+                           Name = s.adm_user_mf.Name,
+                           UserId = s.UserId
                        }).ToList<object>();
                 }
             }
@@ -166,63 +168,65 @@ namespace HMS.Repository.Repositories.Admin
                     )));
                     }
                 }
-                    IQueryable<adm_user_session> filteredData = repository.Queryable().Where(predicate);
+                IQueryable<adm_user_session> filteredData = repository.Queryable().Where(predicate);
 
-                    if (string.IsNullOrEmpty(PFilter.OrderBy))
-                        PFilter.OrderBy = "ID";
+                if (string.IsNullOrEmpty(PFilter.OrderBy))
+                    PFilter.OrderBy = "ID";
 
-                    OrderByShiftStartTime = PFilter.OrderBy.IndexOf("ShiftStartTime") > -1;
-                    OrderByShiftEndTime = PFilter.OrderBy.IndexOf("ShiftEndTime") > -1;
+                OrderByShiftStartTime = PFilter.OrderBy.IndexOf("ShiftStartTime") > -1;
+                OrderByShiftEndTime = PFilter.OrderBy.IndexOf("ShiftEndTime") > -1;
 
 
-                    Expression<Func<adm_user_session, string>> orderingFunction = (c =>
-                                                                  OrderByShiftStartTime ? c.ShiftStartTime.ToString() :
-                                                                    OrderByShiftEndTime ? c.ShiftEndTime.ToString() : ""
-                                                                  );
+                Expression<Func<adm_user_session, string>> orderingFunction = (c =>
+                                                              OrderByShiftStartTime ? c.ShiftStartTime.ToString() :
+                                                                OrderByShiftEndTime ? c.ShiftEndTime.ToString() : ""
+                                                              );
 
-                    if (PFilter.IsOrderAsc)
-                        filteredData = filteredData.OrderBy(orderingFunction);
-                    else
-                        filteredData = filteredData.OrderByDescending(orderingFunction);
+                if (PFilter.IsOrderAsc)
+                    filteredData = filteredData.OrderBy(orderingFunction);
+                else
+                    filteredData = filteredData.OrderByDescending(orderingFunction);
 
-                    filteredData = filteredData.OrderByDescending(d => (d.ID)).AsQueryable();
-                    objResult.TotalRecord = filteredData.Count();
-                    if (IgnorePaging)
-                    {
+                filteredData = filteredData.OrderByDescending(d => (d.ID)).AsQueryable();
+                objResult.TotalRecord = filteredData.Count();
+                if (IgnorePaging)
+                {
 
-                        objResult.DataList = filteredData
-                            .Select(s => new
-                            {
-                                s.ID,
-                                ShiftStart = s.ShiftStartTime,
-                                ShiftEnd = s.ShiftEndTime,
-                                StartingCash = s.StartingCash,
-                                TransactionsCount = s.TransactionsCount,
-                                TotalCollection = s.TotalCollection,
-                                ClosingComments = s.ClosingComments,
-                                OpeningComments = s.OpeningComments,
-                                ClosingBalance = s.ClosingBalance,
-                                Name = s.adm_user_mf.Name
-                            }).ToList<object>();
-                    }
-                    else
-                    {
+                    objResult.DataList = filteredData
+                        .Select(s => new
+                        {
+                            s.ID,
+                            ShiftStart = s.ShiftStartTime,
+                            ShiftEnd = s.ShiftEndTime,
+                            StartingCash = s.StartingCash,
+                            TransactionsCount = s.TransactionsCount,
+                            TotalCollection = s.TotalCollection,
+                            ClosingComments = s.ClosingComments,
+                            OpeningComments = s.OpeningComments,
+                            ClosingBalance = s.ClosingBalance,
+                            Name = s.adm_user_mf.Name,
+                            UserId = s.UserId
+                        }).ToList<object>();
+                }
+                else
+                {
 
-                        objResult.DataList = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
-                           .Select(s => new
-                           {
-                               s.ID,
-                               ShiftStart = s.ShiftStartTime,
-                               ShiftEnd = s.ShiftEndTime,
-                               StartingCash = s.StartingCash,
-                               TransactionsCount = s.TransactionsCount,
-                               TotalCollection = s.TotalCollection,
-                               ClosingComments = s.ClosingComments,
-                               OpeningComments = s.OpeningComments,
-                               ClosingBalance = s.ClosingBalance,
-                               Name = s.adm_user_mf.Name
-                           }).ToList<object>();
-                    }
+                    objResult.DataList = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
+                       .Select(s => new
+                       {
+                           s.ID,
+                           ShiftStart = s.ShiftStartTime,
+                           ShiftEnd = s.ShiftEndTime,
+                           StartingCash = s.StartingCash,
+                           TransactionsCount = s.TransactionsCount,
+                           TotalCollection = s.TotalCollection,
+                           ClosingComments = s.ClosingComments,
+                           OpeningComments = s.OpeningComments,
+                           ClosingBalance = s.ClosingBalance,
+                           Name = s.adm_user_mf.Name,
+                           UserId = s.UserId
+                       }).ToList<object>();
+                }
             }
             catch (Exception ex)
             {

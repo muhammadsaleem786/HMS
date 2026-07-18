@@ -44,25 +44,25 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of SessionList" index as i>
-                                <td (click)="AddRecord(item.ID)">
+                                <td>
                                     {{item.Name}}
                                 </td>
-                                <td (click)="AddRecord(item.ID)">
+                                <td>
                                     {{item.ShiftStart | date:'dd/MM/yyyy  hh:mm a' }}
                                 </td>
-                                <td (click)="AddRecord(item.ID)">
+                                <td>
                                     {{item.ShiftEnd | date:'dd/MM/yyyy hh:mm a' }}
                                 </td>
-                                <td (click)="AddRecord(item.ID)">
+                                <td>
                                     {{item.OpeningComments}}
                                 </td>
-                                <td (click)="AddRecord(item.ID)">
+                                <td>
                                     {{item.ClosingComments}}
                                 </td>
-                                <td (click)="AddRecord(item.ID)">
+                                <td>
                                     {{item.StartingCash}}
                                 </td>
-                                <td (click)="AddRecord(item.ID)">
+                                <td>
                                     {{item.ClosingBalance}}
                                 </td>
                                 <td>

@@ -69,7 +69,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 decimal CompanyID = Request.CompanyID();
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) +1;
+                    ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 DateTime fullDateTime = DateTime.Today.Add(DateTime.Now.TimeOfDay);
 
@@ -269,7 +269,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 }
 
                 decimal CompanyID = Request.CompanyID();
-                var shift = _service.Queryable().Where(a => a.ID == Model.ID).FirstOrDefault();
+                var shift = _service.Queryable().Where(a => a.ID == Model.ID && a.CompanyId == CompanyID).FirstOrDefault();
                 if (shift == null)
                 {
                     objResponse.IsSuccess = false;
@@ -443,7 +443,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _service.PaginationWithParm(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-
             }
             catch (Exception ex)
             {

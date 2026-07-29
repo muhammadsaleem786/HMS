@@ -501,7 +501,7 @@ namespace HMS.Web.API.Areas.Employee
             {
                 var CompanyID = Request.CompanyID();
                 objResponse.ResultSet = _service.Queryable()
-                    .Where(e => e.CompanyID == CompanyID && e.ID.ToString() == Id).FirstOrDefault();
+                    .Where(e => e.CompanyID == CompanyID && e.ID.ToString() == Id && e.CompanyID == CompanyID).FirstOrDefault();
             }
             catch (Exception ex)
             {

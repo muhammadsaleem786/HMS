@@ -1604,7 +1604,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
             {
                 var CompanyID = Request.CompanyID();
                 //objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).Include(x=>x.adm_user_company.Select(s=> s.adm_role_mf)).FirstOrDefault();
-                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId==CompanyID).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -1620,7 +1620,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
             try
             {
                 var CompanyID = Request.CompanyID();
-                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId == CompanyID).FirstOrDefault();
             }
             catch (Exception ex)
             {

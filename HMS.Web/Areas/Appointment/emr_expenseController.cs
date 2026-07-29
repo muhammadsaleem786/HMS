@@ -252,7 +252,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                var result = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId==CompanyID).FirstOrDefault();
                 var employee = _pr_employee_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.ID == result.EmployeeId).FirstOrDefault();
                 var vendor = _pur_vendorService.Queryable().Where(a => a.CompanyID == CompanyID && a.ID == result.VendorId).FirstOrDefault();
                 result.EmployeeName = employee != null? $"{employee.FirstName} {employee.LastName}": string.Empty;
@@ -278,7 +278,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId == CompanyID).FirstOrDefault();
             }
             catch (Exception ex)
             {

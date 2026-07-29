@@ -252,7 +252,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal UserID = Request.LoginID();
                 decimal CompanyID = Request.CompanyID();
                 var DoctorList = _emr_patientService.DoctorList(CompanyID, UserID);
-                var result = _service.Queryable().Where(e => e.ID.ToString() == Id).Include(a => a.adm_company).FirstOrDefault();
+                var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId == CompanyID).Include(a => a.adm_company).FirstOrDefault();
                 if (result != null)
                 {
                     var doctorName = result.DoctorId == 0
@@ -296,7 +296,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId == CompanyID).FirstOrDefault();
             }
             catch (Exception ex)
             {

@@ -194,7 +194,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 var CompanyID = Request.CompanyID();
                 var DocumentType = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 13).ToList();
-                var emr_documentObj = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                var emr_documentObj = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID==CompanyID).FirstOrDefault();
                 objResponse.ResultSet = new
                 {
                     DocumentType = DocumentType,
@@ -216,7 +216,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == CompanyID).FirstOrDefault();
             }
             catch (Exception ex)
             {

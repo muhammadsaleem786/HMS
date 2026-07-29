@@ -253,7 +253,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
-                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).FirstOrDefault();
+                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == CompanyID).FirstOrDefault();
             }
             catch (Exception ex)
             {

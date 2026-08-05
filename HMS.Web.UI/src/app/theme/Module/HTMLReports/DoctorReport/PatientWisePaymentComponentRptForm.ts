@@ -37,7 +37,6 @@ export class PatientWisePaymentComponentRptForm implements OnInit {
         this.loader.ShowLoader();
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
         this.CompanyName = this.CompanyObj.CompanyName;
-        //this.Keywords = this._CommonService.GetKeywords("");
         this.PayrollRegion = this._CommonService.getPayrollRegion();
     }
     ngOnInit() {

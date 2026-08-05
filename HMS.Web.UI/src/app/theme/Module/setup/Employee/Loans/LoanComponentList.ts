@@ -383,7 +383,6 @@ export class LoanComponentList {
 
 
     GetAdjustmentModel(id: number, ScreenType: string) {
-        ;
         if (id) {
             var item = this.PRDListModel.filter(x => x.ID == id && x.ScreenType == ScreenType);
             if (item.length > 0) {

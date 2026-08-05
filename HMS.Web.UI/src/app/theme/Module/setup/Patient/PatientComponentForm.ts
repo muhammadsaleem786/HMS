@@ -131,10 +131,10 @@ export class PatientComponentForm implements OnInit {
         this.loader.ShowLoader();
         this._PatientService.FormLoad().then(m => {
             if (m.IsSuccess) {
-                debugger
+                
                 if (this.GenderIds != null) {
                     this.GenderList = m.ResultSet.GenderList.filter(x => this.GenderIds.includes(x.ID));
-                    debugger
+                    
                     if (this.IsEdit == false) {
                         this.model.MRNO = m.ResultSet.MRNO;
                         this.model.BillTypeId = 1;

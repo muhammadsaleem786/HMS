@@ -32,18 +32,18 @@
             </div>
 
             <!--<div class="col-sm-3">
-                <div class="form-group">
-                    <label for="">Patient</label>
-                    <input type="text" id="PatientSearchByName" (click)="LoadPatient()" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.PatientName" placeholder="Search Patient" autocomplete="off">
+        <div class="form-group">
+            <label for="">Patient</label>
+            <input type="text" id="PatientSearchByName" (click)="LoadPatient()" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.PatientName" placeholder="Search patient by mobile no." autocomplete="off">
 
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="">Doctor</label>
-                    <input type="text" id="DoctorSearch" (click)="LoadDoctor()" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.DoctorName" class="form-control form-control-sm form-control-alternative" placeholder="Search Doctor" autocomplete="off">
-                </div>
-            </div>-->
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="form-group">
+            <label for="">Doctor</label>
+            <input type="text" id="DoctorSearch" (click)="LoadDoctor()" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.DoctorName" class="form-control form-control-sm form-control-alternative" placeholder="Search Doctor" autocomplete="off">
+        </div>
+    </div>-->
             <div class="col-sm-1">
                 <label class="opacity0">Report</label>
                 <button class="btn btn-primary btn-block" (click)="RunReport()">View</button>
@@ -58,8 +58,8 @@
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" (click)="DownloadPDF()">Downlaod Pdf</a>
                         <a class="dropdown-item" (click)="DownloadExcel()">Downlaod Excel</a>
-                        
-                       
+
+
                     </div>
                 </div>
             </div>

@@ -103,6 +103,7 @@
     <Compile Include="CustomModel\ResponseInfo.cs" />
     <Compile Include="CustomModel\SalaryModel.cs" />
     <Compile Include="CustomModel\ScreenModel.cs" />
+    <Compile Include="CustomModel\ShareRecord.cs" />
     <Compile Include="CustomModel\sys_holidaysModel.cs" />
     <Compile Include="CustomModel\TableColumn.cs" />
     <Compile Include="CustomModel\TemplateModel.cs" />

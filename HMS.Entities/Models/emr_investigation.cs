@@ -13,7 +13,9 @@ namespace HMS.Entities.Models
         {
             this.lab_parameter = new List<lab_parameter>();
             this.lab_patient_test = new List<lab_patient_test>();
+            this.ipd_admission_lab = new List<ipd_admission_lab>();
             this.lab_result_mf = new List<lab_result_mf>();
+            this.adm_user_share = new List<adm_user_share>();
             this.emr_investigation_Item = new List<emr_investigation_Item>();
         }
         public decimal ID { get; set; }
@@ -37,7 +39,9 @@ namespace HMS.Entities.Models
         public virtual sys_drop_down_value sys_drop_down_value1 { get; set; }
         public virtual ICollection<lab_parameter> lab_parameter { get; set; }
         public virtual ICollection<lab_patient_test> lab_patient_test { get; set; }
+        public virtual ICollection<ipd_admission_lab> ipd_admission_lab { get; set; }
         public virtual ICollection<lab_result_mf> lab_result_mf { get; set; }
         public virtual ICollection<emr_investigation_Item> emr_investigation_Item { get; set; }
+        public virtual ICollection<adm_user_share> adm_user_share { get; set; }
     }
 }

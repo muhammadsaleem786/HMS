@@ -121,7 +121,6 @@ export class PayrollComponentForm implements OnInit, OnChanges {
             this.loader.ShowLoader();
             this._PayrollService.GetEmployeesByPayScheduleID(this.model.PayScheduleId).then(m => {
                 if (m.IsSuccess) {
-                    ;
                     this.EmployeesList = m.ResultSet.EmployeeList;
                     this.EmployeesList.forEach(x => {
                         this.model.EmployeeIds.push(x.id);

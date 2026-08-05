@@ -28,7 +28,7 @@ import { CurrentStockRptForm } from '../../../theme/Module/HTMLReports/Inventory
 import { SaleByPatientRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/SaleByPatientRptForm';
 import { PurchaseRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/PurchaseRptForm';
 import { ProfitLossRptForm } from '../../../theme/Module/HTMLReports/FinancialReport/ProfitLossRptForm';
-
+import { UserShareComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/UserShareComponentRptForm';
 @NgModule({
     imports: [
         CommonUtilsModule, NgbModule, 
@@ -38,7 +38,7 @@ import { ProfitLossRptForm } from '../../../theme/Module/HTMLReports/FinancialRe
         CashFlowRptForm, MedicinewiseRptForm, OutstandingIncomeRptForm, PaymentSummaryRptForm, TreatmentwiseRptForm,
         BirthdayComponentRptForm, DetailedPatientComponentRptForm, FollowupComponentRptForm, OutstandingComponentRptForm, PaymentComponentRptForm,
         ClinicwiseComponentRptForm, PaymentSummaryComponentRptForm, PatientWisePaymentComponentRptForm, DateWisePaymentComponentRptForm,
-        PatientDetailComponentForm, ProfitLossRptForm, CurrentStockRptForm, SaleByPatientRptForm, ProcedureComponentRptForm, FeeComponentForm, AppointmentComponentReportForm, PurchaseRptForm
+        UserShareComponentRptForm,PatientDetailComponentForm, ProfitLossRptForm, CurrentStockRptForm, SaleByPatientRptForm, ProcedureComponentRptForm, FeeComponentForm, AppointmentComponentReportForm, PurchaseRptForm
     ],
     providers: [
         CookieService,

@@ -104,23 +104,15 @@ export class ipd_admission_lab {
     AdmissionId: number;
     AppointmentId: number;
     PatientId: number;
-    LabTypeId: number;
-    LabTypeDropdownId: number;
-    Notes: string;
-    CollectDate: Date;
-    TestDate: Date;
-    ReportDate: Date;
-    OrderingPhysician: string;
-    Parameter: string;
-    ResultValues: string;
-    ABN: string;
-    Flags: string;
-    Comment: string;
-    TestPerformedAt: string;
-    TestDescription: string;
-    StatusId: number;
-    ResultId: number;
-
+    PatientName: string;
+    Age: number;
+    Gender: number;
+    PriorityId: number;
+    PriorityName: string;
+    ClinicalNotes: string;
+    CatalogIds: string;
+    CatalogId: number;
+    ReferringPhysician: string;
 }
 export class ipd_admission_medication {
     ID: number;

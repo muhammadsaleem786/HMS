@@ -47,6 +47,10 @@ export class ItemService {
         var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'FilterID': FilterID, 'IgnorePaging': false };
         return this.http.Get(this.urlToApi + '/GetItemStockList', data).then(e => e);
     }
+    GetHistoryById(Id: number): Promise<any> {
+        var data = { 'Id': Id };
+        return this.http.Get(this.urlToApi + '/ItemLogsById', data).then(e => e);
+    }
     LoadDropdown(Ids: string): Promise<any> {
         var data = { 'DropdownIds': Ids };
         return this.http.Get(this.urlToApi + '/LoadDropdown', data).then(e => e);
@@ -109,6 +113,9 @@ export class ItemService {
     }
     PublishItem(entity: ItemModel): Promise<any> {
         return this.http.Put(this.urlToApi + '/ItemPublish', entity).then(e => e);
+    }
+    UpdateStock(entity: ItemModel): Promise<any> {
+        return this.http.Put(this.urlToApi + '/UpdateStock', entity).then(e => e);
     }
     ExportExcel(ExportType: number, FromDate: string, ToDate: string): Promise<any> {
         var data = { 'ExportType': ExportType, 'FromDate': FromDate, 'ToDate': ToDate };

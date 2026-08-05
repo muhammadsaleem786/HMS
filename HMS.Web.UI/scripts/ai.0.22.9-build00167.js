@@ -642,7 +642,6 @@ var Microsoft;
             return ajaxRecord;
         })();
         ApplicationInsights.ajaxRecord = ajaxRecord;
-        ;
     })(ApplicationInsights = Microsoft.ApplicationInsights || (Microsoft.ApplicationInsights = {}));
 })(Microsoft || (Microsoft = {}));
 ;
@@ -856,7 +855,6 @@ var Microsoft;
             FieldType[FieldType["Hidden"] = 4] = "Hidden";
         })(ApplicationInsights.FieldType || (ApplicationInsights.FieldType = {}));
         var FieldType = ApplicationInsights.FieldType;
-        ;
         var Serializer = (function () {
             function Serializer() {
             }

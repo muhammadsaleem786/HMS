@@ -37,7 +37,6 @@ namespace HMS.Entities.Models
             this.ipd_admission = new List<ipd_admission>();
             this.ipd_admission_charges = new List<ipd_admission_charges>();
             this.ipd_admission_imaging = new List<ipd_admission_imaging>();
-            this.ipd_admission_lab = new List<ipd_admission_lab>();
             this.ipd_admission_medication = new List<ipd_admission_medication>();
             this.ipd_admission_notes = new List<ipd_admission_notes>();
             this.ipd_admission_vital = new List<ipd_admission_vital>();
@@ -84,6 +83,7 @@ namespace HMS.Entities.Models
             this.emr_investigation = new List<emr_investigation>();
             this.lab_parameter = new List<lab_parameter>();
             this.lab_patient_test = new List<lab_patient_test>();
+            this.ipd_admission_lab = new List<ipd_admission_lab>();
 
             this.lab_result_mf = new List<lab_result_mf>();
             this.lab_result_dt = new List<lab_result_dt>();
@@ -99,6 +99,8 @@ namespace HMS.Entities.Models
         public string ReceiptFooter { get; set; }
         public Nullable<int> GenderID { get; set; }
         public string ContactPersonFirstName { get; set; }
+        public string PharmacyName { get; set; }
+        public string InvoiceNote { get; set; }
         public bool IsCNICMandatory { get; set; }
         public Nullable<int> TokenNo {  get; set; }
         public string ContactPersonLastName { get; set; }
@@ -108,6 +110,8 @@ namespace HMS.Entities.Models
         public Nullable<int> LanguageID { get; set; }
         public Nullable<int> CityDropDownId { get; set; }
         public string CompanyLogo { get; set; }
+        public string PharmacyLogo { get; set; }
+        public Nullable<bool> IsPharmacy { get; set; }
         public Nullable<int> CountryDropdownId { get; set; }
         public string Phone { get; set; }
         public string Fax { get; set; }

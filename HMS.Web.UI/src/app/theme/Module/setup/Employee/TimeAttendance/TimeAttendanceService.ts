@@ -70,7 +70,6 @@ export class TimeAttendanceService {
 
     GetFilterEmployees(Keyword: string): Promise<any> {
         var data = { 'Keyword': Keyword };
-        ;
         return this.http.Get(GlobalVariable.BASE_Api_URL + '/api/Admin/pr_employee_mf' + '/GetFilterEmployees', data);
     }
 

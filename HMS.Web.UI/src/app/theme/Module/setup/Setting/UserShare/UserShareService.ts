@@ -12,7 +12,7 @@ export class UserShareService {
         return this.http.Get(this.urlToApi + '/PaginationWithParm', data).then(e => e);
     }
 
- 
+
     ExportData(ExportType: number, CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string): Promise<any> {
         var data = { 'ExportType': ExportType, 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': true };
         return this.http.Get(this.urlToApi + '/ExportData', data).then(e => {
@@ -29,12 +29,35 @@ export class UserShareService {
         var data = { 'Id': Id };
         return this.http.Get(this.urlToApi + '/GetMedicineById', data).then(e => e);
     }
-    
+
+    GetByDoctorId(Id: number): Promise<any> {
+        var data = { 'Id': Id };
+        return this.http.Get(this.urlToApi + '/GetByDoctorId', data).then(e => e);
+    }
+
     SaveOrUpdate(entity: UserShareModel): Promise<any> {
         if (isNaN(entity.ID) || entity.ID == 0)
             return this.http.Post(this.urlToApi + '/Save', entity).then(e => e);
         else
             return this.http.Put(this.urlToApi + '/Update', entity).then(e => e);
+    }
+    SaveExpense(entity: UserShareModel): Promise<any> {
+        return this.http.Put(this.urlToApi + '/SaveExpense', entity).then(e => e);
+    }
+    SaveDiscount(entity: UserShareModel): Promise<any> {
+        return this.http.Put(this.urlToApi + '/SaveDiscount', entity).then(e => e);
+    }
+    searchServices(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/searchServices', data).then(e => e);
+    }
+    SearchItemByName(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/SearchItemByName', data).then(e => e);
+    }
+    SearchLabTest(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/SearchLabTest', data).then(e => e);
     }
     Delete(Id: string): Promise<any> {
         var data = { 'Id': Id };

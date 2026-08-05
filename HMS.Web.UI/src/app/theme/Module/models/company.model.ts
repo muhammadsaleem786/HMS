@@ -16,7 +16,7 @@ export class Company {
     Phone: string;
     Fax: string;
     Website: string;
-    LanguageID: number=0;
+    LanguageID: number = 0;
     GenderID: number;
     ContactPersonFirstName: string;
     ContactPersonLastName: string;
@@ -37,6 +37,10 @@ export class Company {
     WDFriday: boolean;
     WDSatuday: boolean;
     WDSunday: boolean;
+    PharmacyName: string;
+    InvoiceNote: string;
+    PharmacyLogo: string;
+    IsPharmacy: boolean = false;
     adm_company_location: Array<AdmCompanyLocation> = [];
 }
 export class AdmCompanyLocation {

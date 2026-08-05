@@ -772,7 +772,9 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 {
                     value = z.ID,
                     label = z.ServiceName,
-                    Price = z.Price
+                    Price = z.Price,
+                    z.TotalSessions,
+                    z.CategoryId,
                 }).ToList();
                 objResponse.ResultSet = new
                 {

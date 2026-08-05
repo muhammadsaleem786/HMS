@@ -37,6 +37,8 @@ namespace HMS.Entities.Enum
         CPTCodeDropdownId = 29,
         LabTypeDropdownId = 28,
         SpecialtyDropdownId = 24,
+        ServiceCategoryDropdownId = 74,
+        ServiceDeliveryTypeDropdownId = 75,
         SaltCategoryDropdownId = 67,
         DateFormatDropDownID = 36,
         Module = 6,
@@ -79,5 +81,6 @@ namespace HMS.Entities.Enum
         BrandDropDownId = 73,
         TimeTypeDropDown = 65,
         SMSTypeDropDown = 66,
+        ReasonDropdownId=76,
     }
 }

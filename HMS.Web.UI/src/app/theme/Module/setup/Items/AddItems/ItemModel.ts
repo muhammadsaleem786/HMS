@@ -33,6 +33,11 @@
     FormulationName: string;
     CategoryName: string;
     UnitName: string;
+    TransactionDate: string;
+    ReasonId: number;
+    ReasonDropdownId: number;
+    Note: string;
+    IsIncrease: boolean;
 }
 
 export class ImpoertItemModel {

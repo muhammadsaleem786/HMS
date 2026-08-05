@@ -12,6 +12,7 @@ using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -93,6 +94,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.sys_drop_down_value = null;
                 Model.sys_drop_down_value1 = null;
                 Model.sys_drop_down_value4 = null;
+                Model.adm_user_share = null;
                 _service.Insert(Model);
 
                 try
@@ -127,7 +129,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         [ActionName("Update")]
         public async Task<ResponseInfo> Update(adm_item Model)
         {
-
             var objResponse = new ResponseInfo();
             try
             {
@@ -137,6 +138,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
+                decimal CompanyID = Request.CompanyID();
+                var oldModel = _service.Queryable().AsNoTracking()
+                    .FirstOrDefault(x => x.ID == Model.ID && x.CompanyId == CompanyID);
                 Model.UnitDropDownID = (int)sys_dropdown_mfEnum.ItemUnitDropDownID;
                 Model.CategoryDropDownID = (int)sys_dropdown_mfEnum.CategoryDropDownID;
                 Model.ItemTypeDropDownID = (int)sys_dropdown_mfEnum.ItemTypeDropDownID;
@@ -148,11 +152,93 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.adm_user_mf = null;
                 Model.adm_user_mf1 = null;
                 Model.adm_company = null;
-                decimal CompanyID = Request.CompanyID();
+                Model.adm_user_share = null;
                 Model.ModifiedBy = Request.LoginID();
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Modified;
                 _service.Update(Model);
+                decimal LogID = 1;
+                if (_adm_item_logService.Queryable().Count() > 0)
+                    LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+
+                if (oldModel.CostPrice != Model.CostPrice)
+                {
+                    AddItemLog(
+                        CompanyID,
+                        Model.ID,
+                        "Update Cost Price",
+                        LogID++
+                    );
+                }
+                if (oldModel.SalePrice != Model.SalePrice)
+                {
+                    AddItemLog(
+                        CompanyID,
+                        Model.ID,
+                        "Update Sale Price",
+                        LogID++
+                    );
+                }
+
+                if (oldModel.VendorId != Model.VendorId)
+                {
+                    AddItemLog(
+                        CompanyID,
+                        Model.ID,
+                        "Update Preferred Vendor",
+                        LogID++
+                    );
+                }
+
+                if (oldModel.BrandId != Model.BrandId)
+                {
+                    AddItemLog(
+                        CompanyID,
+                        Model.ID,
+                        "Update Brand",
+                        LogID++
+                    );
+                }
+
+                if (oldModel.GenericId != Model.GenericId)
+                {
+                    AddItemLog(
+                        CompanyID,
+                        Model.ID,
+                        "Update Formulation",
+                        LogID++
+                    );
+                }
+
+                if (oldModel.IsActive != Model.IsActive)
+                {
+                    AddItemLog(
+                        CompanyID,
+                        Model.ID,
+                        "Update Status",
+                        LogID++
+                    );
+                }
+
+                if (oldModel.IsAllowNegativeStock != Model.IsAllowNegativeStock)
+                {
+                    AddItemLog(
+                        CompanyID,
+                        Model.ID,
+                        "Update Allow Negative Stock",
+                        LogID++
+                    );
+                }
+
+                if (oldModel.InventoryStockQuantity != Model.InventoryStockQuantity)
+                {
+                    AddItemLog(
+                        CompanyID,
+                        Model.ID,
+                        "Update Reorder Stock Qty",
+                        LogID++
+                    );
+                }
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
@@ -176,6 +262,21 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Logger.Trace.Error(ex);
             }
             return objResponse;
+        }
+        private void AddItemLog(decimal companyId, decimal itemId, string description, decimal logId)
+        {
+            adm_item_log adm_item_log_obj = new adm_item_log();
+            adm_item_log_obj.ID = logId;
+            adm_item_log_obj.CompanyId = companyId;
+            adm_item_log_obj.ItemId = itemId;
+            adm_item_log_obj.Type = "Item Log";
+            adm_item_log_obj.Description = description;
+            adm_item_log_obj.CreatedBy = Request.LoginID();
+            adm_item_log_obj.CreatedDate = Request.DateTimes();
+            adm_item_log_obj.ModifiedBy = Request.LoginID();
+            adm_item_log_obj.ModifiedDate = Request.DateTimes();
+            adm_item_log_obj.ObjectState = ObjectState.Added;
+            _adm_item_logService.Insert(adm_item_log_obj);
         }
         [HttpPost]
         [HttpGet]
@@ -425,7 +526,105 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             return objResponse;
 
         }
+        [HttpPut]
+        [HttpGet]
+        [ActionName("UpdateStock")]
+        public async Task<ResponseInfo> UpdateStock(adm_item Model)
+        {
 
+            var objResponse = new ResponseInfo();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = MessageStatement.BadRequest;
+                    return objResponse;
+                }
+                decimal CompanyID = Request.CompanyID();
+                var itemObj = _service.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.ID).FirstOrDefault();
+                if (itemObj == null)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = MessageStatement.NotFound;
+                    return objResponse;
+                }
+                itemObj.Note = Model.Note;
+                itemObj.TransactionDate = DateTime.UtcNow;
+                itemObj.ReasonId = Model.ReasonId;
+                itemObj.ReasonDropdownId = (int)sys_dropdown_mfEnum.ReasonDropdownId;
+                itemObj.sys_drop_down_value = null;
+                itemObj.sys_drop_down_value1 = null;
+                itemObj.adm_user_mf = null;
+                itemObj.adm_user_mf1 = null;
+                itemObj.adm_company = null;
+                itemObj.adm_user_share = null;
+                itemObj.ModifiedBy = Request.LoginID();
+                itemObj.ModifiedDate = Request.DateTimes();
+                itemObj.ObjectState = ObjectState.Modified;
+                _service.Update(itemObj);
+
+                inv_stock inv_Stock = new inv_stock();
+                decimal ID = 1;
+                if (_inv_stockService.Queryable().Count() > 0)
+                    ID = _inv_stockService.Queryable().Max(e => e.ID) + 1;
+                inv_Stock.ID = ID;
+                inv_Stock.CompanyId = CompanyID;
+                inv_Stock.ItemID = Model.ID;
+                if (Model.IsIncrease)
+                    inv_Stock.Quantity += Convert.ToDecimal(Model.InventoryOpeningStock);
+                else
+                    inv_Stock.Quantity -= Convert.ToDecimal(Model.InventoryOpeningStock);
+                inv_Stock.CreatedBy = Request.LoginID();
+                inv_Stock.CreatedDate = Request.DateTimes();
+                inv_Stock.ModifiedBy = Request.LoginID();
+                inv_Stock.ModifiedDate = Request.DateTimes();
+                inv_Stock.ObjectState = ObjectState.Added;
+                _inv_stockService.Insert(inv_Stock);
+                //log maintain
+                adm_item_log adm_item_log_obj = new adm_item_log();
+                decimal LogID = 1;
+                if (_adm_item_logService.Queryable().Count() > 0)
+                    LogID = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
+                adm_item_log_obj.ID = LogID;
+                adm_item_log_obj.CompanyId = CompanyID;
+                adm_item_log_obj.ItemId = Model.ID;
+                adm_item_log_obj.Quantity = Model.InventoryOpeningStock.ToString();
+                adm_item_log_obj.Type = "Item Log";
+                if (Model.IsIncrease)
+                    adm_item_log_obj.Description = "Increase Quantity";
+                else
+                    adm_item_log_obj.Description = "Decrease Quantity";
+                adm_item_log_obj.CreatedBy = Request.LoginID();
+                adm_item_log_obj.CreatedDate = Request.DateTimes();
+                adm_item_log_obj.ModifiedBy = Request.LoginID();
+                adm_item_log_obj.ModifiedDate = Request.DateTimes();
+                adm_item_log_obj.ObjectState = ObjectState.Added;
+                _adm_item_logService.Insert(adm_item_log_obj);
+                try
+                {
+                    await _unitOfWorkAsync.SaveChangesAsync();
+                    objResponse.Message = MessageStatement.Update;
+                }
+                catch (DbUpdateException)
+                {
+                    if (!ModelExists(Model.ID.ToString()))
+                    {
+                        objResponse.IsSuccess = false;
+                        objResponse.ErrorMessage = MessageStatement.NotFound;
+                        return objResponse;
+                    }
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
         [HttpPut]
         [HttpGet]
         [ActionName("ItemPublish")]
@@ -736,6 +935,56 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             return objResponse;
         }
         [HttpGet]
+        [ActionName("ItemLogsById")]
+        public ResponseInfo ItemLogsById(string Id)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                var CompanyID = Request.CompanyID();
+                int userid = Convert.ToInt32(Request.LoginID());
+                var result = _adm_item_logService.Queryable().Where(e => e.CompanyId == CompanyID && e.Type == "Item Log" && e.ItemId.ToString() == Id)
+                     .Select(e => new
+                     {
+                         e.ID,
+                         e.CompanyId,
+                         e.Type,
+                         e.ItemId,
+                         e.Description,
+                         e.Quantity,
+                         e.CreatedDate,
+                         e.ModifiedDate,
+                         CreatedBy = e.adm_user_mf.Name,
+                         ModifiedBy = e.adm_user_mf1.Name,
+                     }).ToList();
+                var itemIds = result.Select(r => r.ItemId).Distinct().ToList();
+                var itemNames = _service.Queryable().Where(e => itemIds.Contains(e.ID)).Select(e => new { e.ID, e.Name }).ToList();
+                var fResult = result.Select(r => new
+                {
+                    r.Description,
+                    r.CreatedDate,
+                    r.ModifiedDate,
+                    r.CreatedBy,
+                    r.ModifiedBy,
+                    r.Quantity,
+                    r.Type,
+                    itemName = itemNames.FirstOrDefault(n => n.ID == r.ItemId)?.Name
+                });
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = new
+                {
+                    result = fResult,
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        [HttpGet]
         [ActionName("UpdateStatus")]
         public ResponseInfo UpdateStatus(string Id, bool IsActive)
         {
@@ -867,7 +1116,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 objResult = _service.PaginationWithGroupParm(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, FilterID, IgnorePaging);
-                var ids = new int[] { 73, 64 };
+                var ids = new int[] { 73, 64, 76 };
                 var categoryList = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && ids.Contains(e.DropDownID)).Select(z => new
                 {
                     z.ID,
@@ -1077,7 +1326,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                CompanyId = CompanyID,
                                ItemId = item.ID,
                                Quantity = item.InventoryOpeningStock.ToString(),
-                               Type = "Item Import",
+                               Type = "Item Log",
+                               Description = "Import Item",
                                CreatedBy = currentLoginId,
                                CreatedDate = currentDateTime,
                                ModifiedBy = currentLoginId,

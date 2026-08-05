@@ -64,11 +64,11 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.PostalCode).HasColumnName("PostalCode");
             this.Property(t => t.Province).HasColumnName("Province");
             this.Property(t => t.IsShowBillReceptionist).HasColumnName("IsShowBillReceptionist");
-            
+            this.Property(t => t.PharmacyName).HasColumnName("PharmacyName");
+            this.Property(t => t.InvoiceNote).HasColumnName("InvoiceNote");
             this.Property(t => t.IsBackDatedAppointment).HasColumnName("IsBackDatedAppointment");
             this.Property(t => t.IsUpdateBillDate).HasColumnName("IsUpdateBillDate");
             this.Property(t => t.StandardShiftHours).HasColumnName("StandardShiftHours");
-
             this.Property(t => t.IsCNICMandatory).HasColumnName("IsCNICMandatory");
             this.Property(t => t.DateFormatDropDownID).HasColumnName("DateFormatDropDownID");
             this.Property(t => t.DateFormatId).HasColumnName("DateFormatId");
@@ -82,6 +82,8 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.WDSatuday).HasColumnName("WDSatuday");
             this.Property(t => t.WDSunday).HasColumnName("WDSunday");
             this.Property(t => t.TokenNo).HasColumnName("TokenNo");
+            this.Property(t => t.PharmacyLogo).HasColumnName("PharmacyLogo");
+            this.Property(t => t.IsPharmacy).HasColumnName("IsPharmacy");
             // Relationships
             this.HasOptional(t => t.adm_user_mf)
                 .WithMany(t => t.adm_company)

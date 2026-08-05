@@ -151,6 +151,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Email = z.Email,
                     Website = z.Website,
                     CompanyLogo = z.CompanyLogo,
+                    PharmacyLogo=z.PharmacyLogo,
+                    PharmacyName=z.PharmacyName,
+                    InvoiceNote=z.InvoiceNote,
                 }).FirstOrDefault();
                 if (dropdownValues != null)
                 {

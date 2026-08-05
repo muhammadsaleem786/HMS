@@ -32,7 +32,15 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.ServiceName).HasColumnName("ServiceName");
             this.Property(t => t.IsItem).HasColumnName("IsItem");
             this.Property(t => t.Price).HasColumnName("Price");
+            this.Property(t => t.SpecialityId).HasColumnName("SpecialityId");
+            this.Property(t => t.SpecialityDropdownId).HasColumnName("SpecialityDropdownId");
+            this.Property(t => t.CategoryId).HasColumnName("CategoryId");
+            this.Property(t => t.CategoryDropdownId).HasColumnName("CategoryDropdownId");
             this.Property(t => t.IsSystemGenerated).HasColumnName("IsSystemGenerated");
+            this.Property(t => t.DeliveryTypeId).HasColumnName("DeliveryTypeId");
+            this.Property(t => t.DeliveryTypeDropdownId).HasColumnName("DeliveryTypeDropdownId");
+            this.Property(t => t.TotalSessions).HasColumnName("TotalSessions");
+            this.Property(t => t.Validity).HasColumnName("Validity");
             this.Property(t => t.CreatedBy).HasColumnName("CreatedBy");
             this.Property(t => t.CreatedDate).HasColumnName("CreatedDate");
             this.Property(t => t.ModifiedBy).HasColumnName("ModifiedBy");
@@ -42,9 +50,11 @@ namespace HMS.Entities.Models.Mapping
             this.HasRequired(t => t.adm_company)
                 .WithMany(t => t.emr_service_mf)
                 .HasForeignKey(d => d.CompanyId);
+
             this.HasRequired(t => t.adm_user_mf)
                 .WithMany(t => t.emr_service_mf)
                 .HasForeignKey(d => d.CreatedBy);
+
             this.HasOptional(t => t.adm_user_mf1)
                 .WithMany(t => t.emr_service_mf1)
                 .HasForeignKey(d => d.ModifiedBy);

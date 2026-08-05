@@ -4,14 +4,17 @@ using HMS.Service.Services.Admin;
 using HMS.Service.Services.Admission;
 using HMS.Service.Services.Appointment;
 using HMS.Service.Services.Items;
+using HMS.Service.Services.Lab;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
+using NPOI.HSSF.Record.Chart;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -29,6 +32,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     {
         private readonly Iadm_userService _service;
         private readonly Iemr_patientService _emr_patientService;
+        private readonly Ilab_patient_testService _lab_patient_testService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Iemr_appointment_mfService _emr_appointment_mfService;
         private readonly Iemr_patient_billService _emr_patient_billService;
@@ -41,13 +45,14 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iipd_paymentService _ipd_paymentService;
         private readonly Iipd_admissionService _ipd_admissionService;
         private readonly Ipur_sale_mfService _pur_sale_mfService;
+        private readonly Iadm_user_shareService _adm_user_shareService;
         public adm_ReportController(IUnitOfWorkAsync unitOfWorkAsync,
             Iemr_appointment_mfService emr_appointment_mfService,
             Iemr_patient_billService emr_patient_billService,
             Iadm_userService service, Iemr_incomeService emr_incomeService, Iemr_expenseService emr_expenseService,
         Iemr_prescription_treatmentService emr_prescription_treatmentService,
             Iemr_prescription_mfService emr_prescription_mfService
-         , Iemr_patientService emr_patientService, Iipd_procedure_mfService ipd_procedure_mfService, Isys_drop_down_valueService sys_drop_down_valueService, Iipd_paymentService ipd_paymentService, Iipd_admissionService ipd_admissionService, Ipur_sale_mfService pur_sale_mfService)
+         , Iemr_patientService emr_patientService, Iipd_procedure_mfService ipd_procedure_mfService, Isys_drop_down_valueService sys_drop_down_valueService, Iipd_paymentService ipd_paymentService, Iipd_admissionService ipd_admissionService, Ipur_sale_mfService pur_sale_mfService, Iadm_user_shareService adm_user_shareService, Ilab_patient_testService lab_patient_testService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -63,6 +68,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _ipd_paymentService = ipd_paymentService;
             _ipd_admissionService = ipd_admissionService;
             _pur_sale_mfService = pur_sale_mfService;
+            _adm_user_shareService = adm_user_shareService;
+            _lab_patient_testService = lab_patient_testService;
         }
         [HttpPost]
         [ActionName("AppointmentRpt")]
@@ -660,7 +667,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         OutstandingBalance = a.OutstandingBalance,
 
                         PaidAmount = _ipd_paymentService.Queryable()
-                            .Where(z => z.AdmissionId == a.ID)
+                            .Where(z => z.AdmissionId == a.ID && z.CompanyId == CompanyID)
                             .Sum(y => (decimal?)y.Amount) ?? 0m,
 
                         DoctorId = a.DoctorId,
@@ -738,6 +745,27 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             public string PatientName { get; set; }
             public DateTime Date { get; set; }
             public string Type { get; set; }
+        }
+        public class DoctorShareWiseVM
+        {
+            public decimal ID { get; set; }
+            public string DoctorName { get; set; }
+            public string MRNO { get; set; }
+            public decimal? Discount { get; set; }
+            public decimal? ServiceId { get; set; }
+            public string Category { get; set; }
+            public decimal OutstandingBalance { get; set; }
+            public decimal? DoctorId { get; set; }
+            public string PatientName { get; set; }
+            public DateTime Date { get; set; }
+            public string Type { get; set; }
+
+            public decimal ShareAmount { get; set; }
+            public decimal DoctorShare { get; set; }
+            public string OwnerShare { get; set; }
+            public decimal DoctorShareRate { get; set; }
+            public string OwnerShareRate { get; set; }
+            public string SharedMethod { get; set; }
         }
         [HttpPost]
         [ActionName("DoctorswiseSummaryPaymentRpt")]
@@ -1401,8 +1429,253 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 return objResponse;
             }
         }
+        [HttpPost]
+        [ActionName("UserShareRpt")]
+        public ResponseInfo UserShareRpt(ReportModel model)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                // =========================
+                // Doctor List
+                // =========================
+                var doctorList = _service.Queryable()
+                    .Select(x => new
+                    {
+                        x.ID,
+                        x.Name
+                    }).ToList();
+                var userShares = _adm_user_shareService.Queryable()
+    .Where(a => a.CompanyId == CompanyID)
+    .Select(z => new AdmUserShareVM
+    {
+        DoctorId = z.DoctorId,
+        ServiceId = z.ServiceId??0,
+        DoctorShare = z.DoctorShare,
+        OwnerShare = z.OwnerShare,
+        Category = z.Category,
+        SharedMethod = z.SharedMethod
+    })
+    .ToList();
+                // =========================
+                // OPD Income
+                // =========================
+                List<DoctorShareWiseVM> opdIncome = _emr_patient_billService.Queryable()
+       .Where(a => a.CompanyId == CompanyID &&
+              DbFunctions.TruncateTime(a.BillDate) >= DbFunctions.TruncateTime(model.FromDate) &&
+              DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(model.ToDate))
+       .Select(a => new DoctorShareWiseVM
+       {
+           ID = a.ID,
+           MRNO = a.emr_patient_mf.MRNO,
+           OutstandingBalance = a.OutstandingBalance,
+           ShareAmount = a.PaidAmount,
+           DoctorId = (decimal)a.DoctorId,
+           Discount = a.Discount,
+           ServiceId = a.ServiceId,
+           Category = "Procedure",
+           PatientName = a.emr_patient_mf.PatientName,
+           Date = a.BillDate,
+           Type = "OPD"
+       })
+       .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
+       .ToList();
+                foreach (var item in opdIncome)
+                {
+                    CalculateShare(item, userShares);
+                }
+                // =========================
+                // IPD Income
+                // =========================
+                var ipdIncome = _ipd_admissionService.Queryable()
+                    .Where(i => i.CompanyId == CompanyID &&
+                           DbFunctions.TruncateTime(i.AdmissionDate) >= DbFunctions.TruncateTime(model.FromDate) &&
+                           DbFunctions.TruncateTime(i.AdmissionDate) <= DbFunctions.TruncateTime(model.ToDate))
+                    .Select(a => new
+                    {
+                        ID = a.ID,
+                        MRNO = a.emr_patient_mf.MRNO,
+                        OutstandingBalance = 0m,
+                        DoctorId = a.DoctorId,
+                        PatientName = a.emr_patient_mf.PatientName,
+                        Date = a.AdmissionDate,
+                        Type = "IPD",
+                        Category = "Procedure",
+                        Discount = 0
+                    })
+                    .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
+                    .ToList();
+                List<DoctorShareWiseVM> ipdResult = ipdIncome.Select(a => new DoctorShareWiseVM
+                {
+                    ID = a.ID,
+                    MRNO = a.MRNO,
+                    OutstandingBalance = a.OutstandingBalance,
+                    ShareAmount = _ipd_paymentService.Queryable()
+                        .Where(z => z.AdmissionId == a.ID && z.CompanyId == CompanyID)
+                        .Sum(y => (decimal?)y.Amount) ?? 0m,
+                    ServiceId = _ipd_procedure_mfService.Queryable()
+                        .Where(z => z.AdmissionId == a.ID && z.CompanyId == CompanyID).FirstOrDefault().ServiceId,
+                    Discount = a.Discount,
+                    DoctorId = a.DoctorId,
+                    PatientName = a.PatientName,
+                    Date = a.Date,
+                    Type = a.Type,
+                    Category = a.Category
+                }).ToList();
+                foreach (var item in ipdResult)
+                {
+                    CalculateShare(item, userShares);
+                }
+                // =========================
+                // Pharmacy Income
+                // =========================
+                List<DoctorShareWiseVM> pharmacy = _pur_sale_mfService.Queryable()
+                    .AsNoTracking()
+                    .Where(i => i.CompanyID == CompanyID &&
+                           DbFunctions.TruncateTime(i.Date) >= DbFunctions.TruncateTime(model.FromDate) &&
+                           DbFunctions.TruncateTime(i.Date) <= DbFunctions.TruncateTime(model.ToDate))
+                    .Select(a => new DoctorShareWiseVM
+                    {
+                        ID = a.ID,
+                        MRNO = a.emr_patient_mf.MRNO,
+                        OutstandingBalance = 0m,
+                        ShareAmount = a.Total ?? 0,
+                        Discount = a.DiscountAmount,
+                        DoctorId = null,
+                        PatientName = a.emr_patient_mf.PatientName,
+                        Date = a.Date,
+                        Type = "Pharmacy",
+                        ServiceId = 1,
+                        Category = "Pharmacy",
+                    })
+                    .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
+                    .ToList();
+                foreach (var item in pharmacy)
+                {
+                    CalculateShare(item, userShares);
+                }
+                // =========================
+                // Lab Income
+                // =========================
+                List<DoctorShareWiseVM> lab = _lab_patient_testService.Queryable()
+                    .AsNoTracking()
+                    .Where(i => i.CompanyId == CompanyID &&
+                           DbFunctions.TruncateTime(i.CreatedDate) >= DbFunctions.TruncateTime(model.FromDate) &&
+                           DbFunctions.TruncateTime(i.CreatedDate) <= DbFunctions.TruncateTime(model.ToDate))
+                    .Select(a => new DoctorShareWiseVM
+                    {
+                        ID = a.ID,
+                        MRNO = a.emr_patient_mf.MRNO,
+                        OutstandingBalance = 0m,
+                        ShareAmount = a.Total,
+                        Discount = a.DiscountAmount,
+                        DoctorId = null,
+                        PatientName = a.emr_patient_mf.PatientName,
+                        Date = a.CreatedDate,
+                        Type = "Laboratory",
+                        Category = "Laboratory",
+                        ServiceId = 1,
+                    })
+                    .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
+                    .ToList();
+                foreach (var item in lab)
+                {
+                    CalculateShare(item, userShares);
+                }
+                // =========================
+                // Combine All Results
+                // =========================
+                var allData = opdIncome
+        .Concat(ipdResult)
+        .Concat(pharmacy)
+        .Concat(lab)
+        .Select(a => new DoctorShareWiseVM
+        {
+            ID = a.ID,
+            DoctorName = doctorList
+                .Where(z => z.ID == a.DoctorId)
+                .Select(z => z.Name)
+                .FirstOrDefault() ?? "",
+            MRNO = a.MRNO,
+            OutstandingBalance = a.OutstandingBalance,
+            ShareAmount = a.ShareAmount,
+            Discount = a.Discount,
+            DoctorId = a.DoctorId,
+            PatientName = a.PatientName,
+            Date = a.Date,
+            Type = a.Type,
+            Category = a.Category,
+            ServiceId = a.ServiceId,
+            DoctorShare = a.DoctorShare,
+            OwnerShare = a.OwnerShare,
+            DoctorShareRate = a.DoctorShareRate,
+            OwnerShareRate = a.OwnerShareRate,
+            SharedMethod = a.SharedMethod
+        })
+        .OrderByDescending(x => x.Date)
+        .ToList();
 
+                
+                objResponse.IsSuccess = true;
+                objResponse.ResultSet = new
+                {
+                    FeeList = allData
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+        private void CalculateShare(DoctorShareWiseVM item, List<AdmUserShareVM> userShares)
+        {
+            var share = userShares.FirstOrDefault(x =>
+                x.DoctorId == item.DoctorId &&
+                x.ServiceId == item.ServiceId &&
+                x.Category == item.Category);
 
+            if (share == null)
+            {
+                item.DoctorShare = 0;
+                item.OwnerShare = "0";
+                item.DoctorShareRate = 0;
+                item.OwnerShareRate = "0";
+                item.SharedMethod = "";
+                return;
+            }
+
+            item.SharedMethod = share.SharedMethod;
+            item.DoctorShareRate = share.DoctorShare;
+            item.OwnerShareRate = share.OwnerShare;
+
+            if (share.SharedMethod == "Percentage")
+            {
+                item.DoctorShare =
+                    item.ShareAmount * share.DoctorShare / 100m;
+
+                item.OwnerShare =
+                    (item.ShareAmount *Convert.ToDecimal(share.OwnerShare) / 100m).ToString();
+            }
+            else if (share.SharedMethod == "Fixed")
+            {
+                item.DoctorShare = share.DoctorShare;
+
+                item.OwnerShare =(item.ShareAmount - item.DoctorShare).ToString();
+            }
+        }
+        public class AdmUserShareVM
+        {
+            public decimal DoctorId { get; set; }
+            public decimal ServiceId { get; set; }
+            public decimal DoctorShare { get; set; }
+            public string OwnerShare { get; set; }
+            public string Category { get; set; }
+            public string SharedMethod { get; set; }
+        }
         [HttpPost]
         [ActionName("SendEmail")]
         public ResponseInfo SendEmail(ReportModel model)

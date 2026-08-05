@@ -72,7 +72,6 @@ export class DepartmentComponentList {
 
 
     AddRecord(id: string) {
-        ;
         if (id != "0")
             this.loader.ShowLoader();
 

@@ -60,7 +60,6 @@ export class AsidebarComponent implements OnInit {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         let company: any = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
         this.CompanyID = company.CompanyID;
-        debugger;
 
         if (company.CompanyID !== null && company.CompanyID !== 'undefined' && company.CompanyID > 0 && this.UserLock == true) {
             this.model.ID = company.CompanyID;
@@ -161,7 +160,6 @@ export class AsidebarComponent implements OnInit {
         this.ClassAssign.emit();
     }
     HideSetting() {
-        debugger;
         this._AsidebarService.SetMenuId(1);
         this._router.navigate(['/home/dashboard']);
     }

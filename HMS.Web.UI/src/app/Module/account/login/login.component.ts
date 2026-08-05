@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
     }
     async login(isValid: boolean): Promise<void> {
         if (!isValid) return;
-        debugger
+        
         this.submitted = false;
         this.LoaderClass = "changeloadbtn";
         this.loader.ShowLoader();

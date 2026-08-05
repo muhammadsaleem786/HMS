@@ -31,9 +31,7 @@ namespace HMS.Entities.Models
             this.ipd_admission_imaging = new List<ipd_admission_imaging>();
             this.ipd_admission_imaging1 = new List<ipd_admission_imaging>();
             this.ipd_admission_imaging2 = new List<ipd_admission_imaging>();
-            this.ipd_admission_lab = new List<ipd_admission_lab>();
-            this.ipd_admission_lab1 = new List<ipd_admission_lab>();
-            this.ipd_admission_lab2 = new List<ipd_admission_lab>();            
+            this.ipd_admission_lab = new List<ipd_admission_lab>();           
             this.ipd_admission1 = new List<ipd_admission>();
             this.ipd_admission2 = new List<ipd_admission>();
             this.ipd_admission3 = new List<ipd_admission>();
@@ -107,8 +105,6 @@ namespace HMS.Entities.Models
         public virtual ICollection<ipd_admission_imaging> ipd_admission_imaging1 { get; set; }
         public virtual ICollection<ipd_admission_imaging> ipd_admission_imaging2 { get; set; }
         public virtual ICollection<ipd_admission_lab> ipd_admission_lab { get; set; }
-        public virtual ICollection<ipd_admission_lab> ipd_admission_lab1 { get; set; }
-        public virtual ICollection<ipd_admission_lab> ipd_admission_lab2 { get; set; }
         public virtual ICollection<ipd_procedure_mf> ipd_procedure_mf { get; set; }
         public virtual ICollection<pr_employee_document> pr_employee_document { get; set; }
         public virtual ICollection<pr_employee_Dependent> pr_employee_Dependent { get; set; }

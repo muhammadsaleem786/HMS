@@ -294,7 +294,6 @@ export class LabDashboardComponent implements OnInit {
         this.loader.ShowLoader();
         this._labService.SelectedPatientLoadTest(id).then(m => {
             if (m.IsSuccess) {
-                debugger;
                 var result = m.ResultSet.result;
                 const selectedIds = new Set(result.map((r: any) => r.InvestigationId));
                 this.filteredOrderTests = this.testCatalogList.map(t => ({
@@ -800,7 +799,7 @@ export class LabDashboardComponent implements OnInit {
         this._AppointmentService.GetEMRNO().then(m => {
             this.model = new emr_patient();
             this.model.PrefixTittleId = 1;
-            debugger
+            
             if (this.GenderList.length == 1) {
                 this.model.Gender = this.GenderList[0].ID;
                 if (this.model.Gender == 2)

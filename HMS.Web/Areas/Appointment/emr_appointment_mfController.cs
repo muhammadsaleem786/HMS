@@ -259,6 +259,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     obj.ModifiedBy = Request.LoginID();
                     obj.ModifiedDate = Request.DateTimes();
                     obj.ObjectState = ObjectState.Added;
+                    obj.TotalSessions = Model.TotalSessions;
+                    obj.ConsumedSessions = Model.ConsumedSessions;
                     _emr_patient_billService.Insert(obj);
                 }
                 emr_patient_mf patientObj = new emr_patient_mf();
@@ -424,7 +426,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var smsRow = integrationTable.AsEnumerable().FirstOrDefault(r => r["Type"].ToString() == "T" && Convert.ToBoolean(r["IsActive"]));
                 var emailRow = integrationTable.AsEnumerable().FirstOrDefault(r => r["Type"].ToString() == "E" && Convert.ToBoolean(r["IsActive"]));
                 var whatappRow = integrationTable.AsEnumerable().FirstOrDefault(r => r["Type"].ToString() == "W" && Convert.ToBoolean(r["IsActive"]));
-               
+
                 foreach (DataRow row in reminderTable.Rows)
                 {
                     int smsTypeId = Convert.ToInt32(row["SMSTypeId"]);
@@ -703,13 +705,15 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 findAppointment.ModifiedBy = Request.LoginID();
                 findAppointment.ModifiedDate = Request.DateTimes();
                 findAppointment.ObjectState = ObjectState.Modified;
-                findAppointment.adm_user_mf2 = null;
+                findAppointment.adm_user_mf2 = null;               
                 _service.Update(findAppointment);
                 var bill = _emr_patient_billService.Queryable().Where(a =>
                     a.AppointmentId == findAppointment.ID && a.PatientId == findAppointment.PatientId).FirstOrDefault();
                 if (bill != null)
                 {
                     bill.DoctorId = Model.DoctorId;
+                    if (bill.ConsumedSessions != 0 && bill.ConsumedSessions != null)
+                        bill.ConsumedSessions--;
                     _emr_patient_billService.Update(bill);
                 }
                 try
@@ -1604,7 +1608,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
             {
                 var CompanyID = Request.CompanyID();
                 //objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id).Include(x=>x.adm_user_company.Select(s=> s.adm_role_mf)).FirstOrDefault();
-                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId==CompanyID).FirstOrDefault();
+                objResponse.ResultSet = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId == CompanyID).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -1694,6 +1698,8 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
 
          mf.PatientProblem,
          ServiceId = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.ServiceId).FirstOrDefault(),
+         TotalSessions = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.TotalSessions).FirstOrDefault(),
+         ConsumedSessions = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.ConsumedSessions).FirstOrDefault(),
          PaidAmount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.PaidAmount).FirstOrDefault(),
          Discount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Discount).FirstOrDefault(),
          BillDate = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (DateTime?)b.BillDate).FirstOrDefault(),
@@ -1701,7 +1707,9 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
          ServiceName = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId)
                          .Select(b => b.emr_service_mf.ServiceName)
                          .FirstOrDefault(),
-
+         CategoryId = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId)
+                         .Select(b => b.emr_service_mf.CategoryId)
+                         .FirstOrDefault(),
          mf.TokenNo,
          mf.DoctorId,
          MRNO = mf.emr_patient_mf.MRNO,
@@ -1744,6 +1752,9 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                     mf.PatientProblem,
                     mf.ServiceId,
                     mf.PaidAmount,
+                    mf.CategoryId,
+                    mf.TotalSessions,
+                    mf.ConsumedSessions,
                     mf.Discount,
                     mf.BillDate,
                     mf.Price,
@@ -1837,7 +1848,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
 
                 var consultationService = await _emr_service_mfService.Queryable()
     .Where(s => s.CompanyId == CompanyID)
-    .Select(s => new { s.ID, s.ServiceName, s.Price })
+    .Select(s => new { s.ID, s.ServiceName, s.Price, s.TotalSessions, s.CategoryId })
     .ToListAsync();
                 var maxCompanyToken = await _adm_companyService.Queryable()
     .Where(c => c.ID == CompanyID)
@@ -2135,7 +2146,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
 
                 var consultationService = await _emr_service_mfService.Queryable()
     .Where(s => s.CompanyId == CompanyID)
-    .Select(s => new { s.ID, s.ServiceName, s.Price })
+    .Select(s => new { s.ID, s.ServiceName, s.Price, s.TotalSessions, s.CategoryId })
     .ToListAsync();
                 var maxCompanyToken = await _adm_companyService.Queryable()
     .Where(c => c.ID == CompanyID)

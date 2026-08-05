@@ -59,6 +59,7 @@ export class emr_Appointment {
     //bill filed
     AppointmentId: number;
     ServiceId: number;
+    CategoryId: number;
     BillDate: Date;
     Price: number;
     Discount: number;
@@ -76,6 +77,8 @@ export class emr_Appointment {
     SecondaryDescription: string;
     IsExistFollowUp: boolean;
     IsPrscription: boolean;
+    TotalSessions: number=0;
+    ConsumedSessions: number=0;
 }
 export class emr_document {
     ID: number;

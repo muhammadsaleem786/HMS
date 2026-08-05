@@ -42,6 +42,9 @@ export class CompanyComponentForm implements OnInit {
     public TotalEmployees = [];
     public Image: string = '';
     public IsNewImage: boolean = true;
+
+    public PharmacyImage: string = '';
+    public IsNewPharmacyImage: boolean = true;
     public isShowError: boolean = true;
     public IsPaymentShowHide: boolean = false;
     public CompanyObj: any;
@@ -87,12 +90,14 @@ export class CompanyComponentForm implements OnInit {
             DateFormatId: [''],
             ReceiptFooter: [''],
             StandardShiftHours: [''],
+            PharmacyName: [''],
+            InvoiceNote: [''],
+            IsPharmacy:[''],
         });
         this.loadDropdown();
         this.PayrollRegion = localStorage.getItem("PayrollRegion");
     }
     GetCompany() {
-
         this.loader.ShowLoader();
         var companyID = this.CompanyObj.CompanyID;
         this._CompanyService.GetById(parseInt(companyID)).then(m => {
@@ -101,6 +106,10 @@ export class CompanyComponentForm implements OnInit {
                 if (this.model.CompanyLogo != null && this.model.CompanyLogo != undefined && this.model.CompanyLogo != "") {
                     this.IsNewImage = false;
                     this.getImageUrlName(this.model.CompanyLogo);
+                }
+                if (this.model.PharmacyLogo != null && this.model.PharmacyLogo != undefined && this.model.PharmacyLogo != "") {
+                    this.IsNewPharmacyImage = false;
+                    this.getPharmacyImageUrlName(this.model.PharmacyLogo);
                 }
             }
             else {
@@ -136,13 +145,9 @@ export class CompanyComponentForm implements OnInit {
         this._CompanyService.SaveOrUpdate(this.model).then(m => {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
-
                 localStorage.removeItem('company');
                 var company = JSON.stringify(result.ResultSet);
                 localStorage.setItem('company', this.encrypt.encryptionAES(company));
-
-
-
                 this.toastr.Success(result.Message);
                 this.loader.HideLoader();
             }
@@ -189,5 +194,34 @@ export class CompanyComponentForm implements OnInit {
                 this.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
             }
         }
+    }
+    ClearPharmacyImageUrl() {
+        $(".ImgCropper").hide();
+        this.IsNewPharmacyImage = true;
+        this.model.PharmacyLogo = '';
+        this.PharmacyImage = '';
+    }
+    getPharmacyImageUrlName(FName) {
+        var img = $('.ImgCropper');
+        if (img.length > 0) {
+            $('.ImgCropper')[0].classList.remove('hide');
+        }
+        this.model.PharmacyLogo = FName;
+        if (GlobalVariable.IsUseS3 == "Yes") {
+            if (!this.IsNewPharmacyImage)
+                this.PharmacyImage = this.model.PharmacyLogo == FName ? this.model.PharmacyLogo : "";
+            else
+                this.PharmacyImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
+        }
+        else {
+            if (this.IsEdit && !this.IsNewPharmacyImage) {
+                this.PharmacyImage = GlobalVariable.BASE_File_URL + '' + FName;
+            } else {
+                this.PharmacyImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
+            }
+        }
+    }
+    IsNewPharmacyImageEvent(FName) {
+        this.IsNewPharmacyImage = true;
     }
 }

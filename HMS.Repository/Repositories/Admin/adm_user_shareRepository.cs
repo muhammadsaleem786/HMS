@@ -29,10 +29,7 @@ namespace HMS.Repository.Repositories.Admin
                     DisplayCategory = PFilter.VisibleColumnInfoList.IndexOf("Category") > -1;
                     DisplayAmount = PFilter.VisibleColumnInfoList.IndexOf("DueAmount") > -1;
                     DisplayReceivedAmount = PFilter.VisibleColumnInfoList.IndexOf("ReceivedAmount") > -1;
-                    predicate = (c => c.CompanyId == ID &&
-                    (DisplayDate && c.GeneralDoctorShare.ToString().Contains(PFilter.SearchText.ToLower()) ||
-                    (DisplayAmount && c.GeneralOwnerShare.ToString().ToLower().Contains(PFilter.SearchText.ToLower())
-                     )));
+                    predicate = (c => c.CompanyId == ID);
                 }
                 if (IgnorePaging)
                 {
@@ -47,8 +44,7 @@ namespace HMS.Repository.Repositories.Admin
                 OrderByAmount = PFilter.OrderBy.IndexOf("DueAmount") > -1;
                 OrderByReceivedAmount = PFilter.OrderBy.IndexOf("ReceivedAmount") > -1;
                 Expression<Func<adm_user_share, string>> orderingFunction = (c =>
-                                                              OrderByCategory ? c.GeneralDoctorShare.ToString() :
-                                                              OrderByAmount ? c.GeneralOwnerShare.ToString() : ""
+                                                              OrderByCategory ? c.ID.ToString() : ""
                                                               );
 
                 if (PFilter.IsOrderAsc)
@@ -65,14 +61,27 @@ namespace HMS.Repository.Repositories.Admin
                         .Select(s => new
                         {
                             s.ID,
-                            DoctorName=s.adm_user_mf2.Name,
-                            GeneralDoctorShare = s.GeneralDoctorShare,
-                            GeneralOwnerShare = s.GeneralOwnerShare,
-                            ProcedureDoctorShare = s.ProcedureDoctorShare,
-                            ProcedureOwnerShare = s.ProcedureOwnerShare,
-                            DiscountDoctorShare = s.DiscountDoctorShare,
-                            DiscountOwnerShare = s.DiscountOwnerShare,
-                            CreatedDate = s.CreatedDate
+                            DoctorName = s.adm_user_mf2.Name,
+                            Category = s.Category,
+                            Service = !string.IsNullOrEmpty(s.emr_service_mf.ServiceName)
+                    ? s.emr_service_mf.ServiceName
+                    : !string.IsNullOrEmpty(s.emr_investigation.Investigation)
+                        ? s.emr_investigation.Investigation
+                        : !string.IsNullOrEmpty(s.adm_item.Name)
+                            ? s.adm_item.Name
+                            : "",
+                            Method = s.SharedMethod,
+                            DoctorShare = s.DoctorShare,
+                            OwnerShare = s.OwnerShare,
+                            DiscountDoctorShare = s.adm_user_mf2.DoctorShare,
+                            DiscountOwnerShare = s.adm_user_mf2.OwnerShare,
+                            OP = s.adm_user_mf2.DeductOTCharges ? "Yes" : "No",
+                            Medicine = s.adm_user_mf2.DeductMedicineCost ? "Yes" : "No",
+                            Consumables = s.adm_user_mf2.DeductConsumables ? "Yes" : "No",
+                            Implant = s.adm_user_mf2.DeductImplantCost ? "Yes" : "No",
+                            Lab = s.adm_user_mf2.DeductLabConsumables ? "Yes" : "No",
+                            Room = s.adm_user_mf2.DeductRoomCharges ? "Yes" : "No",
+                            CreatedDate = s.CreatedDate,
                         }).OrderByDescending(A => A.CreatedDate).ToList<object>();
                 }
                 else
@@ -82,25 +91,45 @@ namespace HMS.Repository.Repositories.Admin
                         {
                             s.ID,
                             DoctorName = s.adm_user_mf2.Name,
-                            GeneralDoctorShare = s.GeneralDoctorShare,
-                            GeneralOwnerShare = s.GeneralOwnerShare,
-                            ProcedureDoctorShare = s.ProcedureDoctorShare,
-                            ProcedureOwnerShare = s.ProcedureOwnerShare,
-                            DiscountDoctorShare = s.DiscountDoctorShare,
-                            DiscountOwnerShare = s.DiscountOwnerShare,
-                            CreatedDate = s.CreatedDate
+                            Category = s.Category,
+                            Service = !string.IsNullOrEmpty(s.emr_service_mf.ServiceName)
+                    ? s.emr_service_mf.ServiceName
+                    : !string.IsNullOrEmpty(s.emr_investigation.Investigation)
+                        ? s.emr_investigation.Investigation
+                        : !string.IsNullOrEmpty(s.adm_item.Name)
+                            ? s.adm_item.Name
+                            : "",
+                            Method = s.SharedMethod,
+                            DoctorShare = s.DoctorShare,
+                            OwnerShare = s.OwnerShare,
+                            DiscountDoctorShare = s.adm_user_mf2.DoctorShare,
+                            DiscountOwnerShare = s.adm_user_mf2.OwnerShare,
+                            OP = s.adm_user_mf2.DeductOTCharges ? "Yes" : "No",
+                            Medicine = s.adm_user_mf2.DeductMedicineCost ? "Yes" : "No",
+                            Consumables = s.adm_user_mf2.DeductConsumables ? "Yes" : "No",
+                            Implant = s.adm_user_mf2.DeductImplantCost ? "Yes" : "No",
+                            Lab = s.adm_user_mf2.DeductLabConsumables ? "Yes" : "No",
+                            Room = s.adm_user_mf2.DeductRoomCharges ? "Yes" : "No",
+                            CreatedDate = s.CreatedDate,
                         }).OrderByDescending(A => A.CreatedDate).ToList();
                     objResult.DataList = data.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
                        .Select(s => new
                        {
                            s.ID,
-                           DoctorName=s.DoctorName,
-                           GeneralDoctorShare = s.GeneralDoctorShare,
-                           GeneralOwnerShare = s.GeneralOwnerShare,
-                           ProcedureDoctorShare = s.ProcedureDoctorShare,
-                           ProcedureOwnerShare = s.ProcedureOwnerShare,
-                           DiscountDoctorShare = s.DiscountDoctorShare,
-                           DiscountOwnerShare = s.DiscountOwnerShare,
+                           s.DoctorName,
+                           s.Category,
+                           s.Service,
+                           s.Method,
+                           s.DoctorShare,
+                           s.OwnerShare,
+                           s.DiscountDoctorShare,
+                           s.DiscountOwnerShare,
+                           s.OP,
+                           s.Consumables,
+                           s.Medicine,
+                           s.Implant,
+                           s.Lab,
+                           s.Room,
                            CreatedDate = s.CreatedDate
                        }).OrderByDescending(A => A.CreatedDate).ToList<object>();
                 }

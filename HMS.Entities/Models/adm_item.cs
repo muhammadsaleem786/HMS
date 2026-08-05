@@ -22,10 +22,17 @@ namespace HMS.Entities.Models
             this.ipd_procedure_charged = new List<ipd_procedure_charged>();
             this.ipd_admission_medication = new List<ipd_admission_medication>();
             this.emr_investigation_Item = new List<emr_investigation_Item>();
+            this.adm_user_share = new List<adm_user_share>();
         }
         public decimal ID { get; set; }
         public decimal CompanyId { get; set; }
         public string Name { get; set; }
+        public string Note { get; set; }
+        public Nullable<DateTime> TransactionDate { get; set; }
+        public Nullable<int> ReasonId { get; set; }
+        public Nullable<int> ReasonDropdownId { get; set; }
+        [NotMapped]
+        public Boolean IsIncrease { get; set; }
         public string SKU { get; set; }
         public string Image { get; set; }
         public int UnitDropDownID { get; set; }
@@ -74,5 +81,6 @@ namespace HMS.Entities.Models
         public virtual ICollection<ipd_admission_medication> ipd_admission_medication { get; set; }
         public virtual emr_instruction emr_instruction { get; set; }
         public virtual ICollection<emr_investigation_Item> emr_investigation_Item { get; set; } 
+        public virtual ICollection<adm_user_share> adm_user_share { get; set; } 
     }
 }

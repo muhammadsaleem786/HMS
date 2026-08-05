@@ -884,7 +884,7 @@ export class PrescriptionComponentForm implements OnInit {
 
     }
     Convert12TO24(time12h: any) {
-        debugger
+        
         const [time, modifier] = time12h.split(' ');
         let [hours, minutes] = time.split(':');
         //if (hours === '12') {

@@ -1,5 +1,7 @@
-﻿import { Component, OnInit, Output, EventEmitter, OnChanges } from '@angular/core';
+﻿import { FormGroup, FormControl, FormBuilder, Validators, FormsModule } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
+import { ItemModel } from './ItemModel';
 import { PaginationModel, PaginationConfig } from '../../../../../CommonComponent/PaginationComponentConfig';
 import { CommonService } from '../../../../../CommonService/CommonService';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
@@ -19,6 +21,9 @@ export class ItemComponentList {
     public PModel = new PaginationModel();
     public PConfig = new PaginationConfig();
     public Id: string;
+    public model = new ItemModel();
+    public Form1: FormGroup;
+    public Form2: FormGroup;
     public IsList: boolean = true;
     public ID: number = 10;
     public Rights: any;
@@ -26,25 +31,31 @@ export class ItemComponentList {
     public PayrollRegion: string;
     public ItemList: any[] = [];
     public ItemStockList: any[] = [];
+    public HistoryList: any[] = [];
     public ScreenRights: any;
     previousPage: number = 1;
     nextPage: number = 1;
     totalPages: number = 0;
     pagesRange: number[] = [];
+    public submitted: boolean;
     public IdsList: any = [];
     public IsShowSearch: boolean = false;
     public ControlRights: any;
     public ImportControlRights: any;
     public RestockControlRights: any;
     public ExpireControlRights: any;
+    public AdjustmentControlRights: any;
+    public HistoryControlRights: any;
     selectedValue: string = "A";
     selectedVandorValue: string = "A";
     selectedBrandValue: string = "A";
     public CategoryList: any[] = [];
+    public ReasonList: any[] = [];
     public VendorList: any[] = [];
     public BrandList: any[] = [];
+    public IsIncrease: boolean = true;
     @Output() pageChange: EventEmitter<string> = new EventEmitter<string>();
-    constructor(public _CommonService: CommonService, public loader: LoaderService
+    constructor(public _CommonService: CommonService, public _fb: FormBuilder, public loader: LoaderService
         , public _router: Router, public _AsidebarService: AsidebarService, public _ItemService: ItemService,
         public toastr: CommonToastrService, private modalService: NgbModal, private encrypt: EncryptionService) {
         this.loader.ShowLoader();
@@ -54,8 +65,21 @@ export class ItemComponentList {
         this.ImportControlRights = this._CommonService.ScreenRights("68");
         this.RestockControlRights = this._CommonService.ScreenRights("69");
         this.ExpireControlRights = this._CommonService.ScreenRights("70");
+        this.AdjustmentControlRights = this._CommonService.ScreenRights("119");
+        this.HistoryControlRights = this._CommonService.ScreenRights("120");
     }
     ngOnInit() {
+        this.Form1 = this._fb.group({
+            TransactionDate: [''],
+            Note: ['', [Validators.required]],
+            InventoryOpeningStock: ['', [Validators.required]]
+        });
+        this.Form2 = this._fb.group({
+            TransactionDate: [''],
+            ReasonId: ['', [Validators.required]],
+            Note: ['', [Validators.required]],
+            InventoryOpeningStock: ['', [Validators.required]]
+        });
         this.PModel.SortName = "";
         this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
         this.selectPage(this.PModel.CurrentPage);
@@ -110,16 +134,42 @@ export class ItemComponentList {
                 this.PModel.TotalRecord = m.TotalRecord;
                 this.ItemList = m.DataList;
                 this.CategoryList = m.OtherDataModel.filter(a => a.DropDownID == 64);
+                this.ReasonList = m.OtherDataModel.filter(a => a.DropDownID == 76);
                 this.BrandList = m.OtherDataModel.filter(a => a.DropDownID == 73);
                 this.BrandList.push({ "ID": "A", "Value": "All" });
-                this.VendorList = m.OtherData2Model;                
+                this.VendorList = m.OtherData2Model;
                 this.VendorList.push({ "ID": "A", "Name": "All" });
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
                 this.CategoryList.push({ "ID": "A", "Value": "All" });
                 this.loader.HideLoader();
             });
     }
-   
+    OpenIncreaseModal(IncreaseItemModel: any, id: any) {
+        this.model = new ItemModel();
+        const today = new Date();
+        this.model.TransactionDate =
+            today.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        this.model.ID = id;
+        this.IsIncrease = true;
+        this.modalService.open(IncreaseItemModel, { size: 'sm' });
+    }
+    OpenDecreaseModal(DecreaseItemModel: any, id: any) {
+        this.model = new ItemModel();
+        const today = new Date();
+        this.model.TransactionDate =
+            today.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        this.IsIncrease = false;
+        this.model.ID = id;
+        this.modalService.open(DecreaseItemModel, { size: 'sm' });
+    }
     GoBack(DefaultRoute) {
         this._router.navigate([DefaultRoute]);
     }
@@ -183,5 +233,37 @@ export class ItemComponentList {
                 this.modalService.open(StockModel, { size: 'lg' });
                 this.loader.HideLoader();
             });
+    }
+    OpenHistoryModal(HistoryModel, id: any) {
+        this.loader.ShowLoader();
+        this._ItemService.GetHistoryById(id).then(m => {
+            if (m.IsSuccess) {
+                this.HistoryList = m.ResultSet.result;
+                this.modalService.open(HistoryModel, { size: 'lg' });
+                this.loader.HideLoader();
+            } else
+                this.loader.HideLoader();
+        });
+    }
+    UpdateStock(isValid: boolean): void {
+        this.submitted = true;
+        if (isValid) {
+            this.submitted = false;
+            this.loader.ShowLoader();
+            this.model.IsIncrease = this.IsIncrease;
+            this._ItemService.UpdateStock(this.model).then(m => {
+                var result = JSON.parse(m._body);
+                if (result.IsSuccess) {
+                    this.toastr.Success(result.Message);
+                    this._router.navigate(['/home/Item']);
+                    this.modalService.dismissAll();
+                    this.Refresh();
+                }
+                else {
+                    this.loader.HideLoader();
+                    this.toastr.Error('Error', result.ErrorMessage);
+                }
+            });
+        }
     }
 }

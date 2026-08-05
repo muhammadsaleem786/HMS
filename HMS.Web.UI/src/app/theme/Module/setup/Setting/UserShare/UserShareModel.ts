@@ -1,12 +1,25 @@
 ﻿export class UserShareModel {
     ID: number;
     CompanyID: number;
-    DoctorId: number;
+    DoctorId: number;   
+    DisDoctorShare: number = 0;
+    DisOwnerShare: number = 0;
+    DeductOTCharges: boolean=false;
+    DeductMedicineCost: boolean=false;
+    DeductConsumables: boolean=false;
+    DeductImplantCost: boolean=false;
+    DeductLabConsumables: boolean=false;
+    DeductRoomCharges: boolean = false;
+    CategoryId: number;
+    Category: string;
+    ServiceId: number;
+    LabId: number;
+    ItemId: number;
+    ServiceName: string;
+    SharedMethod: string = 'Percentage';
     PercentageType: string;
-    GeneralDoctorShare: number=0;
-    GeneralOwnerShare: number = 0;
-    ProcedureDoctorShare: number = 0;
-    ProcedureOwnerShare: number = 0;
-    DiscountDoctorShare: number = 0;
-    DiscountOwnerShare: number = 0;
+    DoctorShare: number = 0;
+    OwnerShare: string;
+    CreatedBy: number;
+    CreatedDate: Date;
 }

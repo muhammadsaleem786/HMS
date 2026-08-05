@@ -9,6 +9,10 @@
     IsItem: boolean;
     RefCode: string;
     SpecialityId: number;
+    CategoryId: number;
+    DeliveryTypeId: number;
+    TotalSessions: number=1;
+    Validity: number=0;
     emr_service_item: Array<emr_service_item> = [];
 }
 export class emr_service_item {

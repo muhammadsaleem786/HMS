@@ -158,6 +158,7 @@
     <Content Include="src\app\theme\Module\changepassword\changepassword.component.css" />
     <Content Include="src\app\theme\Module\changepassword\changepassword.component.html" />
     <Content Include="src\app\theme\Module\Dashboard\DashboardForm.html" />
+    <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\UserShareComponentRptForm.html" />
     <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\PaymentSummaryComponentRptForm.html" />
     <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\PatientWisePaymentComponentRptForm.html" />
     <Content Include="src\app\theme\Module\HTMLReports\DoctorReport\ClinicwiseComponentRptForm.html" />
@@ -271,7 +272,6 @@
     <Content Include="src\app\theme\Module\setup\Setting\EquipmentMaintenance\EquipmentMaintenanceComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\DeathRecord\DeathRecordComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Setting\DeathRecord\DeathRecordComponentList.html" />
-    <Content Include="src\app\theme\Module\setup\Setting\UserShare\UserShareComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Setting\UserShare\UserShareComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\DropDown\DropDownComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Setting\Investigation\InvestigationComponentList.html" />
@@ -404,6 +404,7 @@
     <TypeScriptCompile Include="src\app\Module\account\LabResult\LabResultService.ts" />
     <TypeScriptCompile Include="src\app\Module\account\passwordchanged\passwordchanged.component.ts" />
     <TypeScriptCompile Include="src\app\Module\account\resetpassword\resetpassword.component.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\DoctorReport\UserShareComponentRptForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\FinancialReport\ProfitLossRptForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\InventoryReport\PurchaseRptForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\HTMLReports\InventoryReport\SaleByPatientRptForm.ts" />
@@ -660,7 +661,6 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\DeathRecord\DeathRecordComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\DeathRecord\DeathRecordService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserShare\UserShareModel.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserShare\UserShareComponentForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserShare\UserShareComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\UserShare\UserShareService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Setting\DropDown\DropDownComponentList.ts" />

@@ -26,6 +26,8 @@ export class ServiceComponentForm implements OnInit {
     public IsReadOnly = false;
     public ScreenLists = [];
     public SpecialityList: any[] = [];
+    public CategoryList: any[] = [];
+    public DeliveryTypeList: any[] = [];
     public model = new emr_service_mf();
     public IsAdmin: boolean = false;
     public PayrollRegion: string;
@@ -53,7 +55,10 @@ export class ServiceComponentForm implements OnInit {
             IsItem: [''],
             RefCode: [''],
             SpecialityId: [''],
-          
+            CategoryId: [''],
+            DeliveryTypeId: [''],
+            TotalSessions: [''],
+            Validity: [''],
         });
         this.sub = this.route.queryParams
             .pipe(filter(params => params.id))
@@ -87,7 +92,9 @@ export class ServiceComponentForm implements OnInit {
         this.loader.ShowLoader();
         this._Service.FormLoad().then(m => {
             if (m.IsSuccess) {
-                this.SpecialityList = m.ResultSet.Speciality;
+                this.SpecialityList = m.ResultSet.Speciality.filter(a => a.DropDownID == 24);
+                this.CategoryList = m.ResultSet.Speciality.filter(a => a.DropDownID == 74);
+                this.DeliveryTypeList = m.ResultSet.Speciality.filter(a => a.DropDownID == 75);
                 this.loader.HideLoader();
             } else
                 this.loader.HideLoader();

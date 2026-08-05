@@ -1,31 +1,257 @@
-﻿<div class="margin-t-68 removeAction">
+﻿<div class="col-sm-12 AddRoleWraper">
     <div class="row headSection paginationHead">
-        <div class="col-sm-8">
-            <div class="row">
-                <div class="col max-content">
-                    <h3 class="page-heading mt-d-inline-block">
-                        User Share
-                    </h3>
+        <div class="col-sm-12 no-padding">
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
+                Update Share
+                <a routerLink="/home/setup" class="btn btn-light mr-2 pull-right">Back</a>
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                New Share
+                <a routerLink="/home/setup" class="btn btn-light mr-2 pull-right">Back</a>
+            </h3>
+        </div>
+    </div>
+    <div class="Cardview">
+        <div class="row">
+            <div class="col">
+                <div class="tab-pane active" id="Charges">
+                    <div class="col-sm-12 CustomAccordion py-3">
+                        <form [formGroup]="Form1" novalidate>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Doctor Name</label>
+                                        <select class="form-control form-control-sm form-control-alternative" formControlName="DoctorId" [(ngModel)]="model.DoctorId" (change)="onDoctorChange($event.target.value)">
+                                            <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                {{item.Name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <ngb-accordion [closeOthers]="true" activeIds="">
+                                <ngb-panel id="charges-1">
+                                    <ng-template ngbPanelTitle>
+                                        <span>
+                                            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid radius">
+                                            Expense Rules (%)
+                                        </span><i class="icon-chevron-right iconImage"></i>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <div class="expense-rules">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="otCharges"
+                                                       [(ngModel)]="model.DeductOTCharges"
+                                                       formControlName="DeductOTCharges">
+                                                <label class="form-check-label" for="otCharges">
+                                                    Deduct OT Charges before sharing
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="medicineCost"
+                                                       [(ngModel)]="model.DeductMedicineCost"
+                                                       formControlName="DeductMedicineCost">
+                                                <label class="form-check-label" for="medicineCost">
+                                                    Deduct Medicine Cost before sharing
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="consumables"
+                                                       [(ngModel)]="model.DeductConsumables"
+                                                       formControlName="DeductConsumables">
+                                                <label class="form-check-label" for="consumables">
+                                                    Deduct Consumables before sharing
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="implantCost"
+                                                       [(ngModel)]="model.DeductImplantCost"
+                                                       formControlName="DeductImplantCost">
+                                                <label class="form-check-label" for="implantCost">
+                                                    Deduct Implant Cost before sharing
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="labConsumables"
+                                                       [(ngModel)]="model.DeductLabConsumables"
+                                                       formControlName="DeductLabConsumables">
+                                                <label class="form-check-label" for="labConsumables">
+                                                    Deduct Lab Consumables before sharing
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-4">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="roomCharges"
+                                                       [(ngModel)]="model.DeductRoomCharges"
+                                                       formControlName="DeductRoomCharges">
+                                                <label class="form-check-label" for="roomCharges">
+                                                    Deduct Room Charges before sharing
+                                                </label>
+                                            </div>
+                                            <div class="text-right">
+                                                <button (click)="SaveExpense()" *ngIf="!IsEdit && ControlRights.CreateRights"
+                                                        type="button"
+                                                        class="btn btn-primary btn-sm">
+                                                    Add & Save
+                                                </button>
+                                                <button *ngIf="IsEdit && ControlRights.EditRights"
+                                                        type="button"
+                                                        class="btn btn-primary btn-sm"
+                                                        (click)="SaveExpense()">
+                                                    Update & Save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </ngb-panel>
+                                <ngb-panel id="charges-2">
+                                    <ng-template ngbPanelTitle>
+                                        <span>
+                                            <img src="../assets/app/media/img/icons/history.png" class="img-fluid radius">
+                                            Services/Item (%)
+                                        </span><i class="icon-chevron-right iconImage"></i>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <!-- Entry Row -->
+                                        <div class="card p-3 mb-3">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label>Category</label>
+                                                    <select class="form-control"
+                                                            [(ngModel)]="model.CategoryId"
+                                                            [ngModelOptions]="{standalone:true}" (change)="onCategoryChange()">
+                                                        <option value="">Select Category</option>
+                                                        <option *ngFor="let c of categoryList" [value]="c.ID">
+                                                            {{c.Name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label>Service</label>
+                                                    <input type="text" id="serviceSearch" [(ngModel)]="model.ServiceName" [ngModelOptions]="{standalone:true}" class="form-control form-control-lg form-control-alternative" placeholder="Search Service" autocomplete="off">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label>Share Method</label>
+                                                    <select class="form-control"
+                                                            [(ngModel)]="model.SharedMethod"
+                                                            (ngModelChange)="calculateOwnerShare()"
+                                                            [ngModelOptions]="{standalone:true}">
+                                                        <option value="Percentage">Percentage</option>
+                                                        <option value="Fixed">Fixed</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label>
+                                                        Doctor Share
+                                                        {{ model.SharedMethod == 'Percentage' ? '(%)' : '(PKR)' }}
+                                                    </label>
+                                                    <input type="number"
+                                                           class="form-control"
+                                                           [(ngModel)]="model.DoctorShare"
+                                                           (ngModelChange)="calculateOwnerShare()"
+                                                           [ngModelOptions]="{standalone:true}">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label>
+                                                        Owner Share
+                                                        {{ model.SharedMethod == 'Percentage' ? '(%)' : '' }}
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           [(ngModel)]="model.OwnerShare"
+                                                           readonly
+                                                           [ngModelOptions]="{standalone:true}">
+                                                </div>
+                                                <div class="col-md-1 d-flex align-items-end">
+                                                    <button *ngIf="ControlRights.CreateRights" class="btn btn-success btn-sm w-100"
+                                                            (click)="SaveService()">
+                                                        Add
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Grid -->
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover table-sm">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Category</th>
+                                                        <th>Service</th>
+                                                        <th>Share Method</th>
+                                                        <th>Doctor Share</th>
+                                                        <th>Owner Share</th>
+                                                        <th width="120">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let item of UserSharedynamicArray; let i=index">
+                                                        <td>{{item.CategoryName}}</td>
+                                                        <td>{{item.ServiceName}}</td>
+                                                        <td>{{item.SharedMethod}}</td>
+                                                        <td>{{item.DoctorShare}}</td>
+                                                        <td>{{item.OwnerShare}}</td>
+                                                        <td>
+                                                            <span class="icon icon mr-3"*ngIf="ControlRights.EditRights" (click)="editShare(item.ID)">
+                                                                <i class="icon icon-pencil2"></i>
+                                                            </span>
+                                                            <button class="btn btn-light btn-sm" (click)="deleteShare(item.ID)" *ngIf="ControlRights.DeleteRights">
+                                                                <i class="icon icon-trash2 text-danger"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr *ngIf="UserSharedynamicArray.length==0">
+                                                        <td colspan="6" class="text-center">
+                                                            No records found.
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                    </ng-template>
+                                </ngb-panel>
+                                <ngb-panel id="charges-3">
+                                    <ng-template ngbPanelTitle>
+                                        <span>
+                                            <img src="../assets/app/media/img/icons/history.png" class="img-fluid radius">
+                                            Discount (%)
+                                        </span><i class="icon-chevron-right iconImage"></i>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label>Doctor Share (%)</label>
+                                                    <input type="text" class="form-control ml-1" formControlName="DisDoctorShare" [(ngModel)]="model.DisDoctorShare" (ngModelChange)="calculateDisOwnerShare()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label>Owner Share (%)</label>
+                                                    <input type="text" class="form-control ml-1" formControlName="DisOwnerShare" [(ngModel)]="model.DisOwnerShare" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer" *ngIf="!IsEdit && ControlRights.CreateRights">
+                                                <button type="button" class="btn btn-primary btn-xs" (click)="SaveDiscount()">Add & Save</button>
+                                            </div>
+                                            <div class="modal-footer" *ngIf="IsEdit && ControlRights.EditRights">
+                                                <button type="button" class="btn btn-primary btn-xs" (click)="SaveDiscount()">Update & Save</button>
+                                            </div>
+                                        </div>
+
+                                    </ng-template>
+                                </ngb-panel>
+
+                            </ngb-accordion>
+                        </form>
+                    </div>
                 </div>
-
             </div>
-
-        </div>
-        <div class="col-sm-4 text-right flex-row flex-end">
-            <a class="btn btn-light mr-2" routerLink="/home/setup">Back</a>
-            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0',false)">New Share</a>
         </div>
     </div>
-
-
-    <div>
-        <div class="Cardview search_onTop search_large_left px-2">
-            <app-pagination [PModel]="PModel" [PConfig]="PConfig" [PData]="ShareList" (pageChange)="GetList()" (AddOrEditEvent)="AddRecord($event)" (ViewEvent)="View($event)" (GoBackEvent)="GoBack($event)" (DeleteEvent)="Delete($event)" (ExportEvent)="ExportData($event)"></app-pagination>
-
-
-        </div>
-
-    </div>
-
 </div>
-

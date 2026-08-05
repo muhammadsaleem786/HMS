@@ -28,6 +28,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
     public class ipd_admission_labController : ApiController, IERPAPIInterface<ipd_admission_lab>, IDisposable
     {
         private readonly Iipd_admission_labService _service;
+        private readonly Iemr_investigationService _emr_investigationService;
         private readonly Iemr_appointment_mfService _emr_appointment_mfService;
         private readonly Iemr_patientService _emr_patientService;
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
@@ -37,7 +38,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
         public ipd_admission_labController(IUnitOfWorkAsync unitOfWorkAsync, Iipd_admission_labService service,
             Iemr_patientService emr_patientService,
             Iemr_appointment_mfService emr_appointment_mfService,
-            Isys_drop_down_valueService sys_drop_down_valueService, Iipd_admissionService ipd_admissionService)
+            Isys_drop_down_valueService sys_drop_down_valueService, Iipd_admissionService ipd_admissionService, Iemr_investigationService emr_investigationService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -45,6 +46,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             _sys_drop_down_valueService = sys_drop_down_valueService;
             _emr_appointment_mfService = emr_appointment_mfService;
             _ipd_admissionService = ipd_admissionService;
+            _emr_investigationService = emr_investigationService;
         }
         [HttpPost]
         [HttpGet]
@@ -62,21 +64,40 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 }
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
                     ID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
-                Model.ID = ID;
-                Model.LabTypeDropdownId = (int)sys_dropdown_mfEnum.LabTypeDropdownId;
-                Model.StatusDropdownId = (int)sys_dropdown_mfEnum.StatusDropdownId;
-                Model.ResultDropdownId = (int)sys_dropdown_mfEnum.ResultDropdownId;
-                Model.CompanyId = CompanyID;
-                Model.CreatedBy = UserID;
-                Model.CreatedDate = Request.DateTimes();
-                Model.ModifiedBy = UserID;
-                Model.ModifiedDate = Request.DateTimes();
-                Model.ObjectState = ObjectState.Added;
-                _service.Insert(Model);
+                var catalogIds = Model.CatalogIds.Split(',')
+                            .Select(x => Convert.ToDecimal(x))
+                            .ToList();
+                var entities = new List<ipd_admission_lab>();
+                var invoiceNo = await GenerateNumbersAsync(CompanyID);
+                foreach (var catalog in catalogIds)
+                {
+                    entities.Add(new ipd_admission_lab
+                    {
+                        ID = ID++,
+                        PriorityDropdownId = Model.PriorityId != 0
+                   ? (int)sys_dropdown_mfEnum.LabPriorityDropdownId
+                   : 0,
+                        ipd_admission = null,
+                        sys_drop_down_value = null,
+                        PriorityId = Model.PriorityId,
+                        AdmissionId=Model.AdmissionId,
+                        InvoiceNo = invoiceNo,
+                        ReferringPhysician = Model.ReferringPhysician,
+                        PatientId = Model.PatientId,
+                        ClinicalNotes = Model.ClinicalNotes,
+                        CatalogId = catalog,
+                        CompanyId = CompanyID,
+                        CreatedBy = UserID,
+                        CreatedDate = DateTime.Now,
+                        ModifiedBy = UserID,
+                        ModifiedDate = DateTime.Now,
+                        ObjectState = ObjectState.Added
+                    });
+                }
+                _service.InsertRange(entities);
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
@@ -104,6 +125,30 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             }
             return objResponse;
         }
+        public async Task<string> GenerateNumbersAsync(decimal companyId)
+        {
+            string year = DateTime.Now.ToString("yy");
+            // Invoice No (260000000001)
+            string invoicePrefix = year;
+
+            var lastInvoiceNumber = _service.Queryable()
+                .Where(x => x.CompanyId == companyId &&
+                            x.InvoiceNo.StartsWith(invoicePrefix))
+                .AsEnumerable()
+                .Select(x =>
+                {
+                    var sequencePart = x.InvoiceNo.Length > 2
+                        ? x.InvoiceNo.Substring(2)
+                        : "0";
+
+                    return long.TryParse(sequencePart, out var n) ? n : 0;
+                })
+                .DefaultIfEmpty(0)
+                .Max();
+            string invoiceNo = $"{invoicePrefix}{(lastInvoiceNumber + 1):D8}";
+            return invoiceNo;
+        }
+
         [HttpPut]
         [HttpGet]
         [ActionName("Update")]
@@ -155,46 +200,34 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                decimal companyId = Request.CompanyID();
+                decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
 
-                var dropDownIds = new[] { 31, 32, 28 };
-                var allDropDownValues = _sys_drop_down_valueService.Queryable()
-    .Where(x => dropDownIds.Contains(x.DropDownID)
-                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
-                {
-                    z.ID,
-                    z.Value,
-                    z.DropDownID,
-                })
-    .ToList();
-                var labTypeList = allDropDownValues
-.Where(x => x.DropDownID == 28).ToList();
-
-                var statusTypeList = allDropDownValues
-.Where(x => x.DropDownID == 31).ToList();
-
-                var resultTypeList = allDropDownValues
-               .Where(x => x.DropDownID == 32).ToList();
-
-                var LabTypeList = labTypeList;
-                var StatusList = statusTypeList;
-                var ResultList = resultTypeList;
-
-                var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == companyId && a.ID.ToString() == PatientId).Select(z => new
+                var result = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 68).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
+                var resultObj = _emr_investigationService.Queryable().Where(e => e.CompanyID == CompanyID)
+                   .Select(z => new
+                   {
+                       ID = z.ID,
+                       name = z.Investigation,
+                       price = z.Price,
+                       category = z.sys_drop_down_value.Value,
+                       sample = z.sys_drop_down_value1.Value,
+                       tat = z.TAT,
+                   }).ToList();
+                var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID.ToString() == PatientId).Select(z => new
                 {
                     z.PatientName,
                     z.ID,
                     DOB = z.DOB,
+                    Age = z.Age,
                     Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "FeMale" : "Other",
                 }).FirstOrDefault();
 
                 objResponse.ResultSet = new
                 {
-                    LabTypeList = LabTypeList,
                     patientInfo = patientInfo,
-                    StatusList = StatusList,
-                    ResultList = ResultList,
+                    result = result,
+                    resultObj = resultObj
                 };
             }
             catch (Exception ex)
@@ -241,46 +274,30 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 decimal companyId = Request.CompanyID();
                 decimal UserID = Request.LoginID();
                 int ID = Convert.ToInt32(Id);
-                var Result = _service.Queryable().Where(e => e.ID == ID && e.CompanyId == companyId).FirstOrDefault();
-
-                var dropDownIds = new[] { 31, 32, 28 };
-                var allDropDownValues = _sys_drop_down_valueService.Queryable()
-    .Where(x => dropDownIds.Contains(x.DropDownID)
-                && (x.CompanyID == companyId || x.CompanyID == null)).Select(z => new
-                {
-                    z.ID,
-                    z.Value,
-                    z.DropDownID,
-                })
-    .ToList();
-                var labTypeList = allDropDownValues
-.Where(x => x.DropDownID == 28).ToList();
-
-                var statusTypeList = allDropDownValues
-.Where(x => x.DropDownID == 31).ToList();
-
-                var resultTypeList = allDropDownValues
-               .Where(x => x.DropDownID == 32).ToList();
-
-                var LabTypeList = labTypeList;
-                var StatusList = statusTypeList;
-                var ResultList = resultTypeList;
-
-
+                var Result = _service.Queryable().Where(e => e.ID == ID && e.CompanyId == companyId).Include(a => a.sys_drop_down_value).FirstOrDefault();
                 var patientInfo = _emr_patientService.Queryable().Where(a => a.CompanyId == companyId && a.ID.ToString() == PatientId).Select(z => new
                 {
                     z.PatientName,
                     z.ID,
                     DOB = z.DOB,
+                    Age = z.Age,
                     Gender = z.Gender == 1 ? "Male" : z.Gender == 2 ? "FeMale" : "Other",
                 }).FirstOrDefault();
+                var resultObj = _emr_investigationService.Queryable().Where(e => e.CompanyID == companyId)
+                  .Select(z => new
+                  {
+                      ID = z.ID,
+                      name = z.Investigation,
+                      price = z.Price,
+                      category = z.sys_drop_down_value.Value,
+                      sample = z.sys_drop_down_value1.Value,
+                      tat = z.TAT,
+                  }).ToList();
                 objResponse.ResultSet = new
                 {
                     Result = Result,
-                    LabTypeList = LabTypeList,
-                    patientInfo= patientInfo,
-                    StatusList = StatusList,
-                    ResultList = ResultList,
+                    patientInfo = patientInfo,
+                    resultObj = resultObj
                 };
                 objResponse.IsSuccess = true;
             }
@@ -310,7 +327,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
         }
         [HttpGet]
         [ActionName("LabPagination")]
-        public PaginationResult LabPagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string AdmitId,string PatientId, bool IgnorePaging = false)
+        public PaginationResult LabPagination(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string AdmitId, string PatientId, bool IgnorePaging = false)
         {
             var objResult = new PaginationResult();
             try
@@ -321,9 +338,9 @@ namespace HMS.Web.API.Areas.Admission.Controllers
     && a.ID.ToString() == AdmitId)
 .Select(a => new
 {
-  AdmissionNo = a.AdmissionNo,
-  DischargeDate = a.DischargeDate,
-  DischargeTime = a.DischargeTime
+    AdmissionNo = a.AdmissionNo,
+    DischargeDate = a.DischargeDate,
+    DischargeTime = a.DischargeTime
 }).FirstOrDefault();
                 objResult = _service.Pagination(CompanyID, CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText, AdmitId, PatientId, IgnorePaging);
                 objResult.OtherDataModel = ipdAdmissions;

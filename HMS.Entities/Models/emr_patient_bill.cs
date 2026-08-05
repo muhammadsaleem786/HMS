@@ -28,6 +28,8 @@ namespace HMS.Entities.Models
         public decimal Discount { get; set; }
         public decimal PaidAmount { get; set; }
         public decimal CreatedBy { get; set; }
+        public Nullable<int> ConsumedSessions { get; set; }
+        public Nullable<int> TotalSessions { get; set; }
         [NotMapped]
         public decimal PartialAmount { get; set; }
         [NotMapped]

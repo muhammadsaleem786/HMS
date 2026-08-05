@@ -26,6 +26,10 @@ namespace HMS.Entities.Models
         public Nullable<decimal> AdmissionId { get; set; }
         public Nullable<int> StatusId { get; set; }
         public bool IsAdmit { get; set; }
+        [NotMapped]
+        public Nullable<int> ConsumedSessions { get; set; }
+        [NotMapped]
+        public Nullable<int> TotalSessions { get; set; }
 
         //bill field
         [NotMapped]

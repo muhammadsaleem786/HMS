@@ -7,23 +7,30 @@ using System.Threading.Tasks;
 
 namespace HMS.Entities.Models
 {
-    public partial class emr_service_mf:Entity
+    public partial class emr_service_mf : Entity
     {
         public emr_service_mf()
         {
             this.emr_patient_bill = new List<emr_patient_bill>();
             this.emr_service_item = new List<emr_service_item>();
             this.ipd_procedure_mf = new List<ipd_procedure_mf>();
+            this.adm_user_share = new List<adm_user_share>();
         }
         public decimal ID { get; set; }
         public decimal CompanyId { get; set; }
+        public Nullable<int> CategoryId { get; set; }
+        public Nullable<int> CategoryDropdownId { get; set; }
+        public Nullable<int> DeliveryTypeId { get; set; }
+        public Nullable<int> DeliveryTypeDropdownId { get; set; }
+        public Nullable<int> TotalSessions { get; set; }
+        public Nullable<int> Validity { get; set; }
         public string ServiceName { get; set; }
         public bool IsItem { get; set; }
         public Nullable<decimal> Price { get; set; }
         public bool IsSystemGenerated { get; set; }
-        public string RefCode {  get; set; }
-        public Nullable<int> SpecialityId {  get; set; }
-        public Nullable<int> SpecialityDropdownId {  get; set; }
+        public string RefCode { get; set; }
+        public Nullable<int> SpecialityId { get; set; }
+        public Nullable<int> SpecialityDropdownId { get; set; }
         public decimal CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public Nullable<decimal> ModifiedBy { get; set; }
@@ -34,5 +41,6 @@ namespace HMS.Entities.Models
         public virtual ICollection<emr_patient_bill> emr_patient_bill { get; set; }
         public virtual ICollection<emr_service_item> emr_service_item { get; set; }
         public virtual ICollection<ipd_procedure_mf> ipd_procedure_mf { get; set; }
+        public virtual ICollection<adm_user_share> adm_user_share { get; set; }
     }
 }

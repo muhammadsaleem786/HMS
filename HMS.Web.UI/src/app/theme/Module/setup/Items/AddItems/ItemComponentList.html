@@ -39,7 +39,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-4 text-right flex-row flex-end">            
+        <div class="col-sm-4 text-right flex-row flex-end">
             <div class="btn-group">
                 <button type="button" class="btn btn-danger btn-md dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Actions
@@ -93,6 +93,27 @@
                                 </td>
                                 <td (click)="AddRecord(item.ID)">
                                     {{item.Status}}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-light">
+                                            <i class="icon icon-printer"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item cursor-pointer"*ngIf="HistoryControlRights.CreateRights" (click)="OpenHistoryModal(HistoryModel,item.ID)">
+                                                History
+                                            </a>
+                                            <a class="dropdown-item cursor-pointer"*ngIf="AdjustmentControlRights.CreateRights" (click)="OpenIncreaseModal(IncreaseItemModel,item.ID)">
+                                                Increase Stock
+                                            </a>
+                                            <a class="dropdown-item cursor-pointer"*ngIf="AdjustmentControlRights.CreateRights" (click)="OpenDecreaseModal(DecreaseItemModel,item.ID)">
+                                                Decrease Stock
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             <tr [hidden]="!(ItemList.length == 0)" style="background:#fff;">
@@ -179,6 +200,151 @@
         </div>
     </div>
 
+</ng-template>
+<ng-template #HistoryModel let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/apptime.png" class="img-fluid icon" />
+            History
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="TableView">
+        <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
+            <div class="uk-overflow-container col-sm-12 p-0">
+                <table id="dt_tableTools" class="uk-table table" cellspacing="0" style="width: 100%;">
+                    <thead class="grid-header">
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Type
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>Created Date</th>
+                            <th>
+                                Created By
+                            </th>
+                            <th>Modified Date</th>
+                            <th>
+                                Modified By
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of HistoryList">
+                            <td>{{item.itemName}}</td>
+                            <td>
+                                {{item.Type}}
+                            </td>
+                            <td>
+                                {{item.Description}}
+                            </td>
+                            <td>
+                                {{item.Quantity}}
+                            </td>
+                            <td>
+                                {{item.CreatedDate | date: 'dd/MM/yyyy' }}
+                            </td>
+                            <td>
+                                {{item.CreatedBy }}
+                            </td>
+                            <td>{{item.ModifiedDate | date: 'dd/MM/yyyy' }}</td>
+                            <td>
+                                {{item.ModifiedBy }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</ng-template>
+<ng-template #IncreaseItemModel let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title"> Increase Stock</h4>
+        <span type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <i class="icon icon-cross"></i>
+        </span>
+    </div>
+    <form [formGroup]="Form1" novalidate (ngSubmit)="UpdateStock(Form1.valid)">
+        <div class="modal-body">
+            <div class="mb-3">
+                <label>Transaction Date</label>
+                <input type="text" id="" formControlName="TransactionDate" [(ngModel)]="model.TransactionDate" class="form-control form-control-sm form-control-alternative" placeholder="TransactionDate" readonly>
+            </div>
+            <div class="mb-3">
+                <label>Increas Quantity</label>
+                <input type="text" id="" formControlName="InventoryOpeningStock" [(ngModel)]="model.InventoryOpeningStock" class="form-control form-control-sm form-control-alternative" placeholder="Quantity" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                <small class="text-danger" *ngIf="Form1.controls.InventoryOpeningStock.hasError('required') && submitted">
+                    This value is required.
+                </small>
+            </div>
+            <div class="mb-3">
+                <label>Notes</label>
+                <textarea class="form-control form-control-sm" formControlName="Note" placeholder="Notes" [(ngModel)]="model.Note" autocomplete="off"></textarea>
+                <small class="text-danger" *ngIf="Form1.controls.Note.hasError('required') && submitted">
+                    This value is required.
+                </small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="ControlRights.CreateRights">Save</button>
+        </div>
+    </form>
+</ng-template>
+<ng-template #DecreaseItemModel let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title"> Reduce Stock Quantity</h4>
+        <span type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <i class="icon icon-cross"></i>
+        </span>
+    </div>
+    <form [formGroup]="Form2" novalidate (ngSubmit)="UpdateStock(Form2.valid)">
+        <div class="modal-body">
+            <div class="mb-3">
+                <label>Transaction Date</label>
+                <input type="text" id="" formControlName="TransactionDate" [(ngModel)]="model.TransactionDate" class="form-control form-control-sm form-control-alternative" placeholder="TransactionDate" readonly>
+            </div>
+            <div class="mb-3">
+                <label>Reduce Quantity</label>
+                <input type="text" id="" formControlName="InventoryOpeningStock" [(ngModel)]="model.InventoryOpeningStock" class="form-control form-control-sm form-control-alternative" placeholder="Quantity" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                <small class="text-danger" *ngIf="Form2.controls.InventoryOpeningStock.hasError('required') && submitted">
+                    This value is required.
+                </small>
+            </div>
+            <div class="mb-3">
+                <label>Reduce Quantity</label>
+                <select class="form-control form-control-sm form-control-alternative" formControlName="ReasonId" [(ngModel)]="model.ReasonId">
+                    <option *ngFor="let item of ReasonList" [value]="item.ID">
+                        {{item.Value}}
+                    </option>
+                </select>
+                <small class="text-danger" *ngIf="Form2.controls.ReasonId.hasError('required') && submitted">
+                    This value is required.
+                </small>
+            </div>
+            <div class="mb-3">
+                <label>Notes</label>
+                <textarea class="form-control form-control-sm" formControlName="Note" placeholder="Notes" [(ngModel)]="model.Note" autocomplete="off"></textarea>
+                <small class="text-danger" *ngIf="Form2.controls.Note.hasError('required') && submitted">
+                    This value is required.
+                </small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" *ngIf="ControlRights.CreateRights">Save</button>
+        </div>
+    </form>
 </ng-template>
 
 

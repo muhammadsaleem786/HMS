@@ -46,7 +46,6 @@ var DatetimePickerComponent = (function () {
         enumerable: true,
         configurable: true
     });
-    ;
     //Set touched on blur
     DatetimePickerComponent.prototype.onBlur = function () {
         this.onTouchedCallback();

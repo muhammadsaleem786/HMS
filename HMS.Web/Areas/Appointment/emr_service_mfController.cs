@@ -73,7 +73,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
                 List<emr_service_item> Objemr_service_item = new List<emr_service_item>();
-                if (Model.emr_service_item.Count()>0)
+                if (Model.emr_service_item.Count() > 0)
                 {
                     Objemr_service_item.AddRange(Model.emr_service_item);
                 }
@@ -86,6 +86,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.CreatedBy = UserID;
                 Model.IsSystemGenerated = false;
                 Model.SpecialityDropdownId = (int)sys_dropdown_mfEnum.SpecialtyDropdownId;
+                Model.CategoryDropdownId = (int)sys_dropdown_mfEnum.ServiceCategoryDropdownId;
+                Model.DeliveryTypeDropdownId = (int)sys_dropdown_mfEnum.ServiceDeliveryTypeDropdownId;
                 Model.CreatedDate = Request.DateTimes();
                 Model.ModifiedBy = UserID;
                 Model.ModifiedDate = Request.DateTimes();
@@ -93,6 +95,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.emr_service_item = null;
                 Model.emr_patient_bill = null;
                 Model.ipd_procedure_mf = null;
+                Model.adm_user_share = null;
                 _service.Insert(Model);
                 //insert item
                 decimal seviceID = 1;
@@ -172,6 +175,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.emr_service_item = null;
                 Model.adm_user_mf = null;
                 Model.adm_user_mf1 = null;
+                Model.adm_user_share = null;
                 _service.Update(Model);
                 //delete charged
                 var DelAlLItem = _emr_service_item.Queryable().Where(e => e.ServiceId == Model.ID && e.CompanyId == CompanyID).ToList();
@@ -436,7 +440,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var Speciality = _sys_drop_down_valueService.Queryable().Where(a => (a.CompanyID == null || a.CompanyID == CompanyID) && a.DropDownID == 24).Select(z => new
+                var Speciality = _sys_drop_down_valueService.Queryable().Where(a => (a.CompanyID == null || a.CompanyID == CompanyID) && (a.DropDownID == 24 || a.DropDownID == 74 || a.DropDownID == 75)).Select(z => new
                 {
                     z.ID,
                     z.Value,

@@ -518,7 +518,7 @@
                 </div>
 
                 <div class="info" style="display: block; text-align: center; font-size: 12px;">
-                    <h2 style="font-weight: bold; font-size: 18px; margin: 0;">{{CompanyInfo.CompanyName}}</h2>
+                    <h2 style="font-weight: bold; font-size: 18px; margin: 0;">{{CompanyInfo.PharmacyName || CompanyInfo.CompanyName}}</h2>
                 </div>
 
                 <div id="mid" style="text-align: center; margin-bottom: 5px;">
@@ -596,7 +596,7 @@
                             <td colspan="4" style="border:0px">
                                 <div id="legalcopy" style="margin-top: 5mm; text-align: center;">
                                     <p style="margin-bottom: 0px; color: #666; line-height: normal;"><strong>Thank you!</strong></p>
-                                    <p style="margin-bottom: 50px; color: #666; line-height: normal;">Medicine will be returned within 3 days along with the bill and other necessary documents.</p>
+                                    <p style="margin-bottom: 50px; color: #666; line-height: normal;">{{ CompanyInfo.InvoiceNote || 'Medicine will be returned within 3 days along with the bill and other necessary documents.' }}</p>
                                 </div>
                             </td>
                         </tr>

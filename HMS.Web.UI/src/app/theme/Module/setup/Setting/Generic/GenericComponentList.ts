@@ -75,7 +75,7 @@ export class GenericComponentList {
         if (id != "0") {
             this.loader.ShowLoader();
             this._GenericService.GetById(id).then(m => {
-                debugger
+                
                 if (m.ResultSet != null) {
                     this.IsEdit = true;
                     this.model = m.ResultSet.result;

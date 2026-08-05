@@ -263,6 +263,16 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 ReminderId = z.ReminderId
             }).Take(10)
             .ToListAsync();
+                var patientIds = PatientInfo.Select(a => a.value).ToList();
+                var patientBill = _emr_patient_billService.Queryable()
+                    .Where(a => a.CompanyId == CompanyID && patientIds.Contains(a.PatientId))
+                    .Select(z => new
+                    {
+                        z.ID,
+                        z.PatientId,
+                        z.TotalSessions,
+                        z.ConsumedSessions
+                    }).OrderByDescending(a=>a.ID).ToList();
                 objResponse.ResultSet = new
                 {
                     PatientInfo = PatientInfo.Select(z => new
@@ -278,7 +288,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.ReminderId,
                         ServiceName = serviceObj?.ServiceName,
                         ServiceID = serviceObj?.ID,
-                        ServicePrice = serviceObj?.Price
+                        ServicePrice = serviceObj?.Price,
+                        patientBill= patientBill,
                     })
                 };
             }

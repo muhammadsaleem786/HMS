@@ -24,15 +24,13 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.ID).HasColumnName("ID");
             this.Property(t => t.CompanyId).HasColumnName("CompanyId");
             this.Property(t => t.DoctorId).HasColumnName("DoctorId");
-            this.Property(t => t.GeneralDoctorShare).HasColumnName("GeneralDoctorShare");
-            this.Property(t => t.GeneralOwnerShare).HasColumnName("GeneralOwnerShare");
-
-            this.Property(t => t.ProcedureDoctorShare).HasColumnName("ProcedureDoctorShare");
-            this.Property(t => t.ProcedureOwnerShare).HasColumnName("ProcedureOwnerShare");
-
-            this.Property(t => t.DiscountDoctorShare).HasColumnName("DiscountDoctorShare");
-            this.Property(t => t.DiscountOwnerShare).HasColumnName("DiscountOwnerShare");
-
+            this.Property(t => t.ServiceId).HasColumnName("ServiceId");
+            this.Property(t => t.LabId).HasColumnName("LabId");
+            this.Property(t => t.ItemId).HasColumnName("ItemId");
+            this.Property(t => t.DoctorShare).HasColumnName("DoctorShare");
+            this.Property(t => t.OwnerShare).HasColumnName("OwnerShare");
+            this.Property(t => t.Category).HasColumnName("Category");
+            this.Property(t => t.SharedMethod).HasColumnName("SharedMethod");
             this.Property(t => t.CreatedBy).HasColumnName("CreatedBy");
             this.Property(t => t.CreatedDate).HasColumnName("CreatedDate");
             this.Property(t => t.ModifiedBy).HasColumnName("ModifiedBy");
@@ -41,15 +39,27 @@ namespace HMS.Entities.Models.Mapping
             this.HasRequired(t => t.adm_company)
                 .WithMany(t => t.adm_user_share)
                 .HasForeignKey(d => d.CompanyId);
+
             this.HasRequired(t => t.adm_user_mf)
                 .WithMany(t => t.adm_user_share)
                 .HasForeignKey(d => d.CreatedBy);
+
             this.HasOptional(t => t.adm_user_mf1)
                 .WithMany(t => t.adm_user_share1)
                 .HasForeignKey(d => d.ModifiedBy);
+
             this.HasRequired(t => t.adm_user_mf2)
              .WithMany(t => t.adm_user_share2)
              .HasForeignKey(d => d.DoctorId);
+            this.HasOptional(t => t.emr_service_mf)
+               .WithMany(t => t.adm_user_share)
+               .HasForeignKey(d => new { d.ServiceId, d.CompanyId });
+            this.HasOptional(t => t.emr_investigation)
+              .WithMany(t => t.adm_user_share)
+              .HasForeignKey(d => new { d.LabId, d.CompanyId });
+            this.HasOptional(t => t.adm_item)
+              .WithMany(t => t.adm_user_share)
+              .HasForeignKey(d => new { d.ItemId, d.CompanyId });
         }
     }
 }

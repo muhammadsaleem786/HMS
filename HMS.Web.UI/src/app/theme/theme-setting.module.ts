@@ -23,7 +23,6 @@ import { MedicineComponentList } from '../theme/Module/setup/Setting/Medicine/Me
 import { DropDownComponentList } from '../theme/Module/setup/Setting/DropDown/DropDownComponentList';
 import { ServiceComponentList } from '../theme/Module/setup/Setting/Service/ServiceComponentList';
 import { ServiceComponentForm } from '../theme/Module/setup/Setting/Service/ServiceComponentForm';
-import { UserShareComponentForm } from '../theme/Module/setup/Setting/UserShare/UserShareComponentForm';
 import { UserShareComponentList } from '../theme/Module/setup/Setting/UserShare/UserShareComponentList';
 import { ReminderComponentList } from '../theme/Module/setup/Setting/Reminder/ReminderComponentList';
 import { ReminderComponentForm } from '../theme/Module/setup/Setting/Reminder/ReminderComponentForm';
@@ -114,8 +113,6 @@ const routes: Routes = [
     { path: 'reminder/savereminder:id', component: ReminderComponentForm, canActivate: [AuthGuard] },
     { path: 'session', component: SessionComponentList, canActivate: [AuthGuard] },
     { path: 'share', component: UserShareComponentList, canActivate: [AuthGuard] },
-    { path: 'share/saveshare', component: UserShareComponentForm, canActivate: [AuthGuard] },
-    { path: 'share/saveshare:id', component: UserShareComponentForm, canActivate: [AuthGuard] },
     { path: 'Service', component: ServiceComponentList, canActivate: [AuthGuard] },
     { path: 'Service/saveservice', component: ServiceComponentForm, canActivate: [AuthGuard] },
     { path: 'Service/saveservice:id', component: ServiceComponentForm, canActivate: [AuthGuard] },
@@ -239,7 +236,7 @@ const routes: Routes = [
         //setting module
         CatalogComponentList, EventRegisterComponentList, EventRegisterComponentForm, EquipmentMaintenanceComponentList, EquipmentMaintenanceComponentForm, AdverseDrugComponentList, AdverseDrugComponentForm, DeathRecordComponentForm, DeathRecordComponentList, MedicineInstructionComponentList, ObservationComponentList, ComplaintComponentList, GenericComponentList, InvestigationComponentList, DiagnosComponentList, DropDownComponentList,
         ApplicationUserComponentList, ApplicationUserComponentForm, MedicineComponentList, MedicineComponentForm, CompanyComponentForm, UserRoleComponentList
-        , ProfileUserComponentForm, ServiceComponentList, ServiceComponentForm, UserShareComponentList, UserShareComponentForm,
+        , ProfileUserComponentForm, ServiceComponentList, ServiceComponentForm, UserShareComponentList,
         UserRoleComponentForm, SessionComponentList, ReminderComponentList, TemplateComponentList, ReminderComponentForm,
         //end
         //Item Module

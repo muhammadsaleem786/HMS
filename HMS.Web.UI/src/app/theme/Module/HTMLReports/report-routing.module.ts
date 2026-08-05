@@ -23,9 +23,7 @@ import { CurrentStockRptForm } from '../../../theme/Module/HTMLReports/Inventory
 import { SaleByPatientRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/SaleByPatientRptForm';
 import { PurchaseRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/PurchaseRptForm';
 import { ProfitLossRptForm } from '../../../theme/Module/HTMLReports/FinancialReport/ProfitLossRptForm';
-
-
-
+import { UserShareComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/UserShareComponentRptForm';
 const routes: Routes = [
     {
         'path': '',
@@ -53,7 +51,8 @@ const routes: Routes = [
             { path: 'DoctorswiseRpt', component: DateWisePaymentComponentRptForm, canActivate: [AuthGuard] },
             { path: 'PurRpt', component: PurchaseRptForm, canActivate: [AuthGuard] },
             { path: 'DocPaymentRpt', component: PatientWisePaymentComponentRptForm, canActivate: [AuthGuard] },
-               
+            { path: 'UserShareRpt', component: UserShareComponentRptForm, canActivate: [AuthGuard] },
+              
         ]
     }
 ];

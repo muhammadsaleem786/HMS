@@ -67,6 +67,10 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.GenericId).HasColumnName("GenericId");
             this.Property(t => t.BrandDropdownId).HasColumnName("BrandDropdownId");
             this.Property(t => t.BrandId).HasColumnName("BrandId");
+            this.Property(t => t.ReasonId).HasColumnName("ReasonId");
+            this.Property(t => t.ReasonDropdownId).HasColumnName("ReasonDropdownId");
+            this.Property(t => t.Note).HasColumnName("Note");
+            this.Property(t => t.TransactionDate).HasColumnName("TransactionDate");
 
             // Relationships
             this.HasRequired(t => t.adm_company)

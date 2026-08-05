@@ -49,7 +49,7 @@ export class LabResultComponent implements OnInit {
             alert('Please complete the reCAPTCHA.');
             return;
         }
-        debugger
+        
         this.ReportList = [];
         this.loader.ShowLoader();
         this._LabResultService.GetById(this.model.InvoiceNo, this.model.AccessCode).then(m => {
@@ -61,7 +61,7 @@ export class LabResultComponent implements OnInit {
         });
     }
     ReportView(id: any) {
-        debugger
+        
         this.ReportModel = null;
         if (id != null && id !== '') {
             this.loader.ShowLoader();

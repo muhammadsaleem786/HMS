@@ -30,6 +30,18 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">Category</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="CategoryId" [(ngModel)]="model.CategoryId">
+                                    <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
                                 <label class="form-control-label mt-2" for="input-username">Speciality</label>
                             </div>
                             <div class="col-8">
@@ -38,6 +50,38 @@
                                         {{item.Value}}
                                     </option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">Delivery Type</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="DeliveryTypeId" [(ngModel)]="model.DeliveryTypeId">
+                                    <option *ngFor="let item of DeliveryTypeList" [value]="item.ID">
+                                        {{item.Value}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">
+                                    Total Sessions
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" id="" formControlName="TotalSessions" [(ngModel)]="model.TotalSessions" class="form-control form-control-sm form-control-alternative" placeholder="Total Sessions">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2" for="input-username">
+                                    Validity(Days)
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" id="" formControlName="Validity" [(ngModel)]="model.Validity" class="form-control form-control-sm form-control-alternative" placeholder="Validity">
                             </div>
                         </div>
                         <div class="row form-group">
@@ -61,12 +105,12 @@
                             </div>
                             <div class="col-8">
                                 <div class="custom-control custom-checkbox mb-3">
-                                    <input type="checkbox" class="custom-control-input" id="IsItem" formControlName="IsItem" [(ngModel)]="model.IsItem"(change)="toggleDiv($event)">
+                                    <input type="checkbox" class="custom-control-input" id="IsItem" formControlName="IsItem" [(ngModel)]="model.IsItem" (change)="toggleDiv($event)">
                                     <label class="custom-control-label" for="IsItem">Is Consumeable</label>
                                 </div>
                             </div>
                         </div>
-                        <div class="row"*ngIf="isChecked">
+                        <div class="row" *ngIf="isChecked">
                             <div class="col-sm-12 margin-top10" style="width:92%;">
                                 <table class="line-table noramal-padding margin-top10">
                                     <thead class="line-item-header">

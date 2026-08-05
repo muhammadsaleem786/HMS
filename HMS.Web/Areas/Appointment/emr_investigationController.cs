@@ -96,6 +96,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.lab_parameter = null;
                 Model.lab_patient_test = null;
                 Model.lab_result_mf = null;
+                Model.adm_user_share = null;
                 Model.ObjectState = ObjectState.Added;
                 _service.Insert(Model);
                 //insert item
@@ -246,6 +247,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.lab_parameter = null;
                 Model.lab_patient_test = null;
                 Model.lab_result_mf = null;
+                Model.adm_user_share = null;
                 _service.Update(Model);
                 //delete charged
                 var DelAlLItem = _emr_investigation_ItemService.Queryable().Where(e => e.InvestigationId == Model.ID && e.CompanyId == CompanyID).ToList();

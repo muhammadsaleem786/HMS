@@ -1,6 +1,6 @@
 ﻿<div class="tab-pane" id="Labs">
-    <div class="text-right mb-2"*ngIf="ControlRights.CreateRights">
-        <button class="btn btn-danger btn-sm" (click)="OpenLabs(OpenLabsModal)"[disabled]="DischargeDate != null"><i class="icon icon-pulse"></i> New Labs  </button>
+    <div class="text-right mb-2" *ngIf="ControlRights.CreateRights">
+        <button class="btn btn-danger btn-sm" (click)="OpenLabs(OpenLabsModal)" [disabled]="DischargeDate != null"><i class="icon icon-pulse"></i> New Labs  </button>
     </div>
     <div class="TableView">
         <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
@@ -12,23 +12,17 @@
                                 Date Requested
                             </th>
                             <th>
-                                Lab Type
+                                Type
                             </th>
                             <th>
-                                Status
+                                Referring Physician
                             </th>
                             <th>
-                                Date Processed
+                                Clinical Notes
                             </th>
                             <th>
-                                Result
-                            </th>
-                            <th>
-                                Notes
-                            </th>
-                            <th>
-                                Requested By
-                            </th>
+                                Test
+                            </th>                           
                             <th>
                                 Action
                             </th>
@@ -40,23 +34,16 @@
                             <td>
                                 {{item.Type}}
                             </td>
-                            <td>{{item.Status}}</td>
-                            <td>{{item.Date |date: 'MM/dd/yyyy'}}</td>
-                            <td>{{item.result}}</td>
+                            <td>{{item.ReferringPhysician}}</td>
+                            <td>{{item.ClinicalNotes}}</td>
+                            <td>{{item.Catalog}}</td>                           
                             <td>
-                                {{item.Note}}
-                            </td>
-                            <td>
-                                {{item.AuthoredBy}}
-                            </td>
-                            <td>
-                                <span class="icon icon mr-3" (click)="Edit(item.ID)">
+                                <!--<span class="icon icon mr-3" (click)="Edit(item.ID)">
                                     <i class="icon icon-pencil2"></i>
-                                </span>
-                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights"[disabled]="DischargeDate != null">
+                                </span>-->
+                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="ControlRights.DeleteRights" [disabled]="DischargeDate != null">
                                     <i class="icon icon-trash2 text-danger"></i>
                                 </button>
-
                             </td>
                         </tr>
                         <tr [hidden]="!(LabList.length == 0)" style="background:#fff;">
@@ -81,7 +68,7 @@
         </div>
     </div>
 
-    
+
 </div>
 <ng-template #OpenLabsModal let-modal>
     <div class="modal-header">
@@ -94,195 +81,130 @@
         </button>
     </div>
     <form [formGroup]="Form1" novalidate (ngSubmit)="LabSaveOrUpdate(Form1.valid)">
-        <div class="modal-body">
+        <div class="p-4">
+            <!-- Patient Information -->
             <div class="row">
-                <div class="col-sm-6">                    
-                    <div class="row form-group">
-                        <div class="col-4 text-right">
-                            <label class="required">Lab Type</label>
-                        </div>
-                        <div class="col-8">
-                            <select class="form-control form-control-sm" formControlName="LabTypeId" [(ngModel)]="model.LabTypeId">
-                                <option *ngFor="let item of LabTypeList" [value]="item.ID">
-                                    {{item.Value}}
-                                </option>
-                            </select>
-                        </div>
+                <div class="col-12 mb-3">
+                    <h5 class="mb-1">Patient Information</h5>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <label class="font-weight-500">Patient <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <input type="text" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.PatientName" readonly autocomplete="off">
                     </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-right">
-                            <label class="required">Status Type</label>
-                        </div>
-                        <div class="col-8">
-                            <select class="form-control form-control-sm" formControlName="StatusId" [(ngModel)]="model.StatusId">
-                                <option *ngFor="let item of StatusList" [value]="item.ID">
-                                    {{item.Value}}
-                                </option>
-                            </select>
-                        </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="font-weight-500">Age</label>
+                    <input type="text" class="form-control form-control-sm" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.Age" readonly />
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="font-weight-500">Gender</label>
+                    <input type="text" class="form-control form-control-sm" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.Gender" readonly />
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="font-weight-500">Priority <span class="text-danger">*</span></label>
+                    <input type="text" id="PrioritySearch" (click)="LoadPriority()" formControlName="PriorityId" [(ngModel)]="model.PriorityName" class="form-control form-control-sm" required placeholder="Search Priority" autocomplete="off" />
+
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="font-weight-500">Referring Physician</label>
+                    <input type="text" formControlName="ReferringPhysician" [(ngModel)]="model.ReferringPhysician" class="form-control form-control-sm" placeholder="Enter Physician" autocomplete="off" />
+                </div>
+                <div class="col-md-9 mb-3">
+                    <label class="font-weight-500">Clinical Notes</label>
+                    <textarea rows="2" class="form-control form-control-sm" formControlName="ClinicalNotes" [(ngModel)]="model.ClinicalNotes"
+                              placeholder="Any clinical notes or special instructions..."></textarea>
+                </div>
+            </div>
+
+            <!-- Select Tests -->
+            <div class="row mt-2">
+                <div class="col-12 mb-2">
+                    <h5 class="mb-1">Select Tests <span class="text-danger">*</span></h5>
+                </div>
+                <div class="col-12 mb-3">
+                    <div class="input-group input-group-md">
+
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Search tests..." [ngModelOptions]="{standalone:true}"
+                               [(ngModel)]="orderTestSearch"
+                               (keyup)="onOrderTestSearchChange()" />
                     </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-right">
-                            <label class="required">Result Type</label>
-                        </div>
-                        <div class="col-8">
-                            <select class="form-control form-control-sm" formControlName="ResultId" [(ngModel)]="model.ResultId">
-                                <option *ngFor="let item of ResultList" [value]="item.ID">
-                                    {{item.Value}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-right">
-                            <label> Notes</label>
-                        </div>
-                        <div class="col-8">
-                            <textarea class="form-control"formControlName="Notes" [(ngModel)]="model.Notes"></textarea>
+                </div>
+                <div class="col-12">
+                    <div class="customscroll" style="max-height: 260px; overflow: hidden auto;">
+                        <div class="row">
+                            <div class="col-12 mb-2"
+                                 *ngFor="let test of filteredOrderTests">
+                                <div class="d-flex align-items-center justify-content-between p-2 border rounded">
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <label class="m-0">
+                                                <input type="checkbox" [ngModelOptions]="{standalone:true}"
+                                                       [(ngModel)]="test.selected"
+                                                       (change)="onToggleTestSelection(test)" />
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <div class="font-weight-500 d-flex align-items-center">
+                                                {{ test.name }}
+                                                <span class="badge badge-danger-light ml-2 px-2 py-1">{{ test.sample }}</span>
+                                            </div>
+                                            <small class="text-muted">
+                                                {{ test.code }} &bull; {{ test.category }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12" *ngIf="filteredOrderTests.length === 0">
+                                <p class="text-center text-muted mb-0">No tests found.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <hr />
-            <h4>
-                Lab Report
-            </h4>
+        </div>
+        <!-- Invoice summary section -->
+        <div class="bg-light border-top p-4">
+
             <div class="row">
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            Name
-                        </label>
-                        <input class="form-control"[ngModelOptions]="{standalone:true}" [(ngModel)]="patientInfo.PatientName"/>
-                    </div>
-                </div>
-
-
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            Patient ID#:
-                        </label>
-                        <input class="form-control"[ngModelOptions]="{standalone:true}" [(ngModel)]="patientInfo.ID" />
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            DOB:
-                        </label>
-                        <input class="form-control"[ngModelOptions]="{standalone:true}" [(ngModel)]="patientInfo.DOB"/>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            Gender:
-                        </label>
-                        <input class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="patientInfo.Gender" />
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            Collect Date/Time
-                        </label>
-                        <Datetime-Component formControlName="CollectDate" placeholder="DD/MM/YYYY"  [(ngModel)]="model.CollectDate">
-                        </Datetime-Component>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            Test Date/Time
-                        </label>
-                        <Datetime-Component formControlName="TestDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.TestDate">
-                        </Datetime-Component>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            Report Date/Time
-                        </label>
-                        <Datetime-Component formControlName="ReportDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.ReportDate">
-                        </Datetime-Component>
-                    </div>
-                </div>
-
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            Ordering Physician:
-                        </label>
-                        <input class="form-control"  formControlName="OrderingPhysician" [(ngModel)]="model.OrderingPhysician"/>
-                    </div>
-                </div>
-
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            PARAMETER:
-                        </label>
-                        <textarea class="form-control" formControlName="Parameter" [(ngModel)]="model.Parameter"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            Result Values:
-                        </label>
-                        <textarea class="form-control" formControlName="ResultValues" [(ngModel)]="model.ResultValues"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            ABN
-                        </label>
-                        <textarea class="form-control" formControlName="ABN" [(ngModel)]="model.ABN"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>
-                            Flags
-                        </label>
-                        <textarea class="form-control" formControlName="Flags" [(ngModel)]="model.Flags"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label>
-                            Comment
-                        </label>
-                        <textarea class="form-control" formControlName="Comment" [(ngModel)]="model.Comment"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label>
-                            Test Performed at:
-                        </label>
-                        <textarea class="form-control" formControlName="TestPerformedAt" [(ngModel)]="model.TestPerformedAt"></textarea>
-                    </div>
-                </div>
-
                 <div class="col-sm-12">
-                    <h4>
-                        BLOOD BANK
-                    </h4>
-                    <div class="form-group">
-                        <label>
-                            Test description:
-                        </label>
-                        <textarea class="form-control" formControlName="TestDescription" [(ngModel)]="model.TestDescription"></textarea>
+                    <div class="card shadow-none border-0">
+                        <div class="card-body py-3 px-3" *ngIf="groupedOrderSamples && groupedOrderSamples.length">
+                            <div class="mb-3" *ngFor="let group of groupedOrderSamples">
+                                <div class="mb-2">
+                                    <small class="text-muted">Sample Collection Required:</small>
+                                </div>
+                                <div class="d-inline-flex align-items-center bg-white rounded-pill px-3 py-1 mb-2">
+                                    <span class="badge badge-danger mr-2 text-uppercase">{{ group.sample }}</span>
+                                    <span class="badge badge-light border">{{ group.tests.length }} test{{ group.tests.length > 1 ? 's' : '' }}</span>
+                                </div>
+
+                                <div class="customscroll" style="max-height: 120px; overflow-y: auto;">
+                                    <div class="d-flex align-items-center justify-content-between bg-info-light rounded px-3 py-2 mb-2"
+                                         *ngFor="let t of group.tests">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge badge-primary mr-2">{{ t.code }}</span>
+                                            <span class="font-weight-500 mr-2">{{ t.name }}</span>
+                                            <span class="badge badge-danger-light text-uppercase">{{ t.sample }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body py-3 px-3" *ngIf="!groupedOrderSamples || !groupedOrderSamples.length">
+                            <p class="text-muted mb-0">No tests selected yet.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary"[disabled]="DischargeDate != null">Add</button>
+            <button type="submit" class="btn btn-primary" [disabled]="DischargeDate != null">Add</button>
         </div>
-        </form>
+    </form>
 </ng-template>

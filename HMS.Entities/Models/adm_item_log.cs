@@ -15,6 +15,7 @@ namespace HMS.Entities.Models
         public string Quantity {  get; set; }
         public string Type {  get; set; }
         public decimal CreatedBy { get; set; }
+        public string Description{ get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<decimal> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }

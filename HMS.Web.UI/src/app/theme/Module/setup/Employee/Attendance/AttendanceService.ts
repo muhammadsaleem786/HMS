@@ -13,7 +13,7 @@ export class AttendanceService {
     constructor(private http: HttpService) { }
 
     GetList(CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string): Promise<any> {
-        ;
+       
         var data = { 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': false };
         return this.http.Get(this.urlToApi + '/Pagination', data).then(e => e);
     }
@@ -62,7 +62,6 @@ export class AttendanceService {
 
     GetFilterEmployees(Keyword: string): Promise<any> {
         var data = { 'Keyword': Keyword };
-        ;
         return this.http.Get(GlobalVariable.BASE_Api_URL + '/api/Admin/pr_employee_mf' + '/GetFilterEmployees', data);
     }
 

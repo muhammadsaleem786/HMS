@@ -29,7 +29,7 @@ namespace HMS.Repository.Repositories.Admission
                 {
                     DisplayPatientName = PFilter.VisibleColumnInfoList.IndexOf("Notes") > -1;
                     predicate = (c => c.CompanyId == CompanyID &&
-                    (DisplayPatientName && c.Notes.ToString().Contains(PFilter.SearchText.ToLower())));
+                    (DisplayPatientName && c.ReferringPhysician.ToString().Contains(PFilter.SearchText.ToLower())));
                 }
 
                 IQueryable<ipd_admission_lab> filteredData = repository.Queryable().Where(predicate);
@@ -37,11 +37,11 @@ namespace HMS.Repository.Repositories.Admission
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
                     PFilter.OrderBy = "ID";
 
-                OrderByPatientName = PFilter.OrderBy.IndexOf("Notes") > -1;
+                OrderByPatientName = PFilter.OrderBy.IndexOf("ReferringPhysician") > -1;
 
 
                 Expression<Func<ipd_admission_lab, string>> orderingFunction = (c =>
-                                                              OrderByPatientName ? c.Notes.ToString() : ""
+                                                              OrderByPatientName ? c.ReferringPhysician.ToString() : ""
                                                               );
 
                 if (PFilter.IsOrderAsc)
@@ -59,11 +59,11 @@ namespace HMS.Repository.Repositories.Admission
                         {
                             s.ID,
                             AuthoredBy = s.adm_user_mf.Name,
-                            Note = s.Notes,
+                            ClinicalNotes = s.ClinicalNotes,
                             Date = s.CreatedDate,
                             Type = s.sys_drop_down_value.Value,
-                            Status = s.sys_drop_down_value1.Value,
-                            result = s.sys_drop_down_value2.Value,
+                            Catalog = s.emr_investigation.Investigation,
+                            ReferringPhysician = s.ReferringPhysician,
                         }).ToList<object>();
                 }
                 else
@@ -74,11 +74,11 @@ namespace HMS.Repository.Repositories.Admission
                        {
                            s.ID,
                            AuthoredBy = s.adm_user_mf.Name,
-                           Note = s.Notes,
+                           ClinicalNotes = s.ClinicalNotes,
                            Date = s.CreatedDate,
                            Type = s.sys_drop_down_value.Value,
-                           Status = s.sys_drop_down_value1.Value,
-                           result = s.sys_drop_down_value2.Value,
+                           Catalog = s.emr_investigation.Investigation,
+                           ReferringPhysician = s.ReferringPhysician,
                        }).ToList<object>();
                 }
             }

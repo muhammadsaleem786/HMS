@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Repository.Pattern.Ef6;
 using System.ComponentModel.DataAnnotations.Schema;
-
 namespace HMS.Entities.Models
 {
     public partial class adm_user_mf : Entity
@@ -64,7 +63,6 @@ namespace HMS.Entities.Models
             this.emr_service_mf1 = new List<emr_service_mf>();
             this.emr_service_item = new List<emr_service_item>();
             this.emr_service_item1 = new List<emr_service_item>();
-
             this.emr_patient_bill = new List<emr_patient_bill>();
             this.emr_patient_bill1 = new List<emr_patient_bill>();
             this.ipd_admission = new List<ipd_admission>();
@@ -108,7 +106,6 @@ namespace HMS.Entities.Models
             this.pur_payment1 = new List<pur_payment>();
             this.ipd_payment = new List<ipd_payment>();
             this.ipd_payment1 = new List<ipd_payment>();
-
             this.ipd_input_output = new List<ipd_input_output>();
             this.ipd_input_output1 = new List<ipd_input_output>();
             this.ipd_medication_log = new List<ipd_medication_log>();
@@ -117,55 +114,38 @@ namespace HMS.Entities.Models
             this.adm_reminder_mf1 = new List<adm_reminder_mf>();
             this.adm_reminder_dt = new List<adm_reminder_dt>();
             this.adm_reminder_dt1 = new List<adm_reminder_dt>();
-
             this.adm_item_log = new List<adm_item_log>();
             this.adm_item_log1 = new List<adm_item_log>();
             this.pur_sale_hold_mf = new List<pur_sale_hold_mf>();
             this.pur_sale_hold_mf1 = new List<pur_sale_hold_mf>();
-
             this.ipd_procedure_expense = new List<ipd_procedure_expense>();
             this.ipd_procedure_expense1 = new List<ipd_procedure_expense>();
-
             this.adm_integration = new List<adm_integration>();
             this.adm_integration1 = new List<adm_integration>();
-
             this.pr_attendance = new List<pr_attendance>();
             this.pr_attendance1 = new List<pr_attendance>();
             this.adm_user_session = new List<adm_user_session>();
             this.adm_user_session1 = new List<adm_user_session>();
-
-
             this.adm_generic = new List<adm_generic>();
             this.adm_generic1 = new List<adm_generic>();
-
             this.ipd_specialized_equipment_maintenance = new List<ipd_specialized_equipment_maintenance>();
             this.ipd_specialized_equipment_maintenance1 = new List<ipd_specialized_equipment_maintenance>();
-
             this.ipd_sentinel_event_register = new List<ipd_sentinel_event_register>();
             this.ipd_sentinel_event_register1 = new List<ipd_sentinel_event_register>();
-
             this.ipd_death_record_register = new List<ipd_death_record_register>();
             this.ipd_death_record_register1 = new List<ipd_death_record_register>();
-
             this.ipd_adverse_drug_reaction = new List<ipd_adverse_drug_reaction>();
             this.ipd_adverse_drug_reaction1 = new List<ipd_adverse_drug_reaction>();
-
             this.lab_parameter = new List<lab_parameter>();
             this.lab_parameter1 = new List<lab_parameter>();
-
             this.lab_patient_test = new List<lab_patient_test>();
             this.lab_patient_test1 = new List<lab_patient_test>();
-
-
             this.lab_result_mf = new List<lab_result_mf>();
             this.lab_result_mf1 = new List<lab_result_mf>();
-
             this.lab_result_dt = new List<lab_result_dt>();
             this.lab_result_dt1 = new List<lab_result_dt>();
             this.emr_investigation_Item = new List<emr_investigation_Item>();
             this.emr_investigation_Item1 = new List<emr_investigation_Item>();
-
-
         }
         public decimal ID { get; set; }
         public string Email { get; set; }
@@ -192,7 +172,6 @@ namespace HMS.Entities.Models
         public string Instruction { get; set; }
         public string Qualification { get; set; }
         public string Designation { get; set; }
-
         public string DesignationUrdu { get; set; }
         public string QualificationUrdu { get; set; }
         public string HeaderDescription { get; set; }
@@ -205,21 +184,20 @@ namespace HMS.Entities.Models
         public Nullable<System.DateTime> ForgotTokenDate { get; set; }
         public bool PhoneNotification { get; set; }
         public bool EmailNotification { get; set; }
-        //[NotMapped]
-        //public string AppStartTime { get; set; }
-        //[NotMapped]
-        //public string AppEndTime { get; set; }
+        public bool DeductOTCharges { get; set; }
+        public bool DeductMedicineCost { get; set; }
+        public bool DeductConsumables { get; set; }
+        public bool DeductImplantCost { get; set; }
+        public bool DeductLabConsumables { get; set; }
+        public bool DeductRoomCharges { get; set; }
+        public Nullable<decimal> DoctorShare { get; set; }
+        public Nullable<decimal> OwnerShare { get; set; }
         public Nullable<TimeSpan> SlotTime { get; set; }
-        //public Nullable<TimeSpan> StartTime { get; set; }
-        //public Nullable<TimeSpan> EndTime { get; set; }
         public Boolean IsOverLap { get; set; }
         public Nullable<DateTime> ExpiryDate { get; set; }
         public Nullable<int> SpecialtyId { get; set; }
         public Nullable<int> SpecialtyDropdownId { get; set; }
         public string Type { get; set; }
-        //[NotMapped]
-        //public int[] DocWorkingDay { get; set; }
-        //public string OffDay { get; set; }
         public bool IsDeleted { get; set; }
         public string IsShowDoctor { get; set; }
         public Nullable<decimal> MultilingualId { get; set; }
@@ -228,7 +206,6 @@ namespace HMS.Entities.Models
         public Nullable<int> Charges { get; set; } = 0;
         public string BrandImage { get; set; }
         public string BrandDescription { get; set; }
-
         /// <summary> Company table
         [NotMapped]
         public string CompanyName { get; set; }
@@ -276,8 +253,6 @@ namespace HMS.Entities.Models
         public Nullable<decimal> ModifiedBy { get; set; }
         [NotMapped]
         public Nullable<System.DateTime> ModifiedDate { get; set; }
-        //public virtual pr_employee_mf pr_employee_mf { get; set; }
-        /// </summary>
         public virtual ICollection<adm_company> adm_company { get; set; }
         public virtual ICollection<adm_user_share> adm_user_share { get; set; }
         public virtual ICollection<adm_user_share> adm_user_share1 { get; set; }
@@ -375,10 +350,8 @@ namespace HMS.Entities.Models
         public virtual ICollection<pur_sale_mf> pur_sale_mf1 { get; set; }
         public virtual ICollection<pur_sale_hold_mf> pur_sale_hold_mf { get; set; }
         public virtual ICollection<pur_sale_hold_mf> pur_sale_hold_mf1 { get; set; }
-
         public virtual ICollection<pur_payment> pur_payment { get; set; }
         public virtual ICollection<pur_payment> pur_payment1 { get; set; }
-
         public virtual ICollection<ipd_payment> ipd_payment { get; set; }
         public virtual ICollection<ipd_payment> ipd_payment1 { get; set; }
         public virtual ICollection<ipd_input_output> ipd_input_output { get; set; }
@@ -391,44 +364,33 @@ namespace HMS.Entities.Models
         public virtual ICollection<adm_reminder_dt> adm_reminder_dt1 { get; set; }
         public virtual ICollection<adm_item_log> adm_item_log { get; set; }
         public virtual ICollection<adm_item_log> adm_item_log1 { get; set; }
-
         public virtual ICollection<ipd_procedure_expense> ipd_procedure_expense { get; set; }
         public virtual ICollection<ipd_procedure_expense> ipd_procedure_expense1 { get; set; }
-
         public virtual ICollection<adm_generic> adm_generic { get; set; }
         public virtual ICollection<adm_generic> adm_generic1 { get; set; }
-
         public virtual ICollection<adm_integration> adm_integration { get; set; }
         public virtual ICollection<adm_integration> adm_integration1 { get; set; }
         public virtual ICollection<pr_attendance> pr_attendance { get; set; }
         public virtual ICollection<pr_attendance> pr_attendance1 { get; set; }
         public virtual ICollection<adm_user_session> adm_user_session { get; set; }
         public virtual ICollection<adm_user_session> adm_user_session1 { get; set; }
-
-
-
         public virtual ICollection<ipd_specialized_equipment_maintenance> ipd_specialized_equipment_maintenance { get; set; }
         public virtual ICollection<ipd_sentinel_event_register> ipd_sentinel_event_register { get; set; }
         public virtual ICollection<ipd_adverse_drug_reaction> ipd_adverse_drug_reaction { get; set; }
         public virtual ICollection<ipd_death_record_register> ipd_death_record_register { get; set; }
-
         public virtual ICollection<ipd_specialized_equipment_maintenance> ipd_specialized_equipment_maintenance1 { get; set; }
         public virtual ICollection<ipd_sentinel_event_register> ipd_sentinel_event_register1 { get; set; }
         public virtual ICollection<ipd_adverse_drug_reaction> ipd_adverse_drug_reaction1 { get; set; }
         public virtual ICollection<ipd_death_record_register> ipd_death_record_register1 { get; set; }
         public virtual ICollection<lab_parameter> lab_parameter { get; set; }
         public virtual ICollection<lab_parameter> lab_parameter1 { get; set; }
-
         public virtual ICollection<lab_patient_test> lab_patient_test { get; set; }
         public virtual ICollection<lab_patient_test> lab_patient_test1 { get; set; }
-
-
         public virtual ICollection<lab_result_mf> lab_result_mf { get; set; }
         public virtual ICollection<lab_result_mf> lab_result_mf1 { get; set; }
         public virtual ICollection<lab_result_dt> lab_result_dt { get; set; }
         public virtual ICollection<lab_result_dt> lab_result_dt1 { get; set; }
         public virtual ICollection<emr_investigation_Item> emr_investigation_Item { get; set; }
         public virtual ICollection<emr_investigation_Item> emr_investigation_Item1 { get; set; }
-
     }
 }

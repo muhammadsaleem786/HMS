@@ -336,7 +336,6 @@ export class TimeAttendanceComponentForm implements OnInit {
                 return 'Weekend';
             else if (CellName == 'TI') {
                 var TodayDate = new Date();
-                ;
                 if (date <= TodayDate)
                     return 'Absent';
             }

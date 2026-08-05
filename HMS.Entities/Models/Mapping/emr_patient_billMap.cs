@@ -43,6 +43,8 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.Remarks).HasColumnName("Remarks");
             this.Property(t => t.RefundAmount).HasColumnName("RefundAmount");
             this.Property(t => t.RefundDate).HasColumnName("RefundDate");
+            this.Property(t => t.TotalSessions).HasColumnName("TotalSessions");
+            this.Property(t => t.ConsumedSessions).HasColumnName("ConsumedSessions");
             // Relationships 
             this.HasRequired(t => t.adm_company)
                 .WithMany(t => t.emr_patient_bill)

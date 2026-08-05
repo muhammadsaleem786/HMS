@@ -638,64 +638,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.loader.HideLoader();
             });
     }
-    // Reload() {
-    //     let date = this._CommonService.GetFormatDate(new Date());
-    //     let StatusID = '0';
-    //     this.GetLatestPatientList(date, StatusID);
-    // }
-    // GetLatestPatientList(date: any, StatusID: any) {
-    //     this.AppointmentDate = new Date(date);
-    //     this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
-    //     this._AppointmentService
-    //         .GetPatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-    //             this.PModel.TotalRecord = m.TotalRecord;
-    //             if (this.GenderIds != null) {
-    //                 this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
-    //             }
-    //             else
-    //                 this.GenderList = m.GenderList;
-    //             this.DoctorList = m.DoctorList;
-    //             this.DoctorClanderList = m.DoctorCalander;
-    //             this.AppointmentList = m.AppointmentList;
-    //             this.IsBackDatedAppointment = m.IsBackDatedAppointment;
-    //             if (this.AppointmentList != null) {
-    //                 this.AppointmentList.forEach(x => {
-    //                     if (x.Image != null && x.Image != undefined && x.Image != "") {
-    //                         x.Image = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + x.Image;
-    //                     }
-    //                 });
-    //             }
-    //             let CurntDate = this._CommonService.GetFormatDate(new Date());
-    //             var appdate = this._CommonService.GetFormatDate(this.AppointmentDate);
-    //             if (appdate < CurntDate)
-    //                 this.IsPreviousApp = true;
-    //             else
-    //                 this.IsPreviousApp = false;
-    //             this.StatusList = m.AllStatusList.filter(a => a.ID != 1);
-    //             this.AllStatusList = m.AllStatusList;
-    //             this.ReminderList = m.Reminderlist;
-    //             this.Followuplist = m.Followuplist;
-    //             this.IsShowDoctorIds = m.IsShowDoctorIds;
-    //             this.ClinicList = m.ClinicList;
-    //             this.BloodList = m.BloodList;
-    //             this.UnitList = m.UnitList;
-    //             this.MadicineTypeList = m.MadicineTypeList;
 
-    //             this.ServiceList = m.ServiceType;
-    //             var ServiceObj = m.ServiceType.filter(z => z.ServiceName == "Consultation")[0];
-    //             this.ServiceType = ServiceObj;
-    //             this.TokenNo = m.TokenNo;
-    //             if (ServiceObj != null) {
-    //                 this.AppointmentModel.ServiceId = ServiceObj.ID;
-    //                 this.AppointmentModel.ServiceName = ServiceObj.ServiceName;
-    //                 this.AppointmentModel.Price = ServiceObj.Price;
-    //             }
-    //             this.BindEvent();
-    //             this.LoadCalendar(date);
-    //             this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
-    //             this.loader.HideLoader();
-    //         });
-    // }
     onFocusOutEvent(event: any, Id: any) {
         if (event != null && event != undefined) {
             this.loader.ShowLoader();
@@ -1285,6 +1228,9 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             if (this.Rights.indexOf(12) > -1) {
                 this.AppointmentModel.ServiceId = Appobj[0].ServiceId;
                 this.AppointmentModel.ServiceName = Appobj[0].ServiceName;
+                this.AppointmentModel.CategoryId = Appobj[0].CategoryId;
+                this.AppointmentModel.TotalSessions = Appobj[0].TotalSessions;
+                this.AppointmentModel.ConsumedSessions = Appobj[0].ConsumedSessions;
                 this.AppointmentModel.Price = Appobj[0].Price;
                 this.AppointmentModel.Discount = Appobj[0].Discount;
                 this.AppointmentModel.PaidAmount = Appobj[0].PaidAmount;
@@ -1507,6 +1453,14 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             }, 300),
             minLength: 3,
             select: (event, ui) => {
+                var billObj = ui.item.patientBill.filter(a => a.PatientId == ui.item.value)[0];
+                if (billObj == undefined || billObj.TotalSessions == null || billObj.TotalSessions == undefined) {
+                    this.AppointmentModel.TotalSessions = 0;
+                    this.AppointmentModel.ConsumedSessions = 0;
+                } else {
+                    this.AppointmentModel.TotalSessions = billObj.TotalSessions;
+                    this.AppointmentModel.ConsumedSessions = billObj.ConsumedSessions;
+                }
                 this.AppointmentModel.PatientName = ui.item.PatientName;
                 this.AppointmentModel.PatientId = ui.item.value;
                 this.AppointmentModel.CNIC = this.patientInfo.filter(a => a.value == ui.item.value)[0].CNIC;
@@ -1514,6 +1468,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.AppointmentModel.ReminderId = ui.item.ReminderId;
                 this.AppointmentModel.MrNo = ui.item.MRNO;
                 this.AppointmentModel.ServiceId = ui.item.ServiceID;
+                this.AppointmentModel.CategoryId = 0;
                 this.AppointmentModel.ServiceName = ui.item.ServiceName;
                 this.AppointmentModel.Price = ui.item.ServicePrice;
                 this.LoadService();
@@ -1546,14 +1501,22 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
-            select: (event, ui) => {
+            select: (event, ui) => {                
                 this.AppointmentModel.ServiceId = ui.item.value;
                 this.AppointmentModel.ServiceName = ui.item.label;
                 this.AppointmentModel.Price = ui.item.Price;
+                this.AppointmentModel.CategoryId = ui.item.CategoryId;
+                if (this.AppointmentModel.TotalSessions == 0) {
+                    this.AppointmentModel.ConsumedSessions = ui.item.TotalSessions;
+                }
+                this.AppointmentModel.TotalSessions = ui.item.TotalSessions;
+                if ((ui.item.CategoryId == 3 || ui.item.CategoryId == 4) && this.AppointmentModel.TotalSessions != this.AppointmentModel.ConsumedSessions)
+                    this.AppointmentModel.Price = 0;
                 return ui.item.label;
             }
         });
     }
+
     CurrentConvert12TO24(time12h: any) {
         const [time, modifier] = time12h.split(' ');
         let [hours, minutes] = time.split(':');
@@ -2005,6 +1968,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         let currentDate = new Date();
         selectedDate.setHours(0, 0, 0, 0);
         currentDate.setHours(0, 0, 0, 0);
+        if ((this.AppointmentModel.CategoryId == 3 || this.AppointmentModel.CategoryId == 4) && this.AppointmentModel.ConsumedSessions == 0) {
+            this.toastr.Error("You cannot add an appointment because your sessions are completed.");
+            return;
+        }
         if (this.IsBackDatedAppointment == false && selectedDate < currentDate) {
             this.toastr.Error("You can not add Appointment in previous date and time.");
             return;
@@ -2075,7 +2042,11 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             }
         });
     }
-
+    onTabChange(event: any) {
+        if (event.nextId === 'tab-selectbyid2') {
+            this.LoadService();
+        }
+    }
     FilterRecord(Date) {
         if (Date != null) {
             this.GetPatientList(Date.toString(), '0');
@@ -3485,7 +3456,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             this.AppointmentModel.StatusId = 25;
         this.AppointmentModel.IsPrscription = true;
         this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
-            ;
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
                 this.emr_prescription_treatment_dynamicArray = [];

@@ -306,3 +306,8 @@ export class ipd_payment {
     PaymentMethodID: number;
     PaymentMethodDropdownID: number;
 }
+
+export interface PatientAmountSummary {
+    procedureAmount: number;
+    payAmount: number;
+}

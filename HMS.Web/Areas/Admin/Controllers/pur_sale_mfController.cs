@@ -150,10 +150,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Phone = z.Phone,
                     Email = z.Email,
                     Website = z.Website,
-                    CompanyLogo = z.CompanyLogo,
-                    PharmacyLogo=z.PharmacyLogo,
-                    PharmacyName=z.PharmacyName,
-                    InvoiceNote=z.InvoiceNote,
+                    CompanyLogo = z.IsPharmacy == true ? z.CompanyLogo : null,
+                    PharmacyLogo = z.IsPharmacy == true ? z.PharmacyLogo : null,
+                    PharmacyName = z.IsPharmacy == true ? z.PharmacyName : null,
+                    InvoiceNote = z.IsPharmacy == true ? z.InvoiceNote : null,
                 }).FirstOrDefault();
                 if (dropdownValues != null)
                 {
@@ -686,7 +686,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //insert pur_sale_dt
                 decimal saleItemID = 1;
                 if (_pur_sale_dtService.Queryable().Count() > 0)
-                    saleItemID = (_pur_sale_dtService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) +1;
+                    saleItemID = (_pur_sale_dtService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 adm_item_log adm_item_log_obj = new adm_item_log();
                 decimal LogID = 1;
                 if (_adm_item_logService.Queryable().Count() > 0)
@@ -812,7 +812,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
                 // Fetch item groups using the list of item IDs
                 var itemGroups = _adm_itemService.Queryable()
-                    .Where(i =>i.CompanyId== CompanyID && itemIds.Contains(i.ID))
+                    .Where(i => i.CompanyId == CompanyID && itemIds.Contains(i.ID))
                     .ToDictionary(i => i.ID, i => i.GroupId);
 
                 decimal ID = 1;

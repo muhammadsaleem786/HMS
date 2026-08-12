@@ -212,6 +212,7 @@ namespace HMS.Entities.Models.Mapping
             this.HasRequired(t => t.adm_company)
                 .WithMany(t => t.pr_employee_mf)
                 .HasForeignKey(d => d.CompanyID);
+
             this.HasOptional(t => t.pr_department)
                 .WithMany(t => t.pr_employee_mf)
                 .HasForeignKey(d => new { d.DepartmentID, d.CompanyID });

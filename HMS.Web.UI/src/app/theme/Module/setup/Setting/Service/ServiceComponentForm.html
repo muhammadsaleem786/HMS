@@ -33,7 +33,7 @@
                                 <label class="form-control-label mt-2" for="input-username">Category</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="CategoryId" [(ngModel)]="model.CategoryId">
+                                <select class="form-control" formControlName="CategoryId" [(ngModel)]="model.CategoryId"(change)="onCategoryChange()">
                                     <option *ngFor="let item of CategoryList" [value]="item.ID">
                                         {{item.Value}}
                                     </option>
@@ -52,7 +52,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row form-group">
+                        <div class="row form-group"*ngIf="isSessionOrPackage">
                             <div class="col-4 text-right">
                                 <label class="form-control-label mt-2" for="input-username">Delivery Type</label>
                             </div>
@@ -64,7 +64,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row form-group">
+                        <div class="row form-group"*ngIf="isSessionOrPackage">
                             <div class="col-4 text-right">
                                 <label class="form-control-label mt-2" for="input-username">
                                     Total Sessions
@@ -74,7 +74,7 @@
                                 <input type="text" id="" formControlName="TotalSessions" [(ngModel)]="model.TotalSessions" class="form-control form-control-sm form-control-alternative" placeholder="Total Sessions">
                             </div>
                         </div>
-                        <div class="row form-group">
+                        <div class="row form-group"*ngIf="isSessionOrPackage">
                             <div class="col-4 text-right">
                                 <label class="form-control-label mt-2" for="input-username">
                                     Validity(Days)

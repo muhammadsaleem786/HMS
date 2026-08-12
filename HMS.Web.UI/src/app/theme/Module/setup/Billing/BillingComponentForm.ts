@@ -130,7 +130,7 @@ export class BillingComponentForm implements OnInit {
         $("#ServiceSearch").autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._BillingService.ServiceSearch(request.term).then(m => {
+                this._BillingService.ServiceSearch(request.term, this.model.PatientId.toString()).then(m => {
                     if (m.ResultSet.result.length == 0)
                         $("#ServiceSearch").val('');
                     if (m.ResultSet.result.length != 0)

@@ -74,8 +74,8 @@ export class BillingService {
         var data = { 'term': term };
         return this.http.Get(this.urlToApi + '/PatientSearch', data).then(e => e);
     }
-    ServiceSearch(term: string): Promise<any> {
-        var data = { 'term': term };
+    ServiceSearch(term: string, patientId: string): Promise<any> {
+        var data = { 'term': term, 'patientId': patientId };
         return this.http.Get(this.urlToApi + '/ServiceSearch', data).then(e => e);
     }
 }

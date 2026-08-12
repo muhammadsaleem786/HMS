@@ -12,6 +12,7 @@ namespace HMS.Entities.Models
         public decimal RoleID { get; set; }
         public decimal AdminID { get; set; }
         public bool IsDefault { get; set; }
+        public virtual pr_employee_mf pr_employee_mf { get; set; }
         public virtual adm_company adm_company { get; set; }
         public virtual adm_role_mf adm_role_mf { get; set; }
         public virtual adm_user_mf adm_user_mf { get; set; }

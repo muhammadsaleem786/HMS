@@ -761,7 +761,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         [HttpPost]
         [HttpGet]
         [ActionName("ServiceSearch")]
-        public async Task<ResponseInfo> ServiceSearch(string term)
+        public async Task<ResponseInfo> ServiceSearch(string term, string patientId)
         {
             var objResponse = new ResponseInfo();
             try
@@ -776,8 +776,23 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     z.TotalSessions,
                     z.CategoryId,
                 }).ToList();
+                var patientBillList = new List<PatientBillSessionDto>();
+                if (!string.IsNullOrWhiteSpace(patientId) &&
+           decimal.TryParse(patientId, out decimal patientIdValue))
+                {
+                    patientBillList = _service.Queryable()
+                    .Where(a => a.CompanyId == CompanyID && a.PatientId == patientIdValue)
+                    .Select(z => new PatientBillSessionDto
+                    {
+                        ID = z.ID,
+                        PatientId = z.PatientId,
+                        TotalSessions = z.TotalSessions,
+                        ConsumedSessions = z.ConsumedSessions
+                    }).OrderByDescending(a => a.ID).ToList();
+                }
                 objResponse.ResultSet = new
                 {
+                    patientBillList = patientBillList,
                     result = result
                 };
             }
@@ -790,7 +805,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             return objResponse;
 
         }
-
+        public class PatientBillSessionDto
+        {
+            public decimal ID { get; set; }
+            public decimal PatientId { get; set; }
+            public int? TotalSessions { get; set; }
+            public int? ConsumedSessions { get; set; }
+        }
         public PaginationResult PaginationWithParm(int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string FilterID, bool IgnorePaging = false)
         {
             throw new NotImplementedException();

@@ -385,7 +385,7 @@ export class AppointSummeryComponentList implements OnInit {
         $("#ServiceSearch").autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._BillingService.ServiceSearch(request.term).then(m => {
+                this._BillingService.ServiceSearch(request.term, this.AppointmentModel.PatientId.toString()).then(m => {
                     response(m.ResultSet.result);
                     this.loader.HideLoader();
                 });

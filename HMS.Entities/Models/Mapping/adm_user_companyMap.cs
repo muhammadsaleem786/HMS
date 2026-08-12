@@ -9,12 +9,13 @@ namespace HMS.Entities.Models.Mapping
         public adm_user_companyMap()
         {
             // Primary Key
-            this.HasKey(t => t.ID);
+            this.HasKey(t => new { t.ID, t.CompanyID });
 
             // Properties
             this.Property(t => t.ID)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-
+            this.Property(t => t.CompanyID)
+               .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             // Table & Column Mappings
             this.ToTable("adm_user_company");
             this.Property(t => t.ID).HasColumnName("ID");
@@ -38,6 +39,10 @@ namespace HMS.Entities.Models.Mapping
             this.HasRequired(t => t.adm_user_mf1)
                 .WithMany(t => t.adm_user_company1)
                 .HasForeignKey(d => d.AdminID);
+
+            this.HasRequired(t => t.pr_employee_mf)
+                .WithMany(t => t.adm_user_company)
+                .HasForeignKey(d => new { d.EmployeeID, d.CompanyID });
 
         }
     }

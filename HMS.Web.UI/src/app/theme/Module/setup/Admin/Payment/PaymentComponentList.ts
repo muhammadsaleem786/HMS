@@ -44,11 +44,13 @@ export class PaymentComponentList {
         this.PConfig.Action.Add = false;
         this.PConfig.Fields = [
             { Name: "ClinicName", Title: "Clinic Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "UserName", Title: "User Name", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "Date", Title: "Date", OrderNo: 1, SortingAllow: true, Visible: true, isDate: true, DateFormat: "dd/MM/yyyy" },
-            { Name: "Email", Title: "Email", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "PhoneNo", Title: "Phone No", OrderNo: 3, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
-            { Name: "Status", Title: "Status", OrderNo: 4, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "UserName", Title: "User Name", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Date", Title: "Date", OrderNo: 3, SortingAllow: true, Visible: true, isDate: true, DateFormat: "dd/MM/yyyy" },
+            { Name: "ExpiryDate", Title: "Expiry Date", OrderNo: 4, SortingAllow: true, Visible: true, isDate: true, DateFormat: "dd/MM/yyyy" },
+            { Name: "Email", Title: "Email", OrderNo: 5, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "PhoneNo", Title: "Phone No", OrderNo: 6, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "TotalUser", Title: "Total User", OrderNo: 7, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
+            { Name: "Status", Title: "Status", OrderNo: 8, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
         ];
     }
     getFilterData() {

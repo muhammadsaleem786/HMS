@@ -9,11 +9,13 @@ using HMS.Service.Services.Items;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
+using Org.BouncyCastle.Asn1.IsisMtt.X509;
 using Org.BouncyCastle.Crypto;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
@@ -36,11 +38,13 @@ namespace HMS.Web.API.Areas.Admission.Controllers
         private readonly Iadm_userService _adm_userService;
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly Iadm_user_companyService _adm_user_companyService;
+        private readonly Iipd_procedure_mfService _ipd_procedure_mfService;
+
         public ipd_paymentController(IUnitOfWorkAsync unitOfWorkAsync,
         ipd_paymentService Service,
           Iadm_userService adm_userService,
              Iadm_user_companyService adm_user_companyService, Isys_drop_down_valueService sys_drop_down_valueService,
-        IStoredProcedureService ProcedureService, Iadm_companyService adm_companyService)
+        IStoredProcedureService ProcedureService, Iadm_companyService adm_companyService, Iipd_procedure_mfService ipd_procedure_mfService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = Service;
@@ -48,6 +52,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
             _adm_userService = adm_userService;
             _adm_user_companyService = adm_user_companyService;
             _sys_drop_down_valueService = sys_drop_down_valueService;
+            _ipd_procedure_mfService = ipd_procedure_mfService;
         }
 
         [HttpGet]
@@ -131,11 +136,16 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                     a.PaymentDate,
                     a.Amount,
                     a.Notes
-                });
+                }).ToList();
+                var procedureAmount = _ipd_procedure_mfService.Queryable().Where(p => p.AdmissionId.ToString() == AdmitId && p.PatientId.ToString() == PatientId && p.CompanyId == CompanyID).Select(p => (decimal?)p.Price).Sum() ?? 0m;
+                var payAmount = result.Select(p => (decimal?)p.Amount).Sum() ?? 0m;
+
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {
-                    result = result
+                    result = result,
+                    ProcedureAmount = procedureAmount,
+                    payAmount= payAmount,
                 };
             }
             catch (Exception ex)

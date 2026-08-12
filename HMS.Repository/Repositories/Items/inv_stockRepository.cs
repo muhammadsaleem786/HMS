@@ -21,7 +21,7 @@ namespace HMS.Repository.Repositories.Items
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID);
+                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID && e.CompanyId == CompanyID);
 
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;
@@ -32,7 +32,7 @@ namespace HMS.Repository.Repositories.Items
                     DisplaySKU = PFilter.VisibleColumnInfoList.IndexOf("Quantity") > -1;
                     //DisplayDescription = PFilter.VisibleColumnInfoList.IndexOf("SaleDescription") > -1;
                     //DisplayRate = PFilter.VisibleColumnInfoList.IndexOf("SalePrice") > -1;
-                    predicate = (c => c.CompanyId == CompanyID);
+                    predicate = (c => c.CompanyId == CompanyID && c.CompanyId == CompanyID);
                 }
 
                 IQueryable<inv_stock> filteredData = repository.Queryable().Where(predicate);
@@ -214,7 +214,7 @@ namespace HMS.Repository.Repositories.Items
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID);
+                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID && e.CompanyId == CompanyID);
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;
 
@@ -235,21 +235,21 @@ namespace HMS.Repository.Repositories.Items
                 {
                     int categoryId = Convert.ToInt32(category);
                     filteredData = filteredData.Where(x =>
-                        x.adm_item.GroupId == categoryId);
+                        x.adm_item.GroupId == categoryId && x.CompanyId == CompanyID);
                 }
 
                 if (!string.IsNullOrEmpty(vandor))
                 {
                     int vandorId = Convert.ToInt32(vandor);
                     filteredData = filteredData.Where(x =>
-                        x.adm_item.VendorId == vandorId);
+                        x.adm_item.VendorId == vandorId && x.CompanyId == CompanyID);
                 }
 
                 if (!string.IsNullOrEmpty(brand))
                 {
                     int brandId = Convert.ToInt32(brand);
                     filteredData = filteredData.Where(x =>
-                        x.adm_item.BrandId == brandId);
+                        x.adm_item.BrandId == brandId && x.CompanyId == CompanyID);
                 }
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
                     PFilter.OrderBy = "ID";
@@ -442,9 +442,11 @@ namespace HMS.Repository.Repositories.Items
                 DateTime currentDate = DateTime.Now;
                 DateTime expiryDateLimit = currentDate.AddDays(90);
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID && 
+                Expression<Func<inv_stock, bool>> predicate = (e => e.CompanyId == CompanyID &&
                                                           e.Quantity > 0 &&
-                                                          e.ExpiredWarrantyDate <= expiryDateLimit);
+                                                          e.ExpiredWarrantyDate >= currentDate &&
+                                                          e.ExpiredWarrantyDate <= expiryDateLimit
+                                                          );
                 bool DisplayName, DisplaySKU, DisplayDescription, DisplayRate;
                 bool OrderByName, OrderBySKU, OrderByDescription, OrderByRate;
 
@@ -454,7 +456,7 @@ namespace HMS.Repository.Repositories.Items
                     DisplaySKU = PFilter.VisibleColumnInfoList.IndexOf("SKU") > -1;
                     DisplayDescription = PFilter.VisibleColumnInfoList.IndexOf("SaleDescription") > -1;
                     DisplayRate = PFilter.VisibleColumnInfoList.IndexOf("SalePrice") > -1;
-                    predicate = (c => c.CompanyId == CompanyID &&
+                    predicate = (c => c.CompanyId == CompanyID && c.ExpiredWarrantyDate >= currentDate && c.ExpiredWarrantyDate <= expiryDateLimit &&
                     (DisplayName && (c.adm_item.Name).Contains(PFilter.SearchText.ToLower()) ||
                     (DisplaySKU && (c.adm_item.SKU).ToLower().Contains(PFilter.SearchText.ToLower())
                   )));
@@ -466,21 +468,21 @@ namespace HMS.Repository.Repositories.Items
                 {
                     int categoryId = Convert.ToInt32(category);
                     filteredData = filteredData.Where(x =>
-                        x.adm_item.GroupId == categoryId);
+                        x.adm_item.GroupId == categoryId && x.CompanyId == CompanyID);
                 }
 
                 if (!string.IsNullOrEmpty(vandor))
                 {
                     int vandorId = Convert.ToInt32(vandor);
                     filteredData = filteredData.Where(x =>
-                        x.adm_item.VendorId == vandorId);
+                        x.adm_item.VendorId == vandorId && x.CompanyId == CompanyID);
                 }
 
                 if (!string.IsNullOrEmpty(brand))
                 {
                     int brandId = Convert.ToInt32(brand);
                     filteredData = filteredData.Where(x =>
-                        x.adm_item.BrandId == brandId);
+                        x.adm_item.BrandId == brandId && x.CompanyId == CompanyID);
                 }
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
                     PFilter.OrderBy = "ID";

@@ -39,6 +39,7 @@ export class ServiceComponentForm implements OnInit {
     public Rights: any;
     public ControlRights: any;
     public isChecked: boolean = false;
+    public isSessionOrPackage: boolean = false;
     constructor(public _CommonService: CommonService, public _fb: FormBuilder, public loader: LoaderService
         , public _Service: Service, private encrypt: EncryptionService, public commonservice: CommonService
         , public toastr: CommonToastrService, public route: ActivatedRoute, public _router: Router,
@@ -95,10 +96,43 @@ export class ServiceComponentForm implements OnInit {
                 this.SpecialityList = m.ResultSet.Speciality.filter(a => a.DropDownID == 24);
                 this.CategoryList = m.ResultSet.Speciality.filter(a => a.DropDownID == 74);
                 this.DeliveryTypeList = m.ResultSet.Speciality.filter(a => a.DropDownID == 75);
+                this.onCategoryChange();
                 this.loader.HideLoader();
             } else
                 this.loader.HideLoader();
         });
+    }
+    onCategoryChange(): void {
+        const selectedCategory = this.CategoryList.find(
+            x => Number(x.ID) === Number(this.model.CategoryId)
+        );
+        if (!selectedCategory) {
+            this.isSessionOrPackage = false;
+            this.clearSessionPackageFields();
+            return;
+        }
+        const categoryName = (selectedCategory.Value || '')
+            .toString()
+            .trim()
+            .toLowerCase();
+        this.isSessionOrPackage =
+            categoryName === 'session' ||
+            categoryName === 'package';
+        if (!this.isSessionOrPackage) {
+            this.clearSessionPackageFields();
+        }
+    }
+    clearSessionPackageFields(): void {
+        this.model.DeliveryTypeId = null;
+        this.model.TotalSessions = null;
+        this.model.Validity = null;
+        if (this.Form1) {
+            this.Form1.patchValue({
+                DeliveryTypeId: null,
+                TotalSessions: null,
+                Validity: null
+            });
+        }
     }
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true;
@@ -106,12 +140,14 @@ export class ServiceComponentForm implements OnInit {
 
             this.submitted = false;
             this.loader.ShowLoader();
-            if (this.model.IsItem) {
+            if (this.model.IsItem && this.itemdynamicArray.length > 0) {
                 if (this.itemdynamicArray[0].ItemId != 0) {
                     this.model.emr_service_item = this.itemdynamicArray;
                 }
-            } else
+            } else {
                 this.model.emr_service_item = [];
+                this.model.IsItem = false;
+            }
             this._Service.SaveOrUpdate(this.model).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {

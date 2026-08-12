@@ -425,7 +425,7 @@
         </button>
     </div>
     <div class="modal-body" *ngIf="Rights.indexOf(12)>-1">
-        <ngb-tabset #appt="ngbTabset">
+        <ngb-tabset #appt="ngbTabset" (tabChange)="onTabChange($event)">
             <ngb-tab id="tab-selectbyid1" title="Appointment">
                 <ng-template ngbTabContent>
                     <form [formGroup]="Form2">
@@ -597,6 +597,12 @@
                                             <small class="text-danger" *ngIf="Form2.controls.ServiceId.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
+                                            <div class="d-flex justify-content-between" *ngIf="AppointmentModel.CategoryId==3 ||AppointmentModel.CategoryId==4">
+                                                <span><strong>Remaining:</strong></span>
+                                                <span class="badge badge-primary">
+                                                    {{AppointmentModel.ConsumedSessions }} / {{AppointmentModel.TotalSessions}}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

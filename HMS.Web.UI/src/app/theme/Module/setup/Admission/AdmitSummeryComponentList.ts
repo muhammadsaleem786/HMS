@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Input, Output } from '@angular/core';
+import { Component, OnInit,OnDestroy, ViewChild, ElementRef, TemplateRef, Input, Output } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from '../../../../CommonService/LoaderService';
 import { AdmitService } from './AdmitService';
@@ -7,8 +7,8 @@ import { CommonToastrService } from '../../../../CommonService/CommonToastrServi
 import { EncryptionService } from '../../../../CommonService/encryption.service';
 import { emr_Appointment, emr_document, patientInfo, DoctorInfo } from './../Appointment/AppointmentModel';
 import { emr_patient_bill } from '../Billing/BillingModel';
-import { emr_patient, ipd_admission_vital, ipd_admission_notes, ipd_diagnosis, ipd_input_output, ipd_medication_log } from './AdmitModel';
-import { Observable } from 'rxjs';
+import { emr_patient, PatientAmountSummary , ipd_admission_vital, ipd_admission_notes, ipd_diagnosis, ipd_input_output, ipd_medication_log } from './AdmitModel';
+import { Observable, Subscription } from 'rxjs';
 import { AppointmentService } from './../Appointment/AppointmentService';
 import { SaleService } from './../Items/Sale/SaleService';
 import { PaginationModel, PaginationConfig } from '../../../../CommonComponent/PaginationComponentConfig';
@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { filter } from 'rxjs/operators';
 import { IMyDateModel } from 'mydatepicker';
+import { PatientAmountSummaryService } from './PatientAmountSummaryService';
 import { CommonService } from '../../../../CommonService/CommonService';
 import { GlobalVariable } from '../../../../AngularConfig/global';
 declare var $: any;
@@ -25,7 +26,7 @@ declare var $: any;
     moduleId: module.id,
     providers: [AdmitService, AppointmentService, SaleService],
 })
-export class AdmitSummeryComponentList implements OnInit {
+export class AdmitSummeryComponentList implements OnInit, OnDestroy {
     public Form7: FormGroup;
     public Form1: FormGroup;
     public Form2: FormGroup;
@@ -92,15 +93,19 @@ export class AdmitSummeryComponentList implements OnInit {
     public lineChartOptions: any;
     public lineChartLegend: boolean;
     public lineChartType: string;
+    public PayAmount: number = 0;
+    public ProcedureAmount: number = 0;
     chartInstance: any;
     public Step: number = 30;
     public ItemList: any[] = [];
     selectedVitals: Set<string> = new Set();
+    private amountSubscription: Subscription;
     vitals: string[] = ['Fever', 'BP', 'SPO2', 'Heart Rate'];
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
     @ViewChild("PrimaryModal") PrimaryModal: TemplateRef<any>;
     constructor(public _fb: FormBuilder,
         public loader: LoaderService
+        , private patientAmountSummaryService: PatientAmountSummaryService
         , public _AdmitService: AdmitService,
         public commonservice: CommonService
         , public toastr: CommonToastrService, public _SaleService: SaleService, private encrypt: EncryptionService, public _CommonService: CommonService, public route: ActivatedRoute, public _router: Router, public _AppointmentService: AppointmentService, private modalService: NgbModal) {
@@ -111,11 +116,23 @@ export class AdmitSummeryComponentList implements OnInit {
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
         this.ClinicName = this.CompanyObj.CompanyName;
     }
+    updateAmountSummary(summary: PatientAmountSummary): void {
+        this.ProcedureAmount = summary.procedureAmount;
+        this.PayAmount = summary.payAmount;
+    }
     ngOnInit() {
 
         this.AdmitId = localStorage.getItem('AdmitId');
         this.PatientId = localStorage.getItem('PatientId');
         this.LoadPatient();
+        this.amountSubscription =this.patientAmountSummaryService.amount$
+                .subscribe(summary => {
+                    this.ProcedureAmount =
+                        summary.procedureAmount || 0;
+                    this.PayAmount =
+                        summary.payAmount || 0;
+                });
+
         this.Form1 = this._fb.group({
             AdmissionId: [''],
             Date: [''],
@@ -165,6 +182,11 @@ export class AdmitSummeryComponentList implements OnInit {
             Dose: [''],
             MedicineName: ['']
         });
+    }
+    ngOnDestroy(): void {
+        if (this.amountSubscription) {
+            this.amountSubscription.unsubscribe();
+        }
     }
     HomePage() {
         this.IsPatient = true;
@@ -246,7 +268,9 @@ export class AdmitSummeryComponentList implements OnInit {
             this.PrimaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "P");
             this.SecondaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "S");
             this.AllergyList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "A");
-            this.model = m.ResultSet.patientInfo;
+            this.model = m.ResultSet.patientInfo;           
+            this.PayAmount = m.ResultSet.payAmount;
+            this.ProcedureAmount = m.ResultSet.procedureAmount;
             this.model.AdmissionNo= m.ResultSet.AdmissionNo;
             this.model.DischargeDate= m.ResultSet.DischargeDate;
             this.NotesList = m.ResultSet.NotesList;

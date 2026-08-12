@@ -1272,18 +1272,17 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 decimal CompanyID = Request.CompanyID();
                 var currentLoginId = Request.LoginID();
                 var currentDateTime = Request.DateTimes();
-                decimal nextStockId = 1;
-                decimal nextItemLogId = 1;
+                if (ExcelDataList == null || !ExcelDataList.Any())
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "No data found.";
+                    return objResponse;
+                }
+                decimal nextStockId = (_inv_stockService.Queryable().Select(x => (decimal?)x.ID).Max() ?? 0) + 1;
+                decimal nextItemLogId = (_adm_item_logService.Queryable().Select(x => (decimal?)x.ID).Max() ?? 0) + 1;
+                decimal nextItemId = (_service.Queryable().Where(x => x.CompanyId == CompanyID).Select(x => (decimal?)x.ID).Max() ?? 0) + 1;
 
-                if (_adm_item_logService.Queryable().Count() > 0)
-                    nextItemLogId = _adm_item_logService.Queryable().Max(e => e.ID) + 1;
-                if (_inv_stockService.Queryable().Count() > 0)
-                    nextStockId = _inv_stockService.Queryable().Max(e => e.ID) + 1;
-
-                decimal ItemID = 1;
-                if (_service.Queryable().Count() > 0)
-                    ItemID = (_service.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
-
+               
                 ExcelDataList.ForEach(item =>
                 {
                     item.CreatedBy = currentLoginId;
@@ -1291,7 +1290,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     item.ModifiedBy = currentLoginId;
                     item.ModifiedDate = currentDateTime;
                     item.CompanyId = CompanyID;
-                    item.ID = ItemID;
+                    item.ID = nextItemId++;
                     item.SaveStatus = 2;
                     item.UnitDropDownID = (int)sys_dropdown_mfEnum.ItemUnitDropDownID;
                     item.CategoryDropDownID = (int)sys_dropdown_mfEnum.CategoryDropDownID;
@@ -1300,7 +1299,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     item.sys_drop_down_value = null;
                     item.sys_drop_down_value1 = null;
                     item.emr_service_item = null;
-                    ItemID++;
                 });
                 var stockEntries = ExcelDataList
            .Where(item => item.TrackInventory)

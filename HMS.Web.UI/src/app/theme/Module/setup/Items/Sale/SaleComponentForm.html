@@ -500,250 +500,898 @@
 </ng-template>
 <!-- ============================   Rx Print  Modal ========= -->
 <style>
-    .modal-sm {
-        max-width: 73mm;
+    /* ============================================================
+   PHARMACY THERMAL INVOICE
+   Paper: 80mm
+   Safe Content Width: 72mm
+   ============================================================ */
+
+
+    /* ============================================================
+   RESET / BOX SIZING
+   ============================================================ */
+
+    #print-RxPrintModal *,
+    #invoice_print_pos *,
+    #invoice_print_pos {
+        box-sizing: border-box;
+    }
+
+
+    /* ============================================================
+   MAIN PRINT AREA
+   ============================================================ */
+
+    #print-RxPrintModal {
+        width: 72mm;
+        max-width: 72mm;
+        margin: 0 auto;
+        padding: 0;
+        background: #ffffff;
+        color: #000000;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 10px;
+        line-height: 1.2;
+    }
+
+
+    /* ============================================================
+   INVOICE CONTAINER
+   ============================================================ */
+
+    #invoice_print_pos {
+        width: 72mm;
+        max-width: 72mm;
+        margin: 0;
+        padding: 2mm;
+        background: #ffffff;
+        color: #000000;
+        overflow: hidden;
+    }
+
+
+        /* ============================================================
+   LOGO
+   ============================================================ */
+
+        #invoice_print_pos .receipt-logo {
+            width: 100%;
+            margin: 0 0 2mm 0;
+            padding: 0;
+            text-align: center;
+        }
+
+
+            #invoice_print_pos .receipt-logo img {
+                display: block;
+                width: 32mm;
+                max-width: 32mm;
+                height: auto;
+                margin: 0 auto;
+            }
+
+
+        /* ============================================================
+   PHARMACY HEADER
+   ============================================================ */
+
+        #invoice_print_pos .receipt-header {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+
+            #invoice_print_pos .receipt-header h2 {
+                width: 100%;
+                margin: 0 0 1mm 0;
+                padding: 0;
+                color: #000000;
+                font-family: "Courier New", Courier, monospace;
+                font-size: 16px;
+                font-weight: 700;
+                line-height: 1.2;
+                overflow-wrap: anywhere;
+            }
+
+
+            #invoice_print_pos .receipt-header p {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                color: #444444;
+                font-size: 10px;
+                font-weight: 400;
+                line-height: 1.2;
+                overflow-wrap: anywhere;
+            }
+
+
+        /* ============================================================
+   INVOICE TITLE
+   ============================================================ */
+
+        #invoice_print_pos .invoice-title {
+            width: 100%;
+            margin: 3mm 0 3mm 0;
+            padding: 0;
+            color: #000000;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+
+        /* ============================================================
+   GENERAL TABLE
+   ============================================================ */
+
+        #invoice_print_pos table {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            border-collapse: collapse;
+            border-spacing: 0;
+            table-layout: fixed;
+        }
+
+
+        /* ============================================================
+   INVOICE INFORMATION
+   ============================================================ */
+
+        #invoice_print_pos .invoice-info-table {
+            margin-bottom: 3mm;
+        }
+
+
+            #invoice_print_pos .invoice-info-table td {
+                padding: 1px;
+                border: 0;
+                color: #000000;
+                font-size: 10px;
+                font-weight: 400;
+                line-height: 1.4;
+                vertical-align: top;
+                overflow-wrap: anywhere;
+            }
+
+
+            #invoice_print_pos .invoice-info-table .label {
+                width: 25%;
+                text-align: left;
+            }
+
+
+            #invoice_print_pos .invoice-info-table .value {
+                width: 75%;
+                text-align: left;
+            }
+
+
+        #invoice_print_pos .patient-name {
+            overflow-wrap: anywhere;
+        }
+
+
+        /* ============================================================
+   ITEMS TABLE
+   ============================================================ */
+
+        #invoice_print_pos .items-table {
+            width: 100%;
+            margin-top: 2mm;
+        }
+
+
+        /* ============================================================
+   COLUMN WIDTH
+   Total = 100%
+   ============================================================ */
+
+        #invoice_print_pos .item-column {
+            width: 45%;
+        }
+
+
+        #invoice_print_pos .price-column {
+            width: 18%;
+        }
+
+
+        #invoice_print_pos .qty-column {
+            width: 12%;
+        }
+
+
+        #invoice_print_pos .total-column {
+            width: 25%;
+        }
+
+
+        /* ============================================================
+   TABLE HEADER
+   ============================================================ */
+
+        #invoice_print_pos .items-table thead th {
+            padding: 2px 1px;
+            background: #eeeeee;
+            border: 0;
+            border-bottom: 1px dashed #dddddd;
+            color: #000000;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-align: left;
+            vertical-align: middle;
+            white-space: normal;
+        }
+
+
+            #invoice_print_pos .items-table thead th:last-child {
+                text-align: right;
+            }
+
+
+        /* ============================================================
+   ITEM ROW
+   ============================================================ */
+
+        #invoice_print_pos .items-table tbody td {
+            padding: 2px 1px;
+            border-bottom: 1px dashed #dddddd;
+            color: #000000;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 10px;
+            font-weight: 400;
+            line-height: 1.3;
+            vertical-align: top;
+            overflow-wrap: anywhere;
+            word-break: normal;
+        }
+
+
+        /* ============================================================
+   MEDICINE NAME - BOLD
+   ============================================================ */
+
+        #invoice_print_pos .item-name {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            color: #000000;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.25;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            overflow-wrap: anywhere;
+        }
+
+
+        /* ============================================================
+   BATCH / TYPE
+   ============================================================ */
+
+        #invoice_print_pos .item-details {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            margin: 1px 0 0 0;
+            padding: 0;
+            color: #555555;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 8px;
+            font-weight: 400;
+            line-height: 1.2;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+
+        /* ============================================================
+   TEXT ALIGNMENT
+   ============================================================ */
+
+        #invoice_print_pos .text-right {
+            text-align: right !important;
+        }
+
+
+        #invoice_print_pos .text-left {
+            text-align: left !important;
+        }
+
+
+        #invoice_print_pos .text-center {
+            text-align: center !important;
+        }
+
+
+        /* ============================================================
+   DISCOUNT
+   ============================================================ */
+
+        #invoice_print_pos .discount-row td {
+            padding: 4px 1px 2px 1px;
+            border: 0;
+            color: #555555;
+            font-size: 10px;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+
+        /* ============================================================
+   GROSS TOTAL - BOLD
+   ============================================================ */
+
+        #invoice_print_pos .gross-total td {
+            padding: 2px 1px;
+            border: 0;
+            color: #000000;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+
+        #invoice_print_pos .gross-total strong {
+            font-weight: 700;
+        }
+
+
+        /* ============================================================
+   NET TOTAL - LARGE + BOLD
+   ============================================================ */
+
+        #invoice_print_pos .net-total td {
+            padding: 4px 2px;
+            background: #eeeeee;
+            border: 0;
+            color: #000000;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+
+        #invoice_print_pos .net-total strong {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+
+        /* ============================================================
+   FOOTER
+   ============================================================ */
+
+        #invoice_print_pos .receipt-footer {
+            width: 100%;
+            margin: 7mm 0 0 0;
+            padding: 0;
+            text-align: center;
+        }
+
+
+        /* ============================================================
+   THANK YOU - BOLD
+   ============================================================ */
+
+        #invoice_print_pos .thank-you {
+            width: 100%;
+            margin: 0 0 2mm 0;
+            padding: 0;
+            color: #000000;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+
+        /* ============================================================
+   INVOICE NOTE
+   ============================================================ */
+
+        #invoice_print_pos .invoice-note {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            color: #555555;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 9px;
+            font-weight: 400;
+            line-height: 1.35;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+
+        /* ============================================================
+   AVOID ROW BREAK
+   ============================================================ */
+
+        #invoice_print_pos tr {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+
+        #invoice_print_pos td,
+        #invoice_print_pos th {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+
+    /* ============================================================
+   PRINT BUTTONS
+   ============================================================ */
+
+    .print-buttons {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 9999;
+        display: flex;
+        gap: 5px;
+    }
+
+
+    /* ============================================================
+   PRINT MEDIA
+   ============================================================ */
+
+    @media print {
+
+
+        /* -----------------------------------------
+       PHYSICAL PAPER = 80mm
+       ----------------------------------------- */
+
+        @page {
+            size: 80mm auto;
+            margin: 0;
+        }
+
+
+        /* -----------------------------------------
+       HTML
+       ----------------------------------------- */
+
+        html {
+            width: 80mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+
+        /* -----------------------------------------
+       BODY
+       ----------------------------------------- */
+
+        body {
+            width: 80mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #ffffff !important;
+            font-family: "Courier New", Courier, monospace !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+
+        /* -----------------------------------------
+       PRINT AREA
+       ----------------------------------------- */
+
+        #print-RxPrintModal {
+            width: 72mm !important;
+            max-width: 72mm !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+
+
+        /* -----------------------------------------
+       INVOICE
+       ----------------------------------------- */
+
+        #invoice_print_pos {
+            width: 72mm !important;
+            max-width: 72mm !important;
+            margin: 0 !important;
+            padding: 2mm !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
+        }
+
+
+            /* -----------------------------------------
+       TABLE
+       ----------------------------------------- */
+
+            #invoice_print_pos table {
+                width: 100% !important;
+                max-width: 100% !important;
+                table-layout: fixed !important;
+                border-collapse: collapse !important;
+            }
+
+
+            /* -----------------------------------------
+       IMAGE
+       ----------------------------------------- */
+
+            #invoice_print_pos img {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+
+
+        /* -----------------------------------------
+       HIDE PRINT BUTTONS
+       ----------------------------------------- */
+
+        .print-buttons {
+            display: none !important;
+        }
+
+
+        /* -----------------------------------------
+       HIDE MODAL/BACKDROP
+       ----------------------------------------- */
+
+        .modal-backdrop {
+            display: none !important;
+        }
+
+
+        /* -----------------------------------------
+       KEEP IMPORTANT BOLD TEXT
+       ----------------------------------------- */
+
+        #invoice_print_pos .receipt-header h2,
+        #invoice_print_pos .invoice-title,
+        #invoice_print_pos .items-table thead th,
+        #invoice_print_pos .item-name,
+        #invoice_print_pos .gross-total td,
+        #invoice_print_pos .gross-total strong,
+        #invoice_print_pos .net-total td,
+        #invoice_print_pos .net-total strong,
+        #invoice_print_pos .thank-you {
+            font-weight: 700 !important;
+        }
     }
 </style>
-<ng-template #PrintRx let-modal class="RxPrintModal Salereceipt">
-    <div id="print-RxPrintModal" style="width: 72mm;margin:auto; font-size: 11px; font-family: 'Courier New', monospace; color: #000; padding: 0;">
-        <body style="font-family: monospace !important;">
+<ng-template #PrintRx let-modal>
 
-            <div id="invoice_print_pos" style="padding: 20px 20px 20px 20px; width: 72mm; background: #FFF;">
+    <!-- =========================
+         PRINT AREA
+         ========================= -->
+    <div id="print-RxPrintModal">
 
-                <div *ngIf="CompanyInfo.CompanyLogo != '' && CompanyInfo.CompanyLogo != null" style="text-align: center;">
-                    <img [src]="CompanyInfo.CompanyLogo" class="img-fluid radius" style="max-width: 120px; width: 120px; margin: 0 auto 5px; display: block;">
-                </div>
-                <div *ngIf="CompanyInfo.CompanyLogo =='' || CompanyInfo.CompanyLogo == null" style="text-align: center;">
-                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 120px; width: 120px; margin: 0 auto 5px; display: block;">
-                </div>
+        <div id="invoice_print_pos">
 
-                <div class="info" style="display: block; text-align: center; font-size: 12px;">
-                    <h2 style="font-weight: bold; font-size: 18px; margin: 0;">{{CompanyInfo.PharmacyName || CompanyInfo.CompanyName}}</h2>
-                </div>
+            <!-- =========================
+                 LOGO
+                 ========================= -->
 
-                <div id="mid" style="text-align: center; margin-bottom: 5px;">
-                    <div class="info" style="display: block; text-align: center; font-size: 12px;">
-                        <p style="color: #666; line-height: normal; margin-bottom: 0;">{{CompanyInfo.CompanyAddress1}}</p>
-                        <p style="color: #666; line-height: normal; margin-bottom: 0;">{{CompanyInfo.CompanyAddress2}}</p>
-                        <h2 style="margin: 15px 0 10px; font-size: 18px;">INVOICE</h2>
-                    </div>
-                </div>
+            <div class="receipt-logo"
+                 *ngIf="CompanyInfo.CompanyLogo != '' &&
+                        CompanyInfo.CompanyLogo != null">
 
-                <div class="invoice_detail">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tbody>
-                            <tr>
-                                <td style="border: 0px; padding: 1px 2px;">No:</td>
-                                <td style="border: 0px; padding: 1px 2px;">#78291</td>
-                            </tr>
-                            <tr>
-                                <td style="border: 0px; padding: 1px 2px;">Date</td>
-                                <td style="border: 0px; padding: 1px 2px;">{{model.Date| date:'dd/MM/yyyy hh:mm a'}}</td>
-                            </tr>
-                            <tr>
-                                <td style="border: 0px; padding: 1px 2px;">Patient</td>
-                                <td style="border: 0px; padding: 1px 2px;">{{PatientName}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <table style="margin-top: 15px; width: 100%; border-collapse: collapse;">
-                    <tbody>
-                        <tr style="background: #EEE !important;">
-                            <td style="width:45%; padding: 3px 2px; border-bottom:2px dashed #eee; font-size: 12px;"><strong>Item</strong></td>
-                            <td style="width:18%; padding: 3px 2px; border-bottom:2px dashed #eee; font-size: 12px;"><strong>Price</strong></td>
-                            <td style="width:7%; padding: 3px 2px; border-bottom:2px dashed #eee; font-size: 12px;"><strong>Qty</strong></td>
-                            <td style="width:30%; text-align:right; padding: 3px 2px; border-bottom:2px dashed #eee; font-size: 12px;"><strong>Total</strong></td>
-                        </tr>
-
-                        <!-- Item Rows -->
-                        <tr style="border-bottom: 1px solid #EEE;" *ngFor="let m of PrintSale_itemdynamicArray">
-                            <td style="padding: 3px 2px; border-bottom:2px dashed #eee; font-size: 12px;">
-                                <strong style="text-transform: capitalize; color: #000; font-size: 13px; padding: 0; text-overflow: ellipsis; overflow: hidden; max-width: 210px; display: inline-block; border: 0px; outline: none;">
-                                    {{m.ItemName}}<br>
-                                </strong>
-                                <p style="color: #666; line-height: normal; margin-bottom: 0;"><small>({{m.TypeValue}} {{m.BatchSarialNumber}})</small></p>
-                            </td>
-                            <td style="padding: 3px 2px; border-bottom:2px dashed #eee; font-size: 12px;">{{m.Rate}}</td>
-                            <td style="padding: 3px 2px; border-bottom:2px dashed #eee; font-size: 12px;"><p style="color: #666; line-height: normal; margin-bottom: 0;">*  {{m.Quantity}}</p></td>
-                            <td style="text-align:right; padding: 3px 2px; border-bottom:2px dashed #eee; font-size: 12px;"><p style="color: #666; line-height: normal; margin-bottom: 0;">{{m.TotalAmount}}</p></td>
-                        </tr>
-
-
-                        <!-- Continue for other items similarly... -->
-
-                        <tr>
-                            <td colspan="3" style="border:0px;">
-                                <p style="margin-top: 10px; color: #666; line-height: normal; margin-bottom: 0;">Discount</p>
-                            </td>
-                            <td style="text-align:right; border:0px;"><p style="margin-top: 10px; color: #666; line-height: normal; margin-bottom: 0;">{{OverAllDiscountAmount}}</p></td>
-                        </tr>
-
-                        <tr>
-                            <td colspan="3" style="padding: 3px 2px; font-size: 12px;"><strong>Gross Total</strong></td>
-                            <td style="text-align:right; padding: 3px 2px; font-size: 12px;"><strong style="color: #000; font-size: 13px;">{{PSubTotal}}</strong></td>
-                        </tr>
-
-                        <tr style="background: #EEE !important;">
-                            <td colspan="2" style="padding: 3px 2px; font-size: 16px;"><strong>Net Total</strong></td>
-                            <td colspan="2" style="text-align:right; padding: 3px 2px; font-size: 16px;"><strong>{{PTotal}}</strong></td>
-                        </tr>
-
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="4" style="border:0px">
-                                <div id="legalcopy" style="margin-top: 5mm; text-align: center;">
-                                    <p style="margin-bottom: 0px; color: #666; line-height: normal;"><strong>Thank you!</strong></p>
-                                    <p style="margin-bottom: 50px; color: #666; line-height: normal;">{{ CompanyInfo.InvoiceNote || 'Medicine will be returned within 3 days along with the bill and other necessary documents.' }}</p>
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                <img [src]="CompanyInfo.CompanyLogo"
+                     alt="Pharmacy Logo">
 
             </div>
-            <style>
-                #invoice_print_pos {
-                    padding: 20px 28px 20px 16px;
-                    width: 100%;
-                    background: #FFF;
-                    width: 72mm;
-                }
 
-                    #invoice_print_pos ::selection {
-                        background: #f31544;
-                        color: #FFF;
-                    }
+            <div class="receipt-logo"
+                 *ngIf="CompanyInfo.CompanyLogo == '' ||
+                        CompanyInfo.CompanyLogo == null">
 
-                    #invoice_print_pos ::moz-selection {
-                        background: #f31544;
-                        color: #FFF;
-                    }
+                <img src="../assets/app/media/img/icons/doctor-logo.png"
+                     alt="Pharmacy Logo">
 
-                    #invoice_print_pos h1 {
-                        font-size: 20px;
-                        color: #222;
-                    }
+            </div>
 
-                    #invoice_print_pos h2 {
-                        font-size: 18px;
-                        margin: 0;
-                    }
 
-                    #invoice_print_pos h3 {
-                        font-size: 16px;
-                        font-weight: 300;
-                        line-height: 2em;
-                    }
+            <!-- =========================
+                 PHARMACY HEADER
+                 ========================= -->
 
-                    #invoice_print_pos td, #invoice_print_pos th {
-                        padding: 3px 2px;
-                        border-bottom: 2px dashed #eee;
-                        font-size: 12px;
-                    }
+            <div class="receipt-header">
 
-                    #invoice_print_pos td {
-                        vertical-align: bottom;
-                    }
+                <h2>
+                    {{ CompanyInfo.PharmacyName || CompanyInfo.CompanyName }}
+                </h2>
 
-                        #invoice_print_pos td:first-child {
-                            max-width: 130px !important;
-                        }
+                <p *ngIf="CompanyInfo.CompanyAddress1">
+                    {{ CompanyInfo.CompanyAddress1 }}
+                </p>
 
-                    #invoice_print_pos #mid {
-                        text-align: center;
-                        margin-bottom: 5px;
-                    }
+                <p *ngIf="CompanyInfo.CompanyAddress2">
+                    {{ CompanyInfo.CompanyAddress2 }}
+                </p>
 
-                    #invoice_print_pos #bot {
-                        min-height: 50px;
-                    }
+            </div>
 
-                    #invoice_print_pos .info {
-                        display: block;
-                        text-align: center;
-                        font-size: 12px;
-                    }
 
-                        #invoice_print_pos .info h2 {
-                            font-weight: bold;
-                        }
+            <!-- =========================
+                 INVOICE TITLE
+                 ========================= -->
 
-                    #invoice_print_pos .title {
-                        float: right;
-                    }
+            <div class="invoice-title">
+                INVOICE
+            </div>
 
-                        #invoice_print_pos .title p {
-                            text-align: right;
-                        }
 
-                    #invoice_print_pos p {
-                        color: #666;
-                        line-height: normal;
-                        margin-bottom: 0;
-                    }
+            <!-- =========================
+                 INVOICE INFORMATION
+                 ========================= -->
 
-                    #invoice_print_pos table {
-                        width: 100%;
-                        border-collapse: collapse;
-                    }
+            <table class="invoice-info-table">
 
-                    #invoice_print_pos .tabletitle td {
-                        background: #EEE !important;
-                    }
+                <tbody>
 
-                    #invoice_print_pos .service {
-                        border-bottom: 1px solid #EEE;
-                    }
+                    <tr>
 
-                    #invoice_print_pos .item {
-                        width: 40%;
-                    }
+                        <td class="label">
+                            No:
+                        </td>
 
-                    #invoice_print_pos #legalcopy {
-                        margin-top: 5mm;
-                        text-align: center;
-                    }
+                        <td class="value">
+                            #78291
+                        </td>
 
-                    #invoice_print_pos .invoice_detail table td {
-                        border: 0px;
-                        padding: 1px 2px;
-                    }
+                    </tr>
 
-                strong.itemtext.label {
-                    text-transform: capitalize;
-                    color: #000;
-                    font-size: 13px;
-                    padding: 0;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    max-width: 210px;
-                    display: inline-block;
-                    border: 0px;
-                    outline: none;
-                }
 
-                @media print {
-                    body {
-                        -webkit-print-color-adjust: exact;
-                        font-family: monospace;
-                    }
-                }
+                    <tr>
 
-                body {
-                    font-family: monospace !important;
-                }
-            </style>
-        </body>
+                        <td class="label">
+                            Date
+                        </td>
+
+                        <td class="value">
+                            {{ model.Date | date:'dd/MM/yyyy hh:mm a' }}
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td class="label">
+                            Patient
+                        </td>
+
+                        <td class="value patient-name">
+                            {{ PatientName }}
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <!-- =========================
+                 ITEMS
+                 ========================= -->
+
+            <table class="items-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th class="item-column">
+                            Item
+                        </th>
+
+                        <th class="price-column">
+                            Price
+                        </th>
+
+                        <th class="qty-column">
+                            Qty
+                        </th>
+
+                        <th class="total-column">
+                            Total
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <!-- =========================
+                         MEDICINE ROW
+                         ========================= -->
+
+                    <tr *ngFor="let m of PrintSale_itemdynamicArray">
+
+                        <td class="item-column">
+
+                            <strong class="item-name">
+                                {{ m.ItemName }}
+                            </strong>
+
+                            <small class="item-details"
+                                   *ngIf="m.TypeValue || m.BatchSarialNumber">
+
+                                ({{ m.TypeValue }}
+                                {{ m.BatchSarialNumber }})
+
+                            </small>
+
+                        </td>
+
+
+                        <td class="price-column">
+                            {{ m.Rate }}
+                        </td>
+
+
+                        <td class="qty-column">
+                            * {{ m.Quantity }}
+                        </td>
+
+
+                        <td class="total-column text-right">
+                            {{ m.TotalAmount }}
+                        </td>
+
+                    </tr>
+
+
+                    <!-- =========================
+                         DISCOUNT
+                         ========================= -->
+
+                    <tr class="discount-row">
+
+                        <td colspan="3">
+                            Discount
+                        </td>
+
+                        <td class="text-right">
+                            {{ OverAllDiscountAmount }}
+                        </td>
+
+                    </tr>
+
+
+                    <!-- =========================
+                         GROSS TOTAL
+                         ========================= -->
+
+                    <tr class="gross-total">
+
+                        <td colspan="3">
+                            <strong>
+                                Gross Total
+                            </strong>
+                        </td>
+
+                        <td class="text-right">
+                            <strong>
+                                {{ PSubTotal }}
+                            </strong>
+                        </td>
+
+                    </tr>
+
+
+                    <!-- =========================
+                         NET TOTAL
+                         ========================= -->
+
+                    <tr class="net-total">
+
+                        <td colspan="2">
+                            <strong>
+                                Net Total
+                            </strong>
+                        </td>
+
+                        <td colspan="2" class="text-right">
+                            <strong>
+                                {{ PTotal }}
+                            </strong>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+
+                <!-- =========================
+                     FOOTER
+                     ========================= -->
+
+                <tfoot>
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            <div class="receipt-footer">
+
+                                <p class="thank-you">
+                                    Thank you!
+                                </p>
+
+                                <p class="invoice-note">
+
+                                    {{
+                                        CompanyInfo.InvoiceNote ||
+                                        'Medicine will be returned within 3 days along with the bill and other necessary documents.'
+                                    }}
+
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
 
     </div>
 
-    <div style="position:fixed; right: 20px;">
-        <button class="btn btn-primary" useExistingCss="true" printSectionId="print-RxPrintModal" ngxPrint> Print</button>
-        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+
+    <!-- =========================
+         PRINT / CLOSE BUTTONS
+         ========================= -->
+
+    <div class="print-buttons">
+
+        <button type="button"
+                class="btn btn-primary"
+                useExistingCss="true"
+                printSectionId="print-RxPrintModal"
+                ngxPrint>
+
+            <i class="fa fa-print"></i>
+            Print
+
+        </button>
+
+
+        <button type="button"
+                class="btn btn-light"
+                (click)="modal.close('Close click')">
+
+            Close
+
+        </button>
+
     </div>
+
 </ng-template>
 
 

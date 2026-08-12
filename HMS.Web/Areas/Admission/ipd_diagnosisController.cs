@@ -70,7 +70,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
-                    var ipddiagnosis = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.AdmissionId == Model.AdmissionId && a.PatientId == Model.PatientId).ToList();
+                    var ipddiagnosis = _service.Queryable().Where(a => a.CompanyID == CompanyID && a.AdmissionId == Model.AdmissionId).ToList();
                     var Diagnosislist = ipddiagnosis;
                     objResponse.ResultSet = new
                     {

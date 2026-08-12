@@ -37,7 +37,7 @@ namespace HMS.Repository.Repositories.Items
 
                 if (FilterID != "0")
                 {
-                    predicate = (c => c.InvoiveId.ToString() == FilterID);
+                    predicate = (c => c.InvoiveId.ToString() == FilterID && c.CompanyId== CompanyID);
 
                 }
                 IQueryable<pur_payment> filteredData = repository.Queryable().Where(predicate);

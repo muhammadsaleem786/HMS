@@ -167,6 +167,8 @@ namespace HMS.Repository.Repositories.Admin
                             PhoneNo = s.PhoneNo,
                             LastLogin = s.LastSignIn,
                             Date = s.ActivationTokenDate,
+                            ExpiryDate=s.ExpiryDate,
+                            TotalUser=s.TotalUser,
                             Status = s.IsActivated == true ? "Active" : "InActive",
                             ClinicName = s.adm_user_company.Select(x => x.adm_company).FirstOrDefault().CompanyName,
                         }).OrderByDescending(a => a.ID).ToList<object>();
@@ -185,6 +187,8 @@ namespace HMS.Repository.Repositories.Admin
                            PhoneNo = s.PhoneNo,
                            LastLogin = s.LastSignIn,
                            Date = s.ActivationTokenDate,
+                           ExpiryDate = s.ExpiryDate,
+                           TotalUser = s.TotalUser,
                            Status = s.IsActivated == true ? "Active" : "InActive",
                            ClinicName = s.adm_user_company.Select(x => x.adm_company).FirstOrDefault().CompanyName,
                        }).OrderByDescending(a => a.ID).ToList<object>();

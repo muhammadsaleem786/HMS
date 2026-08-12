@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Input, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter,ViewChild, ElementRef, TemplateRef, Input, Output } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from '../../../../CommonService/LoaderService';
 import { ValidationVariables } from '../../../../AngularConfig/global';
 import { CommonToastrService } from '../../../../CommonService/CommonToastrService';
 import { EncryptionService } from '../../../../CommonService/encryption.service';
 import { BillingService } from './../Billing/BillingService';
-
-import { emr_patient, ipd_admission_vital, ipd_admission_charges, ipd_payment } from './AdmitModel';
+import { PatientAmountSummaryService } from './PatientAmountSummaryService';
+import { emr_patient, PatientAmountSummary, ipd_admission_vital, ipd_admission_charges, ipd_payment } from './AdmitModel';
 import { Observable } from 'rxjs';
 import { AdmitService } from './AdmitService';
 import { PaginationModel, PaginationConfig } from '../../../../CommonComponent/PaginationComponentConfig';
@@ -36,6 +36,7 @@ export class AdmitChargeComponentList implements OnInit {
     public ID: number = 10;
     public IsAdmin: boolean = false;
     public model = new ipd_admission_charges();
+    public PatientModel = new emr_patient();
     public paymentmodel = new ipd_payment();
     public PayrollRegion: string; public PModel = new PaginationModel(); public PConfig = new PaginationConfig();
     public Keywords: any[] = [];
@@ -60,10 +61,10 @@ export class AdmitChargeComponentList implements OnInit {
     public valueForUser: any;
     public Total: number = 0; public TotalDiscount: number = 0;
     @ViewChild("NewPayment") NewPayment: TemplateRef<any>;
-
     constructor(public _fb: FormBuilder,
         public loader: LoaderService,
-        public commonservice: CommonService
+        public commonservice: CommonService,
+        private patientAmountSummaryService:PatientAmountSummaryService
         , public toastr: CommonToastrService, public _BillingService: BillingService, public _CommonService: CommonService, private encrypt: EncryptionService, public route: ActivatedRoute, public _router: Router, public _AdmitService: AdmitService, private modalService: NgbModal) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
@@ -97,6 +98,7 @@ export class AdmitChargeComponentList implements OnInit {
             Notes: ['']
         });
     }
+
     GetCharge() {
         this.loader.ShowLoader();
         this._AdmitService.ChargeGetById(this.AdmitId, this.PatientId).then(m => {
@@ -170,10 +172,14 @@ export class AdmitChargeComponentList implements OnInit {
             if (m.ResultSet.result != null) {
                 this.PaymentList = [];
                 this.PaymentList = m.ResultSet.result;
+                this.patientAmountSummaryService.updateAmount({
+                    procedureAmount: Number(m.ResultSet.ProcedureAmount || 0),
+                    payAmount: Number(m.ResultSet.payAmount || 0)
+                });
                 this.loader.HideLoader();
                 this._router.navigate(['home/AdmitSummary/AdmitCharge/AdmitPro']);
-            }else
-            this.loader.HideLoader();
+            } else
+                this.loader.HideLoader();
         });
     }
     Delete(id: any) {
@@ -215,7 +221,7 @@ export class AdmitChargeComponentList implements OnInit {
     PaymentSaveOrUpdate(isValid: boolean): void {
         if (isValid) {
             this.loader.ShowLoader();
-            this.submitted = false;            
+            this.submitted = false;
             let paymentArray: ipd_payment[] = [];
             this.ipd_payment_dynamicArray.forEach((item, index) => {
                 const newPayment = new ipd_payment();
@@ -240,7 +246,7 @@ export class AdmitChargeComponentList implements OnInit {
                 if (result.IsSuccess) {
                     this.toastr.Success(result.Message);
                     this.LoadPayment();
-                    this.loader.HideLoader();                    
+                    this.loader.HideLoader();
                 }
                 else {
                     this.toastr.Error('Error', result.ErrorMessage);

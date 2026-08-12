@@ -49,7 +49,7 @@ export class RegisterComponentForm implements OnInit {
        
         this.Form2 = this._fb.group({
             Name: ['', [Validators.pattern(ValidationVariables.AlphabetPattern), Validators.required]],
-            CompanyName: ['', [Validators.pattern(ValidationVariables.AlphabetPattern), Validators.required]],
+            CompanyName: ['', [Validators.required]],
             Pwd: ['', [Validators.required, strongPasswordValidator()]],
             CPassword: [''],
             agree: [''],

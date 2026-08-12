@@ -262,7 +262,7 @@ export class BillSummeryComponentForm implements OnInit {
         $("#BillServiceSearch").autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._BillingService.ServiceSearch(request.term).then(m => {
+                this._BillingService.ServiceSearch(request.term, this.BillModel.PatientId.toString()).then(m => {
                     response(m.ResultSet.result);
                     this.loader.HideLoader();
                 });

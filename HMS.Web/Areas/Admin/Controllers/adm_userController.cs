@@ -162,7 +162,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
                     decimal adm_user_ComID = 1;
                     if (_adm_user_companyService.Queryable().Count() > 0)
-                        adm_user_ComID = _adm_user_companyService.Queryable().Max(e => e.ID) + 1;
+                        adm_user_ComID = (_adm_user_companyService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     foreach (adm_user_company item in adm_userCompany)
                     {
                         adm_user_company admUserCompanyModel = new adm_user_company();
@@ -170,6 +170,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         admUserCompanyModel.UserID = Model.ID;
                         admUserCompanyModel.CompanyID = CompanyID;
                         admUserCompanyModel.RoleID = item.RoleID;
+                        admUserCompanyModel.EmployeeID = Model.EmployeeID;
                         admUserCompanyModel.AdminID = _adm_user_companyService.Queryable()
                             .Where(e => e.CompanyID == CompanyID && e.UserID == e.AdminID)
                             .Select(s => s.UserID).FirstOrDefault();

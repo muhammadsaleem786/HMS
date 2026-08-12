@@ -286,21 +286,21 @@ namespace HMS.Repository.Repositories.Items
                 {
                     int categoryId = Convert.ToInt32(category);
                     filteredData = filteredData.Where(x =>
-                        x.GroupId == categoryId);
+                        x.GroupId == categoryId && x.CompanyId == CompanyID);
                 }
 
                 if (!string.IsNullOrEmpty(vandor))
                 {
                     int vandorId = Convert.ToInt32(vandor);
                     filteredData = filteredData.Where(x =>
-                        x.VendorId == vandorId);
+                        x.VendorId == vandorId && x.CompanyId == CompanyID);
                 }
 
                 if (!string.IsNullOrEmpty(brand))
                 {
                     int brandId = Convert.ToInt32(brand);
                     filteredData = filteredData.Where(x =>
-                        x.BrandId == brandId);
+                        x.BrandId == brandId && x.CompanyId == CompanyID);
                 }
                 if (string.IsNullOrEmpty(PFilter.OrderBy))
                     PFilter.OrderBy = "ID";

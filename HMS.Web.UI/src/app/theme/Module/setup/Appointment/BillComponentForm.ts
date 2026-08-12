@@ -203,7 +203,7 @@ export class BillComponentForm implements OnInit {
         $("#BillServiceSearch").autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._BillingService.ServiceSearch(request.term).then(m => {
+                this._BillingService.ServiceSearch(request.term, null).then(m => {
                     response(m.ResultSet.result);
                     this.loader.HideLoader();
                 });

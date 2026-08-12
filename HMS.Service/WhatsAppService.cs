@@ -17,36 +17,94 @@ namespace HMS.Service
           string phoneNumberId,
           string accessToken)
         {
-            using (var httpClient = new HttpClient())
+            try
             {
-                httpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", accessToken);
-
-                var url = $"https://graph.facebook.com/v23.0/{phoneNumberId}/messages";
-
-                var body = new
+                using (var httpClient = new HttpClient())
                 {
-                    messaging_product = "whatsapp",
-                    to = phoneNumber,
-                    type = "text",
-                    text = new
+                    httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", accessToken);
+
+                    var url =
+                        $"https://graph.facebook.com/v23.0/{phoneNumberId}/messages";
+
+                    var body = new
                     {
-                        body = SMSbody
+                        messaging_product = "whatsapp",
+
+                        to = phoneNumber,
+
+                        type = "template",
+
+                        template = new
+                        {
+                            name = "appointment_confirmation",
+
+                            language = new
+                            {
+                                code = "en_US"
+                            },
+
+                            components = new[]
+                            {
+                        new
+                        {
+                            type = "body",
+
+                            parameters = new[]
+                            {
+                                new
+                                {
+                                    type = "text",
+                                    text = "ali"
+                                },
+
+                                new
+                                {
+                                    type = "text",
+                                    text = "saleem"
+                                },
+
+                                new
+                                {
+                                    type = "text",
+                                    text = DateTime.UtcNow.ToString()
+                                },
+
+                                new
+                                {
+                                    type = "text",
+                                    text = DateTime.UtcNow.ToString()
+                                }
+                            }
+                        }
                     }
-                };
+                        }
+                    };
 
-                var json = JsonConvert.SerializeObject(body);
+                    var json = JsonConvert.SerializeObject(body);
 
-                var response = await httpClient.PostAsync(
-                    url,
-                    new StringContent(json, Encoding.UTF8, "application/json"));
+                    var content = new StringContent(
+                        json,
+                        Encoding.UTF8,
+                        "application/json");
 
-                var result = await response.Content.ReadAsStringAsync();
+                    var response = await httpClient.PostAsync(
+                        url,
+                        content);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception(result);
+                    var result = await response.Content.ReadAsStringAsync();
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw new Exception(
+                            $"WhatsApp API Error: {result}");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+
+                
             }
         }
     }

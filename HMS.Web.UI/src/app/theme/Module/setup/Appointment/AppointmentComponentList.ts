@@ -632,13 +632,13 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                     this.AppointmentModel.ServiceName = ServiceObj.ServiceName;
                     this.AppointmentModel.Price = ServiceObj.Price;
                 }
+                this.AppointmentModel.CategoryId = 0;
                 this.BindEvent();
                 this.LoadCalendar(date);
                 this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
                 this.loader.HideLoader();
             });
     }
-
     onFocusOutEvent(event: any, Id: any) {
         if (event != null && event != undefined) {
             this.loader.ShowLoader();
@@ -823,6 +823,11 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     AppointmentPrint(val: any) {
         this.submitted = false;
         this.loader.ShowLoader();
+        if ((this.AppointmentModel.CategoryId == 3 || this.AppointmentModel.CategoryId == 4) && this.AppointmentModel.ConsumedSessions == 0) {
+            this.toastr.Error("You cannot add an appointment because your sessions are completed.");
+            this.loader.HideLoader();
+            return;
+        }
         if (this.AppointmentModel.AppointmentTime == undefined)
             this.AppointmentModel.AppointmentTime = $('#basicExample').val();
         this.AppointmentModel.AppointmentTime = this.Convert12TO24(this.AppointmentModel.AppointmentTime);
@@ -1489,19 +1494,30 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
 
     }
     LoadService() {
+        let patientBill;
         $("#ServiceSearch").autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._BillingService.ServiceSearch(request.term).then(m => {
+                this._BillingService.ServiceSearch(request.term, this.AppointmentModel.PatientId.toString()).then(m => {
                     if (m.ResultSet.result.length == 0)
                         $("#ServiceSearch").val('');
-                    if (m.ResultSet.result.length != 0)
+                    if (m.ResultSet.result.length != 0) {
                         response(m.ResultSet.result);
+                        patientBill = m.ResultSet.patientBillList;
+                    }
                     this.loader.HideLoader();
                 });
             },
             minLength: 3,
-            select: (event, ui) => {                
+            select: (event, ui) => {
+                if (patientBill == undefined || patientBill.length == 0) {
+                    this.AppointmentModel.TotalSessions = 0;
+                    this.AppointmentModel.ConsumedSessions = 0;
+                } else {
+                    var billObj = patientBill[0];
+                    this.AppointmentModel.TotalSessions = billObj.TotalSessions;
+                    this.AppointmentModel.ConsumedSessions = billObj.ConsumedSessions;
+                }
                 this.AppointmentModel.ServiceId = ui.item.value;
                 this.AppointmentModel.ServiceName = ui.item.label;
                 this.AppointmentModel.Price = ui.item.Price;
@@ -1516,7 +1532,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             }
         });
     }
-
     CurrentConvert12TO24(time12h: any) {
         const [time, modifier] = time12h.split(' ');
         let [hours, minutes] = time.split(':');
@@ -2319,7 +2334,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             }
         });
     }
-
     showPatientDetail(id: any, date: any, AppId: any) {
         if (id != undefined && AppId != undefined) {
             this.IsLoadDocument = false;
@@ -3404,6 +3418,11 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         let currentDate = new Date();
         selectedDate.setHours(0, 0, 0, 0);
         currentDate.setHours(0, 0, 0, 0);
+        if ((this.AppointmentModel.CategoryId == 3 || this.AppointmentModel.CategoryId == 4) && this.AppointmentModel.ConsumedSessions == 0) {
+            this.toastr.Error("You cannot add an appointment because your sessions are completed.");
+            this.loader.HideLoader();
+            return;
+        }
         if (this.IsBackDatedAppointment == false && selectedDate < currentDate) {
             this.toastr.Error("You can not add Appointment in previous date and time.");
             return;
@@ -3447,7 +3466,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this.loader.ShowLoader();
         if (this.AppointmentModel.AppointmentTime == undefined)
             this.AppointmentModel.AppointmentTime = $('#basicExample').val();
-
         const time = this.AppointmentModel.AppointmentTime;
         if (/AM|PM/i.test(time)) {
             this.AppointmentModel.AppointmentTime = this.Convert12TO24(this.AppointmentModel.AppointmentTime);
@@ -3458,6 +3476,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
+                this.AppointmentModel.AppointmentTime = time;
                 this.emr_prescription_treatment_dynamicArray = [];
                 this.emr_prescription_complaint_dynamicArray = [];
                 this.emr_prescription_diagnos_dynamicArray = [];

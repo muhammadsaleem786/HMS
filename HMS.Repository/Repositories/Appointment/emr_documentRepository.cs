@@ -93,13 +93,13 @@ namespace HMS.Repository.Repositories.Appointment
             }
             return objResult;
         }
-        public static PaginationResult DocPagination(this IRepository<emr_document> repository, decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, bool IgnorePaging = false)
+        public static PaginationResult DocPagination(this IRepository<emr_document> repository, decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string admitId, bool IgnorePaging = false)
         {
             var objResult = new PaginationResult();
             try
             {
                 var PFilter = Utility.SetPaginationFilter(CurrentPageNo, RecordPerPage, VisibleColumnInfo, SortName, SortOrder, SearchText);
-                Expression<Func<emr_document, bool>> predicate = (e => e.CompanyID == CompanyID && e.ReferenceNo==PatientId && DbFunctions.TruncateTime(e.Date) == DbFunctions.TruncateTime(DateTime.Now));
+                Expression<Func<emr_document, bool>> predicate = (e => e.CompanyID == CompanyID && e.ReferenceNo==admitId && DbFunctions.TruncateTime(e.Date) == DbFunctions.TruncateTime(DateTime.Now));
 
                 bool DisplayDate, DisplayRemarks;
                 bool OrderByDate, OrderByRemarks;

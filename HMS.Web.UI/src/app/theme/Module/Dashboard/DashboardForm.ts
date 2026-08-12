@@ -18,6 +18,7 @@ import { IMyDateModel } from 'mydatepicker';
 import { ECharts } from 'echarts';
 import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo, InvoiceCompanyInfo, emr_notes_favorite } from '../../Module/setup/Appointment/AppointmentModel';
 import { AppointmentService } from '../setup/Appointment/AppointmentService';
+import { BillingService } from '../setup/Billing/BillingService';
 declare const require: any;
 import { DatePipe } from '@angular/common';
 import { debug } from 'util';
@@ -27,7 +28,7 @@ declare var $: any;
     selector: 'DashboardForm',
     templateUrl: './DashboardForm.html',
     moduleId: module.id,
-    providers: [DashboardService, AppointmentService, DatePipe]
+    providers: [DashboardService, AppointmentService, DatePipe, BillingService]
 })
 export class DashboardForm implements OnInit, OnDestroy {
     mySubscription: Subscription;
@@ -91,7 +92,7 @@ export class DashboardForm implements OnInit, OnDestroy {
         });
     }
     constructor(public _fb: FormBuilder, private encrypt: EncryptionService, private datePipe: DatePipe, public toastr: CommonToastrService, public _AppointmentService: AppointmentService, private modalService: NgbModal, public _CommonService: CommonService, public _DashboardService: DashboardService, public loader: LoaderService
-        , public _AsidebarService: AsidebarService, public _router: Router) {
+        , public _AsidebarService: AsidebarService, public _router: Router, public _BillingService: BillingService) {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.PayrollRegion = this._CommonService.getPayrollRegion();
@@ -363,11 +364,20 @@ export class DashboardForm implements OnInit, OnDestroy {
             this.AppointmentModel.Price = 0;
         this.AppointmentModel.OutstandingBalance = this.AppointmentModel.Price - this.AppointmentModel.Discount - this.AppointmentModel.PaidAmount;
     }
-    onPatientNameEvent(event: any) {       
+    onPatientNameEvent(event: any) {
+    }
+    onTabChange(event: any) {
+        if (event.nextId === 'tab-selectbyid2') {
+            this.LoadService();
+        }
     }
     AppointmentSaveOrUpdate(isValid: boolean): void {
         let CurrentDate = this._CommonService.GetFormatDate(new Date());
         let Appdate = this._CommonService.GetFormatDate(this.AppointmentModel.AppointmentDate);
+        if ((this.AppointmentModel.CategoryId == 3 || this.AppointmentModel.CategoryId == 4) && this.AppointmentModel.ConsumedSessions == 0) {
+            this.toastr.Error("You cannot add an appointment because your sessions are completed.");
+            return;
+        }
         if (Appdate < CurrentDate) {
             this.toastr.Error("You can not add appointment previous date.");
             return;
@@ -417,6 +427,11 @@ export class DashboardForm implements OnInit, OnDestroy {
             }
         });
     }
+    DoctorChange() {
+        this.AppointmentModel.AppointmentTime = null;
+        this.AppointmentModel.AppointmentTime = '';
+        $('#basicExample').timepicker('remove');
+    }
     Convert12TO24(time12h: any) {
         const [time, modifier] = time12h.split(' ');
 
@@ -464,5 +479,44 @@ export class DashboardForm implements OnInit, OnDestroy {
         this._router.navigate(['/home/Income'], { queryParams: { id: value } });
 
         //this._router.navigate(['/home/Income']);
+    }
+    LoadService() {
+        let patientBill;
+        $("#ServiceSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._BillingService.ServiceSearch(request.term, this.AppointmentModel.PatientId.toString()).then(m => {
+                    if (m.ResultSet.result.length == 0)
+                        $("#ServiceSearch").val('');
+                    if (m.ResultSet.result.length != 0) {
+                        response(m.ResultSet.result);
+                        patientBill = m.ResultSet.patientBillList;
+                    }
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                if (patientBill == undefined || patientBill.length == 0) {
+                    this.AppointmentModel.TotalSessions = 0;
+                    this.AppointmentModel.ConsumedSessions = 0;
+                } else {
+                    var billObj = patientBill[0];
+                    this.AppointmentModel.TotalSessions = billObj.TotalSessions;
+                    this.AppointmentModel.ConsumedSessions = billObj.ConsumedSessions;
+                }
+                this.AppointmentModel.ServiceId = ui.item.value;
+                this.AppointmentModel.ServiceName = ui.item.label;
+                this.AppointmentModel.Price = ui.item.Price;
+                this.AppointmentModel.CategoryId = ui.item.CategoryId;
+                if (this.AppointmentModel.TotalSessions == 0) {
+                    this.AppointmentModel.ConsumedSessions = ui.item.TotalSessions;
+                }
+                this.AppointmentModel.TotalSessions = ui.item.TotalSessions;
+                if ((ui.item.CategoryId == 3 || ui.item.CategoryId == 4) && this.AppointmentModel.TotalSessions != this.AppointmentModel.ConsumedSessions)
+                    this.AppointmentModel.Price = 0;
+                return ui.item.label;
+            }
+        });
     }
 }

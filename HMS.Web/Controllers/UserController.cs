@@ -96,6 +96,12 @@ namespace HMS.Web.API.Controllers
                     response.ErrorMessage = "User Name or Password is incorrect.";
                     return response;
                 }
+                if (user.ExpiryDate.HasValue && user.ExpiryDate.Value.Date < DateTime.UtcNow.Date)
+                {
+                    response.IsSuccess = false;
+                    response.ErrorMessage = "Your account is expired. Please contact administrator.";
+                    return response;
+                }
                 if (user.Pwd != Model.Pwd || !user.IsActivated || user.UserLock)
                 {
                     user.LoginFailureNo++;
@@ -704,8 +710,6 @@ namespace HMS.Web.API.Controllers
                 decimal empID = 1;
                 if (!objResponse.IsSuccess)
                 {
-                    if (_pr_employee_mfService.Queryable().Count() > 0)
-                        empID = _pr_employee_mfService.Queryable().Max(e => e.ID) + 1;
                     // saveCompany 
                     adm_company obj = new adm_company();
                     decimal adm_companyID = 1;
@@ -732,6 +736,8 @@ namespace HMS.Web.API.Controllers
                     obj.ObjectState = ObjectState.Added;
                     _adm_companyService.Insert(obj);
                     //create employeee
+                    if (_pr_employee_mfService.Queryable().Count() > 0)
+                        empID = (_pr_employee_mfService.Queryable().Where(e => e.CompanyID == adm_companyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     pr_employee_mf employee_mf = new pr_employee_mf();
                     employee_mf.ID = empID;
                     employee_mf.CompanyID = adm_companyID;
@@ -815,7 +821,7 @@ namespace HMS.Web.API.Controllers
                     pr_pay_schedule pay_schedule = new pr_pay_schedule();
                     decimal pay_scheduleID = 1;
                     if (_pr_pay_scheduleService.Queryable().Count() > 0)
-                        pay_scheduleID = _pr_pay_scheduleService.Queryable().Max(e => e.ID) + 1;
+                        pay_scheduleID = (_pr_pay_scheduleService.Queryable().Where(e => e.CompanyID == adm_companyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     pay_schedule.ID = pay_scheduleID;
                     pay_schedule.CompanyID = adm_companyID;
                     pay_schedule.PayTypeDropDownID = (int)sys_dropdown_mfEnum.PayType;
@@ -932,12 +938,12 @@ namespace HMS.Web.API.Controllers
                     }
                     decimal AdminRoleID = 0, roleID = 1;
                     if (_adm_role_mfService.Queryable().Count() > 0)
-                        roleID = _adm_role_mfService.Queryable().Max(e => e.ID) + 1;
+                        roleID = (_adm_role_mfService.Queryable().Where(e => e.CompanyID == adm_companyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     List<ScreenModel> Screens = _procedureService.GetAllScreen().ToList();
                     decimal roleDetID = 1;
                     if (_adm_role_dtService.Queryable().Count() > 0)
-                        roleDetID = _adm_role_dtService.Queryable().Max(e => e.ID) + 1;
+                        roleDetID = (_adm_role_dtService.Queryable().Where(e => e.CompanyID == adm_companyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                     for (int i = 0; i < 4; i++)
                     {
@@ -1007,18 +1013,19 @@ namespace HMS.Web.API.Controllers
                     adm_user_company user_company = new adm_user_company();
                     decimal userCompanyID = 1;
                     if (_adm_user_companyService.Queryable().Count() > 0)
-                        userCompanyID = _adm_user_companyService.Queryable().Max(e => e.ID) + 1;
+                        userCompanyID = (_adm_user_companyService.Queryable().Where(e => e.CompanyID == adm_companyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     user_company.ID = userCompanyID;
-                    user_company.UserID = Model.ID;
+                    user_company.UserID = adm_userID;
+                    user_company.EmployeeID = empID;
                     user_company.RoleID = AdminRoleID;
-                    user_company.CompanyID = obj.ID;
-                    user_company.AdminID = Model.ID;
+                    user_company.CompanyID = adm_companyID;
+                    user_company.AdminID = adm_userID;
                     user_company.ObjectState = ObjectState.Added;
                     _adm_user_companyService.Insert(user_company);
                     //add service
                     decimal billID = 1;
                     if (_emr_service_mfService.Queryable().Count() > 0)
-                        billID = _emr_service_mfService.Queryable().Max(e => e.ID) + 1;
+                        billID = (_emr_service_mfService.Queryable().Where(e => e.CompanyId == adm_companyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                     for (int i = 0; i <= 2; i++)
                     {
                         emr_service_mf objbill = new emr_service_mf();
@@ -1475,7 +1482,7 @@ namespace HMS.Web.API.Controllers
                 var result = _lab_patient_testService.Queryable().Where(x => x.InvoiceNo == InvoiceNo && x.AccessCode == AccessCode)
                      .Select(x => new
                      {
-                         ID=x.ID,
+                         ID = x.ID,
                          TestName = x.emr_investigation.Investigation,
                          Parameters = x.emr_investigation.lab_parameter
                             .Select(a => a.ParameterName),

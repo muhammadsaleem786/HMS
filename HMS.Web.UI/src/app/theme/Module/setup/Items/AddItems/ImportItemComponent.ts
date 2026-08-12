@@ -38,6 +38,7 @@ export class ImportItemComponent {
     public unitGroups: string[] = [];
     public typeGroups: string[] = [];
     public categoryGroups: string[] = [];
+    public importMastersList: any[] = [];
     data: AOA = [[1, 2], [3, 4]];
     wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
 
@@ -60,6 +61,7 @@ export class ImportItemComponent {
     LoadImportMasters() {
         this._ItemService.GetImportMasters("64,57,59,58").then(res => {
             if (res.IsSuccess) {
+                this.importMastersList = res.ResultSet.dropdownValues;
                 let list = res.ResultSet.dropdownValues;
                 var GroupList = list.filter(f => f.DropDownID === 64);
                 var unitList = list.filter(f => f.DropDownID === 57);
@@ -91,7 +93,7 @@ export class ImportItemComponent {
             this.ExcelErrorList = [];
             this.ChkImpExistInDB = [];
             this.RecordStatusModel.TotalRecords = this.ExcelDataList.length;
-               this.ImportList.forEach(x => {
+            this.ImportList.forEach(x => {
                 if (x.Group == undefined)
                     this.AddToErrorList(x, 'Grroup is missing', true);
                 else if (!this.validGroups.includes(x.Group.toLowerCase()))
@@ -159,6 +161,12 @@ export class ImportItemComponent {
         item.IsSolutionToErrorManadory = IsSolutionToErrorManadory;
         this.ExcelErrorList.push(item);
     }
+    private createMap(dropDownId: number): Map<string, number> {
+        return new Map<string, number>(
+            this.importMastersList.filter(x => x.DropDownID === dropDownId)
+                .map(x => [x.Value.toString().trim().toLowerCase(),
+                Number(x.ID)] as [string, number]));
+    }
     onFileChange(evt: any) {
         this.ImportList = [];
         const target: DataTransfer = <DataTransfer>(evt.target);
@@ -176,41 +184,45 @@ export class ImportItemComponent {
                 alert(val);
                 return;
             }
-            const groupMap = new Map<string, number>([
-                ['pharmacy', 1],
-                ['ot', 2],
-                ['lab', 3],
-            ]);
-            const typeMap = new Map<string, number>([
-                ['goods', 1],
-                ['service', 2],
-                ['batch', 3],
-                ['sarial', 4],
-            ]);
-            const unitMap = new Map<string, number>([
-                ['box', 1],
-                ['sqm', 2],
-                ['dz', 3],
-                ['ft', 5],
-                ['g', 6],
-                ['kg', 7],
-                ['km', 8],
-                ['mg', 9],
-                ['mt', 10],
-                ['pcs', 11],
-            ]);
-            const categoryMap = new Map<string, number>([
-                ['sachet', 1],
-                ['tablet', 2],
-                ['capsules', 3],
-                ['drops', 4],
-                ['injections', 5],
-                ['syrup', 6],
-                ['drip', 7],
-                ['ot', 8],
-                ['lab', 9],
-
-            ]);
+            debugger
+            const groupMap = this.createMap(64);
+            const unitMap = this.createMap(57);
+            const typeMap = this.createMap(59);
+            const categoryMap = this.createMap(58);
+            // const groupMap = new Map<string, number>([
+            //     ['pharmacy', 1],
+            //     ['ot', 2],
+            //     ['lab', 3],
+            // ]);
+            // const typeMap = new Map<string, number>([
+            //     ['goods', 1],
+            //     ['service', 2],
+            //     ['batch', 3],
+            //     ['sarial', 4],
+            // ]);
+            // const unitMap = new Map<string, number>([
+            //     ['box', 1],
+            //     ['sqm', 2],
+            //     ['dz', 3],
+            //     ['ft', 5],
+            //     ['g', 6],
+            //     ['kg', 7],
+            //     ['km', 8],
+            //     ['mg', 9],
+            //     ['mt', 10],
+            //     ['pcs', 11],
+            // ]);
+            // const categoryMap = new Map<string, number>([
+            //     ['sachet', 1],
+            //     ['tablet', 2],
+            //     ['capsules', 3],
+            //     ['drops', 4],
+            //     ['injections', 5],
+            //     ['syrup', 6],
+            //     ['drip', 7],
+            //     ['ot', 8],
+            //     ['lab', 9],
+            // ]);
             this.ExcelDataList = JSON.parse(JSON.stringify(dataList));
             this.ExcelDataList.forEach(x => {
                 if (x['Group'] != undefined) {

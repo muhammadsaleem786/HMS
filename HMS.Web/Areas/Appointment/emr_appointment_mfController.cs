@@ -78,6 +78,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly IWhatsAppService _whatsAppService;
         private readonly Iemr_vitalService _emr_vitalService;
         private readonly Ipr_employee_mfService _pr_employee_mfService;
+        private readonly Iipd_paymentService _ipd_paymentService;
+        private readonly Iipd_procedure_mfService _ipd_procedure_mfService;
         private readonly Iadm_user_sessionService _adm_user_sessionService;
 
         public emr_appointment_mfController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_service_mfService emr_service_mfService, Iemr_prescription_mfService emr_prescription_mfService, Iadm_userService adm_userService, Iemr_medicineService emr_medicineService, Iemr_patientService emr_patientService, Iemr_appointment_mfService service, Iadm_user_companyService adm_user_companyService,
@@ -105,7 +107,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             Iadm_itemService adm_itemService,
             Iemr_vitalService emr_vitalService,
             Ipr_employee_mfService pr_employee_mfService, Iadm_user_sessionService adm_user_sessionService,
-            IWhatsAppService whatsAppService
+            IWhatsAppService whatsAppService, Iipd_paymentService ipd_paymentService, Iipd_procedure_mfService ipd_procedure_mfService
             )
         {
             _ipd_diagnosisService = ipd_diagnosisService;
@@ -146,6 +148,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _emr_vitalService = emr_vitalService;
             _pr_employee_mfService = pr_employee_mfService;
             _adm_user_sessionService = adm_user_sessionService;
+            _ipd_paymentService = ipd_paymentService;
+            _ipd_procedure_mfService = ipd_procedure_mfService;
 
         }
 
@@ -705,7 +709,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 findAppointment.ModifiedBy = Request.LoginID();
                 findAppointment.ModifiedDate = Request.DateTimes();
                 findAppointment.ObjectState = ObjectState.Modified;
-                findAppointment.adm_user_mf2 = null;               
+                findAppointment.adm_user_mf2 = null;
                 _service.Update(findAppointment);
                 var bill = _emr_patient_billService.Queryable().Where(a =>
                     a.AppointmentId == findAppointment.ID && a.PatientId == findAppointment.PatientId).FirstOrDefault();
@@ -1432,8 +1436,9 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
     (DateTime.TryParse(v.TimeRecorded, out var t) ? t.ToString("HH:mm:ss") : "00:00:00"),
     v.SPO2 ?? "0"
                 }).ToList();
-
-                // Step 3: Build final ChartData object
+                var procedureAmount= _ipd_procedure_mfService.Queryable().Where(p => p.AdmissionId == AdmissionId && p.PatientId == patientid && p.CompanyId == companyId).Select(p => (decimal?)p.Price).Sum() ?? 0m; 
+                var payAmount = _ipd_paymentService.Queryable().Where(p => p.AdmissionId == AdmissionId && p.PatientId == patientid && p.CompanyId == companyId).Select(p => (decimal?)p.Amount).Sum() ?? 0m;
+                    // Step 3: Build final ChartData object
                 var chartData = new
                 {
                     fever,
@@ -1476,6 +1481,8 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                     InputOutputList = InputOutputList,
                     MedicationLogList = MedicationLogList,
                     DocumentList = DocumentList,
+                    procedureAmount = procedureAmount,
+                    payAmount= payAmount
                 };
             }
             catch (Exception ex)

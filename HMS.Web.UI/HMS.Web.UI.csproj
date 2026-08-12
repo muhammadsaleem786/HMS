@@ -439,6 +439,7 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitChargeComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitProcedureComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\PatientAmountSummaryService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitAppointSummeryComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Admission\AdmitDocumentSummeryComponentList.ts" />

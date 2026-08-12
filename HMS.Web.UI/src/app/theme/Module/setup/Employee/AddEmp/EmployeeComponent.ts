@@ -255,7 +255,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                 }
             });
         this.firstFormGroup = this._fb.group({
-            FirstName: ['', [Validators.pattern(ValidationVariables.AlphabetPattern), Validators.required]],
+            FirstName: ['', [Validators.required]],
             LastName: ['', [Validators.pattern(ValidationVariables.AlphabetPattern), Validators.required]],
             EmployeePic: [''],
             Gender: [''],

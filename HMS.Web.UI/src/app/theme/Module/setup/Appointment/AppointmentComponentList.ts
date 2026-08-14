@@ -12,7 +12,7 @@ import { LoaderService } from '../../../../CommonService/LoaderService';
 import { CommonToastrService } from '../../../../CommonService/CommonToastrService';
 import { emr_patient_bill } from '../Billing/BillingModel';
 import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
-import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { GlobalVariable } from '../../../../AngularConfig/global';
 import * as moment from 'moment/moment';
 import { IMyDateModel } from 'mydatepicker';
@@ -178,6 +178,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     public DurationList: any[] = [];
     public RefillList: any[] = [];
     public InstructionsList: any[] = [];
+    private _appointmentContentRef: NgbModalRef;
     public UsersObj: any;
     public ColumnSettings: IMultiSelectSettings = {
         pullRight: false,
@@ -213,9 +214,8 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     myControl = new FormControl();
     myNameControl = new FormControl();
     openAppointmentModal(longContent) {
-
         this.AppointmentModel = new emr_Appointment();
-        this.modalService.open(longContent, { size: 'lg' });
+        this._appointmentContentRef= this.modalService.open(longContent, { size: 'lg' });
         setTimeout(() => {
             if (this.Rights.indexOf(12) > -1) {
                 this.AppointmentModel.ServiceId = this.ServiceType.ID;
@@ -838,7 +838,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
                 this.PrintContent();
-                this.modalService.dismissAll(this.ModelContent);
+                if (this._appointmentContentRef) {
+                    this._appointmentContentRef.close();
+                }
+                //this.modalService.dismissAll(this.ModelContent);
                 this.toastr.Success(result.Message);
                 this.CurntPrevDateList = result.ResultSet.CurntPrevDateList;
                 this.PModel.SortName = "";
@@ -1258,7 +1261,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             let time1 = this.calculateTimeFormate(time);
             this.AppointmentModel.AppointmentTime = time1;
             this.AppointmentModel.MrNo = Appobj[0].MRNO;
-            this.modalService.open(this.ModelContent, { size: 'lg' });
+            this._appointmentContentRef =this.modalService.open(this.ModelContent, { size: 'lg' });
             if (Appobj.length > 0) {
                 this.FindDisabledSlot(Appobj);
                 $("#basicExample").timepicker({
@@ -1635,7 +1638,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.AppointmentModel.BillDate = date;
                 let time1 = this.calculateTimeFormate(time);
                 this.AppointmentModel.AppointmentTime = time1;
-                this.modalService.open(this.ModelContent, { size: 'lg' });
+                this._appointmentContentRef= this.modalService.open(this.ModelContent, { size: 'lg' });
                 if (Appobj.length > 0) {
                     this.FindDisabledSlot(Appobj);
                     $("#basicExample").timepicker({
@@ -2041,7 +2044,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
-                this.modalService.dismissAll(this.ModelContent);
+                if (this._appointmentContentRef) {
+                    this._appointmentContentRef.close();
+                }
+                //this.modalService.dismissAll(this.ModelContent);
                 this.toastr.Success(result.Message);
                 this.CurntPrevDateList = result.ResultSet.CurntPrevDateList;
                 this.PModel.SortName = "";
@@ -2602,6 +2608,9 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this.IsPrevious = false;
         this.IsVital = false;
         this.AppointId = null;
+        let date = this._CommonService.GetFormatDate(new Date());
+        let StatusID = this.AppointmentModel.StatusId;
+        this.GetPatientList(date, StatusID);
     }
     getPages(totalRecord: number, recordPerPage: number) {
 
@@ -3411,6 +3420,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.toastr.Error('Error', result.ErrorMessage);
 
             this.loader.HideLoader();
+            this.GetPatientList(this.AppointmentModel.AppointmentDate, '0');
         });
     }
     PrintPrescription(isValid: boolean): void {
@@ -3476,6 +3486,9 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this._AppointmentService.AppSaveOrUpdate(this.AppointmentModel).then(m => {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
+                if (this._appointmentContentRef) {
+                    this._appointmentContentRef.close();
+                }
                 this.AppointmentModel.AppointmentTime = time;
                 this.emr_prescription_treatment_dynamicArray = [];
                 this.emr_prescription_complaint_dynamicArray = [];

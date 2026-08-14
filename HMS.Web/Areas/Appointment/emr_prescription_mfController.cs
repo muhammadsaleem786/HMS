@@ -290,6 +290,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
 
                     obj.TemplateName = Model.TemplateName;
                     obj.PrescriptionId = Model.ID;
+                    obj.IsActive = true;
                     obj.CompanyID = Request.CompanyID();
                     obj.CreatedBy = Request.LoginID();
                     obj.CreatedDate = Request.DateTimes();

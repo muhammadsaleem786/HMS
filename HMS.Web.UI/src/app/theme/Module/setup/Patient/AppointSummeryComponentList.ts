@@ -381,19 +381,46 @@ export class AppointSummeryComponentList implements OnInit {
             }
         });
     }
+    onTabChange(event: any) {
+        if (event.nextId === 'tab-selectbyid2') {
+            this.LoadService();
+        }
+    }
     LoadService() {
+        let patientBill;
         $("#ServiceSearch").autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
                 this._BillingService.ServiceSearch(request.term, this.AppointmentModel.PatientId.toString()).then(m => {
-                    response(m.ResultSet.result);
+                    if (m.ResultSet.result.length == 0)
+                        $("#ServiceSearch").val('');
+                    if (m.ResultSet.result.length != 0) {
+                        response(m.ResultSet.result);
+                        patientBill = m.ResultSet.patientBillList;
+                    }
                     this.loader.HideLoader();
                 });
             },
             minLength: 3,
             select: (event, ui) => {
+                if (patientBill == undefined || patientBill.length == 0) {
+                    this.AppointmentModel.TotalSessions = 0;
+                    this.AppointmentModel.ConsumedSessions = 0;
+                } else {
+                    var billObj = patientBill[0];
+                    this.AppointmentModel.TotalSessions = billObj.TotalSessions;
+                    this.AppointmentModel.ConsumedSessions = billObj.ConsumedSessions;
+                }
                 this.AppointmentModel.ServiceId = ui.item.value;
                 this.AppointmentModel.ServiceName = ui.item.label;
+                this.AppointmentModel.Price = ui.item.Price;
+                this.AppointmentModel.CategoryId = ui.item.CategoryId;
+                if (this.AppointmentModel.TotalSessions == 0) {
+                    this.AppointmentModel.ConsumedSessions = ui.item.TotalSessions;
+                }
+                this.AppointmentModel.TotalSessions = ui.item.TotalSessions;
+                if ((ui.item.CategoryId == 3 || ui.item.CategoryId == 4) && this.AppointmentModel.TotalSessions != this.AppointmentModel.ConsumedSessions)
+                    this.AppointmentModel.Price = 0;
                 return ui.item.label;
             }
         });

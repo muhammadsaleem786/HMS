@@ -4561,6 +4561,7 @@ label.custom-control-label {
 }
 
 @media (max-width: 767px) {
+   
     .PatientDetailBox{
         
     position: fixed;
@@ -4569,6 +4570,12 @@ label.custom-control-label {
     right: 0;
     bottom: 0;
     overflow: auto;
+    }
+.sidebar-container ul{
+    column-count: 2;
+}
+  .sidebar-container  .dropdown.open .dropdown-menu{
+        left: 0
     }
 .tab-pane table td, 
 .tab-pane table th{
@@ -4601,8 +4608,7 @@ label.custom-control-label {
         position: fixed;
         left: 0;
         top: 0;
-        width: 90px;
-        max-width: 90px;
+        max-width: 250px;width: 250px;
         z-index: 999;
     }
 

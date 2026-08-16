@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, EventEmitter, Output, HostListener, OnDestroy } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Helpers } from '../helpers';
@@ -18,7 +18,7 @@ import { EncryptionService } from '../CommonService/encryption.service';
     encapsulation: ViewEncapsulation.None,
     providers: [CompanyService, themeService]
 })
-export class ThemeComponent implements OnInit {
+export class ThemeComponent implements OnInit, OnDestroy {
     Form1: FormGroup;
     public submitted: boolean;
     public SettingToggle: boolean = false;
@@ -58,6 +58,11 @@ export class ThemeComponent implements OnInit {
             Phone: [''],
             Fax: [''],
             Email: [''],
+        });
+        this.routerSubscription = this._router.events.subscribe(event => {
+            if (event instanceof NavigationEnd && window.innerWidth < 768 && this.id === 1) {
+                this.id = 0;
+            }
         });
     }
     SaveEditContactInfo(isValid: boolean): void {
@@ -102,6 +107,21 @@ export class ThemeComponent implements OnInit {
         }
     }
     id = 0;
+    private routerSubscription: any;
+
+    @HostListener('window:resize')
+    onWindowResize() {
+        if (window.innerWidth >= 768 && this.id === 1) {
+            this.id = 0;
+        }
+    }
+
+    ngOnDestroy() {
+        if (this.routerSubscription) {
+            this.routerSubscription.unsubscribe();
+        }
+    }
+
     AssignParentClass() {
         if (this.id == 1) {
             this.id = 0;

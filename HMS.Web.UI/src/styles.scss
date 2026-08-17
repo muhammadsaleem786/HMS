@@ -4533,6 +4533,165 @@ label.custom-control-label {
 }
 
 
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1001;
+    background: #2f3479;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    width: 42px;
+    height: 42px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 20px;
+    outline: none;
+    line-height: 42px;
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+    &:hover,
+    &:focus {
+        color: #fff;
+        opacity: 0.9;
+    }
+}
+
+@media (max-width: 767px) {
+   
+    .PatientDetailBox{
+        
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    }
+.sidebar-container ul{
+    column-count: 2;
+}
+  .sidebar-container  .dropdown.open .dropdown-menu{
+        left: 0
+    }
+.tab-pane table td, 
+.tab-pane table th{
+    white-space: nowrap;
+}
+   .tab-pane table .form-control{
+        min-width: 100px;
+    }
+    .modal-content{
+        overflow: auto;
+    }
+    .appointmentWraper .ShowpatientDetail .AppointmentLeftCol{
+        max-width: 98%;
+    }
+    .headSection{
+        display: block;
+    }
+    .mobile-menu-toggle {
+        display: block;
+        left: auto;
+        right: 12px;
+    }
+
+    .sidebar-container {
+        display: none !important;
+    }
+
+    .main-container.toggleScreen .sidebar-container {
+        display: block !important;
+        position: fixed;
+        left: 0;
+        top: 0;
+        max-width: 250px;width: 250px;
+        z-index: 999;
+    }
+
+    .right-content.setMaxWidth,
+    .setMaxWidth {
+        width: 100% !important;
+        margin-top: 80px;
+        margin-left: 0 !important;
+    }
+
+    .main-container.toggleScreen .setMaxWidth {
+        margin-left: 90px;
+        margin-top: 80px;
+    }
+
+    .DashboardWraper {
+        .headSection {
+            .col-sm-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .row.justify-content-end {
+                justify-content: flex-start !important;
+                margin-top: 0 !important;
+
+                .form-group {
+                    width: 100%;
+                    margin-right: 0 !important;
+                }
+
+                .col-md-4,
+                .col-lg-3 {
+                    flex: 0 0 100%;
+                    max-width: 100%;
+                }
+            }
+        }
+
+        .dashboardSummary {
+            flex-wrap: wrap;
+
+            .col-summary {
+                width: 100%;
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+
+        .row.mt-4 > .col-md-6,
+        .largecard > .col-md-6,
+        .largecard > .col-lg-4 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .list-row {
+            .col-sm-3,
+            .col-sm-9 {
+                flex: 0 0 100%;
+                max-width: 100%;
+                border-right: 0 !important;
+                text-align: left !important;
+            }
+        }
+
+        .card-header select.float-right {
+            float: none !important;
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .card-body .row[style*="nowrap"] {
+            flex-wrap: wrap !important;
+        }
+
+        div[echarts] {
+            min-height: 280px;
+        }
+    }
+}
+
 @media (max-width: 768px){
     .loginRow #loginRightContent{
         display: none;

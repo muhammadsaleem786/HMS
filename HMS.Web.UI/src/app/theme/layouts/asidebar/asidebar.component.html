@@ -26,7 +26,7 @@
     </div>
 </div>
 
-<ul class="MenuBar" [style.display]="_AsidebarService.MenuId()==1">
+<ul class="MenuBar" [style.display]="_AsidebarService.MenuId()==1 ? 'block' : 'none'">
 
     <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(78)>-1">
         <a routerLink="dashboard">

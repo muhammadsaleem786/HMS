@@ -1,4 +1,7 @@
-<div class="container-fluid main-container no-padding-lr" [ngClass]="{'toggleScreen': id===1} && slideToggleClass ? 'ArabicLanguage' : ''">
+<div class="container-fluid main-container no-padding-lr" [ngClass]="{'toggleScreen': id===1, 'ArabicLanguage': slideToggleClass}">
+    <button type="button" class="mobile-menu-toggle" (click)="AssignParentClass()" [attr.aria-expanded]="id===1" aria-label="Toggle navigation menu">
+        <i [ngClass]="id===1 ? 'icon-cross' : 'icon-menu'"></i>
+    </button>
     <div class="flex_Main_container">
         <app-asidebar class="col-sm-12 no-padding-lr sidebar-container" (ClassAssign)="AssignParentClass()" (profilePopup)="GetProfile()"></app-asidebar>
         <!--<app-main></app-main>-->

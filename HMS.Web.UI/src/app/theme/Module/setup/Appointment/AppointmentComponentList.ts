@@ -590,7 +590,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
         this._AppointmentService
             .GetPatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-
+                debugger
                 this.PModel.TotalRecord = m.TotalRecord;
                 if (this.GenderIds != null && m.GenderList != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
@@ -3420,7 +3420,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.toastr.Error('Error', result.ErrorMessage);
 
             this.loader.HideLoader();
-            this.GetPatientList(this.AppointmentModel.AppointmentDate, '0');
         });
     }
     PrintPrescription(isValid: boolean): void {

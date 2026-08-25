@@ -95,6 +95,7 @@ export class AdmitSummeryComponentList implements OnInit, OnDestroy {
     public lineChartType: string;
     public PayAmount: number = 0;
     public ProcedureAmount: number = 0;
+    public discountAmount: number = 0;
     chartInstance: any;
     public Step: number = 30;
     public ItemList: any[] = [];
@@ -119,6 +120,7 @@ export class AdmitSummeryComponentList implements OnInit, OnDestroy {
     updateAmountSummary(summary: PatientAmountSummary): void {
         this.ProcedureAmount = summary.procedureAmount;
         this.PayAmount = summary.payAmount;
+        this.discountAmount = summary.discountAmount;
     }
     ngOnInit() {
 
@@ -131,6 +133,8 @@ export class AdmitSummeryComponentList implements OnInit, OnDestroy {
                         summary.procedureAmount || 0;
                     this.PayAmount =
                         summary.payAmount || 0;
+                    this.discountAmount =
+                        summary.discountAmount || 0;
                 });
 
         this.Form1 = this._fb.group({
@@ -268,9 +272,10 @@ export class AdmitSummeryComponentList implements OnInit, OnDestroy {
             this.PrimaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "P");
             this.SecondaryList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "S");
             this.AllergyList = m.ResultSet.Diagnosislist.filter(a => a.IsType == "A");
-            this.model = m.ResultSet.patientInfo;           
+            this.model = m.ResultSet.patientInfo;
             this.PayAmount = m.ResultSet.payAmount;
             this.ProcedureAmount = m.ResultSet.procedureAmount;
+            this.discountAmount = m.ResultSet.discountAmount;
             this.model.AdmissionNo= m.ResultSet.AdmissionNo;
             this.model.DischargeDate= m.ResultSet.DischargeDate;
             this.NotesList = m.ResultSet.NotesList;

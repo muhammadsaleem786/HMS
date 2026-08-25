@@ -747,6 +747,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                    CNIC = z.CNIC,
                    Age = z.Age,
                    Gender = z.Gender,
+                   InvoiveNo= Model.ID,
                }).FirstOrDefault();
                     objResponse.Message = MessageStatement.Save;
                     objResponse.IsSuccess = true;

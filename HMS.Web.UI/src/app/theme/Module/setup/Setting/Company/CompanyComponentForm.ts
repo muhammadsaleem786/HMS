@@ -42,13 +42,17 @@ export class CompanyComponentForm implements OnInit {
     public TotalEmployees = [];
     public Image: string = '';
     public IsNewImage: boolean = true;
-
     public PharmacyImage: string = '';
     public IsNewPharmacyImage: boolean = true;
+    public LabImage: string = '';
+    public IsNewLabImage: boolean = true;
     public isShowError: boolean = true;
     public IsPaymentShowHide: boolean = false;
     public CompanyObj: any;
     public CompanyToken: string; public ControlRights: any;
+    @ViewChild('editorHeaderNote') editorHeaderNote!: ElementRef;
+    @ViewChild('editorFooterNote') editorFooterNote!: ElementRef;
+
     constructor(public _fb: FormBuilder, public loader: LoaderService
         , public _CompanyService: CompanyService, public commonservice: CommonService
         , public toastr: CommonToastrService, private encrypt: EncryptionService, public route: ActivatedRoute, public _router: Router) {
@@ -87,12 +91,16 @@ export class CompanyComponentForm implements OnInit {
             TokenNo: [''],
             Email: ['', [Validators.pattern(ValidationVariables.EmailPattern)]],
             CompanyLogo: [''],
+            IsLab: [''],
+            LabImage: [''],
+            LabFooter: [''],
+            LabHeader: [''],
             DateFormatId: [''],
             ReceiptFooter: [''],
             StandardShiftHours: [''],
             PharmacyName: [''],
             InvoiceNote: [''],
-            IsPharmacy:[''],
+            IsPharmacy: [''],
         });
         this.loadDropdown();
         this.PayrollRegion = localStorage.getItem("PayrollRegion");
@@ -103,6 +111,8 @@ export class CompanyComponentForm implements OnInit {
         this._CompanyService.GetById(parseInt(companyID)).then(m => {
             if (m.IsSuccess) {
                 this.model = m.ResultSet;
+                if (this.model.IsLab)
+                    this.onIsLabChange(this.model.IsLab);
                 if (this.model.CompanyLogo != null && this.model.CompanyLogo != undefined && this.model.CompanyLogo != "") {
                     this.IsNewImage = false;
                     this.getImageUrlName(this.model.CompanyLogo);
@@ -110,6 +120,10 @@ export class CompanyComponentForm implements OnInit {
                 if (this.model.PharmacyLogo != null && this.model.PharmacyLogo != undefined && this.model.PharmacyLogo != "") {
                     this.IsNewPharmacyImage = false;
                     this.getPharmacyImageUrlName(this.model.PharmacyLogo);
+                }
+                if (this.model.LabImage != null && this.model.LabImage != undefined && this.model.LabImage != "") {
+                    this.IsNewLabImage = false;
+                    this.getLabImageUrlName(this.model.LabImage);
                 }
             }
             else {
@@ -138,7 +152,7 @@ export class CompanyComponentForm implements OnInit {
             this.model.Phone = '';
     }
     SaveOrUpdate(isValid: boolean): void {
-        
+
         this.submitted = true; // set form submit to true
         this.loader.ShowLoader();
         this.submitted = false;
@@ -223,5 +237,74 @@ export class CompanyComponentForm implements OnInit {
     }
     IsNewPharmacyImageEvent(FName) {
         this.IsNewPharmacyImage = true;
+    }
+
+    ClearLabImageUrl() {
+        $(".ImgCropper").hide();
+        this.IsNewLabImage = true;
+        this.model.LabImage = '';
+        this.LabImage = '';
+    }
+    getLabImageUrlName(FName) {
+        var img = $('.ImgCropper');
+        if (img.length > 0) {
+            $('.ImgCropper')[0].classList.remove('hide');
+        }
+        this.model.LabImage = FName;
+        if (GlobalVariable.IsUseS3 == "Yes") {
+            if (!this.IsNewLabImage)
+                this.LabImage = this.model.LabImage == FName ? this.model.LabImage : "";
+            else
+                this.LabImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
+        }
+        else {
+            if (this.IsEdit && !this.IsNewLabImage) {
+                this.LabImage = GlobalVariable.BASE_File_URL + '' + FName;
+            } else {
+                this.LabImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + FName;
+            }
+        }
+    }
+    IsNewLabImageEvent(FName) {
+        this.IsNewLabImage = true;
+    }
+    onIsLabChange(val:any) {
+        if (!this.model.IsLab) {
+            return;
+        }
+
+        setTimeout(() => {
+            const CKEDITOR = (window as any).CKEDITOR;
+
+            if (this.editorHeaderNote && this.editorHeaderNote.nativeElement) {
+                if (CKEDITOR.instances['editorHeaderNote']) {
+                    CKEDITOR.instances['editorHeaderNote'].destroy(true);
+                }
+                const editor = CKEDITOR.replace('editorHeaderNote', {
+                    enterMode: (window as any).CKEDITOR.ENTER_BR,
+                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
+                });
+                editor.on('change', () => {
+                    const html = editor.getData();
+                    this.model.LabHeader = html;
+                });
+            }
+
+            if (this.editorFooterNote && this.editorFooterNote.nativeElement) {
+                if (CKEDITOR.instances['editorFooterNote']) {
+                    CKEDITOR.instances['editorFooterNote'].destroy(true);
+                }
+                const editor = CKEDITOR.replace('editorFooterNote', {
+                    enterMode: (window as any).CKEDITOR.ENTER_BR,
+                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
+                });
+                editor.on('change', () => {
+                    const html = editor.getData();
+                    this.model.LabFooter = html;
+                });
+            }
+
+
+        }, 10);
     }
 }

@@ -172,8 +172,8 @@ export class BillingComponentList {
                 this.loader.HideLoader();
         });
     }
-    PaymentRptModel(PaymentRptModal: any, id: any,paymentId:any) {
-        this.loader.ShowLoader();
+    PaymentRptModel(PaymentRptModal: any, id: any, paymentId: any) {
+       this.loader.ShowLoader();
         this._BillingService.GetBillByPatient(id).then(m => {
             if (m.IsSuccess) {
                 this.PaymentRptData = [];
@@ -217,7 +217,7 @@ export class BillingComponentList {
         this.ControlRights = this._CommonService.ScreenRights("12");
         this.valueForUser = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
-}
+    }
     ngOnInit() {
         this.Form1 = this._fb.group({
             AppointmentId: [''],
@@ -236,7 +236,7 @@ export class BillingComponentList {
             PartialAmount: [''],
             RefundAmount: [''],
             RefundDate: [''],
-            PaymentDate:[''],
+            PaymentDate: [''],
         });
         this.PModel.SortName = "";
         this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
@@ -256,7 +256,7 @@ export class BillingComponentList {
     openAddBill(adBill: any, id: any) {
         this.loader.ShowLoader();
         this._BillingService.GetById(id).then(m => {
-            this.modalService.open(adBill, { size: 'md' });
+           this.modalService.open(adBill, { size: 'md' });
             this.model = m.ResultSet.result;
             this.model.PaymentDate = new Date();
             this.loader.HideLoader();
@@ -283,8 +283,15 @@ export class BillingComponentList {
         this.model.OutstandingBalance = this.model.Price - this.model.Discount - this.model.PaidAmount + parseInt(this.model.RefundAmount);
     }
     RefundSaveOrUpdate(isValid: boolean): void {
+        const refundAmount = Number(this.model.RefundAmount);
         this.submitted = true;
-        if (this.model.RefundAmount == undefined) {
+        if (
+            this.model.RefundAmount === undefined ||
+            this.model.RefundAmount === null ||
+            this.model.RefundAmount === "" ||
+            !Number.isFinite(refundAmount) ||
+            refundAmount <= 0
+        ) {
             this.toastr.Error("Please enter refund amount.");
             return;
         }
@@ -307,17 +314,23 @@ export class BillingComponentList {
         }
     }
     SaveOrUpdate(isValid: boolean): void {
-        this.submitted = true; // set form submit to true
-        if (this.model.PartialAmount == undefined) {
+        const partialAmount = Number(this.model.PartialAmount);
+
+        if (
+            this.model.PartialAmount === undefined ||
+            this.model.PartialAmount === null ||
+            this.model.PartialAmount === "" ||
+            !Number.isFinite(partialAmount) ||
+            partialAmount <= 0
+        ) {
             this.toastr.Error("Please enter amount.");
             return;
         }
+        this.submitted = true; // set form submit to true
         this.model.PaidAmount = this.model.PaidAmount + parseInt(this.model.PartialAmount);
-
         if (isValid) {
             this.submitted = false;
             this.loader.ShowLoader();
-
             this._BillingService.SaveOrUpdateBill(this.model).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {

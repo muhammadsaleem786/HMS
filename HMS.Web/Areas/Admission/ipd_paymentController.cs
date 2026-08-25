@@ -137,7 +137,18 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                     a.Amount,
                     a.Notes
                 }).ToList();
-                var procedureAmount = _ipd_procedure_mfService.Queryable().Where(p => p.AdmissionId.ToString() == AdmitId && p.PatientId.ToString() == PatientId && p.CompanyId == CompanyID).Select(p => (decimal?)p.Price).Sum() ?? 0m;
+                var procedureData = _ipd_procedure_mfService
+    .Queryable()
+    .Where(p =>
+       p.AdmissionId.ToString() == AdmitId && p.PatientId.ToString() == PatientId && p.CompanyId == CompanyID)
+    .Select(p => new
+    {
+        Price = (decimal?)p.Price,
+        Discount = (decimal?)p.Discount
+    })
+    .ToList();
+                var procedureAmount = procedureData.Sum(p => p.Price ?? 0m);
+                var discountAmount = procedureData.Sum(p => p.Discount ?? 0m);
                 var payAmount = result.Select(p => (decimal?)p.Amount).Sum() ?? 0m;
 
                 objResponse.IsSuccess = true;
@@ -146,6 +157,7 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                     result = result,
                     ProcedureAmount = procedureAmount,
                     payAmount= payAmount,
+                    discountAmount= discountAmount,
                 };
             }
             catch (Exception ex)

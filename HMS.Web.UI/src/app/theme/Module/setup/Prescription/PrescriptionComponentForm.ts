@@ -1129,6 +1129,7 @@ export class PrescriptionComponentForm implements OnInit {
                 this.patientInfo = ui.item;
                 this.PrescriptionModel.PatientName = ui.item.label;
                 this.PrescriptionModel.PatientId = ui.item.value;
+                this.PrescriptionModel.Age = ui.item.Age;
                 if (this.PrescriptionModel.PatientId != null && this.PrescriptionModel.DoctorId != null) {
                     this._PrescriptionService.PrePrescriptionDataLoad(this.PrescriptionModel.PatientId.toString(), this.PrescriptionModel.DoctorId.toString()).then(m => {
                         this.CurntPrevDateList = m.ResultSet;
@@ -2168,6 +2169,7 @@ export class PrescriptionComponentForm implements OnInit {
                         this.emr_prescription_treatment_dynamicArray.push(item);
                     });
                 }
+                debugger
                 this.modalService.open(this.PrintRxContent, { size: 'lg' });
             }
             else

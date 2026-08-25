@@ -27,6 +27,7 @@ export class emr_prescription_mf {
     DoctorId: number;
     ClinicId: number;
     PatientName: string;
+    Age: string;
     Gender: string;
     Mobile: string;
     FollowUpDate: Date;

@@ -11,6 +11,7 @@ export class PatientAmountSummaryService {
         new BehaviorSubject<PatientAmountSummary>({
             procedureAmount: 0,
             payAmount: 0,
+            discountAmount:0,
         });
 
     amount$ = this.amountSubject.asObservable();
@@ -27,7 +28,8 @@ export class PatientAmountSummaryService {
 
         this.amountSubject.next({
             procedureAmount: 0,
-            payAmount: 0
+            payAmount: 0,
+            discountAmount:0
         });
 
     }

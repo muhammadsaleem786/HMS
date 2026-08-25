@@ -310,4 +310,5 @@ export class ipd_payment {
 export interface PatientAmountSummary {
     procedureAmount: number;
     payAmount: number;
+    discountAmount: number;
 }

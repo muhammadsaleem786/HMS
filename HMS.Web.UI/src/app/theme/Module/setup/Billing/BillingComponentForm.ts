@@ -199,6 +199,10 @@ export class BillingComponentForm implements OnInit {
             this.toastr.Error("Error", "please select Patient.");
             return;
         }
+        if (this.model.ServiceId == 0 || this.model.ServiceId == null) {
+            this.toastr.Error("Error", "please select service.");
+            return;
+        }
         if (this.model.Discount > this.model.Price) {
             this.toastr.Error("Error", "discount not greater price amount.");
             return;

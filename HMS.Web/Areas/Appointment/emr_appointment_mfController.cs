@@ -1024,8 +1024,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         OutAmount = z.emr_patient_mf.emr_patient_bill.Where(c => c.PatientId == z.emr_patient_mf.ID && (decimal?)c.DoctorId == (decimal?)z.DoctorId).Sum(c => (decimal?)c.OutstandingBalance),
                     }).OrderByDescending(a => a.AppointmentDate).ToList();
                 var ids = prescriptionresult.SelectMany(p => p.emr_prescription_treatment).Select(t => t.MedicineId).Distinct().ToList();
-                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName = "", Type = a.sys_drop_down_value1.Value });
-                var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName = a.adm_generic.GenericName, Type = a.sys_drop_down_value1.Value });
+                var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName = "", TypeId = a.TypeId, Type = a.sys_drop_down_value1.Value });
+                var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == companyId && ids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName = a.adm_generic.GenericName, TypeId = a.CategoryID, Type = a.sys_drop_down_value1.Value });
                 var MedicineList = itemList.Union(medicineList).ToList();
                 var ipdAdmissions = _ipd_admissionService.Queryable()
                                  .Where(a => a.PatientId == patientid && a.CompanyId == companyId)
@@ -1436,9 +1436,23 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
     (DateTime.TryParse(v.TimeRecorded, out var t) ? t.ToString("HH:mm:ss") : "00:00:00"),
     v.SPO2 ?? "0"
                 }).ToList();
-                var procedureAmount= _ipd_procedure_mfService.Queryable().Where(p => p.AdmissionId == AdmissionId && p.PatientId == patientid && p.CompanyId == companyId).Select(p => (decimal?)p.Price).Sum() ?? 0m; 
+                var procedureData = _ipd_procedure_mfService
+    .Queryable()
+    .Where(p =>
+        p.AdmissionId == AdmissionId &&
+        p.PatientId == patientid &&
+        p.CompanyId == companyId)
+    .Select(p => new
+    {
+        Price = (decimal?)p.Price,
+        Discount = (decimal?)p.Discount
+    })
+    .ToList();
+
+                var procedureAmount = procedureData.Sum(p => p.Price ?? 0m);
+                var discountAmount = procedureData.Sum(p => p.Discount ?? 0m);
                 var payAmount = _ipd_paymentService.Queryable().Where(p => p.AdmissionId == AdmissionId && p.PatientId == patientid && p.CompanyId == companyId).Select(p => (decimal?)p.Amount).Sum() ?? 0m;
-                    // Step 3: Build final ChartData object
+                // Step 3: Build final ChartData object
                 var chartData = new
                 {
                     fever,
@@ -1482,7 +1496,8 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                     MedicationLogList = MedicationLogList,
                     DocumentList = DocumentList,
                     procedureAmount = procedureAmount,
-                    payAmount= payAmount
+                    payAmount = payAmount,
+                    discountAmount = discountAmount
                 };
             }
             catch (Exception ex)

@@ -1,4 +1,35 @@
-﻿<div class="col-sm-12 DashboardWraper">
+﻿<style>
+    .dashboard-refresh-btn {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background: #fff;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .dashboard-refresh-btn i {
+            font-size: 15px;
+        }
+
+        .dashboard-refresh-btn:hover {
+            background: #f5f7fa;
+            border-color: #c5ccd3;
+            color: #007bff;
+            transform: rotate(20deg);
+        }
+
+       /* .dashboard-refresh-btn:active {
+            transform: scale(0.92);
+        }*/
+</style>
+<div class="col-sm-12 DashboardWraper">
     <div class="row JournalListWrap DefaultView removeAction">
         <div class="col-sm-12 no-padding-lr headSection paginationHead p-0">
             <div class="col-sm-6">
@@ -36,7 +67,15 @@
                             </option>
                         </select>
                     </div>
-
+                    <div class="form-group mr-2">
+                        <button type="button"
+                                class="dashboard-refresh-btn"
+                                (click)="RefreshDashboard()"
+                                placement="top"
+                                aria-label="Refresh Dashboard">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="clearfix"></div>

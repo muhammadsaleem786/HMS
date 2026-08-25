@@ -10,6 +10,7 @@ using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
 using MathNet.Numerics.Distributions;
+using NPOI.HSSF.Record;
 using NPOI.SS.Formula.Functions;
 using Repository.Pattern.Infrastructure;
 using Repository.Pattern.UnitOfWork;
@@ -23,6 +24,7 @@ using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Http;
@@ -533,7 +535,9 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                         CollectionEmail = z.adm_company.Email,
                         CollectionCenterPhone = z.adm_company.Phone,
                         CollectionCenterWebsite = z.adm_company.Website,
-                        CollectionCenterImage = z.adm_company.CompanyLogo,
+                        CollectionCenterImage = z.adm_company.IsLab == true ? z.adm_company.LabImage : null,
+                        Header = z.adm_company.IsLab == true ? z.adm_company.LabHeader : null,
+                        Footer = z.adm_company.IsLab == true ? z.adm_company.LabFooter : null,
                         RequestedDate = z.CreatedDate,
                         CollectedDate = z.SampleDate,
                         ReceivedDate = z.SampleDate,

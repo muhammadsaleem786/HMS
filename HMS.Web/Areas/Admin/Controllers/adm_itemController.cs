@@ -535,12 +535,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = MessageStatement.BadRequest;
-                    return objResponse;
-                }
+                
                 decimal CompanyID = Request.CompanyID();
                 var itemObj = _service.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.ID).FirstOrDefault();
                 if (itemObj == null)

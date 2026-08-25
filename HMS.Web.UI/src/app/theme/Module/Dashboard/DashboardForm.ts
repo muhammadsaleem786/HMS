@@ -1,6 +1,5 @@
-﻿import { Component, Input, Output, OnInit, OnDestroy, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, TemplateRef } from '@angular/core';
+﻿import { Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, TemplateRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { interval, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { GlobalVariable } from '../../../AngularConfig/global';
 import { HttpService } from '../../../CommonService/HttpService';
@@ -30,8 +29,7 @@ declare var $: any;
     moduleId: module.id,
     providers: [DashboardService, AppointmentService, DatePipe, BillingService]
 })
-export class DashboardForm implements OnInit, OnDestroy {
-    mySubscription: Subscription;
+export class DashboardForm implements OnInit {
     public Id: string;
     public IsList: boolean = true;
     public ID: number = 10;
@@ -61,7 +59,6 @@ export class DashboardForm implements OnInit, OnDestroy {
     public MonthList = [];
     public ServiceType: any;
     public ClickValue: string;
-    private subscription: Subscription | null = null;
     @ViewChild("longContent") ModelContent: TemplateRef<any>;
     openAppointmentModal(longContent, PatientId) {
         this.loader.ShowLoader();
@@ -133,16 +130,16 @@ export class DashboardForm implements OnInit, OnDestroy {
             ServiceName: [''],
             Remarks: [''],
             OutstandingBalance: [''],
-        });
-        this.mySubscription = interval(60000).subscribe((x => {
-            this.Refresh(this.model.ToDate, this.model.ToDate);
-        }));
+        });        
     }
-    ngOnDestroy() {
-        if (this.mySubscription) {
-            this.mySubscription.unsubscribe();
-        }
+    RefreshDashboard(): void {
+        var date = new Date();
+        var todate = this._CommonService.GetFormatDate(date);
+        this.model.FormDate = new Date(todate);
+        this.model.ToDate = new Date(todate);
+        this.Refresh(this.model.ToDate, this.model.ToDate);
     }
+   
     Refresh(fDate: any, ToDate: any) {
         this.loader.ShowLoader();
         fDate = this._CommonService.GetFormatDate(fDate);

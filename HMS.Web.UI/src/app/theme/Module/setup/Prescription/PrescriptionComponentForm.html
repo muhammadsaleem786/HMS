@@ -174,7 +174,7 @@
                 <div class="row">
                     <div class="col-sm-12 mt-3">
                         <div class="row mb-2">
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="form-group">
                                     <label>Clinic</label>
                                     <div class="form-group">
@@ -198,6 +198,17 @@
                                             This value is required.
                                         </small>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label>Age</label>
+                                    <input type="text"
+                                           class="form-control form-control-sm"
+                                           [(ngModel)]="PrescriptionModel.Age"
+                                           [ngModelOptions]="{standalone:true}"
+                                           readonly
+                                           placeholder="Age" />
                                 </div>
                             </div>
                             <div class="col-sm-3">
@@ -1571,6 +1582,7 @@
                                     <strong style="font-size:12px;">
                                         {{getMedicineLabel(m)}}
                                     </strong>
+
                                 </td>
                                 <td style="padding:2px 5px 0;vertical-align: middle;">{{m.MedicineType}}</td>
                                 <td style="padding:2px 5px 0; vertical-align: middle;" *ngIf="DoctorInfo.TemplateId==1">{{m.Duration}} {{m.DurationValue}}</td>
@@ -1596,6 +1608,8 @@
                                                             {{
                                                 (m.TypeId == 39 || m.TypeId == 2) ? 'گولی رات'
                                                 :
+                                                (m.TypeId == 49 || m.TypeId == 4) ? 'قطرے رات'
+                                                :
                                                 (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ رات'
                                                 : 'رات'
                                                             }}
@@ -1610,6 +1624,8 @@
                                                         <span *ngIf="m.Evening > 0" style="white-space: nowrap;">
                                                             {{
                                                 (m.TypeId == 39 || m.TypeId == 2) ? 'گولی شام'
+                                                :
+                                                (m.TypeId == 49 || m.TypeId == 4) ? 'قطرے شام'
                                                 :
                                                 (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ شام'
                                                 : 'شام'
@@ -1626,6 +1642,8 @@
                                                             {{
                                                 (m.TypeId == 39 || m.TypeId == 2) ? 'گولی دوپہر'
                                                 :
+                                                (m.TypeId == 49 || m.TypeId == 4) ? 'قطرے دوپہر'
+                                                :
                                                 (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ دوپہر'
                                                 : 'دوپہر'
                                                             }}
@@ -1641,6 +1659,8 @@
                                                             {{
                                             (m.TypeId == 39 || m.TypeId == 2) ? 'گولی صبح'
                                             :
+                                            (m.TypeId == 49 || m.TypeId == 4) ? 'قطرے صبح'
+                                            :
                                             (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ صبح'
                                             : 'صبح'
                                                             }}
@@ -1655,7 +1675,6 @@
                                         </table>
                                     </label>
                                     <label *ngIf="DoctorInfo.TemplateId==1 && (m.Morning > 0 || m.AfterNoon > 0||m.Evening > 0||m.Night > 0)">
-
                                         <span *ngIf="m.Morning > 0">{{m.Morning}}</span>
                                         <span *ngIf="m.AfterNoon > 0"><span *ngIf="m.Morning > 0"> +</span>{{m.AfterNoon}}</span>
                                         <span *ngIf="m.Evening > 0"><span *ngIf="m.AfterNoon > 0 || m.Morning > 0"> +</span>{{m.Evening}}</span>

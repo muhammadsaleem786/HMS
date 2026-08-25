@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input, Tem
 import { lab_patient_test, lab_result_mf, lab_result_dt } from '../Lab/CatalogModel';
 import { FormGroup, FormControl, FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LoaderService } from '../../../../CommonService/LoaderService';
 import { ValidationVariables } from '../../../../AngularConfig/global';
 import { CommonService } from '../../../../CommonService/CommonService';
@@ -109,7 +110,7 @@ export class LabDashboardComponent implements OnInit {
     constructor(public _fb: FormBuilder, public _router: Router
         , public commonservice: CommonService, public toastr: CommonToastrService
         , public loader: LoaderService, public _AppointmentService: AppointmentService, private encrypt: EncryptionService, public _labService: LabService
-        , private modalService: NgbModal) {
+        , private modalService: NgbModal,private sanitizer: DomSanitizer) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.TestControlRights = this.commonservice.ScreenRights("115");
@@ -774,6 +775,8 @@ export class LabDashboardComponent implements OnInit {
                     this.ReportModel = m.ResultSet;
                     if (m.ResultSet.CollectionCenterImage != null)
                         this.ReportModel.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.CollectionCenterImage;
+                    this.ReportModel.safeHeader = this.sanitizer.bypassSecurityTrustHtml(m.ResultSet.Header);
+                    this.ReportModel.safeFooter = this.sanitizer.bypassSecurityTrustHtml(m.ResultSet.Footer);
                     this._reportModalRef = this.modalService.open(this.ReportModal, { size: 'lg', centered: true, windowClass: 'DashboardWraper' });
                     this.loader.HideLoader();
                 } else
@@ -799,7 +802,7 @@ export class LabDashboardComponent implements OnInit {
         this._AppointmentService.GetEMRNO().then(m => {
             this.model = new emr_patient();
             this.model.PrefixTittleId = 1;
-            
+
             if (this.GenderList.length == 1) {
                 this.model.Gender = this.GenderList[0].ID;
                 if (this.model.Gender == 2)

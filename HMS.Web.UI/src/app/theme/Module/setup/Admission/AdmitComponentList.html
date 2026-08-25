@@ -246,14 +246,14 @@
                             <td class="no">{{b.ID}}</td>
                             <td class="desc">{{b.ServiceName}}</td>
                             <td class="unit"> {{b.Price}}</td>
-                            <td class="total"> {{b.Price}}</td>
+                            <td class="total"> {{b.Price == 0 ? b.PaidAmount : b.Price}}</td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
                             <td colspan="2"></td>
                             <td colspan="1">SUBTOTAL</td>
-                            <td> {{SubTotal}}</td>
+                            <td> {{SubTotal==0 ? TotalPaid:SubTotal}}</td>
                         </tr>
                         <tr>
                             <td colspan="2"></td>
@@ -262,8 +262,13 @@
                         </tr>
                         <tr>
                             <td colspan="2"></td>
-                            <td colspan="1">GRAND TOTAL</td>
+                            <td colspan="1">Due</td>
                             <td> {{Total}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="1">GRAND TOTAL</td>
+                            <td> {{TotalPaid}}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -507,11 +512,11 @@
                 </div>
 
 
-                <div class="row border-bottom section-p-10">                  
+                <div class="row border-bottom section-p-10">
                     <div class="col-sm-4">
-                        <strong class="invoice_lbl">Other</strong> 
+                        <strong class="invoice_lbl">Other</strong>
                     </div>
-                    <div class="col-sm-8">                       
+                    <div class="col-sm-8">
                         <textarea class="form-control" formControlName="OtherRemarks" [(ngModel)]="model.OtherRemarks"></textarea>
                     </div>
 
@@ -592,8 +597,8 @@
                     </div>
 
                 </div>
-              
-                
+
+
                 <div class="row border-bottom section-p-10">
                     <div class="col-sm-12 text-center">
                         <h5 class="margin-b-0">Management</h5>
@@ -786,7 +791,7 @@
             <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
 
             <button type="submit" class="btn btn-dark" useExistingCss="true" data-dismiss="modal" printSectionId="printReport-section" ngxPrint>Print & Save</button>
- 
+
             <button type="submit" class="btn btn-primary" data-dismiss="modal">Save</button>
         </div>
     </form>

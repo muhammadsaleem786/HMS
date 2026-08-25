@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, OnDestroy, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -23,7 +23,6 @@ import { BillingService } from './../Billing/BillingService';
 import { PatientService } from './../Patient/PatientService'; import { ActivatedRoute } from '@angular/router';
 import { debug } from 'util'; import { filter } from 'rxjs/operators';
 import { forEach } from '@angular/router/src/utils/collection';
-import { interval, Subscription } from 'rxjs';
 import { SaleService } from '../Items/Sale/SaleService'
 import { PrescriptionService } from '../Prescription/PrescriptionService';
 declare var $: any;
@@ -36,8 +35,7 @@ import { EncryptionService } from '../../../../CommonService/encryption.service'
     templateUrl: 'AppointmentComponentList.html',
     providers: [AppointmentService, PrescriptionService, ApplicationUserService, BillingService, PatientService, SaleService],
 })
-export class AppointmentComponentList implements OnInit, OnDestroy {
-    mySubscription: Subscription;
+export class AppointmentComponentList implements OnInit{
     hour: number;
     minute: number;
     second: number;
@@ -309,11 +307,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
 
     }
     ngOnInit() {
-        this.mySubscription = interval(60000).subscribe((x => {
-            let date = this._CommonService.GetFormatDate(new Date());
-            let StatusID = this.AppointmentModel.StatusId;
-            this.GetPatientList(date, StatusID);
-        }));
+       
         this.DurationList = [
             { "ID": 1, "Name": "Day (s)" },
             { "ID": 2, "Name": "Week (s)" },
@@ -511,10 +505,12 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
 
         });
     }
-    ngOnDestroy() {
-        if (this.mySubscription) {
-            this.mySubscription.unsubscribe();
-        }
+    RefreshDashboard(): void {
+        debugger
+        let date = this._CommonService.GetFormatDate(this.AppointmentDate);
+        let StatusID = this.AppointmentModel.StatusId;
+        this.GetPatientList(date, StatusID);
+        
     }
     LoadEditor() {
         setTimeout(() => {
@@ -2401,6 +2397,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.PrescriptionModel.AppointmentDate = selectdate;
                 this.PrescriptionModel.AppointmentId = AppId;
                 this.PrescriptionModel.PatientName = m.ResultSet.patientInfo.PatientName;
+                this.PrescriptionModel.Age = m.ResultSet.patientInfo.Age;
                 this.PrescriptionModel.PatientId = id;
                 this.PrescriptionModel.ClinicId = this.CompanyObj.CompanyID;
                 this.PrescriptionModel.DoctorId = m.ResultSet.Doctorid;

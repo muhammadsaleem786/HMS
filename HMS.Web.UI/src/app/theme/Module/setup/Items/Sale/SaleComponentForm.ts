@@ -939,9 +939,11 @@ export class SaleComponentForm {
                         this.toastr.Success(result.Message);
                         this.Clear();
                         if (result.ResultSet != null) {
+debugger
                             this.PatientName = result.ResultSet.label;
                             this.CustomerId = result.ResultSet.value;
                             this.model.CustomerId = this.CustomerId;
+                            this.model.ID = result.ResultSet.InvoiveNo;
                         }
                     }
                     else {

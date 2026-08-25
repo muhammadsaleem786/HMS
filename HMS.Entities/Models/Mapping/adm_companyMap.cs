@@ -84,6 +84,10 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.TokenNo).HasColumnName("TokenNo");
             this.Property(t => t.PharmacyLogo).HasColumnName("PharmacyLogo");
             this.Property(t => t.IsPharmacy).HasColumnName("IsPharmacy");
+            this.Property(t => t.IsLab).HasColumnName("IsLab");
+            this.Property(t => t.LabHeader).HasColumnName("LabHeader");
+            this.Property(t => t.LabFooter).HasColumnName("LabFooter");
+            this.Property(t => t.LabImage).HasColumnName("LabImage");
             // Relationships
             this.HasOptional(t => t.adm_user_mf)
                 .WithMany(t => t.adm_company)

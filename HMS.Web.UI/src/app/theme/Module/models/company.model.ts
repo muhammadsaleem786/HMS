@@ -41,6 +41,10 @@ export class Company {
     InvoiceNote: string;
     PharmacyLogo: string;
     IsPharmacy: boolean = false;
+    IsLab: boolean = false;
+    LabHeader: string;
+    LabFooter: string;
+    LabImage: string;
     adm_company_location: Array<AdmCompanyLocation> = [];
 }
 export class AdmCompanyLocation {

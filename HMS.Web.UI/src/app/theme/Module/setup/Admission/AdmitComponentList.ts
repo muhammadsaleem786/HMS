@@ -53,6 +53,7 @@ export class AdmitComponentList {
     public InvoiceBillModel: any[] = [];
     public SubTotal: number = 0;
     public Total: number = 0;
+    public TotalPaid: number = 0;
     public TotalDiscount: number = 0; public CompanyObj: any;
     public valueForUser: any;
     @ViewChild("AllotNo") AllotNo: TemplateRef<any>;
@@ -76,17 +77,16 @@ export class AdmitComponentList {
                     this.InvoiceCompanyInfo.invoiceNo = m.ResultSet.result[0].ID;
                     if (m.ResultSet.result[0].CompanyLogo != null)
                         this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.result[0].CompanyLogo;
-
                     this.SubTotal = 0;
                     this.Total = 0;
                     this.TotalDiscount = 0;
+                    this.TotalPaid = 0;
                     m.ResultSet.result.forEach((item, index) => {
                         this.SubTotal += parseInt(item.Price);
                         this.TotalDiscount += parseInt(item.Discount);
+                        this.TotalPaid += parseInt(item.PaidAmount);
                     });
-                    this.Total = this.SubTotal - this.TotalDiscount;
-
-
+                    this.Total = this.SubTotal != 0 ? (this.SubTotal - this.TotalDiscount - this.TotalPaid) : this.TotalPaid;
                 }
                 this.modalService.open(InvoiceModal, { size: 'lg' });
                 this.loader.HideLoader();
@@ -397,7 +397,7 @@ export class AdmitComponentList {
                 localStorage.setItem("AdmissionId", AdmissionId);
                 this.model = new ipd_admission_discharge();
                 if (m.ResultSet.Detaildata.length != 0) {
-                    this.model = m.ResultSet.Detaildata[0];                   
+                    this.model = m.ResultSet.Detaildata[0];
                 }
                 if (m.ResultSet.Masterdata != null) {
                     this.InvoiceCompanyInfo.CompanyName = m.ResultSet.Masterdata[0].CompanyName;

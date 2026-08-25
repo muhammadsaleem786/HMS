@@ -112,6 +112,10 @@ namespace HMS.Entities.Models
         public string CompanyLogo { get; set; }
         public string PharmacyLogo { get; set; }
         public Nullable<bool> IsPharmacy { get; set; }
+        public Nullable<bool> IsLab { get; set; }
+        public string LabHeader { get; set; }
+        public string LabFooter { get; set; }
+        public string LabImage { get; set; }
         public Nullable<int> CountryDropdownId { get; set; }
         public string Phone { get; set; }
         public string Fax { get; set; }

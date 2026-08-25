@@ -65,13 +65,25 @@ export class FileUploadComponent implements ControlValueAccessor {
     }
   }
 
-  writeValue(value: any): void {
-    this.innerValue = value;
+    writeValue(value: any): void {
+        this.innerValue = value;
 
-    if (!value) {
-      this.resetUI();
+        if (value) {
+            this.showbar = true;
+
+            if (typeof value === 'string') {
+                this.imagedata = value;
+            } else {
+                this.imagedata =
+                    value.FileName ||
+                    value.fileName ||
+                    value.Name ||
+                    'Existing File';
+            }
+        } else {
+            this.resetUI();
+        }
     }
-  }
 
   registerOnChange(fn: any): void {
     this.onChangeCallback = fn;
@@ -84,7 +96,17 @@ export class FileUploadComponent implements ControlValueAccessor {
   onBlur(): void {
     this.onTouchedCallback();
   }
+    removeFile(event: Event): void {
+        event.stopPropagation();
 
+        this.selectedFiles = [];
+        this.value = '';
+
+        this.resetUI();
+
+        this.IsNewFileEvent.emit(false);
+        this.ClearModel.emit();
+    }
   // ---------------- FILE CHANGE ----------------
 
 fileChangeEvent(event: any): void {

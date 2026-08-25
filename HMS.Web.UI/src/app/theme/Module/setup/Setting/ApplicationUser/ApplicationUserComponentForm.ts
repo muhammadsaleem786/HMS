@@ -89,15 +89,15 @@ export class ApplicationUserComponentForm implements OnInit {
         this.ControlRights = this._CommonService.ScreenRights("3");
     }
     ngOnInit() {
-              this.TemplateList = [
+        this.TemplateList = [
             { "ID": 1, "Name": "Standard" },
             { "ID": 2, "Name": "Urdu" }
         ];
- this.DrugModeList = [
+        this.DrugModeList = [
             { "ID": 'B', "Name": " Brand Mode" },
             { "ID": 'G', "Name": "Generic Mode" }
         ];
-        
+
         this.loadRole();
         this.Form1 = this._fb.group({
             Name: [''],
@@ -133,7 +133,7 @@ export class ApplicationUserComponentForm implements OnInit {
             Instruction: [''],
             BrandImage: [''],
             BrandDescription: [''],
-            DrugMode:[''],
+            DrugMode: [''],
             Pwd: ['', [Validators.required, <any>Validators.minLength(6)]],
         });
         $(".toggle-password").click(function () {
@@ -160,16 +160,18 @@ export class ApplicationUserComponentForm implements OnInit {
                         this.model.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescription);
                         this.model.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescriptionUrdu);
                         if (m.ResultSet.UserObj.BrandImage != null && m.ResultSet.UserObj.BrandImage != undefined && m.ResultSet.UserObj.BrandImage != "") {
-                                this.getImageUrlNameBrand(m.ResultSet.UserObj.BrandImage);
-                                this.IsNewBrandImage = false;
-                            } else {
-                                this.IsNewBrandImage = true;
-                            }
+                            this.getImageUrlNameBrand(m.ResultSet.UserObj.BrandImage);
+                            this.IsNewBrandImage = false;
+                        } else {
+                            this.IsNewBrandImage = true;
+                        }
                         if (m.ResultSet.employeeObj) {
                             this.DisplayMember = `${m.ResultSet.employeeObj.FirstName} ${m.ResultSet.employeeObj.LastName}`;
-
                             if (m.ResultSet.employeeObj.EmployeePic != null && m.ResultSet.employeeObj.EmployeePic != undefined && m.ResultSet.employeeObj.EmployeePic != "") {
                                 this.getImageUrlName(m.ResultSet.employeeObj.EmployeePic);
+                                this.IsNewImage = false;
+                            } else if (this.model.UserImage != null && this.model.UserImage != undefined && this.model.UserImage != "") {
+                                this.getImageUrlName(this.model.UserImage);
                                 this.IsNewImage = false;
                             } else {
                                 this.IsNewImage = true;
@@ -195,7 +197,7 @@ export class ApplicationUserComponentForm implements OnInit {
                         }
                         else
                             this.IsDoctor = false;
-                        
+
                         var result = m.ResultSet.UserObj.adm_user_company[0];
                         this.IsAdmin = result.UserID == result.AdminID ? true : false;
 
@@ -229,8 +231,8 @@ export class ApplicationUserComponentForm implements OnInit {
                     CKEDITOR.instances['editorHeaderDescription'].destroy(true);
                 }
                 const editor = CKEDITOR.replace('editorHeaderDescription', {
-                    enterMode: (window as any).CKEDITOR.ENTER_BR,  
-                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,                   
+                    enterMode: (window as any).CKEDITOR.ENTER_BR,
+                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
                 });
                 editor.on('change', () => {
                     const html = editor.getData();
@@ -363,7 +365,7 @@ export class ApplicationUserComponentForm implements OnInit {
         if (result == true) {
             this.loader.ShowLoader();
             this._ApplicationUserService.Delete(this.model.ID.toString()).then(m => {
-                
+
                 if (m.ErrorMessage != null) {
                     this.toastr.Error('Error', m.ErrorMessage);
                 } else {
@@ -448,11 +450,11 @@ export class ApplicationUserComponentForm implements OnInit {
         });
     }
     IsNewImageEvent(FName) {
-        
+
         this.IsNewImage = true;
     }
     getFileName(FName) {
-        
+
 
         this.model.UserImage = FName;
     }

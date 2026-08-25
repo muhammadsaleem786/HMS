@@ -174,7 +174,8 @@ export class AdmitChargeComponentList implements OnInit {
                 this.PaymentList = m.ResultSet.result;
                 this.patientAmountSummaryService.updateAmount({
                     procedureAmount: Number(m.ResultSet.ProcedureAmount || 0),
-                    payAmount: Number(m.ResultSet.payAmount || 0)
+                    payAmount: Number(m.ResultSet.payAmount || 0),
+                    discountAmount: Number(m.ResultSet.discountAmount || 0)
                 });
                 this.loader.HideLoader();
                 this._router.navigate(['home/AdmitSummary/AdmitCharge/AdmitPro']);

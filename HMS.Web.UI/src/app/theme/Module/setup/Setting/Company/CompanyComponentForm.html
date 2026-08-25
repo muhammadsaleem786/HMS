@@ -193,8 +193,31 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>IsLab?</label>
+                                    <input type="checkbox" formControlName="IsLab" [(ngModel)]="model.IsLab"(change)="onIsLabChange($event)"  />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="model.IsLab">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Lab Header</label>
+                                    <textarea #editorHeaderNote id="editorHeaderNote" name="editorheader" [(ngModel)]="model.LabHeader" formControlName="LabHeader"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Lab Footer</label>
+                                    <textarea #editorFooterNote id="editorFooterNote" name="editorfooter" [(ngModel)]="model.LabFooter" formControlName="LabFooter"></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-sm-3"*ngIf="model.IsPharmacy">
+                    <div class="col-sm-3" *ngIf="model.IsPharmacy">
                         <div class="form-group">
                             <label>Pharmacy Logo</label>
                             <input type="text" [value]="model.PharmacyLogo" [(ngModel)]="model.PharmacyLogo" [ngModelOptions]="{standalone:true}" class="form-control hidden" />
@@ -205,6 +228,18 @@
                                 <img [src]="PharmacyImage" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
                             </div>
                             <File-Component class="UploadActnWrap" [(ngModel)]="model.PharmacyLogo" (ClearModel)="ClearPharmacyImageUrl()" (FileNameEvent)="getPharmacyImageUrlName($event)" (IsNewFileEvents1)="IsNewPharmacyImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+                        </div>
+                    </div>
+                    <div class="col-sm-3" *ngIf="model.IsLab">
+                        <div class="form-group">
+                            <label>Lab Logo</label>
+                            <input type="text" [value]="model.LabImage" [(ngModel)]="model.LabImage" [ngModelOptions]="{standalone:true}" class="form-control hidden" />
+                        </div>
+                        <div class="img-box" style="min-height: 230px;">
+                            <div class="col-sm-12 mt-3" *ngIf="model.LabImage!=''">
+                                <img [src]="LabImage" style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                            </div>
+                            <File-Component class="UploadActnWrap" [(ngModel)]="model.LabImage" (ClearModel)="ClearLabImageUrl()" (FileNameEvent)="getLabImageUrlName($event)" (IsNewFileEvents1)="IsNewLabImageEvent($event)" [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
                         </div>
                     </div>
                 </div>

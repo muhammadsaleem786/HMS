@@ -383,6 +383,8 @@
                                                             {{
                                                 (m.TypeId == 39 || m.TypeId == 2) ? 'گولی رات'
                                                 :
+                                                (m.TypeId == 49 || m.TypeId == 4) ? 'قطرے رات'
+                                                :
                                                 (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ رات'
                                                 : 'رات'
                                                             }}
@@ -397,6 +399,8 @@
                                                         <span *ngIf="m.Evening > 0" style="white-space: nowrap;">
                                                             {{
                                                 (m.TypeId == 39 || m.TypeId == 2) ? 'گولی شام'
+                                                :
+                                                (m.TypeId == 49 || m.TypeId == 4) ? 'قطرے شام'
                                                 :
                                                 (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ شام'
                                                 : 'شام'
@@ -413,6 +417,8 @@
                                                             {{
                                                 (m.TypeId == 39 || m.TypeId == 2) ? 'گولی دوپہر'
                                                 :
+                                                (m.TypeId == 49 || m.TypeId == 4) ? 'قطرے دوپہر'
+                                                :
                                                 (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ دوپہر'
                                                 : 'دوپہر'
                                                             }}
@@ -427,6 +433,8 @@
                                                         <span *ngIf="m.Morning > 0" style="white-space: nowrap;">
                                                             {{
                                             (m.TypeId == 39 || m.TypeId == 2) ? 'گولی صبح'
+                                            :
+                                            (m.TypeId == 49 || m.TypeId == 4) ? 'قطرے صبح'
                                             :
                                             (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ صبح'
                                             : 'صبح'

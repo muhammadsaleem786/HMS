@@ -2,6 +2,7 @@
 using HMS.Entities.Enum;
 using HMS.Entities.Models;
 using HMS.Service.Services.Admin;
+using HMS.Service.Services.Admission;
 using HMS.Service.Services.Appointment;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
@@ -37,10 +38,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iemr_patientService _emr_patientService;
         private readonly Iemr_service_mfService _emr_service_mfService;
         private readonly Iemr_patient_bill_paymentService _emr_patient_bill_paymentService;
+        private readonly Iipd_admissionService _ipd_AdmissionService;
+        private readonly Iipd_paymentService _ipd_paymentService;
+        private readonly Iipd_procedure_mfService _ipd_procedure_mfService;
 
         public emr_patient_billController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_service_mfService emr_service_mfService, Iemr_patient_bill_paymentService emr_patient_bill_paymentService, Iemr_patientService emr_patientService, Iemr_patient_billService service, Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
-            Isys_notification_alertService sys_notification_alertService)
+            Isys_notification_alertService sys_notification_alertService, Iipd_admissionService iipd_AdmissionService, Iipd_paymentService ipd_paymentService, Iipd_procedure_mfService ipd_procedure_mfService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -54,6 +58,9 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _adm_user_tokenService = adm_user_tokenService;
             _sys_notification_alertService = sys_notification_alertService;
             _emr_patient_bill_paymentService = emr_patient_bill_paymentService;
+            _ipd_AdmissionService = iipd_AdmissionService;
+            _ipd_paymentService = ipd_paymentService;
+            _ipd_procedure_mfService = ipd_procedure_mfService;
         }
         [HttpPost]
         [HttpGet]
@@ -439,7 +446,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 decimal CompanyID = Request.CompanyID();
-                var result = _service.Queryable().Where(e => e.AdmissionId.ToString() == Id && e.PatientId.ToString() == patientid && e.CompanyId == CompanyID)
+                var result = _ipd_AdmissionService.Queryable().Where(e => e.ID.ToString() == Id && e.PatientId.ToString() == patientid && e.CompanyId == CompanyID)
                     .Select(z => new
                     {
                         ID = z.ID,
@@ -451,35 +458,61 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         PatientAddress = z.emr_patient_mf.Address,
                         PatientEmail = z.emr_patient_mf.Email,
                         PatientMobile = z.emr_patient_mf.Mobile,
-                        BillDate = z.BillDate,
-                        Discount = z.Discount,
-                        Price = z.Price,
-                        PaidAmount = z.PaidAmount,
-                        OutstandingBalance = z.OutstandingBalance,
-                        ServiceName = z.emr_service_mf.ServiceName,
+                        BillDate = z.AdmissionDate,
                         CompanyLogo = z.adm_company.CompanyLogo,
+                        Service = z.sys_drop_down_value.Value
                     }).ToList();
 
                 var results = result.GroupBy(l => l.BillDate)
-    .Select(cl => new
+    .Select(cl =>
     {
-        ID = cl.First().ID,
-        CompanyName = cl.First().CompanyName,
-        CompanyAddress = cl.First().CompanyAddress,
-        CompanyPhone = cl.First().CompanyPhone,
-        CompanyEmail = cl.First().CompanyEmail,
-        PatientName = cl.First().PatientName,
-        PatientAddress = cl.First().PatientAddress,
-        PatientEmail = cl.First().PatientEmail,
-        PatientMobile = cl.First().PatientMobile,
-        BillDate = cl.First().BillDate,
-        Discount = cl.Sum(z => z.Discount),
-        Price = cl.First().Price,
-        PaidAmount = cl.Sum(z => z.PaidAmount),
-        OutstandingBalance = cl.Sum(z => z.OutstandingBalance),
-        ServiceName = cl.First().ServiceName,
-        CompanyLogo = cl.First().CompanyLogo,
-    }).ToList();
+        var admissionId = cl.First().ID;
+        var price = _ipd_procedure_mfService
+                   .Queryable()
+                   .Where(a =>
+                       a.CompanyId == CompanyID &&
+                       a.AdmissionId == admissionId)
+                   .Select(a => (decimal?)a.Price)
+                   .Sum() ?? 0m;
+
+        var discount = _ipd_procedure_mfService
+                   .Queryable()
+                   .Where(a =>
+                       a.CompanyId == CompanyID &&
+                       a.AdmissionId == admissionId)
+                   .Select(a => (decimal?)a.Discount)
+                   .Sum() ?? 0m;
+
+        // Total paid amount
+        var paidAmount = _ipd_paymentService
+            .Queryable()
+            .Where(a =>
+                a.CompanyId == CompanyID &&
+                a.AdmissionId == admissionId)
+            .Select(a => (decimal?)a.Amount)
+            .Sum() ?? 0m;
+        return new
+        {
+            ID = admissionId,
+
+            CompanyName = cl.First().CompanyName,
+            CompanyAddress = cl.First().CompanyAddress,
+            CompanyPhone = cl.First().CompanyPhone,
+            CompanyEmail = cl.First().CompanyEmail,
+
+            PatientName = cl.First().PatientName,
+            PatientAddress = cl.First().PatientAddress,
+            PatientEmail = cl.First().PatientEmail,
+            PatientMobile = cl.First().PatientMobile,
+            BillDate = cl.First().BillDate,
+            Discount = discount,
+            Price = price,
+            PaidAmount = paidAmount,
+            ServiceName = cl.First().Service,
+            CompanyLogo = cl.First().CompanyLogo
+        };
+    })
+            .ToList();
 
                 objResponse.ResultSet = new
                 {

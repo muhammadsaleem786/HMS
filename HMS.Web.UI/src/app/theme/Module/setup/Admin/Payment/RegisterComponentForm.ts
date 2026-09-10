@@ -48,7 +48,7 @@ export class RegisterComponentForm implements OnInit {
     ngOnInit() {
        
         this.Form2 = this._fb.group({
-            Name: ['', [Validators.pattern(ValidationVariables.AlphabetPattern), Validators.required]],
+            Name: ['', [Validators.required]],
             CompanyName: ['', [Validators.required]],
             Pwd: ['', [Validators.required, strongPasswordValidator()]],
             CPassword: [''],

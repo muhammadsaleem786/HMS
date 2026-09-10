@@ -15,19 +15,19 @@
         user-select: none;
     }
 
-    .btn-ai:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
-    }
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+        }
 
-    .btn-ai:active {
-        transform: scale(0.98);
-    }
+        .btn-ai:active {
+            transform: scale(0.98);
+        }
 
-    .btn-ai:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-    }
+        .btn-ai:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+        }
 
     .ai-badge {
         background: #22c55e;
@@ -71,9 +71,9 @@
         opacity: 0.9;
     }
 
-    .ai-close:hover {
-        opacity: 1;
-    }
+        .ai-close:hover {
+            opacity: 1;
+        }
 
     .ai-modal-body {
         background: #f4f7fb;
@@ -128,9 +128,9 @@
         transition: 0.3s;
     }
 
-    .btn-ai-copy:hover {
-        background: #1e40af;
-    }
+        .btn-ai-copy:hover {
+            background: #1e40af;
+        }
 
     .btn-ai-close {
         background: #f3f4f6;
@@ -141,9 +141,9 @@
         font-weight: 500;
     }
 
-    .btn-ai-close:hover {
-        background: #e5e7eb;
-    }
+        .btn-ai-close:hover {
+            background: #e5e7eb;
+        }
 
     /* Scrollbar */
     .ai-modal-body::-webkit-scrollbar {
@@ -181,9 +181,9 @@
             transform: rotate(20deg);
         }
 
-     .dashboard-refresh-btn:active {
-        transform: scale(0.92);
-    }
+        .dashboard-refresh-btn:active {
+            transform: scale(0.92);
+        }
 </style>
 <div class="appointmentWraper">
     <div class="appointmentWraper">
@@ -201,28 +201,27 @@
 
                                         <div class="input-group-icon d-none d-sm-block">
                                             <svg xmlns="http://www.w3.org/2000/svg"
-                                                xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
-                                                width="1em" height="1em" preserveAspectRatio="xMidYMid meet"
-                                                viewBox="0 0 24 24">
+                                                 xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+                                                 width="1em" height="1em" preserveAspectRatio="xMidYMid meet"
+                                                 viewBox="0 0 24 24">
                                                 <g fill="currentColor">
-                                                    <path
-                                                        d="M11 5a6 6 0 1 0 0 12a6 6 0 0 0 0-12zm-8 6a8 8 0 1 1 14.32 4.906l3.387 3.387a1 1 0 0 1-1.414 1.414l-3.387-3.387A8 8 0 0 1 3 11z" />
+                                                    <path d="M11 5a6 6 0 1 0 0 12a6 6 0 0 0 0-12zm-8 6a8 8 0 1 1 14.32 4.906l3.387 3.387a1 1 0 0 1-1.414 1.414l-3.387-3.387A8 8 0 0 1 3 11z" />
                                                 </g>
                                             </svg>
                                         </div>
                                         <div class="form-group mb-0 col-sm-4  d-xs-none border-left">
                                             <Datetime-Component placeholder="DD/MM/YYYY"
-                                                (DateChangeValue)="RefershCalendar($event)"
-                                                [(ngModel)]="AppointmentDate">
+                                                                (DateChangeValue)="RefershCalendar($event)"
+                                                                [(ngModel)]="AppointmentDate">
                                             </Datetime-Component>
                                         </div>
 
                                         <div class="form-group mb-0 col border-right border-left">
                                             <input type="text"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName"
-                                                (focusout)="onFocusOutEvent(PatientName,SearhPatientId)"
-                                                id="PatientNameSearch" placeholder="Search by mobile no">
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName"
+                                                   (focusout)="onFocusOutEvent(PatientName,SearhPatientId)"
+                                                   id="PatientNameSearch" placeholder="Search by mobile no">
                                         </div>
                                         <div class="input-group-icon">
                                             <div ngbDropdown container="body">
@@ -230,17 +229,27 @@
                                                     <i class="mt-1 ni ni-bold-down"></i>
                                                 </button>
                                                 <div ngbDropdownMenu>
-                                                    <button ngbDropdownItem (click)="FilterPatient(1)">Male
-                                                        only</button>
-                                                    <button ngbDropdownItem (click)="FilterPatient(2)">Female
-                                                        Only</button>
-                                                    <button ngbDropdownItem (click)="FilterPatient(3)">Tomorrow
-                                                        Patients</button>
+                                                    <button ngbDropdownItem (click)="FilterPatient(1)">
+                                                        Male
+                                                        only
+                                                    </button>
+                                                    <button ngbDropdownItem (click)="FilterPatient(2)">
+                                                        Female
+                                                        Only
+                                                    </button>
+                                                    <button ngbDropdownItem (click)="FilterPatient(3)">
+                                                        Tomorrow
+                                                        Patients
+                                                    </button>
 
-                                                    <button ngbDropdownItem (click)="FilterPatient(4)">Today
-                                                        Patients</button>
-                                                    <button ngbDropdownItem (click)="FilterPatient(5)">Last Day
-                                                        Patients</button>
+                                                    <button ngbDropdownItem (click)="FilterPatient(4)">
+                                                        Today
+                                                        Patients
+                                                    </button>
+                                                    <button ngbDropdownItem (click)="FilterPatient(5)">
+                                                        Last Day
+                                                        Patients
+                                                    </button>
 
                                                 </div>
                                             </div>
@@ -251,7 +260,7 @@
                             </div>
                         </div>
                         <div class="header-body"
-                            [ngClass]="{ShowpatientDetail: PatientDetailInfo == true ? true : false}">
+                             [ngClass]="{ShowpatientDetail: PatientDetailInfo == true ? true : false}">
                             <!-- Card stats -->
                             <div class="row m-0">
                                 <div class="AppointmentLeftCol p-0">
@@ -263,45 +272,36 @@
                                                         <div class="row mx-0 mb-1">
                                                             <div class="col p-0">
                                                                 <div class="TableView">
-                                                                    <div
-                                                                        class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
-                                                                        <div
-                                                                            class="uk-overflow-container col-sm-12 p-0">
+                                                                    <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                                                                        <div class="uk-overflow-container col-sm-12 p-0">
                                                                             <table id="dt_tableTools"
-                                                                                class="uk-table patient_List"
-                                                                                cellspacing="0" style="width: 100%;">
+                                                                                   class="uk-table patient_List"
+                                                                                   cellspacing="0" style="width: 100%;">
                                                                                 <tbody>
-                                                                                    <tr
-                                                                                        *ngFor="let item of AppointmentList">
+                                                                                    <tr *ngFor="let item of AppointmentList">
                                                                                         <td>
                                                                                             <div class="card card-stats mb-4 mb-xl-0"
-                                                                                                [ngClass]="item.ID === AppointId ? 'active' : 'none'">
-                                                                                                <div
-                                                                                                    class="card-body row py-3 no-wrap">
+                                                                                                 [ngClass]="item.ID === AppointId ? 'active' : 'none'">
+                                                                                                <div class="card-body row py-3 no-wrap">
                                                                                                     <div class="col-sm-2"
-                                                                                                        style="max-width:64px;"
-                                                                                                        (click)="showPatientDetail(item.PatientId,AppointmentDate,item.ID)">
-                                                                                                        <span
-                                                                                                            class="avatar avatar-md rounded-circle"
-                                                                                                            *ngIf="item.Gender==1 && (item.Image==null || item.Image =='')">
-                                                                                                            <img
-                                                                                                                src="../../../../../assets/app/media/img/patient-icon-4.jpg" />
+                                                                                                         style="max-width:64px;"
+                                                                                                         (click)="showPatientDetail(item.PatientId,AppointmentDate,item.ID)">
+                                                                                                        <span class="avatar avatar-md rounded-circle"
+                                                                                                              *ngIf="item.Gender==1 && (item.Image==null || item.Image =='')">
+                                                                                                            <img src="../../../../../assets/app/media/img/patient-icon-4.jpg" />
                                                                                                         </span>
-                                                                                                        <span
-                                                                                                            class="avatar avatar-md rounded-circle"
-                                                                                                            *ngIf="((item.Gender==2 ||item.Gender==3) && (item.Image==null || item.Image ==''))">
+                                                                                                        <span class="avatar avatar-md rounded-circle"
+                                                                                                              *ngIf="((item.Gender==2 ||item.Gender==3) && (item.Image==null || item.Image ==''))">
                                                                                                             <img src="../assets/app/media/img/patientgirl.png"
-                                                                                                                class="img-fluid radius">
+                                                                                                                 class="img-fluid radius">
                                                                                                         </span>
-                                                                                                        <span
-                                                                                                            class="avatar avatar-md rounded-circle"
-                                                                                                            *ngIf="item.Image!=null && item.Image!='' ">
+                                                                                                        <span class="avatar avatar-md rounded-circle"
+                                                                                                              *ngIf="item.Image!=null && item.Image!='' ">
                                                                                                             <img [src]="item.Image"
-                                                                                                                class="img-fluid radius">
+                                                                                                                 class="img-fluid radius">
                                                                                                         </span>
                                                                                                     </div>
-                                                                                                    <div
-                                                                                                        class="col-sm-10 pl-0">
+                                                                                                    <div class="col-sm-10 pl-0">
                                                                                                         <h5 class="card-title text-muted mb-0"
                                                                                                             (click)="showPatientDetail(item.PatientId,AppointmentDate,item.ID)">
                                                                                                             {{item.PatientName}}
@@ -309,20 +309,16 @@
                                                                                                                 ({{item.NewPatients}})
                                                                                                             </span>
                                                                                                         </h5>
-                                                                                                        <div
-                                                                                                            class="relative d-flex align-items-center">
-                                                                                                            <span
-                                                                                                                class="text-muted  font-12 m-0 text-center">
+                                                                                                        <div class="relative d-flex align-items-center">
+                                                                                                            <span class="text-muted  font-12 m-0 text-center">
                                                                                                                 {{item.AppointmentTime}}
                                                                                                             </span>
-                                                                                                            <select
-                                                                                                                class="form-control form-control-sm form-control-alternative"
-                                                                                                                [disabled]="IsPreviousApp"
-                                                                                                                [(ngModel)]="item.StatusId"
-                                                                                                                (change)="StatusUpdateApp(item.StatusId,item.ID,item.DoctorId)">
-                                                                                                                <option
-                                                                                                                    *ngFor="let stat of StatusList"
-                                                                                                                    [value]="stat.ID">
+                                                                                                            <select class="form-control form-control-sm form-control-alternative"
+                                                                                                                    [disabled]="IsPreviousApp"
+                                                                                                                    [(ngModel)]="item.StatusId"
+                                                                                                                    (change)="StatusUpdateApp(item.StatusId,item.ID,item.DoctorId)">
+                                                                                                                <option *ngFor="let stat of StatusList"
+                                                                                                                        [value]="stat.ID">
                                                                                                                     {{stat.Value}}
                                                                                                                 </option>
                                                                                                             </select>
@@ -336,54 +332,56 @@
                                                                                         style="background:#fff;">
                                                                                         <td [attr.colspan]="10"
                                                                                             align="center">
-                                                                                            <p><img src="../../assets/app/media/img/noResult.gif"
-                                                                                                    class="NoDataImg" />
+                                                                                            <p>
+                                                                                                <img src="../../assets/app/media/img/noResult.gif"
+                                                                                                     class="NoDataImg" />
                                                                                             </p>
-                                                                                            <strong
-                                                                                                class="nodateFound">No
-                                                                                                Patient Found</strong>
+                                                                                            <strong class="nodateFound">
+                                                                                                No
+                                                                                                Patient Found
+                                                                                            </strong>
                                                                                         </td>
                                                                                     </tr>
                                                                                 </tbody>
                                                                             </table>
                                                                         </div>
-                                                                        <div
-                                                                            class="mt-2 col-sm-12 p-0 d-flex align-items-center justify-content-between mb-3">
+                                                                        <div class="mt-2 col-sm-12 p-0 d-flex align-items-center justify-content-between mb-3">
                                                                             <div style="font-size: 13px; color: #33396f;font-weight: normal;"
-                                                                                class="dataTables_info"
-                                                                                id="dt_tableTools_info" role="status"
-                                                                                aria-live="polite">No
-                                                                                {{((PModel.CurrentPage-1) *
-                                                                                PModel.RecordPerPage) + 1}} -
-                                                                                {{((PModel.CurrentPage *
+                                                                                 class="dataTables_info"
+                                                                                 id="dt_tableTools_info" role="status"
+                                                                                 aria-live="polite">
+                                                                                No
+                                                                                {{
+((PModel.CurrentPage-1) *
+                                                                                PModel.RecordPerPage) + 1
+                                                                                }} -
+                                                                                {{
+((PModel.CurrentPage *
                                                                                 PModel.RecordPerPage) >
                                                                                 PModel.TotalRecord ? PModel.TotalRecord
                                                                                 : (PModel.CurrentPage *
-                                                                                PModel.RecordPerPage))}} </div>
+                                                                                PModel.RecordPerPage))
+                                                                                }}
+                                                                            </div>
                                                                             <ul class="uk-pagination mt-2"
                                                                                 [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
                                                                                 <li class="paginate_button"
                                                                                     [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}">
-                                                                                    <a
-                                                                                        (click)="selectPatientPage(previousPage)">
-                                                                                        <i
-                                                                                            class="icon icon-chevron-left"></i>
+                                                                                    <a (click)="selectPatientPage(previousPage)">
+                                                                                        <i class="icon icon-chevron-left"></i>
                                                                                     </a>
                                                                                 </li>
                                                                                 <li class="paginate_button"
                                                                                     *ngFor="let page of pagesRange"
                                                                                     [class.uk-active]="page == PModel.CurrentPage">
-                                                                                    <a
-                                                                                        (click)="selectPatientPage(page)">
+                                                                                    <a (click)="selectPatientPage(page)">
                                                                                         {{page}}
                                                                                     </a>
                                                                                 </li>
                                                                                 <li class="paginate_button"
                                                                                     [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}">
-                                                                                    <a
-                                                                                        (click)="selectPatientPage(nextPage)">
-                                                                                        <i
-                                                                                            class="icon icon-chevron-right"></i>
+                                                                                    <a (click)="selectPatientPage(nextPage)">
+                                                                                        <i class="icon icon-chevron-right"></i>
                                                                                     </a>
                                                                                 </li>
                                                                             </ul>
@@ -405,21 +403,20 @@
                                                                         <div class="row mx-0 mb-1 Appointment_status">
                                                                             <div class="col p-0">
                                                                                 <div class="custom-control custom-checkbox mb-2"
-                                                                                    *ngFor="let s of AllStatusList">
+                                                                                     *ngFor="let s of AllStatusList">
                                                                                     <span>
                                                                                         <input type="checkbox"
-                                                                                            class="custom-control-input"
-                                                                                            [ngModelOptions]="{standalone:true}"
-                                                                                            [(ngModel)]="s.IsActive"
-                                                                                            (change)="StatusChangeFilter(s.ID)"
-                                                                                            id="{{'customCheck1'+s.ID}}"
-                                                                                            name="{{'NameCheck1'+s.ID}}">
-                                                                                        <label
-                                                                                            class="custom-control-label {{s.Value}}"
-                                                                                            for="{{'customCheck1'+s.ID}}">
-                                                                                            {{s.Value}}</label>
-                                                                                        <span
-                                                                                            class="float-right">{{s.count}}</span>
+                                                                                               class="custom-control-input"
+                                                                                               [ngModelOptions]="{standalone:true}"
+                                                                                               [(ngModel)]="s.IsActive"
+                                                                                               (change)="StatusChangeFilter(s.ID)"
+                                                                                               id="{{'customCheck1'+s.ID}}"
+                                                                                               name="{{'NameCheck1'+s.ID}}">
+                                                                                        <label class="custom-control-label {{s.Value}}"
+                                                                                               for="{{'customCheck1'+s.ID}}">
+                                                                                            {{s.Value}}
+                                                                                        </label>
+                                                                                        <span class="float-right">{{s.count}}</span>
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
@@ -435,16 +432,16 @@
                                                                     </ng-template>
                                                                     <ng-template ngbPanelContent>
                                                                         <div class="custom-control custom-checkbox mb-2"
-                                                                            *ngFor="let d of DoctorList">
+                                                                             *ngFor="let d of DoctorList">
                                                                             <input type="checkbox"
-                                                                                class="custom-control-input"
-                                                                                [ngModelOptions]="{standalone:true}"
-                                                                                [(ngModel)]="d.IsDoctor"
-                                                                                (change)="IsShowDoctor(d.IsDoctor,d.ID)"
-                                                                                id="{{'customCheck'+d.ID}}"
-                                                                                name="{{'NameCheck'+d.ID}}">
+                                                                                   class="custom-control-input"
+                                                                                   [ngModelOptions]="{standalone:true}"
+                                                                                   [(ngModel)]="d.IsDoctor"
+                                                                                   (change)="IsShowDoctor(d.IsDoctor,d.ID)"
+                                                                                   id="{{'customCheck'+d.ID}}"
+                                                                                   name="{{'NameCheck'+d.ID}}">
                                                                             <label class="custom-control-label"
-                                                                                for="{{'customCheck'+d.ID}}">{{d.Name}}</label>
+                                                                                   for="{{'customCheck'+d.ID}}">{{d.Name}}</label>
                                                                         </div>
                                                                     </ng-template>
                                                                 </ngb-panel>
@@ -504,8 +501,8 @@
                                                                                     </a>
                                                                                 </li>
                                                                                 <!--<li class="nav-item" (click)="loadVital()" *ngIf="Rights.indexOf(24)>-1">
-                                    <a class="nav-link" data-toggle="tab" href="#Vital">Vital</a>
-                                </li>-->
+                                                                                    <a class="nav-link" data-toggle="tab" href="#Vital">Vital</a>
+                                                                                </li>-->
                                                                                 <li class="nav-item"
                                                                                     (click)="PrescriptionPage()"
                                                                                     *ngIf="Rights.indexOf(23)>-1">
@@ -1178,7 +1175,7 @@ v.Date
                                                                                                                                                name="Morning"
                                                                                                                                                [ngModelOptions]="{standalone:true}"
                                                                                                                                                [(ngModel)]="dynamic.Morning"
-                                                                                                                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                                                                                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^0+(?=\d)/, '')";>
                                                                                                                                     </div>
                                                                                                                                     <div class="">
                                                                                                                                         <label class=""
@@ -1189,7 +1186,7 @@ v.Date
                                                                                                                                                name="AfterNoon"
                                                                                                                                                [ngModelOptions]="{standalone:true}"
                                                                                                                                                [(ngModel)]="dynamic.AfterNoon"
-                                                                                                                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                                                                                                             oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^0+(?=\d)/, '')">
                                                                                                                                     </div>
                                                                                                                                     <div class="">
                                                                                                                                         <label class=""
@@ -1200,7 +1197,7 @@ v.Date
                                                                                                                                                name="Evening"
                                                                                                                                                [ngModelOptions]="{standalone:true}"
                                                                                                                                                [(ngModel)]="dynamic.Evening"
-                                                                                                                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                                                                                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^0+(?=\d)/, '')">
                                                                                                                                     </div>
                                                                                                                                     <div class="">
                                                                                                                                         <label class=""
@@ -1211,7 +1208,7 @@ v.Date
                                                                                                                                                name="Night"
                                                                                                                                                [ngModelOptions]="{standalone:true}"
                                                                                                                                                [(ngModel)]="dynamic.Night"
-                                                                                                                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                                                                                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^0+(?=\d)/, '')">
                                                                                                                                     </div>
                                                                                                                                 </div>
                                                                                                                             </div>
@@ -2491,16 +2488,16 @@ v.Date
                         </div>
                         <div class="col-8 d-flex">
                             <select class="form-control form-control-sm" style="max-width:100px;"
-                                formControlName="PrefixTittleId" [(ngModel)]="model.PrefixTittleId">
+                                    formControlName="PrefixTittleId" [(ngModel)]="model.PrefixTittleId">
                                 <option *ngFor="let item of TittleList" [value]="item.ID">
                                     {{item.Value}}
                                 </option>
                             </select>
                             <input type="text" id="" formControlName="PatientName" [(ngModel)]="model.PatientName"
-                                class="form-control form-control-sm form-control-alternative"
-                                placeholder="Patient Name">
+                                   class="form-control form-control-sm form-control-alternative"
+                                   placeholder="Patient Name">
                             <small class="text-danger"
-                                *ngIf="Form1.controls.PatientName.hasError('required') && submitted">
+                                   *ngIf="Form1.controls.PatientName.hasError('required') && submitted">
                                 This value is required.
                             </small>
                         </div>
@@ -2511,7 +2508,7 @@ v.Date
                         </div>
                         <div class="col-8">
                             <input type="text" formControlName="Father_Husband" [(ngModel)]="model.Father_Husband"
-                                class="form-control  form-control-alternative">
+                                   class="form-control  form-control-alternative">
                         </div>
                     </div>
 
@@ -2524,10 +2521,10 @@ v.Date
                             <div class="row">
                                 <div class="col-sm-4">
                                     <input type="text" formControlName="Age" [(ngModel)]="model.Age"
-                                        (change)="AgeChange()" class="form-control  form-control-alternative"
-                                        placeholder="Age">
+                                           (change)="AgeChange()" class="form-control  form-control-alternative"
+                                           placeholder="Age">
                                     <small class="text-danger"
-                                        *ngIf="Form1.controls.Age.hasError('required') && submitted">
+                                           *ngIf="Form1.controls.Age.hasError('required') && submitted">
                                         This value is required.
                                     </small>
                                 </div>
@@ -2537,7 +2534,7 @@ v.Date
 
                                 <div class="col-sm-5 p-0">
                                     <Datetime-Component formControlName="DOB" placeholder="DD/MM/YYYY"
-                                        (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="model.DOB">
+                                                        (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="model.DOB">
                                     </Datetime-Component>
 
                                 </div>
@@ -2556,8 +2553,8 @@ v.Date
                         </div>
                         <div class="col-8">
                             <select class="form-control form-control-sm form-control-alternative"
-                                formControlName="Gender" (change)="GenderChnage(model.Gender)"
-                                [(ngModel)]="model.Gender">
+                                    formControlName="Gender" (change)="GenderChnage(model.Gender)"
+                                    [(ngModel)]="model.Gender">
                                 <option *ngFor="let item of GenderList" [value]="item.ID">
                                     {{item.Value}}
                                 </option>
@@ -2575,21 +2572,20 @@ v.Date
                         </div>
                         <div class="col-8">
                             <input type="text" id="" formControlName="Mobile" [(ngModel)]="model.Mobile" appPhoneMask
-                                class="form-control form-control-sm form-control-alternative" placeholder="Mobile">
+                                   class="form-control form-control-sm form-control-alternative" placeholder="Mobile">
                             <small class="text-danger" *ngIf="Form1.controls.Mobile.hasError('required') && submitted">
                                 This value is required.
                             </small>
-                            <small
-                                *ngIf="Form1.controls.Mobile.hasError('pattern') && !Form1.controls.Mobile.hasError('required')">
+                            <small *ngIf="Form1.controls.Mobile.hasError('pattern') && !Form1.controls.Mobile.hasError('required')">
                                 Please enter valid Mobile(923001234567).
                             </small>
                             <small class="text-danger"
-                                *ngIf="Form1.controls.Mobile.hasError('minlength') && !Form1.controls.Mobile.hasError('required')">
+                                   *ngIf="Form1.controls.Mobile.hasError('minlength') && !Form1.controls.Mobile.hasError('required')">
                                 Mobile number must be 11 digits.
                             </small>
 
                             <small class="text-danger"
-                                *ngIf="Form1.controls.Mobile.hasError('maxlength') && !Form1.controls.Mobile.hasError('required')">
+                                   *ngIf="Form1.controls.Mobile.hasError('maxlength') && !Form1.controls.Mobile.hasError('required')">
                                 Mobile number must be 11 digits.
                             </small>
                         </div>
@@ -2601,7 +2597,7 @@ v.Date
                         </div>
                         <div class="col-8">
                             <input type="text" id="" formControlName="Email" [(ngModel)]="model.Email"
-                                class="form-control form-control-sm form-control-alternative" placeholder="Email">
+                                   class="form-control form-control-sm form-control-alternative" placeholder="Email">
                         </div>
                     </div>
                     <div class="row form-group" *ngIf="IsCNICMandatory==false">
@@ -2610,8 +2606,8 @@ v.Date
                         </div>
                         <div class="col-8">
                             <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC"
-                                class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X"
-                                maxlength="15" (input)=" formatCnic($event)">
+                                   class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X"
+                                   maxlength="15" (input)=" formatCnic($event)">
                             <small class="text-danger" *ngIf="Form1.controls.CNIC.hasError('required') && submitted">
                                 This value is required.
                             </small>
@@ -2623,12 +2619,11 @@ v.Date
                         </div>
                         <div class="col-8">
                             <input type="text" id="" formControlName="CNIC" [(ngModel)]="model.CNIC"
-                                class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X">
+                                   class="form-control  form-control-alternative" placeholder="XXXXX-XXXXXXX-X">
                             <small class="text-danger" *ngIf="Form1.controls.CNIC.hasError('required') && submitted">
                                 This value is required.
                             </small>
-                            <small
-                                *ngIf="Form1.controls.CNIC.hasError('pattern') && !Form1.controls.CNIC.hasError('required')">
+                            <small *ngIf="Form1.controls.CNIC.hasError('pattern') && !Form1.controls.CNIC.hasError('required')">
                                 CNIC No must follow the XXXXX-XXXXXXX-X format!"
                             </small>
                         </div>
@@ -2639,7 +2634,7 @@ v.Date
                         </div>
                         <div class="col-8">
                             <input type="text" id="" formControlName="Address" [(ngModel)]="model.Address"
-                                class="form-control form-control-sm form-control-alternative" placeholder="Address">
+                                   class="form-control form-control-sm form-control-alternative" placeholder="Address">
 
                         </div>
                     </div>
@@ -2649,8 +2644,8 @@ v.Date
                         </div>
                         <div class="col-8">
                             <input type="text" id="" formControlName="MRNO" [(ngModel)]="model.MRNO"
-                                class="form-control form-control-sm form-control-alternative" placeholder="MRNO"
-                                readonly="readonly">
+                                   class="form-control form-control-sm form-control-alternative" placeholder="MRNO"
+                                   readonly="readonly">
                             <small class="text-danger" *ngIf="Form1.controls.MRNO.hasError('required') && submitted">
                                 This value is required.
                             </small>
@@ -2662,7 +2657,7 @@ v.Date
                         </div>
                         <div class="col-8">
                             <select class="form-control  form-control-alternative" formControlName="BillTypeId"
-                                [(ngModel)]="model.BillTypeId">
+                                    [(ngModel)]="model.BillTypeId">
                                 <option *ngFor="let item of BillTypeList" [value]="item.ID">
                                     {{item.Value}}
                                 </option>
@@ -2678,7 +2673,7 @@ v.Date
                         </div>
                         <div class="col-8">
                             <textarea type="text" class="form-control m-input" formControlName="Notes"
-                                [(ngModel)]="model.Notes" placeholder="Note"></textarea>
+                                      [(ngModel)]="model.Notes" placeholder="Note"></textarea>
                         </div>
                     </div>
 
@@ -2688,11 +2683,11 @@ v.Date
                     <div class="form-group img-box">
                         <div class="col-sm-12" *ngIf="model.Image!=''">
                             <img [src]="PatientImage"
-                                style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
+                                 style="width: 80px;height: 80px;border-radius: 50%;display: table;" />
                         </div>
                         <File-Component class="UploadActnWrap" [(ngModel)]="model.Image" (ClearModel)="ClearImageUrl()"
-                            (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)"
-                            [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
+                                        (FileNameEvent)="getImageUrlName($event)" (IsNewFileEvents1)="IsNewImageEvent($event)"
+                                        [ImageWithAddress]="true" [ngModelOptions]="{standalone:true}"></File-Component>
 
                     </div>
                 </div>
@@ -2734,24 +2729,24 @@ v.Date
                                         <div class="col-8">
                                             <div class="input-group mb-3">
                                                 <input type="text" id="PatientSearchByName"
-                                                    class="form-control form-control-sm form-control-alternative"
-                                                    formControlName="PatientName"
-                                                    [(ngModel)]="AppointmentModel.PatientName"
-                                                    (click)="LoadSearchableDropdown()"
-                                                    (focusout)="onPatientNameEvent(AppointmentModel.PatientName,AppointmentModel.PatientId)"
-                                                    placeholder="Search by mobile no" autocomplete="off">
+                                                       class="form-control form-control-sm form-control-alternative"
+                                                       formControlName="PatientName"
+                                                       [(ngModel)]="AppointmentModel.PatientName"
+                                                       (click)="LoadSearchableDropdown()"
+                                                       (focusout)="onPatientNameEvent(AppointmentModel.PatientName,AppointmentModel.PatientId)"
+                                                       placeholder="Search by mobile no" autocomplete="off">
                                                 <div class="input-group-prepend btn btn-light" style="width:50px;"
-                                                    (click)="openNewPatient(content)">
+                                                     (click)="openNewPatient(content)">
                                                     <span class="svgIcon">
                                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                            aria-hidden="true" focusable="false" width="1em"
-                                                            height="1em"
-                                                            style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;"
-                                                            preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+                                                             xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                             aria-hidden="true" focusable="false" width="1em"
+                                                             height="1em"
+                                                             style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;"
+                                                             preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
                                                             <g fill="none" stroke="#626262" stroke-width="2"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                style="stroke: #5e72e4;">
+                                                               stroke-linecap="round" stroke-linejoin="round"
+                                                               style="stroke: #5e72e4;">
                                                                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2">
                                                                 </path>
                                                                 <circle cx="8.5" cy="7" r="4"></circle>
@@ -2763,7 +2758,7 @@ v.Date
                                                 </div>
                                             </div>
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -2771,13 +2766,14 @@ v.Date
                                     <div class="row form-group">
                                         <div class="col-4 text-right">
                                             <label class="form-control-label mt-2 pl-0" for="input-username">
-                                                CNIC</label>
+                                                CNIC
+                                            </label>
                                         </div>
                                         <div class="col-8">
                                             <input type="text"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                formControlName="CNIC" [(ngModel)]="AppointmentModel.CNIC"
-                                                placeholder="CNIC" autocomplete="off" readonly="readonly">
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   formControlName="CNIC" [(ngModel)]="AppointmentModel.CNIC"
+                                                   placeholder="CNIC" autocomplete="off" readonly="readonly">
                                             <!--<small class="text-danger" *ngIf="Form2.controls.CNIC.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
@@ -2789,30 +2785,33 @@ v.Date
                                     <div class="row form-group">
                                         <div class="col-4 text-right">
                                             <label class="form-control-label mt-2 pl-0" for="input-username">
-                                                Mobile</label>
+                                                Mobile
+                                            </label>
                                         </div>
                                         <div class="col-8">
                                             <input type="text"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile"
-                                                placeholder="Mobile" autocomplete="off" readonly="readonly">
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile"
+                                                   placeholder="Mobile" autocomplete="off" readonly="readonly">
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
                                     </div>
                                     <div class="row form-group">
                                         <div class="col-4 text-right">
-                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Patient
-                                                Prob</label>
+                                            <label class="form-control-label mt-2 pl-0" for="input-username">
+                                                Patient
+                                                Prob
+                                            </label>
                                         </div>
                                         <div class="col-8">
                                             <input type="text" id=""
-                                                class="form-control form-control-sm form-control-alternative"
-                                                formControlName="PatientProblem"
-                                                [(ngModel)]="AppointmentModel.PatientProblem"
-                                                placeholder="Patient Problem">
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   formControlName="PatientProblem"
+                                                   [(ngModel)]="AppointmentModel.PatientProblem"
+                                                   placeholder="Patient Problem">
                                         </div>
                                     </div>
                                     <!-- =============== -->
@@ -2822,7 +2821,7 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <textarea class="form-control-alternative form-control"
-                                                formControlName="Notes" [(ngModel)]="AppointmentModel.Notes"></textarea>
+                                                      formControlName="Notes" [(ngModel)]="AppointmentModel.Notes"></textarea>
                                         </div>
                                     </div>
                                     <!-- =============== -->
@@ -2835,14 +2834,14 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <select class="form-control form-control-sm form-control-alternative"
-                                                (change)="DoctorChange()" formControlName="DoctorId"
-                                                [(ngModel)]="AppointmentModel.DoctorId">
+                                                    (change)="DoctorChange()" formControlName="DoctorId"
+                                                    [(ngModel)]="AppointmentModel.DoctorId">
                                                 <option *ngFor="let item of DoctorList" [value]="item.ID">
                                                     {{item.Name}}
                                                 </option>
                                             </select>
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -2853,11 +2852,11 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <Datetime-Component formControlName="AppointmentDate"
-                                                placeholder="DD/MM/YYYY" (DateChangeValue)="onAppDateChanged($event)"
-                                                [(ngModel)]="AppointmentModel.AppointmentDate">
+                                                                placeholder="DD/MM/YYYY" (DateChangeValue)="onAppDateChanged($event)"
+                                                                [(ngModel)]="AppointmentModel.AppointmentDate">
                                             </Datetime-Component>
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.AppointmentDate.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.AppointmentDate.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -2869,11 +2868,11 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <input type="text" formControlName="AppointmentTime"
-                                                [(ngModel)]="AppointmentModel.AppointmentTime" (click)="SelectTime()"
-                                                (change)="ChnageSelectTime()" class="form-control time"
-                                                id="basicExample" autocomplete="off">
+                                                   [(ngModel)]="AppointmentModel.AppointmentTime" (click)="SelectTime()"
+                                                   (change)="ChnageSelectTime()" class="form-control time"
+                                                   id="basicExample" autocomplete="off">
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.AppointmentTime.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.AppointmentTime.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -2884,8 +2883,8 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <select class="form-control form-control-sm form-control-alternative"
-                                                [ngModelOptions]="{standalone: true}"
-                                                [(ngModel)]="AppointmentModel.StatusId">
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    [(ngModel)]="AppointmentModel.StatusId">
                                                 <option *ngFor="let item of StatusList" [value]="item.ID">
                                                     {{item.Value}}
                                                 </option>
@@ -2895,11 +2894,12 @@ v.Date
                                     <div class="row form-group">
                                         <div class="col-4 text-right">
                                             <label class="form-control-label mt-2" for="input-username">
-                                                Reminder</label>
+                                                Reminder
+                                            </label>
                                         </div>
                                         <div class="col-8">
                                             <select class="form-control form-control-sm form-control-alternative"
-                                                formControlName="ReminderId" [(ngModel)]="AppointmentModel.ReminderId">
+                                                    formControlName="ReminderId" [(ngModel)]="AppointmentModel.ReminderId">
                                                 <option *ngFor="let item of ReminderList" [value]="item.ID">
                                                     {{item.Value}}
                                                 </option>
@@ -2932,15 +2932,15 @@ v.Date
                                     <div class="col-8">
                                         <div class="form-group">
                                             <input type="text" id="ServiceSearch" (click)="LoadService()"
-                                                formControlName="ServiceId" [(ngModel)]="AppointmentModel.ServiceName"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Search Service" autocomplete="off">
+                                                   formControlName="ServiceId" [(ngModel)]="AppointmentModel.ServiceName"
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   placeholder="Search Service" autocomplete="off">
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.ServiceId.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.ServiceId.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                             <div class="d-flex justify-content-between"
-                                                *ngIf="AppointmentModel.CategoryId==3 ||AppointmentModel.CategoryId==4">
+                                                 *ngIf="AppointmentModel.CategoryId==3 ||AppointmentModel.CategoryId==4">
                                                 <span><strong>Remaining:</strong></span>
                                                 <span class="badge badge-primary">
                                                     {{AppointmentModel.ConsumedSessions }} /
@@ -2952,17 +2952,19 @@ v.Date
                                 </div>
                                 <div class="row">
                                     <div class="col-4 text-right">
-                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Bill
-                                            Date*</label>
+                                        <label class="form-control-label mt-2 pl-0" for="input-username">
+                                            Bill
+                                            Date*
+                                        </label>
                                     </div>
                                     <div class="col-8">
                                         <div class="form-group">
                                             <Datetime-Component formControlName="BillDate" placeholder="DD/MM/YYYY"
-                                                (DateChangeValue)="onDateChanged($event)"
-                                                [(ngModel)]="AppointmentModel.BillDate">
+                                                                (DateChangeValue)="onDateChanged($event)"
+                                                                [(ngModel)]="AppointmentModel.BillDate">
                                             </Datetime-Component>
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.BillDate.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.BillDate.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -2975,10 +2977,10 @@ v.Date
                                     <div class="col-8">
                                         <div class="form-group">
                                             <input type="number" id="" formControlName="Price"
-                                                [(ngModel)]="AppointmentModel.Price" (keyup)="CalAmount()"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Price"
-                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                   [(ngModel)]="AppointmentModel.Price" (keyup)="CalAmount()"
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   placeholder="Price"
+                                                   oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                                         </div>
                                     </div>
                                 </div>
@@ -2987,33 +2989,36 @@ v.Date
                                     <div class="col-4 text-right">
 
                                         <label class="form-control-label mt-2 pl-0" for="input-username">
-                                            Discount</label>
+                                            Discount
+                                        </label>
                                     </div>
                                     <div class="col-8">
                                         <div class="form-group">
                                             <input type="text" id="" formControlName="Discount"
-                                                [(ngModel)]="AppointmentModel.Discount" (keyup)="CalAmount()"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Discount"
-                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                   [(ngModel)]="AppointmentModel.Discount" (keyup)="CalAmount()"
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   placeholder="Discount"
+                                                   oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-4 text-right">
-                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Paid
-                                            Amount</label>
+                                        <label class="form-control-label mt-2 pl-0" for="input-username">
+                                            Paid
+                                            Amount
+                                        </label>
                                     </div>
                                     <div class="col-8">
                                         <div class="form-group">
                                             <input type="text" id="" formControlName="PaidAmount"
-                                                [(ngModel)]="AppointmentModel.PaidAmount" (keyup)="PaidCalAmount()"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Paid Amount"
-                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                   [(ngModel)]="AppointmentModel.PaidAmount" (keyup)="PaidCalAmount()"
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   placeholder="Paid Amount"
+                                                   oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.PaidAmount.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.PaidAmount.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -3021,34 +3026,37 @@ v.Date
                                 </div>
                                 <div class="row">
                                     <div class="col-4 text-right">
-                                        <label class="form-control-label mt-2 pl-0" for="input-username"> Outstanding
-                                            Balance</label>
+                                        <label class="form-control-label mt-2 pl-0" for="input-username">
+                                            Outstanding
+                                            Balance
+                                        </label>
                                     </div>
                                     <div class="col-8">
                                         <div class="form-group">
                                             <input type="text" id="" formControlName="OutstandingBalance"
-                                                [(ngModel)]="AppointmentModel.OutstandingBalance"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Outstanding Balance" readonly="readonly">
+                                                   [(ngModel)]="AppointmentModel.OutstandingBalance"
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   placeholder="Outstanding Balance" readonly="readonly">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-4 text-right">
                                         <label class="form-control-label mt-2 pl-0" for="input-username">
-                                            Remarks</label>
+                                            Remarks
+                                        </label>
                                     </div>
                                     <div class="col-8">
                                         <div class="form-group">
                                             <textarea class="form-control form-control-sm" formControlName="Remarks"
-                                                [(ngModel)]="AppointmentModel.Remarks" autocomplete="off"></textarea>
+                                                      [(ngModel)]="AppointmentModel.Remarks" autocomplete="off"></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-5 mt-3" id="print-section">
                                 <div class="coupn_card"
-                                    style="border: 2px dashed #b1d0f1; padding: 10px; border-radius: 5px; line-height: initial; background: #edf6ff; color: #000000; max-width: 250px;">
+                                     style="border: 2px dashed #b1d0f1; padding: 10px; border-radius: 5px; line-height: initial; background: #edf6ff; color: #000000; max-width: 250px;">
                                     <h3 style="text-align: center; font-size: 22px">
                                         {{CompanyObj.CompanyName}}
                                     </h3>
@@ -3068,8 +3076,10 @@ v.Date
                                         {{AppointmentModel.TokenNo}}
                                     </h1>
                                     <p style="text-align: center; margin: 0;">
-                                        App Date:{{AppointmentModel.AppointmentDate|date: 'dd-MM-yy
-                                        '}}{{AppointmentModel.AppointmentTime}}
+                                        App Date:{{
+AppointmentModel.AppointmentDate|date: 'dd-MM-yy
+                                        '
+                                        }}{{AppointmentModel.AppointmentTime}}
                                     </p>
                                 </div>
                             </div>
@@ -3082,7 +3092,9 @@ v.Date
                                 <i class="icon icon-printer"></i> Print Coupon
                             </button>
                             <button type="button" (click)="handlePrint('S')" class="btn btn-primary"
-                                *ngIf="ControlRights.CreateRights">Save</button>
+                                    *ngIf="ControlRights.CreateRights">
+                                Save
+                            </button>
                         </div>
                     </form>
                 </ng-template>
@@ -3106,24 +3118,24 @@ v.Date
                                             <div class="input-group mb-3">
 
                                                 <input type="text" id="PatientSearchByName"
-                                                    class="form-control form-control-sm form-control-alternative"
-                                                    formControlName="PatientName"
-                                                    [(ngModel)]="AppointmentModel.PatientName"
-                                                    (focusout)="onPatientNameEvent(AppointmentModel.PatientName)"
-                                                    placeholder="Search by mobile no" autocomplete="off">
+                                                       class="form-control form-control-sm form-control-alternative"
+                                                       formControlName="PatientName"
+                                                       [(ngModel)]="AppointmentModel.PatientName"
+                                                       (focusout)="onPatientNameEvent(AppointmentModel.PatientName)"
+                                                       placeholder="Search by mobile no" autocomplete="off">
 
                                                 <div class="input-group-prepend btn btn-light" style="width:50px;"
-                                                    (click)="openNewPatient(content)">
+                                                     (click)="openNewPatient(content)">
                                                     <span class="svgIcon">
                                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                            aria-hidden="true" focusable="false" width="1em"
-                                                            height="1em"
-                                                            style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;"
-                                                            preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+                                                             xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                             aria-hidden="true" focusable="false" width="1em"
+                                                             height="1em"
+                                                             style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;"
+                                                             preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
                                                             <g fill="none" stroke="#626262" stroke-width="2"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                style="stroke: #5e72e4;">
+                                                               stroke-linecap="round" stroke-linejoin="round"
+                                                               style="stroke: #5e72e4;">
                                                                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2">
                                                                 </path>
                                                                 <circle cx="8.5" cy="7" r="4"></circle>
@@ -3135,7 +3147,7 @@ v.Date
                                                 </div>
                                             </div>
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.PatientName.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
 
@@ -3145,19 +3157,19 @@ v.Date
                                     <div class="row form-group">
                                         <div class="col-4 text-right">
                                             <label class="form-control-label mt-2 pl-0" for="input-username">
-                                                CNIC</label>
+                                                CNIC
+                                            </label>
                                         </div>
                                         <div class="col-8">
                                             <input type="text"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                formControlName="CNIC" [(ngModel)]="AppointmentModel.CNIC"
-                                                placeholder="XXXXX-XXXXXXX-X" autocomplete="off" readonly="readonly">
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   formControlName="CNIC" [(ngModel)]="AppointmentModel.CNIC"
+                                                   placeholder="XXXXX-XXXXXXX-X" autocomplete="off" readonly="readonly">
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.CNIC.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.CNIC.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
-                                            <small
-                                                *ngIf="Form2.controls.CNIC.hasError('pattern') && !Form2.controls.CNIC.hasError('required')">
+                                            <small *ngIf="Form2.controls.CNIC.hasError('pattern') && !Form2.controls.CNIC.hasError('required')">
                                                 CNIC No must follow the XXXXX-XXXXXXX-X format!"
                                             </small>
                                         </div>
@@ -3165,15 +3177,16 @@ v.Date
                                     <div class="row form-group">
                                         <div class="col-4 text-right">
                                             <label class="form-control-label mt-2 pl-0" for="input-username">
-                                                Mobile</label>
+                                                Mobile
+                                            </label>
                                         </div>
                                         <div class="col-8">
                                             <input type="text"
-                                                class="form-control form-control-sm form-control-alternative"
-                                                formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile"
-                                                placeholder="Mobile" autocomplete="off" readonly="readonly">
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   formControlName="Mobile" [(ngModel)]="AppointmentModel.Mobile"
+                                                   placeholder="Mobile" autocomplete="off" readonly="readonly">
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.Mobile.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -3182,15 +3195,17 @@ v.Date
 
                                     <div class="row form-group">
                                         <div class="col-4 text-right">
-                                            <label class="form-control-label mt-2 pl-0" for="input-username"> Patient
-                                                Prob</label>
+                                            <label class="form-control-label mt-2 pl-0" for="input-username">
+                                                Patient
+                                                Prob
+                                            </label>
                                         </div>
                                         <div class="col-8">
                                             <input type="text" id=""
-                                                class="form-control form-control-sm form-control-alternative"
-                                                formControlName="PatientProblem"
-                                                [(ngModel)]="AppointmentModel.PatientProblem"
-                                                placeholder="Patient Problem">
+                                                   class="form-control form-control-sm form-control-alternative"
+                                                   formControlName="PatientProblem"
+                                                   [(ngModel)]="AppointmentModel.PatientProblem"
+                                                   placeholder="Patient Problem">
                                         </div>
                                     </div>
 
@@ -3201,7 +3216,7 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <textarea class="form-control-alternative form-control"
-                                                formControlName="Notes" [(ngModel)]="AppointmentModel.Notes"></textarea>
+                                                      formControlName="Notes" [(ngModel)]="AppointmentModel.Notes"></textarea>
                                         </div>
                                     </div>
                                     <!-- =============== -->
@@ -3214,14 +3229,14 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <select class="form-control form-control-sm form-control-alternative"
-                                                (change)="DoctorChange()" formControlName="DoctorId"
-                                                [(ngModel)]="AppointmentModel.DoctorId">
+                                                    (change)="DoctorChange()" formControlName="DoctorId"
+                                                    [(ngModel)]="AppointmentModel.DoctorId">
                                                 <option *ngFor="let item of DoctorList" [value]="item.ID">
                                                     {{item.Name}}
                                                 </option>
                                             </select>
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.DoctorId.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -3232,11 +3247,11 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <Datetime-Component formControlName="AppointmentDate"
-                                                placeholder="DD/MM/YYYY" (DateChangeValue)="onAppDateChanged($event)"
-                                                [(ngModel)]="AppointmentModel.AppointmentDate">
+                                                                placeholder="DD/MM/YYYY" (DateChangeValue)="onAppDateChanged($event)"
+                                                                [(ngModel)]="AppointmentModel.AppointmentDate">
                                             </Datetime-Component>
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.AppointmentDate.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.AppointmentDate.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -3248,11 +3263,11 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <input type="text" formControlName="AppointmentTime"
-                                                [(ngModel)]="AppointmentModel.AppointmentTime" (click)="SelectTime()"
-                                                (change)="ChnageSelectTime()" class="form-control time"
-                                                id="basicExample" autocomplete="off">
+                                                   [(ngModel)]="AppointmentModel.AppointmentTime" (click)="SelectTime()"
+                                                   (change)="ChnageSelectTime()" class="form-control time"
+                                                   id="basicExample" autocomplete="off">
                                             <small class="text-danger"
-                                                *ngIf="Form2.controls.AppointmentTime.hasError('required') && submitted">
+                                                   *ngIf="Form2.controls.AppointmentTime.hasError('required') && submitted">
                                                 This value is required.
                                             </small>
                                         </div>
@@ -3263,7 +3278,7 @@ v.Date
                                         </div>
                                         <div class="col-8">
                                             <select class="form-control form-control-sm form-control-alternative"
-                                                formControlName="StatusId" [(ngModel)]="AppointmentModel.StatusId">
+                                                    formControlName="StatusId" [(ngModel)]="AppointmentModel.StatusId">
                                                 <option *ngFor="let item of StatusList" [value]="item.ID">
                                                     {{item.Value}}
                                                 </option>
@@ -3273,11 +3288,12 @@ v.Date
                                     <div class="row form-group">
                                         <div class="col-4 text-right">
                                             <label class="form-control-label mt-2" for="input-username">
-                                                Reminder</label>
+                                                Reminder
+                                            </label>
                                         </div>
                                         <div class="col-8">
                                             <select class="form-control form-control-sm form-control-alternative"
-                                                formControlName="ReminderId" [(ngModel)]="AppointmentModel.ReminderId">
+                                                    formControlName="ReminderId" [(ngModel)]="AppointmentModel.ReminderId">
                                                 <option *ngFor="let item of ReminderList" [value]="item.ID">
                                                     {{item.Value}}
                                                 </option>
@@ -3315,7 +3331,7 @@ v.Date
                         </div>
                         <div class="col-8">
                             <input type="text" id="" formControlName="Medicine" [(ngModel)]="MedicineModel.Medicine"
-                                class="form-control form-control-sm form-control-alternative" placeholder="">
+                                   class="form-control form-control-sm form-control-alternative" placeholder="">
 
                         </div>
                     </div>
@@ -3325,7 +3341,7 @@ v.Date
                         </div>
                         <div class="col-8">
                             <input type="text" id="" formControlName="Measure" [(ngModel)]="MedicineModel.Measure"
-                                class="form-control form-control-sm form-control-alternative" placeholder="">
+                                   class="form-control form-control-sm form-control-alternative" placeholder="">
 
                         </div>
                     </div>
@@ -3336,7 +3352,7 @@ v.Date
                         <div class="col-8">
                             <div class="input-group">
                                 <select class="form-control form-control-sm form-control-alternative"
-                                    formControlName="InstructionId" [(ngModel)]="model.InstructionId">
+                                        formControlName="InstructionId" [(ngModel)]="model.InstructionId">
                                     <option *ngFor="let item of InstructionsList" [value]="item.ID">
                                         {{item.Name}}
                                     </option>
@@ -3351,7 +3367,7 @@ v.Date
                         <div class="col-8">
                             <div class="input-group">
                                 <select class="form-control form-control-sm form-control-alternative"
-                                    formControlName="UnitId" [(ngModel)]="MedicineModel.UnitId">
+                                        formControlName="UnitId" [(ngModel)]="MedicineModel.UnitId">
                                     <option *ngFor="let item of UnitList" [value]="item.ID">
                                         {{item.Value}}
                                     </option>
@@ -3367,7 +3383,7 @@ v.Date
                         <div class="col-8">
                             <div class="input-group">
                                 <select class="form-control form-control-sm form-control-alternative"
-                                    formControlName="TypeId" [(ngModel)]="MedicineModel.TypeId">
+                                        formControlName="TypeId" [(ngModel)]="MedicineModel.TypeId">
                                     <option *ngFor="let item of MadicineTypeList" [value]="item.ID">
                                         {{item.Value}}
                                     </option>
@@ -3387,8 +3403,10 @@ v.Date
 <!-- ============================   Medicine Tempalte Modal ========= -->
 <ng-template #MedicineTemplate let-modal>
     <div class="modal-header">
-        <h4 class="modal-title"> <img src="../assets/app/media/img/icons/Medicines.png" class="img-fluid icon"> Choose
-            Medicine Template</h4>
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/Medicines.png" class="img-fluid icon"> Choose
+            Medicine Template
+        </h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -3405,7 +3423,7 @@ v.Date
                                     <span class="input-group-text"><i class="icon icon-search"></i></span>
                                 </div>
                                 <input class="form-control form-control-sm form-control-alternative"
-                                    placeholder="Search Medicine Template" type="text">
+                                       placeholder="Search Medicine Template" type="text">
                             </div>
                         </div>
                     </div>
@@ -3414,13 +3432,13 @@ v.Date
                 <div class="row">
                     <div class="col">
                         <div class="alert alert-secondary templateBox mb-2" role="alert"
-                            *ngFor="let temp of TemplateList" (click)="LoadTemplate(temp.MfId)">
+                             *ngFor="let temp of TemplateList" (click)="LoadTemplate(temp.MfId)">
                             <div class="mb-3">
                                 <label class="" for="">{{temp.Name}}</label>
                             </div>
                             <span class="badge badge-primary mr-2" placement="top"
-                                ngbPopover="This is a very beautiful popover, show some love."
-                                *ngFor="let med of temp.medicine">{{med}} </span>
+                                  ngbPopover="This is a very beautiful popover, show some love."
+                                  *ngFor="let med of temp.medicine">{{med}} </span>
                         </div>
                     </div>
                 </div>
@@ -3451,12 +3469,12 @@ v.Date
                 <div class="col-md-6">
                     <label>Blood Sugar</label>
                     <input type="text" class="form-control" formControlName="Name" [(ngModel)]="VitalModel.Name"
-                        autocomplete="off">
+                           autocomplete="off">
                 </div>
                 <div class="col-md-6">
                     <label>Blood Pressure</label>
                     <input type="text" class="form-control" formControlName="Name1" [(ngModel)]="VitalModel.Name1"
-                        autocomplete="off">
+                           autocomplete="off">
                 </div>
             </div>
 
@@ -3464,12 +3482,12 @@ v.Date
                 <div class="col-md-6">
                     <label>Pulse Rate</label>
                     <input type="text" class="form-control" formControlName="Name2" [(ngModel)]="VitalModel.Name2"
-                        autocomplete="off">
+                           autocomplete="off">
                 </div>
                 <div class="col-md-6">
                     <label>Respiratory Rate</label>
                     <input type="text" class="form-control" formControlName="Name3" [(ngModel)]="VitalModel.Name3"
-                        autocomplete="off">
+                           autocomplete="off">
                 </div>
             </div>
 
@@ -3477,12 +3495,12 @@ v.Date
                 <div class="col-md-6">
                     <label>Body Temperature</label>
                     <input type="text" class="form-control" formControlName="Name4" [(ngModel)]="VitalModel.Name4"
-                        autocomplete="off">
+                           autocomplete="off">
                 </div>
                 <div class="col-md-6">
                     <label>Weight</label>
                     <input type="text" class="form-control" formControlName="Name5" [(ngModel)]="VitalModel.Name5"
-                        autocomplete="off">
+                           autocomplete="off">
                 </div>
             </div>
 
@@ -3490,12 +3508,12 @@ v.Date
                 <div class="col-md-6 mb-3">
                     <label>Height</label>
                     <input type="text" class="form-control" formControlName="Name6" [(ngModel)]="VitalModel.Name6"
-                        autocomplete="off">
+                           autocomplete="off">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label>SPO2</label>
                     <input type="text" class="form-control" formControlName="Name7" [(ngModel)]="VitalModel.Name7"
-                        autocomplete="off">
+                           autocomplete="off">
                 </div>
             </div>
         </div>
@@ -3703,10 +3721,15 @@ v.Date
                     {{PatientRXmodel.Gender}}
                 </div>
 
-                <div style="min-width:170px;">
+                <div style="min-width:170px;" *ngIf="PatientRXmodel.IsPrscription==false">
                     <strong>Date:</strong>
                     {{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy'}}
                     {{ PatientRXmodel.CurrentTime | date:'hh:mm a' }}
+                </div>
+                <div style="min-width:170px;" *ngIf="PatientRXmodel.IsPrscription==true">
+                    <strong>Date:</strong>
+                    {{PatientRXmodel.AppointmentDate | date:'dd-MMM-yyyy'}}
+                    {{AppointmentModel.AppointmentTime }}
                 </div>
 
                 <div style="flex:1; min-width:218px;">
@@ -3727,8 +3750,32 @@ v.Date
 
 
                 <!-- ================= LEFT SIDEBAR ================= -->
+                <div style="width:28%; padding-right:10px; font-size:13px; color:#000;" *ngIf="PatientRXmodel.IsPrscription== true">
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Clinical History:</strong>
+                    </div>
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Complaint:</strong>
+                    </div>
 
-                <div style="width:28%; padding-right:10px; font-size:13px; color:#000;">
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Vitals:</strong>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Examination:</strong>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Investigation:</strong>
+                    </div>
+
+                    <div style="margin-bottom:12px; min-height:80px;">
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Diagnosis:</strong>
+                    </div>
+                </div>
+
+                <div style="width:28%; padding-right:10px; font-size:13px; color:#000;" *ngIf="PatientRXmodel.IsPrscription== false">
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safeClinicalNote!= null">
                         <strong style="font-size:18px; color: #000;" class="clr_danger">Clinical History:</strong>
                         <div [innerHTML]="PatientRXmodel.safeClinicalNote" style="color:#000;"></div>
@@ -3754,7 +3801,7 @@ v.Date
                     </div>
 
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="emr_prescription_diagnos_dynamicArray.length > 0">
-                        <strong style="font-size:18px; color: #000;" class="clr_danger">Diagnosis:</strong>
+                        <strong style="font-size:18px; color: #000;" class="clr_danger">Diagnoses:</strong>
                         <div *ngFor="let d of emr_prescription_diagnos_dynamicArray" style="color:#000;">{{d.Diagnos}}</div>
                     </div>
                     <div style="margin-bottom:12px; min-height:80px;" *ngIf="PatientRXmodel.safePlanNote!= null">
@@ -3827,7 +3874,7 @@ v.Date
                                                 (m.TypeId == 39 || m.TypeId == 2) ? 'گولی شام'
                                                 :
                                                 (m.TypeId == 49 || m.TypeId == 4) ? 'قطرے شام'
-                                                :
+                                                :            
                                                 (m.TypeId == 6  || m.TypeId == 41) ? 'چمچ شام'
                                                 : 'شام'
                                                             }}
@@ -3888,11 +3935,12 @@ v.Date
                             </tr>
                         </tbody>
                     </table>
-                    <h3 style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">VC Obtained</h3>
-                    <div>
+                    <h3 *ngIf="PatientRXmodel.IsPrscription==false" style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">VC Obtained</h3>
+                    <div *ngIf="PatientRXmodel.IsPrscription==false">
                         {{PatientRXmodel.IsVCObtained ? 'Yes' : 'No'}}
                     </div>
-                    <h3 style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">Instructions</h3>
+                    <h3 *ngIf="PatientRXmodel.IsPrscription==true" style="margin:500px 0 6px; font-size:15px; color:#000;" class="text-primary">Instructions</h3>
+                    <h3 *ngIf="PatientRXmodel.IsPrscription==false" style="margin:24px 0 6px; font-size:15px; color:#000;" class="text-primary">Instructions</h3>
                     <div style="font-size:12px; margin:0; line-height:normal;">
                         <p *ngIf="DoctorInfo.TemplateId==2" style="direction: rtl; text-align: right;">
                             {{ PatientRXmodel.Notes }}
@@ -3980,7 +4028,7 @@ v.Date
                         <div class="col-8">
 
                             <input type="text" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.Email"
-                                class="form-control  form-control-alternative" placeholder="Email">
+                                   class="form-control  form-control-alternative" placeholder="Email">
 
                         </div>
                     </div>

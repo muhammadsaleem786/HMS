@@ -153,6 +153,43 @@
         background: #cbd5e1;
         border-radius: 20px;
     }
+
+    .medicine-table {
+        min-width: 980px;
+    }
+
+        .medicine-table th,
+        .medicine-table td {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .medicine-table .form-control,
+        .medicine-table select.form-control {
+            min-width: 80px;
+        }
+
+        .medicine-table .medicine-name-input {
+            min-width: 150px;
+        }
+
+        .medicine-table .dosage-input {
+            min-width: 42px;
+            width: 42px;
+        }
+
+        .medicine-table .duration-input {
+            min-width: 70px;
+        }
+
+        .medicine-table .duration-select {
+            min-width: 140px;
+        }
+
+        .medicine-table .instruction-input {
+            min-width: 180px;
+            white-space: normal;
+        }
 </style>
 <div class="col-sm-12 AddRoleWraper">
     <div class="row headSection paginationHead">
@@ -263,44 +300,46 @@
                             <ng-template ngbPanelContent>
                                 <div class="row mt-12 dataTables_wrapper ">
                                     <div class="col-lg-12">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        Date
-                                                    </th>
-                                                    <th>
-                                                        Particulars
-                                                    </th>
-                                                    <th>
-                                                        Measure
-                                                    </th>
-                                                    <th>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            Date
+                                                        </th>
+                                                        <th>
+                                                            Particulars
+                                                        </th>
+                                                        <th>
+                                                            Measure
+                                                        </th>
+                                                        <th>
 
-                                                        <span _ngcontent-c0="" class="btn btn-light btn-sm text-primary" style="text-transform: capitalize;" (click)="OpenVitalModal(VitalModal)" style="height: 28px;"><i _ngcontent-c0="" class="icon icon-plus-circle"></i> Add Vital </span>
+                                                            <span _ngcontent-c0="" class="btn btn-light btn-sm text-primary" style="text-transform: capitalize;" (click)="OpenVitalModal(VitalModal)" style="height: 28px;"><i _ngcontent-c0="" class="icon icon-plus-circle"></i> Add Vital </span>
 
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let v of emr_vital_dynamicArray ; let i = index;">
-                                                    <td>
-                                                        {{v.Date |date: 'MM/dd/yyyy'}}
-                                                    </td>
-                                                    <td>
-                                                        {{v.Name}}
-                                                    </td>
-                                                    <td>
-                                                        {{v.Measure}}
-                                                        <span class="">{{v.Unit}}</span>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <span class="icon icon-cross text-danger" (click)="DeleteVital(v.ID,v.VitalId)" *ngIf="ControlRights.DeleteRights">
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let v of emr_vital_dynamicArray ; let i = index;">
+                                                        <td>
+                                                            {{v.Date |date: 'MM/dd/yyyy'}}
+                                                        </td>
+                                                        <td>
+                                                            {{v.Name}}
+                                                        </td>
+                                                        <td>
+                                                            {{v.Measure}}
+                                                            <span class="">{{v.Unit}}</span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="icon icon-cross text-danger" (click)="DeleteVital(v.ID,v.VitalId)" *ngIf="ControlRights.DeleteRights">
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </ng-template>
@@ -504,85 +543,85 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-">
-                                    <table class="table table-bordered">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered medicine-table">
                                         <thead>
                                             <tr>
-                                                <th scope="col" style="width:150px;">Medicine</th>
-                                                <th style="width:90px;">-</th>
-                                                <th scope="col" style="width:220px;">Dosage</th>
-                                                <th scope="col" style="width:70px;">Duration</th>
-                                                <th scope="col" style="width:170px;"></th>
-                                                <th scope="col">Instruction</th>
-                                                <th>-</th>
+                                                <th scope="col" style="width:150px; min-width:150px;">Medicine</th>
+                                                <th style="width:90px; min-width:95px;">-</th>
+                                                <th scope="col" style="width:220px; min-width:200px;">Dosage</th>
+                                                <th scope="col" style="width:70px; min-width:80px;">Duration</th>
+                                                <th scope="col" style="width:170px; min-width:140px;"></th>
+                                                <th scope="col" style="min-width:180px;">Instruction</th>
+                                                <th style="min-width:40px;">-</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr *ngFor="let dynamic of emr_prescription_treatment_dynamicArray; let i = index;">
-                                                <td>
-                                                    <input type="text" class="form-control form-control-sm" id="txtMedicine_{{i}}" name="Medicine" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.MedicineName" (focus)="LoadMedicine(i)" autocomplete="off">
+                                                <td style="min-width:150px;">
+                                                    <input type="text" class="form-control form-control-sm medicine-name-input" id="txtMedicine_{{i}}" name="Medicine" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.MedicineName" (focus)="LoadMedicine(i)" autocomplete="off">
                                                 </td>
-                                                <td class="smallbox">
+                                                <td class="smallbox" style="min-width:95px;">
                                                     <div class="custom-control custom-checkbox" style="min-width: 95px;" placement="top" ngbTooltip="If you check this, You can save Medicine for , Future used. ">
                                                         <input type="checkbox" class="custom-control-input" id="Futureusage_{{i}}" name="FutureUsage" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Futureusage" (change)="SaveMedicine(dynamic.Futureusage,i)">
                                                         <label class="custom-control-label" for="Futureusage_{{i}}">Future <i class="fa fa-question-circle" aria-hidden="true"></i></label>
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td style="min-width:200px;">
                                                     <div class="row">
                                                         <div class="col d-flex flex-checkbox smallbox">
                                                             <div class="custom-control pl-0">
                                                                 <label class="" for="Morning_{{i}}">M</label>
-                                                                <input type="text" class="form-control form-control-sm" id="Morning_{{i}}" name="Morning" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Morning"oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                                <input type="text" class="form-control form-control-sm dosage-input" id="Morning_{{i}}" name="Morning" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Morning" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^0+(?=\d)/, '');">
                                                             </div>
                                                             <div class="">
                                                                 <label class="" for="AfterNoon_{{i}}">A</label>
-                                                                <input type="text" class="form-control form-control-sm" id="AfterNoon_{{i}}" name="AfterNoon" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.AfterNoon"oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                                <input type="text" class="form-control form-control-sm dosage-input" id="AfterNoon_{{i}}" name="AfterNoon" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.AfterNoon" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^0+(?=\d)/, '');">
                                                             </div>
                                                             <div class="">
                                                                 <label class="" for="Evening_{{i}}">E</label>
-                                                                <input type="text" class="form-control form-control-sm" id="Evening_{{i}}" name="Evening" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Evening"oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                                <input type="text" class="form-control form-control-sm dosage-input" id="Evening_{{i}}" name="Evening" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Evening" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^0+(?=\d)/, '');">
                                                             </div>
                                                             <div class="">
                                                                 <label class="" for="Night_{{i}}">N</label>
-                                                                <input type="text" class="form-control form-control-sm" id="Night_{{i}}" name="Night" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Night"oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                                <input type="text" class="form-control form-control-sm dosage-input" id="Night_{{i}}" name="Night" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Night" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^0+(?=\d)/, '');">
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    <input class="form-control form-control-sm form-control-alternative" placeholder="Days" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Duration" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                <td style="min-width:80px;">
+                                                    <input class="form-control form-control-sm form-control-alternative duration-input" placeholder="Days" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Duration" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').replace(/^0+(?=\d)/, '');">
                                                 </td>
-                                                <td>
-                                                    <select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.DurationValue" class="form-control ps-1">
+                                                <td style="min-width:140px;">
+                                                    <select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.DurationValue" class="form-control ps-1 duration-select">
                                                         <option *ngFor="let item of DurationList" [ngValue]="item.Name">{{item.Name}}</option>
                                                     </select>
                                                 </td>
-                                                <td>
-                                                    <textarea class="form-control form-control-sm" rows="1" id="txtInstructions_{{i}}" name="Instructions" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Instructions" (click)="LoadInstructions(i)" autocomplete="off"></textarea>
+                                                <td style="min-width:180px;">
+                                                    <textarea class="form-control form-control-sm instruction-input" rows="1" id="txtInstructions_{{i}}" name="Instructions" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Instructions" (click)="LoadInstructions(i)" autocomplete="off"></textarea>
                                                 </td>
-                                                <td>
+                                                <td style="min-width:40px;">
                                                     <i class="icon icon-cross" (click)="RemoveRow(i)"></i>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <span class="btn btn-light btn-sm text-primary" style="height: 28px;" (click)="Addtreatment()">
-                                                <i class="icon icon-plus-circle"></i> Add Row
-                                            </span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <span class="btn btn-light btn-sm text-primary" style="height: 28px;" (click)="Addtreatment()">
+                                            <i class="icon icon-plus-circle"></i> Add Row
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-3 px-0">
+                                        <div *ngIf="PrescriptionModel.IsTemplate ">
+                                            <input type="text" formControlName="TemplateName" [(ngModel)]="PrescriptionModel.TemplateName" class="form-control form-control-sm" placeholder="Tempalte Name" />
                                         </div>
-                                        <div class="col-sm-3 px-0">
-                                            <div *ngIf="PrescriptionModel.IsTemplate ">
-                                                <input type="text" formControlName="TemplateName" [(ngModel)]="PrescriptionModel.TemplateName" class="form-control form-control-sm" placeholder="Tempalte Name" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3 pl-0 text-right">
-                                            <div class="custom-control custom-checkbox mb-2 py-1">
-                                                <input formControlName="IsTemplate" [(ngModel)]="PrescriptionModel.IsTemplate" type="checkbox" class="custom-control-input" id="templateSave" name="template">
-                                                <label class="custom-control-label" for="templateSave">Save as Template </label>
-                                            </div>
+                                    </div>
+                                    <div class="col-sm-3 pl-0 text-right">
+                                        <div class="custom-control custom-checkbox mb-2 py-1">
+                                            <input formControlName="IsTemplate" [(ngModel)]="PrescriptionModel.IsTemplate" type="checkbox" class="custom-control-input" id="templateSave" name="template">
+                                            <label class="custom-control-label" for="templateSave">Save as Template </label>
                                         </div>
                                     </div>
                                 </div>
@@ -682,7 +721,7 @@
                                         <div class="form-group mb-0">
 
                                             <label class="form-label fw-600 mb-2">
-                                               
+
                                             </label>
 
                                             <div class="custom-control custom-checkbox">
@@ -713,7 +752,7 @@
 
                                             <select class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="PrescriptionModel.RefillNo">
 
-                                                <option *ngFor="let item of RefillList"[ngValue]="item.Name">
+                                                <option *ngFor="let item of RefillList" [ngValue]="item.Name">
 
                                                     {{item.Name}}
 

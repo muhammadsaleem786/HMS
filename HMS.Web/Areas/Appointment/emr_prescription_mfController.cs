@@ -1097,14 +1097,14 @@ Model?.emr_prescription_treatment
                           && ft.CompanyId == companyId)
                 .Select(ft => new { ft.ID, ft.ReferenceId })
                 .ToListAsync();
-            var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
+            var favoriteIds = favorites.Select(f => f.ReferenceId).Distinct().ToList();
 
             var priorityIds = prescribedIds
         .Union(favoriteIds)
         .Distinct()
         .ToList();
-            var favoriteLookup = favorites
-        .ToDictionary(f => f.ReferenceId, f => f.ID);
+            var favoriteLookup = favorites.GroupBy(a=>a.ReferenceId)
+        .ToDictionary(f => f.Key, f => f.First().ID);
             var complaints = await _emr_complaintService.Queryable()
         .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
         .Select(i => new
@@ -1149,15 +1149,15 @@ Model?.emr_prescription_treatment
                           && ft.CompanyId == companyId)
                 .Select(ft => new { ft.ID, ft.ReferenceId })
                 .ToListAsync();
-            var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
+            var favoriteIds = favorites.Select(f => f.ReferenceId).Distinct().ToList();
 
 
             var priorityIds = prescribedIds
         .Union(favoriteIds)
         .Distinct()
         .ToList();
-            var favoriteLookup = favorites
-        .ToDictionary(f => f.ReferenceId, f => f.ID);
+            var favoriteLookup = favorites.GroupBy(a=>a.ReferenceId)
+        .ToDictionary(f => f.Key, f => f.First().ID);
             var observations = await _emr_observationService.Queryable()
         .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
         .Select(i => new
@@ -1203,14 +1203,14 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                           && ft.CompanyId == companyId)
                 .Select(ft => new { ft.ID, ft.ReferenceId })
                 .ToListAsync();
-            var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
+            var favoriteIds = favorites.Select(f => f.ReferenceId).Distinct().ToList();
 
             var priorityIds = prescribedIds
         .Union(favoriteIds)
         .Distinct()
         .ToList();
-            var favoriteLookup = favorites
-        .ToDictionary(f => f.ReferenceId, f => f.ID);
+            var favoriteLookup = favorites.GroupBy(a=>a.ReferenceId)
+        .ToDictionary(f => f.Key, f => f.First().ID);
             var investigations = await _emr_investigationService.Queryable()
         .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
         .Select(i => new
@@ -1255,14 +1255,14 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                           && ft.CompanyId == companyId)
                 .Select(ft => new { ft.ID, ft.ReferenceId })
                 .ToListAsync();
-            var favoriteIds = favorites.Select(f => f.ReferenceId).ToList();
+            var favoriteIds = favorites.Select(f => f.ReferenceId).Distinct().ToList();
 
             var priorityIds = prescribedIds
        .Union(favoriteIds)
        .Distinct()
        .ToList();
-            var favoriteLookup = favorites
-        .ToDictionary(f => f.ReferenceId, f => f.ID);
+            var favoriteLookup = favorites.GroupBy(a=>a.ReferenceId)
+        .ToDictionary(f => f.Key, f => f.First().ID);
             var diagnosis = await _emr_diagnosService.Queryable()
         .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
         .Select(i => new

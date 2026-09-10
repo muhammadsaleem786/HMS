@@ -524,6 +524,7 @@ export class PrescriptionComponentForm implements OnInit {
                             }
                             if (this.PrescriptionModel.emr_prescription_treatment != null) {
                                 this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
+                                    debugger
                                     var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                                     if (medicineName != null && medicineName != undefined) {
                                         item.MedicineName = medicineName.Medicine;

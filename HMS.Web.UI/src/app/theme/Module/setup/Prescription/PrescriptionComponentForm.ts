@@ -1,4 +1,4 @@
-﻿import { Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, Directive, ChangeDetectorRef, TemplateRef } from '@angular/core';
+﻿import { Component, Input, Output, OnInit,OnDestroy, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, Directive, ChangeDetectorRef, TemplateRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'; import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo, InvoiceCompanyInfo, emr_notes_favorite } from './../Appointment/AppointmentModel';
@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { IMyDateModel } from 'mydatepicker';
 import { AppointmentService } from '../Appointment/AppointmentService';
-import { SaleService } from '../Items/Sale/SaleService'
+import { SaleService } from '../Items/POS/SaleService'
 declare var $: any;
 import { GlobalVariable } from '../../../../AngularConfig/global';
 import swal from 'sweetalert';
@@ -28,7 +28,7 @@ import { data } from 'jquery';
     moduleId: module.id,
     providers: [PrescriptionService, AppointmentService, SaleService],
 })
-export class PrescriptionComponentForm implements OnInit {
+export class PrescriptionComponentForm implements OnInit, OnDestroy {
     public Form5: FormGroup;
     public Form6: FormGroup; public Form7: FormGroup;
     public Form2: FormGroup;
@@ -551,6 +551,30 @@ export class PrescriptionComponentForm implements OnInit {
                 }
             });
     }
+    ngOnDestroy(): void {
+        const CKEDITOR = (window as any).CKEDITOR;
+        if (!CKEDITOR || !CKEDITOR.instances) {
+            return;
+        }
+        const clinicalEditor = CKEDITOR.instances['editorClinicalNote'];
+
+        if (clinicalEditor) {
+            try {
+                clinicalEditor.destroy(true);
+            } catch (e) {
+                console.warn('Clinical editor destroy:', e);
+            }
+        }
+
+        const planEditor = CKEDITOR.instances['editorPlanNote'];
+        if (planEditor) {
+            try {
+                planEditor.destroy(true);
+            } catch (e) {
+                console.warn('Plan editor destroy:', e);
+            }
+        }
+    }
     OnChangeDoctor() {
         this.loader.ShowLoader();
         if (this.PrescriptionModel.PatientName == null || this.PrescriptionModel.PatientName == "")
@@ -811,12 +835,13 @@ export class PrescriptionComponentForm implements OnInit {
         this.AppointmentModel.OutstandingBalance = this.AppointmentModel.Price - this.AppointmentModel.Discount - this.AppointmentModel.PaidAmount;
     }
     LoadEditor() {
+        this.destroyEditors();
         setTimeout(() => {
             const CKEDITOR = (window as any).CKEDITOR;
             if (this.editorClinicalNote && this.editorClinicalNote.nativeElement) {
-                if (CKEDITOR.instances['editorClinicalNote']) {
-                    CKEDITOR.instances['editorClinicalNote'].destroy(true);
-                }
+                // if (CKEDITOR.instances['editorClinicalNote']) {
+                //     CKEDITOR.instances['editorClinicalNote'].destroy(true);
+                // }
                 const editor = CKEDITOR.replace('editorClinicalNote', {
                     enterMode: (window as any).CKEDITOR.ENTER_BR,
                     shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
@@ -829,13 +854,42 @@ export class PrescriptionComponentForm implements OnInit {
             }
         }, 10);
     }
+    private destroyEditors(): void {
+        const CKEDITOR = (window as any).CKEDITOR;
+        if (!CKEDITOR || !CKEDITOR.instances) {
+            return;
+        }
+        const headerEditor = CKEDITOR.instances['editorClinicalNote'];
+        if (headerEditor) {
+            try {
+                headerEditor.destroy(true);
+            } catch (e) {
+                console.warn('Header CKEditor destroy warning:', e);
+            }
+        }
+    }
+    private destroyPlanEditors(): void {
+        const CKEDITOR = (window as any).CKEDITOR;
+        if (!CKEDITOR || !CKEDITOR.instances) {
+            return;
+        }
+        const headerEditor = CKEDITOR.instances['editorPlanNote'];
+        if (headerEditor) {
+            try {
+                headerEditor.destroy(true);
+            } catch (e) {
+                console.warn('Header CKEditor destroy warning:', e);
+            }
+        }
+    }
     PlanEditor() {
+        this.destroyPlanEditors();
         setTimeout(() => {
             const CKEDITOR = (window as any).CKEDITOR;
             if (this.editorPlanNote && this.editorPlanNote.nativeElement) {
-                if (CKEDITOR.instances['editorPlanNote']) {
-                    CKEDITOR.instances['editorPlanNote'].destroy(true);
-                }
+                // if (CKEDITOR.instances['editorPlanNote']) {
+                //     CKEDITOR.instances['editorPlanNote'].destroy(true);
+                // }
                 const editor = CKEDITOR.replace('editorPlanNote', {
                     enterMode: (window as any).CKEDITOR.ENTER_BR,
                     shiftEnterMode: (window as any).CKEDITOR.ENTER_P,

@@ -495,7 +495,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
                     foreach (pur_invoice_dt item in purorderitem)
                     {
-                        var findItem = itemList.Where(a => a.ID == item.ItemID).FirstOrDefault();
+                        var findItem = itemList.Where(a => a.ID == item.ItemID && a.CompanyId== CompanyID).FirstOrDefault();
                         adm_item_log adm_item_log_obj = new adm_item_log();
                         if (findItem.TrackInventory)
                         {
@@ -554,7 +554,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                 LogID++;
                             }
                         }
-                        if (findItem != null)
+                        else if (findItem != null)
                         {
                             findItem.CostPrice = Convert.ToDecimal(item.Rate);
                             findItem.SalePrice = Convert.ToDecimal(item.SalePrice);

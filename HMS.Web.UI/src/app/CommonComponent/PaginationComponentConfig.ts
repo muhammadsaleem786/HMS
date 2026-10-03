@@ -47,6 +47,7 @@ export class ActionField {
     IsShowGoBackArrow: boolean = true;
     IsShowScreenName: boolean = true;
     IsShowSearchAndAddButton: boolean = true;
+    IsShowingPage: boolean = true;
     IsCheckBox: boolean = false;
     Edit: boolean;
     Delete: boolean;

@@ -52,6 +52,7 @@ namespace HMS.Entities.Models
             this.adm_item3 = new List<adm_item>();
             this.adm_item4 = new List<adm_item>();
             this.pur_payment = new List<pur_payment>();
+            this.sale_payment = new List<sale_payment>();
             this.pur_sale_mf = new List<pur_sale_mf>();
             this.pur_sale_hold_mf = new List<pur_sale_hold_mf>();
             this.adm_reminder_dt = new List<adm_reminder_dt>();
@@ -119,6 +120,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<pr_loan> pr_loan { get; set; }
         public virtual ICollection<pr_time_entry> pr_time_entry { get; set; }
         public virtual ICollection<pur_payment> pur_payment { get; set; }
+        public virtual ICollection<sale_payment> sale_payment { get; set; }
         public virtual ICollection<pur_sale_mf> pur_sale_mf { get; set; }
         public virtual ICollection<pur_sale_hold_mf> pur_sale_hold_mf { get; set; }
         public virtual ICollection<adm_reminder_dt> adm_reminder_dt { get; set; }

@@ -9,7 +9,7 @@ export class HeaderUserComponent implements OnInit {
     public PayrollRegion: string;
     constructor(public commonservice: CommonService) {
         this.commonservice.IsPayrollRegion();
-        this.PayrollRegion = this.commonservice.getPayrollRegion();
+        this.PayrollRegion = "PK";
     }
     ngOnInit() {
     }

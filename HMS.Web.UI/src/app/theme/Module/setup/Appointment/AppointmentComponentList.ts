@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit,OnDestroy, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -23,7 +23,7 @@ import { BillingService } from './../Billing/BillingService';
 import { PatientService } from './../Patient/PatientService'; import { ActivatedRoute } from '@angular/router';
 import { debug } from 'util'; import { filter } from 'rxjs/operators';
 import { forEach } from '@angular/router/src/utils/collection';
-import { SaleService } from '../Items/Sale/SaleService'
+import { SaleService } from '../Items/POS/SaleService'
 import { PrescriptionService } from '../Prescription/PrescriptionService';
 declare var $: any;
 import swal from 'sweetalert';
@@ -35,7 +35,7 @@ import { EncryptionService } from '../../../../CommonService/encryption.service'
     templateUrl: 'AppointmentComponentList.html',
     providers: [AppointmentService, PrescriptionService, ApplicationUserService, BillingService, PatientService, SaleService],
 })
-export class AppointmentComponentList implements OnInit{
+export class AppointmentComponentList implements OnInit,OnDestroy{
     hour: number;
     minute: number;
     second: number;
@@ -505,14 +505,38 @@ export class AppointmentComponentList implements OnInit{
 
         });
     }
+    ngOnDestroy(): void {
+        const CKEDITOR = (window as any).CKEDITOR;
+        if (!CKEDITOR || !CKEDITOR.instances) {
+            return;
+        }
+        const clinicalEditor = CKEDITOR.instances['editorClinicalNote'];
+
+        if (clinicalEditor) {
+            try {
+                clinicalEditor.destroy(true);
+            } catch (e) {
+                console.warn('Clinical editor destroy:', e);
+            }
+        }
+
+        const planEditor = CKEDITOR.instances['editorPlanNote'];
+        if (planEditor) {
+            try {
+                planEditor.destroy(true);
+            } catch (e) {
+                console.warn('Plan editor destroy:', e);
+            }
+        }
+    }
     RefreshDashboard(): void {
-        debugger
         let date = this._CommonService.GetFormatDate(this.AppointmentDate);
         let StatusID = this.AppointmentModel.StatusId;
         this.GetPatientList(date, StatusID);
         
     }
     LoadEditor() {
+        this.destroyEditors();
         setTimeout(() => {
             const CKEDITOR = (window as any).CKEDITOR;
             if (this.editorClinicalNote && this.editorClinicalNote.nativeElement) {
@@ -532,6 +556,7 @@ export class AppointmentComponentList implements OnInit{
         }, 10);
     }
     PlanEditor() {
+        this.destroyPlanEditors();
         setTimeout(() => {
             const CKEDITOR = (window as any).CKEDITOR;
             if (this.editorPlanNote && this.editorPlanNote.nativeElement) {
@@ -549,6 +574,34 @@ export class AppointmentComponentList implements OnInit{
                 });
             }
         }, 10);
+    }
+    private destroyEditors(): void {
+        const CKEDITOR = (window as any).CKEDITOR;
+        if (!CKEDITOR || !CKEDITOR.instances) {
+            return;
+        }
+        const headerEditor = CKEDITOR.instances['editorClinicalNote'];
+        if (headerEditor) {
+            try {
+                headerEditor.destroy(true);
+            } catch (e) {
+                console.warn('Header CKEditor destroy warning:', e);
+            }
+        }
+    }
+    private destroyPlanEditors(): void {
+        const CKEDITOR = (window as any).CKEDITOR;
+        if (!CKEDITOR || !CKEDITOR.instances) {
+            return;
+        }
+        const headerEditor = CKEDITOR.instances['editorPlanNote'];
+        if (headerEditor) {
+            try {
+                headerEditor.destroy(true);
+            } catch (e) {
+                console.warn('Header CKEditor destroy warning:', e);
+            }
+        }
     }
     loadVital() {
         this.IsPatient = false;
@@ -586,7 +639,6 @@ export class AppointmentComponentList implements OnInit{
         this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
         this._AppointmentService
             .GetPatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-                debugger
                 this.PModel.TotalRecord = m.TotalRecord;
                 if (this.GenderIds != null && m.GenderList != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));

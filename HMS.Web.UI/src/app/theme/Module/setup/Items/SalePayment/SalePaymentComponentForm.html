@@ -1,0 +1,108 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block"*ngIf="IsEdit">
+                Update Payment
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                Add New Payment
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <span class="closeICon" routerLink="/home/Payment">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve" class="icon icon-sm"><path d="M455.2 9.2L256 208.4 56.8 9.2C44.5-3.1 24.6-3.1 12.2 9.2l-2.9 2.9C-3 24.4-3 44.4 9.3 56.7L208.4 256 9.2 455.2c-12.3 12.3-12.3 32.3 0 44.6l2.9 2.9c12.3 12.3 32.3 12.3 44.6 0L256 303.6l199.2 199.2c12.3 12.3 32.3 12.3 44.6 0l2.9-2.9c12.3-12.3 12.3-32.3 0-44.6L303.6 256 502.8 56.8c12.3-12.3 12.3-32.3 0-44.6l-2.9-2.9c-12.5-12.4-32.4-12.4-44.7-.1z"></path></svg>
+            </span>
+        </div>
+    </div>
+    <div class="row Cardview padding-20 m-0">
+        <div class="col-sm-12 mt-3">
+            <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="required">
+                                    Payment Method
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <select class="form-control form-control-sm" formControlName="PaymentMethodID" [(ngModel)]="model.PaymentMethodID">
+                                        <option *ngFor="let item of PaymentMethodList" [value]="item.ID">
+                                            {{item.Value}}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="Form1.controls.PaymentMethodID.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="required">
+                                    Amount
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+
+                                    <input type="text"  formControlName="Amount" [(ngModel)]="model.Amount" class="form-control form-control-sm form-control-alternative"autocomplete="off">
+                                    <small class="text-danger" *ngIf="Form1.controls.Amount.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="required">
+                                    Payment Date
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+
+                                    <Datetime-Component formControlName="PaymentDate" placeholder="DD/MM/YYYY" (DateChangeValue)="onDOBChanged($event)" [(ngModel)]="model.PaymentDate">
+                                    </Datetime-Component>
+                                    <small class="text-danger" *ngIf="Form1.controls.ServiceId.hasError('required') && submitted">
+                                        This value is required.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Notes</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <textarea class="form-control form-control-sm" formControlName="Notes" [(ngModel)]="model.Notes" autocomplete="off"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 ">
+                    <div class="row border-top pt-3">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit" (click)="Delete()">
+                                Delete
+                            </button>
+                        </div>
+
+                        <div class="col-sm-6 text-right">
+                            <button type="submit" class="btn btn-primary mr-2" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                            <button type="submit" class="btn btn-primary mr-2" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+                            <button type="button" class="btn btn-light" routerLink="/home/Payment">Cancel</button>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

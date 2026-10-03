@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { emr_service_mf, emr_service_item } from '../../Setting/Service/ServiceModel';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
 import { Service } from './Service';
-import { SaleService } from './../../Items/Sale/SaleService';
+import { SaleService } from './../../Items/POS/SaleService';
 import { ValidationVariables } from '../../../../../AngularConfig/global';
 import { CommonService } from '../../../../../CommonService/CommonService';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';

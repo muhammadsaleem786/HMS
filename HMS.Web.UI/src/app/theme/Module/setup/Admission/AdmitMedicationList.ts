@@ -13,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { filter } from 'rxjs/operators';
-import { SaleService } from './../Items/Sale/SaleService';
+import { SaleService } from './../Items/POS/SaleService';
 import { IMyDateModel } from 'mydatepicker';
 import { CommonService } from '../../../../CommonService/CommonService';
 import { GlobalVariable } from '../../../../AngularConfig/global';

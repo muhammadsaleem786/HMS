@@ -1,0 +1,172 @@
+﻿<div class="col-sm-12 AddRoleWraper">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8 no-padding">
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit">
+                Update Customer
+            </h3>
+            <h3 class="page-heading mt-d-inline-block" *ngIf="IsEdit==false">
+                Add New Customer
+            </h3>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-light mr-1" routerLink="/home/Customer">Back</a>
+        </div>
+    </div>
+    <div class="row Cardview padding-20 m-0">
+
+
+        <div class="col-sm-12">
+            <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
+                <div class="row justify-content-between">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> First Name</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="FirstName" [(ngModel)]="model.FirstName" class="form-control form-control-sm form-control-alternative" placeholder="Enter First Name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Last Name</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="LastName" [(ngModel)]="model.LastName" class="form-control form-control-sm form-control-alternative" placeholder="Enter Last Name">
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Company Name</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="CompanyName" [(ngModel)]="model.CompanyName" class="form-control form-control-sm form-control-alternative" placeholder="Enter Company Name">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0 required" for="input-username">  Display Name*</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="DisplayName" [(ngModel)]="model.DisplayName" class="form-control form-control-sm form-control-alternative" placeholder="Enter Display Name.">
+                                </div>
+                                <small class="text-danger" *ngIf="Form1.controls.DisplayName.hasError('required') && submitted">
+                                    This value is required.
+                                </small>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username">  Phone</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="Phone" [(ngModel)]="model.Phone" appPhoneMask class="form-control form-control-sm form-control-alternative" placeholder="Enter Phone No.">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Email</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="Email" [(ngModel)]="model.Email" class="form-control form-control-sm form-control-alternative" placeholder="Enter Email">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Address</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="Address" [(ngModel)]="model.Address" class="form-control form-control-sm form-control-alternative" placeholder="Enter Address">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> City</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="City" [(ngModel)]="model.City" class="form-control form-control-sm form-control-alternative" placeholder="Enter City">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> State</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="State" [(ngModel)]="model.State" class="form-control form-control-sm form-control-alternative" placeholder="Enter State">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label class="form-control-label mt-2 pl-0" for="input-username"> Zip Code</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group small-input">
+                                    <input type="text" formControlName="ZipCode" [(ngModel)]="model.ZipCode" class="form-control form-control-sm form-control-alternative" placeholder="Enter Zip Code">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" *ngIf="!IsEdit && ControlRights.CreateRights">Save</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="IsEdit && ControlRights.EditRights">Update</button>
+                    <button type="button" class="btn btn-red btnDel pull-left" *ngIf="IsEdit && ControlRights.DeleteRights" (click)="Delete()">Delete</button>
+                    <button type="button" class="btn btn-light" routerLink="/home/Customer">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+

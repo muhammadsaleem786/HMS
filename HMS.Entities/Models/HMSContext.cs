@@ -58,7 +58,7 @@ namespace HMS.Entities.Models
         public DbSet<ipd_procedure_medication> ipd_procedure_medication { get; set; }
         public DbSet<ipd_procedure_mf> ipd_procedure_mf { get; set; }
         public DbSet<ipd_diagnosis> ipd_diagnosis { get; set; }
-        public DbSet<contact> contact { get; set; }        
+        public DbSet<contact> contact { get; set; }
         public DbSet<user_payment> user_payment { get; set; }
         public DbSet<ipd_admission_discharge> ipd_admission_discharge { get; set; }
         public DbSet<adm_item> adm_item { get; set; }
@@ -80,7 +80,7 @@ namespace HMS.Entities.Models
         public DbSet<pr_leave_application> pr_leave_application { get; set; }
         public DbSet<pr_leave_type> pr_leave_type { get; set; }
         public DbSet<pr_loan> pr_loan { get; set; }
-        public DbSet<pr_loan_payment_dt> pr_loan_payment_dt { get; set; }     
+        public DbSet<pr_loan_payment_dt> pr_loan_payment_dt { get; set; }
         public DbSet<pr_pay_schedule> pr_pay_schedule { get; set; }
         public DbSet<pr_time_entry> pr_time_entry { get; set; }
         public DbSet<pr_employee_document> pr_employee_document { get; set; }
@@ -115,9 +115,10 @@ namespace HMS.Entities.Models
 
         public DbSet<emr_investigation_Item> emr_investigation_Item { get; set; }
         public DbSet<lab_result_mf> lab_result_mf { get; set; }
-        public DbSet<lab_result_dt> lab_result_dt { get; set; }
-
-
+        public DbSet<sale_customer> sale_customer { get; set; }
+        public DbSet<sale_invoice_mf> sale_invoice_mf { get; set; }
+        public DbSet<sale_invoice_dt> sale_invoice_dt { get; set; }
+        public DbSet<sale_payment> sale_payment { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new contactMap());
@@ -219,6 +220,12 @@ namespace HMS.Entities.Models
             modelBuilder.Configurations.Add(new lab_result_mfMap());
             modelBuilder.Configurations.Add(new lab_result_dtMap());
             modelBuilder.Configurations.Add(new emr_investigation_ItemMap());
+            modelBuilder.Configurations.Add(new sale_customerMap());
+            modelBuilder.Configurations.Add(new sale_invoice_mfMap());
+            modelBuilder.Configurations.Add(new sale_invoice_dtMap());
+            modelBuilder.Configurations.Add(new sale_paymentMap());
+
         }
+
     }
 }

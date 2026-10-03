@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, Input, Output, OnInit, OnChanges,OnDestroy, EventEmitter, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Company } from '../../../models/company.model';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
@@ -19,7 +19,7 @@ import { EncryptionService } from '../../../../../CommonService/encryption.servi
     providers: [CompanyService],
 })
 
-export class CompanyComponentForm implements OnInit {
+export class CompanyComponentForm implements OnInit, OnDestroy {
     public model = new Company();
     public Form1: FormGroup;
     public submitted: boolean;
@@ -104,6 +104,9 @@ export class CompanyComponentForm implements OnInit {
         });
         this.loadDropdown();
         this.PayrollRegion = localStorage.getItem("PayrollRegion");
+    }
+    ngOnDestroy(): void {
+        this.destroyLabEditors();
     }
     GetCompany() {
         this.loader.ShowLoader();
@@ -268,41 +271,108 @@ export class CompanyComponentForm implements OnInit {
     IsNewLabImageEvent(FName) {
         this.IsNewLabImage = true;
     }
-    onIsLabChange(val:any) {
+    private destroyLabEditors(): void {
+        const CKEDITOR = (window as any).CKEDITOR;
+        if (!CKEDITOR || !CKEDITOR.instances) {
+            return;
+        }
+        const headerEditor = CKEDITOR.instances['editorHeaderNote'];
+        if (headerEditor) {
+            try {
+                headerEditor.destroy(true);
+            } catch (e) {
+                console.warn('Header CKEditor destroy warning:', e);
+            }
+        }
+        const footerEditor = CKEDITOR.instances['editorFooterNote'];
+        if (footerEditor) {
+            try {
+                footerEditor.destroy(true);
+            } catch (e) {
+                console.warn('Footer CKEditor destroy warning:', e);
+            }
+        }
+    }
+    private initializeLabEditors(): void {
+        const CKEDITOR = (window as any).CKEDITOR;
+        if (!CKEDITOR) {
+            return;
+        }
+        // HEADER
+        if (
+            this.editorHeaderNote &&
+            this.editorHeaderNote.nativeElement &&
+            document.getElementById('editorHeaderNote')
+        ) {
+            // Make sure there is no existing instance
+            if (!CKEDITOR.instances['editorHeaderNote']) {
+                const headerEditor = CKEDITOR.replace('editorHeaderNote', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    shiftEnterMode: CKEDITOR.ENTER_P
+                });
+
+                headerEditor.on('change', () => {
+                    this.model.LabHeader = headerEditor.getData();
+                });
+            }
+        }
+
+        // FOOTER
+        if (
+            this.editorFooterNote &&
+            this.editorFooterNote.nativeElement &&
+            document.getElementById('editorFooterNote')
+        ) {
+            // Make sure there is no existing instance
+            if (!CKEDITOR.instances['editorFooterNote']) {
+                const footerEditor = CKEDITOR.replace('editorFooterNote', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    shiftEnterMode: CKEDITOR.ENTER_P
+                });
+
+                footerEditor.on('change', () => {
+                    this.model.LabFooter = footerEditor.getData();
+                });
+            }
+        }
+    }
+    onIsLabChange(val: any) {
         if (!this.model.IsLab) {
+            this.destroyLabEditors();
             return;
         }
 
         setTimeout(() => {
-            const CKEDITOR = (window as any).CKEDITOR;
+            this.initializeLabEditors();
+            // const CKEDITOR = (window as any).CKEDITOR;
 
-            if (this.editorHeaderNote && this.editorHeaderNote.nativeElement) {
-                if (CKEDITOR.instances['editorHeaderNote']) {
-                    CKEDITOR.instances['editorHeaderNote'].destroy(true);
-                }
-                const editor = CKEDITOR.replace('editorHeaderNote', {
-                    enterMode: (window as any).CKEDITOR.ENTER_BR,
-                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
-                });
-                editor.on('change', () => {
-                    const html = editor.getData();
-                    this.model.LabHeader = html;
-                });
-            }
+            // if (this.editorHeaderNote && this.editorHeaderNote.nativeElement) {
+            //     if (CKEDITOR.instances['editorHeaderNote']) {
+            //         CKEDITOR.instances['editorHeaderNote'].destroy(true);
+            //     }
+            //     const editor = CKEDITOR.replace('editorHeaderNote', {
+            //         enterMode: (window as any).CKEDITOR.ENTER_BR,
+            //         shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
+            //     });
+            //     editor.on('change', () => {
+            //         const html = editor.getData();
+            //         this.model.LabHeader = html;
+            //     });
+            // }
 
-            if (this.editorFooterNote && this.editorFooterNote.nativeElement) {
-                if (CKEDITOR.instances['editorFooterNote']) {
-                    CKEDITOR.instances['editorFooterNote'].destroy(true);
-                }
-                const editor = CKEDITOR.replace('editorFooterNote', {
-                    enterMode: (window as any).CKEDITOR.ENTER_BR,
-                    shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
-                });
-                editor.on('change', () => {
-                    const html = editor.getData();
-                    this.model.LabFooter = html;
-                });
-            }
+            // if (this.editorFooterNote && this.editorFooterNote.nativeElement) {
+            //     if (CKEDITOR.instances['editorFooterNote']) {
+            //         CKEDITOR.instances['editorFooterNote'].destroy(true);
+            //     }
+            //     const editor = CKEDITOR.replace('editorFooterNote', {
+            //         enterMode: (window as any).CKEDITOR.ENTER_BR,
+            //         shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
+            //     });
+            //     editor.on('change', () => {
+            //         const html = editor.getData();
+            //         this.model.LabFooter = html;
+            //     });
+            // }
 
 
         }, 10);

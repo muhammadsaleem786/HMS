@@ -251,15 +251,15 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     .Where(i => i.CompanyId == CompanyID &&
                 i.CreatedDate >= start &&
                 i.CreatedDate < end)
-    .GroupBy(x => 1)
+    .GroupBy(x => x.PatientId)
     .Select(g => new
     {
-        TotalAmount = g.Sum(x => (decimal?)x.Total) ?? 0m,
-        TotalDiscount = g.Sum(x => (decimal?)x.DiscountAmount) ?? 0m
+        TotalAmount = g.Select(x => x.Total).FirstOrDefault(),
+        TotalDiscount = g.Select(x => x.DiscountAmount).FirstOrDefault()
     })
-    .FirstOrDefault();
-                var pathologyAmount = pathologyData?.TotalAmount ?? 0m;
-                var pathologyDiscount = pathologyData?.TotalDiscount ?? 0m;
+    .ToList();
+                var pathologyAmount = pathologyData.Sum(x => x.TotalAmount);
+                var pathologyDiscount = pathologyData.Sum(x => x.TotalDiscount) ?? 0m;
                 var pathologyIncome = pathologyAmount - pathologyDiscount;
                 var generalIncome = incomeByCategory.Sum(x => x.TotalReceived);
                 var outStandingIncome = incomeByCategory.Sum(x => x.TotalDue);

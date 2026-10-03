@@ -10,7 +10,7 @@ import { emr_patient_bill } from '../Billing/BillingModel';
 import { emr_patient, PatientAmountSummary , ipd_admission_vital, ipd_admission_notes, ipd_diagnosis, ipd_input_output, ipd_medication_log } from './AdmitModel';
 import { Observable, Subscription } from 'rxjs';
 import { AppointmentService } from './../Appointment/AppointmentService';
-import { SaleService } from './../Items/Sale/SaleService';
+import { SaleService } from './../Items/POS/SaleService';
 import { PaginationModel, PaginationConfig } from '../../../../CommonComponent/PaginationComponentConfig';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';

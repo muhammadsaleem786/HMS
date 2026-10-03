@@ -687,13 +687,14 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 decimal saleItemID = 1;
                 if (_pur_sale_dtService.Queryable().Count() > 0)
                     saleItemID = (_pur_sale_dtService.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
-                adm_item_log adm_item_log_obj = new adm_item_log();
                 decimal LogID = 1;
                 if (_adm_item_logService.Queryable().Count() > 0)
                     LogID = (_adm_item_logService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
                 foreach (pur_sale_dt item in purorderitem)
                 {
+                    adm_item_log adm_item_log_obj = new adm_item_log();
+
                     item.ID = saleItemID;
                     item.SaleID = Model.ID;
                     item.CompanyID = CompanyID;
@@ -705,7 +706,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     item.adm_company = null;
                     _pur_sale_dtService.Insert(item);
                     saleItemID++;
-                    var findItem = _adm_itemService.Queryable().Where(a => a.ID == item.ItemID).FirstOrDefault();
+                    var findItem = _adm_itemService.Queryable().Where(a => a.ID == item.ItemID && a.CompanyId==CompanyID).FirstOrDefault();
                     if (findItem.TrackInventory)
                     {
                         var batchNo = (item.BatchSarialNumber ?? "0").ToString();
@@ -799,7 +800,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = errorMessage;
                     return objResponse;
                 }
-                pur_sale_mf saleobj = _service.Queryable().Where(a => a.ID == Model.ID).FirstOrDefault();
+                pur_sale_mf saleobj = _service.Queryable().Where(a => a.ID == Model.ID && a.CompanyID==CompanyID).FirstOrDefault();
                 if (saleobj != null && saleobj.Total < Model.Total)
                 {
                     objResponse.IsSuccess = false;
@@ -855,7 +856,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     _pur_sale_dtService.Insert(item);
                     adm_item_log adm_item_log_obj = new adm_item_log();
                     saleItemID++;
-                    var findItem = _adm_itemService.Queryable().Where(a => a.ID == item.ItemID).FirstOrDefault();
+                    var findItem = _adm_itemService.Queryable().Where(a => a.ID == item.ItemID && a.CompanyId == CompanyID).FirstOrDefault();
                     if (findItem.TrackInventory)
                     {
                         inv_stock inv_stockModel = _inv_stockService.Queryable().Where(e => e.ItemID == item.ItemID

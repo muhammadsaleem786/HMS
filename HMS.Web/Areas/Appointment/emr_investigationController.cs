@@ -97,6 +97,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.lab_patient_test = null;
                 Model.lab_result_mf = null;
                 Model.adm_user_share = null;
+                Model.ipd_admission_lab = null;
                 Model.ObjectState = ObjectState.Added;
                 _service.Insert(Model);
                 //insert item

@@ -10,6 +10,7 @@ namespace HMS.Entities.Models
         {
             this.adm_company_location = new List<adm_company_location>();
             this.pur_payment = new List<pur_payment>();
+            this.sale_payment = new List<sale_payment>();
             this.ipd_payment = new List<ipd_payment>();
             this.adm_user_share = new List<adm_user_share>();
             this.ipd_diagnosis = new List<ipd_diagnosis>();
@@ -62,6 +63,9 @@ namespace HMS.Entities.Models
             this.pur_vendor = new List<pur_vendor>();
             this.pur_invoice_mf = new List<pur_invoice_mf>();
             this.pur_invoice_dt = new List<pur_invoice_dt>();
+            this.sale_customer = new List<sale_customer>();
+            this.sale_invoice_mf = new List<sale_invoice_mf>();
+            this.sale_invoice_dt = new List<sale_invoice_dt>();
             this.pur_sale_mf = new List<pur_sale_mf>();
             this.pur_sale_dt = new List<pur_sale_dt>();
             this.ipd_input_output = new List<ipd_input_output>();
@@ -146,6 +150,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<adm_role_mf> adm_role_mf { get; set; }
         public virtual ICollection<adm_company_location> adm_company_location { get; set; }
         public virtual ICollection<pur_payment> pur_payment { get; set; }
+        public virtual ICollection<sale_payment> sale_payment { get; set; }
         public virtual ICollection<ipd_payment> ipd_payment { get; set; }
         public virtual ICollection<adm_user_share> adm_user_share { get; set; }
         public virtual ICollection<emr_prescription_complaint> emr_prescription_complaint { get; set; }
@@ -200,6 +205,9 @@ namespace HMS.Entities.Models
         public virtual ICollection<pur_vendor> pur_vendor { get; set; }
         public virtual ICollection<pur_invoice_mf> pur_invoice_mf { get; set; }
         public virtual ICollection<pur_invoice_dt> pur_invoice_dt { get; set; }
+        public virtual ICollection<sale_customer> sale_customer { get; set; }
+        public virtual ICollection<sale_invoice_mf> sale_invoice_mf { get; set; }
+        public virtual ICollection<sale_invoice_dt> sale_invoice_dt { get; set; }
         public virtual ICollection<pur_sale_mf> pur_sale_mf { get; set; }
         public virtual ICollection<pur_sale_dt> pur_sale_dt { get; set; }
         public virtual ICollection<pur_sale_hold_mf> pur_sale_hold_mf { get; set; }

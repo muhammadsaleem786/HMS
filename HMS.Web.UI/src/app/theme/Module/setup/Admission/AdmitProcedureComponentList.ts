@@ -17,7 +17,7 @@ import { IMyDateModel } from 'mydatepicker';
 import { CommonService } from '../../../../CommonService/CommonService';
 import { EncryptionService } from '../../../../CommonService/encryption.service';
 import { GlobalVariable } from '../../../../AngularConfig/global';
-import { SaleService } from './../Items/Sale/SaleService';
+import { SaleService } from './../Items/POS/SaleService';
 
 declare var $: any;
 @Component({

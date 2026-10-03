@@ -410,8 +410,8 @@ namespace HMS.Web.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
-        [ActionName("IsForgotTokenExist")]
-        public ResponseInfo IsForgotTokenExist(string token)
+        [Route("api/User/IsForgotTokenExist")]
+        public async Task<ResponseInfo> IsForgotTokenExist(string token)
         {
             var objResponse = new ResponseInfo();
             try
@@ -1518,7 +1518,7 @@ namespace HMS.Web.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
-        [ActionName("ReportGenerate")]
+        [Route("api/User/ReportGenerate")]
         public ResponseInfo ReportGenerate(string id)
         {
             var objResponse = new ResponseInfo();

@@ -352,6 +352,9 @@
     <Compile Include="Areas\Admin\Controllers\adm_user_sessionController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_reminder_mfController.cs" />
     <Compile Include="Areas\Admin\Controllers\adm_integrationController.cs" />
+    <Compile Include="Areas\Admin\Controllers\sale_customerController.cs" />
+    <Compile Include="Areas\Admin\Controllers\sale_paymentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\sale_invoice_mfController.cs" />
     <Compile Include="Areas\Admin\Controllers\pur_paymentController.cs" />
     <Compile Include="Areas\Admin\Controllers\pur_sale_hold_mfController.cs" />
     <Compile Include="Areas\Admin\Controllers\pur_sale_mfController.cs" />

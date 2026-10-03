@@ -9,7 +9,7 @@ import { CommonService } from '../../../../../CommonService/CommonService';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';
 import { CommonToastrService } from '../../../../../CommonService/CommonToastrService';
-import { SaleService } from './../../Items/Sale/SaleService';
+import { SaleService } from './../../Items/POS/SaleService';
 declare var $: any;
 @Component({
     moduleId: module.id,

@@ -85,6 +85,12 @@
                         <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(63)>-1">
                             <a routerLink="/home/Sale/savesale" [queryParams]="{ id: 0 }">
                                 <span><i class="icon-wallet iconImage"></i></span>
+                                <span class="title">POS</span>
+                            </a>
+                        </li>
+                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(123)>-1">
+                            <a routerLink="/home/saleinv" [queryParams]="{ id: 0 }">
+                                <span><i class="icon-wallet iconImage"></i></span>
                                 <span class="title">Sale</span>
                             </a>
                         </li>

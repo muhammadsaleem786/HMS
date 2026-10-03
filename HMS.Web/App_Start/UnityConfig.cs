@@ -154,6 +154,10 @@ namespace HMS.Web.API
                   .RegisterType<IRepositoryAsync<ipd_adverse_drug_reaction>, Repository<ipd_adverse_drug_reaction>>()
                   .RegisterType<IRepositoryAsync<ipd_sentinel_event_register>, Repository<ipd_sentinel_event_register>>()
                   .RegisterType<IRepositoryAsync<ipd_specialized_equipment_maintenance>, Repository<ipd_specialized_equipment_maintenance>>()
+                  .RegisterType<IRepositoryAsync<sale_customer>, Repository<sale_customer>>()
+                 .RegisterType<IRepositoryAsync<sale_invoice_mf>, Repository<sale_invoice_mf>>()
+                 .RegisterType<IRepositoryAsync<sale_invoice_dt>, Repository<sale_invoice_dt>>()
+                 .RegisterType<IRepositoryAsync<sale_payment>, Repository<sale_payment>>()
 
 
 
@@ -263,7 +267,12 @@ namespace HMS.Web.API
                 .RegisterType<Ilab_result_dtService, lab_result_dtService>()
                 .RegisterType<Ilab_result_mfService, lab_result_mfService>()
                 .RegisterType<Iemr_investigation_ItemService, emr_investigation_ItemService>()
-                .RegisterType<IStoredProcedureService, StoredProcedureService>();
+                .RegisterType<IStoredProcedureService, StoredProcedureService>()
+                 .RegisterType<Isale_customerService, sale_customerService>()
+                 .RegisterType<Isale_invoice_mfService, sale_invoice_mfService>()
+                .RegisterType<Isale_invoice_dtService, sale_invoice_dtService>()
+                .RegisterType<Isale_paymentService, sale_paymentService>();
+
         }
     }
 }

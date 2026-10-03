@@ -16,7 +16,7 @@ import { PaymentService } from '../Payment/PaymentService';
 import { filter } from 'rxjs/operators';
 import { PaginationModel, PaginationConfig } from '../../../../../CommonComponent/PaginationComponentConfig';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';
-import { SaleService } from './../../Items/Sale/SaleService';
+import { SaleService } from './../../Items/POS/SaleService';
 
 declare var $: any;
 

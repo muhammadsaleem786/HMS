@@ -44,9 +44,9 @@ import { AdmitDetailComponentList } from '../theme/Module/setup/Admission/AdmitD
 import { DischargeReportComponent } from '../theme/Module/setup/Admission/DischargeReportComponent';
 import { AdmitPatientComponentList } from '../theme/Module/setup/Admission/AdmitPatientComponentList'
 //end
-import { SaleComponentList } from '../theme/Module/setup/Items/Sale/SaleComponentList';
-import { SaleHoldComponentList } from '../theme/Module/setup/Items/Sale/SaleHoldComponentList';
-import { SaleComponentForm } from '../theme/Module/setup/Items/Sale/SaleComponentForm';
+import { SaleComponentList } from '../theme/Module/setup/Items/POS/SaleComponentList';
+import { SaleHoldComponentList } from '../theme/Module/setup/Items/POS/SaleHoldComponentList';
+import { SaleComponentForm } from '../theme/Module/setup/Items/POS/SaleComponentForm';
 
 const routes: Routes = [
     { path: 'changepassword', component: ChangepasswordComponent, canActivate: [AuthGuard] },

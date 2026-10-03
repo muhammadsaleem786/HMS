@@ -46,6 +46,7 @@ export class DropDownComponentList {
         this.PConfig.ColumnVisibilityCookieName = "Calendar" + this.ID;
         this.PConfig.Action.ScreenName = "DropDowns";
         this.PConfig.Action.Add = false;
+        this.PConfig.Action.IsShowingPage = false;
         this.PConfig.Fields = [
             { Name: "Value", Title: "Value", OrderNo: 1, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
             { Name: "SystemGenerated", Title: "System Generated", OrderNo: 2, SortingAllow: true, Visible: true, isDate: false, DateFormat: "" },
@@ -83,7 +84,6 @@ export class DropDownComponentList {
     }
 
     Managedropdown(result) {
-        
         this.DropdownDependentValuesList = [];
         this.DTDropDownList = result.DTList;
         this.DropdownDependentValuesList = result.DepList;
@@ -96,7 +96,6 @@ export class DropDownComponentList {
             this.model.DependedDropDownValueID = null;
             this.hideShowSecondDropDown = false;
         }
-
         this.PaginationList = this.DTDropDownList;
     }
     Clear() {
@@ -119,14 +118,14 @@ export class DropDownComponentList {
         });
     }
     Refresh() {
-        if (this.PModel.SearchText == '')
-            this.loader.ShowLoader();
+        // if (this.PModel.SearchText == '')
+        //     this.loader.ShowLoader();
         this.Id = "0";
-        this._dropdownService.GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-            this.PModel.TotalRecord = m.TotalRecord;
-            this.PaginationList = m.DataList;
-            this.loader.HideLoader();
-        });
+        // this._dropdownService.GetList(this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
+        //     this.PModel.TotalRecord = m.TotalRecord;
+        //     this.PaginationList = m.DataList;
+        //     this.loader.HideLoader();
+        // });
     }
     GoBack(DefaultRoute) {
         this._router.navigate([DefaultRoute]);

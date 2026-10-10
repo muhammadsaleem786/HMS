@@ -134,6 +134,7 @@ export class ApplicationUserComponentForm implements OnInit {
             BrandImage: [''],
             BrandDescription: [''],
             DrugMode: [''],
+            ShowOnCalendar: [''],
             Pwd: ['', [Validators.required, <any>Validators.minLength(6)]],
         });
         $(".toggle-password").click(function () {

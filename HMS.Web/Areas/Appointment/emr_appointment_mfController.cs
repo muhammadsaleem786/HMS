@@ -10,6 +10,7 @@ using HMS.Service.Services.Items;
 using HMS.Web.API.Common;
 using HMS.Web.API.Filters;
 using HMS.Web.API.Interface;
+using iTextSharp.text;
 using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
 using Org.BouncyCastle.Asn1.IsisMtt.X509;
@@ -1670,21 +1671,36 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 int stId = (statusId == 0) ? 1 : statusId;
                 if (SearchText == null)
                     SearchText = "";
-                int? appointmentStatusId = await _adm_userService.Queryable()
-.Where(u => u.ID == userId)
-.Select(u => (int?)u.AppointmentStatusId)
-.FirstOrDefaultAsync();
-                int finalAppointmentStatusId = (appointmentStatusId == null || appointmentStatusId == 0) ? 1 : appointmentStatusId.Value;
+                var resultUser = await _adm_userService.Queryable()
+.Where(u => u.ID == userId).Select(z => new
+{
+    AppointmentStatusId = (int?)z.AppointmentStatusId,
+    z.IsShowDoctor
+}).FirstOrDefaultAsync();
+                int finalAppointmentStatusId = (resultUser.AppointmentStatusId == null || resultUser.AppointmentStatusId == 0) ? 1 : resultUser.AppointmentStatusId.Value;
                 //Roleid
                 var roleId = _adm_user_companyService.Queryable().Where(u => u.UserID == userId)
                              .Select(u => u.RoleID).FirstOrDefault();
                 // Step 2: Get RoleName from adm_role_mf
                 var roleName = _adm_role_mfService.Queryable().Where(r => r.ID == roleId)
                     .Select(r => r.RoleName).FirstOrDefault();
-                decimal? doctorFilterId = null;
+                List<decimal> doctorFilterId = null;
                 if (string.Equals(roleName, "Doctor", StringComparison.OrdinalIgnoreCase))
                 {
-                    doctorFilterId = Convert.ToDecimal(userId);
+                    if (!string.IsNullOrWhiteSpace(resultUser.IsShowDoctor))
+                    {
+                        doctorFilterId = resultUser.IsShowDoctor
+                            .Split(',')
+                            .Select(x => (decimal)Convert.ToDecimal(x.Trim()))
+                            .ToList();
+                    }
+                    else
+                    {
+                        doctorFilterId = new List<decimal>
+                        {
+                            Convert.ToDecimal(userId)
+                        };
+                    }
                 }
                 var patientNewCounts = _emr_patientService.Queryable()
     .Where(p => p.CompanyId == CompanyID)
@@ -1701,50 +1717,54 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
      .Where(mf => mf.CompanyId == CompanyID
                && DbFunctions.TruncateTime(mf.AppointmentDate) == DbFunctions.TruncateTime(todayDate)
                && (finalAppointmentStatusId == 1 || mf.StatusId == finalAppointmentStatusId)
-               && (doctorFilterId == null || mf.DoctorId == doctorFilterId)
-               && (string.IsNullOrEmpty(SearchText) || mf.emr_patient_mf.PatientName.Contains(SearchText)))
-     .Select(mf => new
-     {
-         mf.ID,
-         DoctorName = mf.Doctor.Name,
-         PatientName = mf.emr_patient_mf.PatientName,
+               && (string.IsNullOrEmpty(SearchText) || mf.emr_patient_mf.PatientName.Contains(SearchText)));
+                if (doctorFilterId != null && doctorFilterId.Count > 0)
+                {
+                    rawEventsQuery = rawEventsQuery
+                        .Where(mf => doctorFilterId.Contains(mf.DoctorId));
+                }
+                var rawEvents = rawEventsQuery.Select(mf => new
+                {
+                    mf.ID,
+                    DoctorName = mf.Doctor.Name,
+                    PatientName = mf.emr_patient_mf.PatientName,
 
-         NewPatients = patientNewCounts
+                    NewPatients = patientNewCounts
              .Where(nc => nc.PatientId == mf.PatientId)
              .Select(nc => nc.NewPatientCount)
              .FirstOrDefault(),
 
-         mf.AppointmentDate,
-         mf.AppointmentTime, // keep raw
-         SlotTime = mf.Doctor.SlotTime, // keep raw
+                    mf.AppointmentDate,
+                    mf.AppointmentTime, // keep raw
+                    SlotTime = mf.Doctor.SlotTime, // keep raw
 
-         mf.PatientProblem,
-         ServiceId = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.ServiceId).FirstOrDefault(),
-         TotalSessions = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.TotalSessions).FirstOrDefault(),
-         ConsumedSessions = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.ConsumedSessions).FirstOrDefault(),
-         PaidAmount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.PaidAmount).FirstOrDefault(),
-         Discount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Discount).FirstOrDefault(),
-         BillDate = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (DateTime?)b.BillDate).FirstOrDefault(),
-         Price = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Price).FirstOrDefault(),
-         ServiceName = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId)
+                    mf.PatientProblem,
+                    ServiceId = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.ServiceId).FirstOrDefault(),
+                    TotalSessions = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.TotalSessions).FirstOrDefault(),
+                    ConsumedSessions = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.ConsumedSessions).FirstOrDefault(),
+                    PaidAmount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.PaidAmount).FirstOrDefault(),
+                    Discount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Discount).FirstOrDefault(),
+                    BillDate = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (DateTime?)b.BillDate).FirstOrDefault(),
+                    Price = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Price).FirstOrDefault(),
+                    ServiceName = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId)
                          .Select(b => b.emr_service_mf.ServiceName)
                          .FirstOrDefault(),
-         CategoryId = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId)
+                    CategoryId = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId)
                          .Select(b => b.emr_service_mf.CategoryId)
                          .FirstOrDefault(),
-         mf.TokenNo,
-         mf.DoctorId,
-         MRNO = mf.emr_patient_mf.MRNO,
-         mf.StatusId,
-         CNIC = mf.emr_patient_mf.CNIC,
-         mf.PatientId,
-         CreatedBy = mf.adm_user_mf.Name,
-         Gender = mf.emr_patient_mf.Gender,
-         Image = mf.emr_patient_mf.Image,
-         mf.Notes,
-         mf.ReminderId,
+                    mf.TokenNo,
+                    mf.DoctorId,
+                    MRNO = mf.emr_patient_mf.MRNO,
+                    mf.StatusId,
+                    CNIC = mf.emr_patient_mf.CNIC,
+                    mf.PatientId,
+                    CreatedBy = mf.adm_user_mf.Name,
+                    Gender = mf.emr_patient_mf.Gender,
+                    Image = mf.emr_patient_mf.Image,
+                    mf.Notes,
+                    mf.ReminderId,
 
-         Color = mf.StatusId == 1 ? "#dddddd"
+                    Color = mf.StatusId == 1 ? "#dddddd"
               : mf.StatusId == 2 ? "#fd8d64"
               : mf.StatusId == 5 ? "#fdca66"
               : mf.StatusId == 6 ? "#dd2626"
@@ -1754,11 +1774,11 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
               : mf.StatusId == 10 ? "#fb64a7"
               : mf.StatusId == 25 ? "#6265fd"
               : ""
-     });
+                });
 
-                int totalRecords = await rawEventsQuery.CountAsync();
+                int totalRecords = await rawEvents.CountAsync();
 
-                var pagedEventsRaw = await rawEventsQuery
+                var pagedEventsRaw = await rawEvents
                     .OrderBy(e => e.ID)
                     .Skip((CurrentPageNo - 1) * RecordPerPage)
                     .Take(RecordPerPage)
@@ -1807,7 +1827,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
 
                 var dropDownIds = new[] { 2, 1, 17 };
                 var allDropDownValues = await _sys_drop_down_valueService.Queryable()
-    .Where(x => dropDownIds.Contains(x.DropDownID)
+                .Where(x => dropDownIds.Contains(x.DropDownID)
                 && (x.CompanyID == CompanyID || x.CompanyID == null)).Select(z => new
                 {
                     z.ID,
@@ -1852,10 +1872,6 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 .Select(u => u.IsShowDoctor)
                 .FirstOrDefaultAsync();
                 //doctor list
-
-
-
-
                 var companyInfo = await _adm_user_companyService.Queryable()
     .Where(uc => uc.UserID == userId)
     .Select(uc => new
@@ -1933,7 +1949,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 DataAccessManager dataAccessManager = new DataAccessManager();
                 var doctorList = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
                 objResult.GenderList = genderList;
-                objResult.DoctorList = doctorList.Tables[0];
+                objResult.DoctorList = doctorList.Tables[1];
                 objResult.AppointmentList = pagedEvents;
                 objResult.AllStatusList = appointmentStatusCounts;
                 objResult.DoctorCalander = doctorList.Tables[0];
@@ -1988,10 +2004,23 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 // Step 2: Get RoleName from adm_role_mf
                 var roleName = _adm_role_mfService.Queryable().Where(r => r.ID == roleId)
                     .Select(r => r.RoleName).FirstOrDefault();
-                decimal? doctorFilterId = null;
+                List<decimal> doctorFilterId = null;
                 if (string.Equals(roleName, "Doctor", StringComparison.OrdinalIgnoreCase))
                 {
-                    doctorFilterId = Convert.ToDecimal(userId);
+                    if (!string.IsNullOrWhiteSpace(userobj.IsShowDoctor))
+                    {
+                        doctorFilterId = userobj.IsShowDoctor
+                            .Split(',')
+                            .Select(x => (decimal)Convert.ToDecimal(x.Trim()))
+                            .ToList();
+                    }
+                    else
+                    {
+                        doctorFilterId = new List<decimal>
+                        {
+                            Convert.ToDecimal(userId)
+                        };
+                    }
                 }
                 var patientNewCounts = _emr_patientService.Queryable()
     .Where(p => p.CompanyId == CompanyID)
@@ -2008,46 +2037,50 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
      .Where(mf => mf.CompanyId == CompanyID
                && DbFunctions.TruncateTime(mf.AppointmentDate) == DbFunctions.TruncateTime(todayDate)
                && (finalAppointmentStatusId == 1 || mf.StatusId == finalAppointmentStatusId)
-               && (doctorFilterId == null || mf.DoctorId == doctorFilterId)
-               && (string.IsNullOrEmpty(SearchText) || mf.emr_patient_mf.PatientName.Contains(SearchText)))
-     .Select(mf => new
-     {
-         mf.ID,
-         DoctorName = mf.Doctor.Name,
-         PatientName = mf.emr_patient_mf.PatientName,
+                && (string.IsNullOrEmpty(SearchText) || mf.emr_patient_mf.PatientName.Contains(SearchText)));
+                if (doctorFilterId != null && doctorFilterId.Count > 0)
+                {
+                    rawEventsQuery = rawEventsQuery
+                        .Where(mf => doctorFilterId.Contains(mf.DoctorId));
+                }
+                var rawEvents = rawEventsQuery.Select(mf => new
+                {
+                    mf.ID,
+                    DoctorName = mf.Doctor.Name,
+                    PatientName = mf.emr_patient_mf.PatientName,
 
-         NewPatients = patientNewCounts
+                    NewPatients = patientNewCounts
              .Where(nc => nc.PatientId == mf.PatientId)
              .Select(nc => nc.NewPatientCount)
              .FirstOrDefault(),
 
-         mf.AppointmentDate,
-         mf.AppointmentTime, // keep raw
-         SlotTime = mf.Doctor.SlotTime, // keep raw
+                    mf.AppointmentDate,
+                    mf.AppointmentTime, // keep raw
+                    SlotTime = mf.Doctor.SlotTime, // keep raw
 
-         mf.PatientProblem,
-         ServiceId = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.ServiceId).FirstOrDefault(),
-         PaidAmount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.PaidAmount).FirstOrDefault(),
-         Discount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Discount).FirstOrDefault(),
-         BillDate = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (DateTime?)b.BillDate).FirstOrDefault(),
-         Price = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Price).FirstOrDefault(),
-         ServiceName = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId)
+                    mf.PatientProblem,
+                    ServiceId = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => b.ServiceId).FirstOrDefault(),
+                    PaidAmount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.PaidAmount).FirstOrDefault(),
+                    Discount = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Discount).FirstOrDefault(),
+                    BillDate = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (DateTime?)b.BillDate).FirstOrDefault(),
+                    Price = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId).Select(b => (decimal?)b.Price).FirstOrDefault(),
+                    ServiceName = mf.emr_patient_mf.emr_patient_bill.Where(a => a.AppointmentId == mf.ID && a.PatientId == mf.PatientId && a.DoctorId == mf.DoctorId)
                          .Select(b => b.emr_service_mf.ServiceName)
                          .FirstOrDefault(),
 
-         mf.TokenNo,
-         mf.DoctorId,
-         MRNO = mf.emr_patient_mf.MRNO,
-         mf.StatusId,
-         CNIC = mf.emr_patient_mf.CNIC,
-         mf.PatientId,
-         CreatedBy = mf.adm_user_mf.Name,
-         Gender = mf.emr_patient_mf.Gender,
-         Image = mf.emr_patient_mf.Image,
-         mf.Notes,
-         mf.ReminderId,
+                    mf.TokenNo,
+                    mf.DoctorId,
+                    MRNO = mf.emr_patient_mf.MRNO,
+                    mf.StatusId,
+                    CNIC = mf.emr_patient_mf.CNIC,
+                    mf.PatientId,
+                    CreatedBy = mf.adm_user_mf.Name,
+                    Gender = mf.emr_patient_mf.Gender,
+                    Image = mf.emr_patient_mf.Image,
+                    mf.Notes,
+                    mf.ReminderId,
 
-         Color = mf.StatusId == 1 ? "#dddddd"
+                    Color = mf.StatusId == 1 ? "#dddddd"
               : mf.StatusId == 2 ? "#fd8d64"
               : mf.StatusId == 5 ? "#fdca66"
               : mf.StatusId == 6 ? "#dd2626"
@@ -2057,11 +2090,11 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
               : mf.StatusId == 10 ? "#fb64a7"
               : mf.StatusId == 25 ? "#6265fd"
               : ""
-     });
+                });
 
-                int totalRecords = await rawEventsQuery.CountAsync();
+                int totalRecords = await rawEvents.CountAsync();
 
-                var pagedEventsRaw = await rawEventsQuery
+                var pagedEventsRaw = await rawEvents
                     .OrderBy(e => e.ID)
                     .Skip((CurrentPageNo - 1) * RecordPerPage)
                     .Take(RecordPerPage)
@@ -2231,7 +2264,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 DataAccessManager dataAccessManager = new DataAccessManager();
                 var doctorList = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
                 objResult.GenderList = genderList;
-                objResult.DoctorList = doctorList.Tables[0];
+                objResult.DoctorList = doctorList.Tables[1];
                 objResult.AppointmentList = pagedEvents;
                 objResult.AllStatusList = appointmentStatusCounts;
                 objResult.DoctorCalander = doctorList.Tables[0];
@@ -2434,11 +2467,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 ht.Add("@UserId", userid);
                 DataAccessManager dataAccessManager = new DataAccessManager();
                 var doctorData = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
-                var DoctorList = doctorData.Tables[0];
-                decimal[] IdList = null;
-                var isShowIds = isShowDoctorIds;
-                if (!string.IsNullOrWhiteSpace(isShowIds))
-                    IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
+                var DoctorList = doctorData.Tables[1];
                 var DoctorCalander = doctorData.Tables[0];
                 var VisitList = visitList;
                 objResponse.ResultSet = new

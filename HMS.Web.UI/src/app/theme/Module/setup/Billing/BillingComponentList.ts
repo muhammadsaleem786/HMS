@@ -71,6 +71,7 @@ export class BillingComponentList {
                     this.InvoiceCompanyInfo.BillDate = m.ResultSet.result[0].BillDate;
                     this.InvoiceCompanyInfo.invoiceNo = m.ResultSet.result[0].ID;
                     this.InvoiceCompanyInfo.DoctorName = m.ResultSet.result[0].ID;
+                    this.InvoiceCompanyInfo.DocName = m.ResultSet.result[0].DoctorName;
                     this.InvoiceCompanyInfo.Room = m.ResultSet.result[0].Room;
                     this.InvoiceCompanyInfo.Ward = m.ResultSet.result[0].Ward;
                     this.InvoiceCompanyInfo.Amount = m.ResultSet.result[0].Amount;
@@ -191,7 +192,7 @@ export class BillingComponentList {
                     this.InvoiceCompanyInfo.PatientMobile = m.ResultSet.result[0].PatientMobile;
                     this.InvoiceCompanyInfo.BillDate = this.PaymentRptData[0].PaymentDate;
                     this.InvoiceCompanyInfo.invoiceNo = this.PaymentRptData[0].ID;
-                    this.InvoiceCompanyInfo.DoctorName = m.ResultSet.result[0].ID;
+                    this.InvoiceCompanyInfo.DoctorName = m.ResultSet.result[0].DoctorName;
                     this.InvoiceCompanyInfo.Room = m.ResultSet.result[0].Room;
                     this.InvoiceCompanyInfo.Ward = m.ResultSet.result[0].Ward;
                     this.InvoiceCompanyInfo.Amount = m.ResultSet.result[0].Amount;

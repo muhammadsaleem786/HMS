@@ -32,6 +32,7 @@ namespace HMS.Entities.CustomModel
         public bool IsBackDatedAppointment { get; set; }
         public string ErrorMessage {  get; set; }
        public List<DoctorList> DoctList { get; set; }
+       public List<DoctorList> CalenderList { get; set; }
 
     }
 }

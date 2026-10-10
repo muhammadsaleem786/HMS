@@ -346,6 +346,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     .Select(z => new
                     {
                         ID = z.ID,
+                        DoctorId = z.DoctorId,
                         CompanyName = z.adm_company.CompanyName,
                         CompanyAddress = z.adm_company.CompanyAddress1,
                         CompanyPhone = z.adm_company.Phone,
@@ -363,6 +364,9 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         CompanyLogo = z.adm_company.CompanyLogo,
                         patient_bill_payment = z.emr_patient_bill_payment,
                     }).ToList();
+
+                var doctorIds = result.Select(r => r.DoctorId).Distinct().ToList();
+                var user = _adm_userService.Queryable().Where(a => doctorIds.Contains(a.ID)).Select(a => new { a.ID, a.Name }).ToList();
                 var results = result.GroupBy(l => l.BillDate)
                         .Select(cl => new
                         {
@@ -383,6 +387,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                             ServiceName = cl.First().ServiceName,
                             CompanyLogo = cl.First().CompanyLogo,
                             patient_bill_payment = cl.Select(z => z.patient_bill_payment),
+                            DoctorName = user.Where(a => a.ID == cl.First().DoctorId).Select(a => a.Name).FirstOrDefault()
                         }).ToList();
 
                 objResponse.ResultSet = new
@@ -536,8 +541,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-                var DoctorList = _emr_patientService.DoctorList(CompanyID, UserID);
-                var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId == CompanyID).Include(z => z.emr_patient_bill_payment).Include(z => z.ipd_admission)
+                 var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId == CompanyID).Include(z => z.emr_patient_bill_payment).Include(z => z.ipd_admission)
                     .Select(z => new BillModel
                     {
                         ID = z.ID,
@@ -558,6 +562,9 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         CompanyLogo = z.adm_company.CompanyLogo,
                         DoctorId = z.DoctorId,
                     }).ToList();
+                var doctorIds = result.Select(r => r.DoctorId).Distinct().ToList();
+                var user = _adm_userService.Queryable().Where(a => doctorIds.Contains(a.ID)).Select(a => new { a.ID, a.Name }).ToList();
+
                 var results = result.GroupBy(l => l.BillDate)
   .Select(cl => new
   {
@@ -577,7 +584,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
       MRNo = cl.First().MRNo,
       Amount = cl.Sum(z => z.Amount),
       CompanyLogo = cl.First().CompanyLogo,
-      DoctorName = DoctorList.DoctList.Where(a => a.ID == cl.First().DoctorId).FirstOrDefault().Name,
+      DoctorName = user.Where(a => a.ID == cl.First().DoctorId).Select(a => a.Name).FirstOrDefault()
+
   }).ToList();
                 objResponse.ResultSet = new
                 {

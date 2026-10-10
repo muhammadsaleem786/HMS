@@ -196,6 +196,7 @@ namespace HMS.Entities.Models
         public bool DeductImplantCost { get; set; }
         public bool DeductLabConsumables { get; set; }
         public bool DeductRoomCharges { get; set; }
+        public Nullable<bool> ShowOnCalendar { get; set; }
         public Nullable<decimal> DoctorShare { get; set; }
         public Nullable<decimal> OwnerShare { get; set; }
         public Nullable<TimeSpan> SlotTime { get; set; }

@@ -86,17 +86,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //}
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-                var userCount = _adm_user_companyService.Queryable().Where(a => a.CompanyID==CompanyID).Count();
-                var userObj = _service.Queryable().Where(a => a.ID == UserID).Select(a=>a.TotalUser).FirstOrDefault();
-                if (userObj != null && userCount >= userObj.Value)
+                var usercomp = _adm_user_companyService.Queryable().Where(a => a.CompanyID == CompanyID).Select(z => new
                 {
-                    objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = "You cannot create a new user because the maximum number of users allowed for your account has been reached. Please contact EasyHMS to upgrade or increase your user limit.";
-                    return objResponse;
-                }
-
-                var userEmp = _service.Queryable().Where(y => y.EmployeeID == Model.EmployeeID).FirstOrDefault();
-                if (userEmp != null)
+                    z.UserID,
+                    z.EmployeeID
+                }).ToList();
+                var userEmpExist = usercomp.Where(y => y.EmployeeID == Model.EmployeeID).FirstOrDefault();
+                if (userEmpExist != null)
                 {
                     objResponse.IsSuccess = false;
                     objResponse.ErrorMessage = "This employee " + Model.EmployeeID + " already associate another user.";
@@ -138,8 +134,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Model.AccountType = "A";
                     Model.ForgotToken = guid;
                     Model.DrugMode = "B";
+                    Model.IsActivated = false;
                     Model.ForgotTokenDate = Request.DateTimes();
                     Model.MultilingualId = Model.MultilingualId;
+                    Model.IsShowDoctor = adm_userID.ToString();
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);
 
@@ -454,10 +452,29 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 //    return objResponse;
                 //}
                 decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var existingUser = _service.Queryable().AsNoTracking()
+    .Where(a => a.ID == Model.ID)
+    .Select(a => new
+    {
+        a.IsActivated
+    })
+    .FirstOrDefault();
+                var userAllow = _service.Queryable().AsNoTracking().Where(a => a.ID == UserID).FirstOrDefault();
+                var userCount = _adm_user_companyService.Queryable()
+     .Count(a => a.CompanyID == CompanyID);
+                if (existingUser != null
+    && !existingUser.IsActivated
+    && Model.IsActivated
+    && userAllow.TotalUser.HasValue == true
+    && userCount >= userAllow.TotalUser.Value)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "You cannot create a new user because the maximum number of users allowed for your account has been reached. Please contact EasyHMS to upgrade or increase your user limit.";
+                    return objResponse;
+                }
                 adm_user_mf admUser = new adm_user_mf();
-
                 List<adm_user_company> adm_userCompany = new List<adm_user_company>();
-
                 adm_userCompany.AddRange(Model.adm_user_company);
 
                 string currdate = DateTime.Now.ToString("yyyy-MM-dd");
@@ -487,7 +504,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.Message = MessageStatement.Update;
                     objResponse.ResultSet = new
                     {
-                        Model = Model,
+                        Model = userAllow,
                     };
                 }
                 catch (DbUpdateException)
@@ -700,32 +717,21 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 userobj.IsShowDoctor = Doctorids;
                 userobj.ObjectState = ObjectState.Modified;
                 _service.Update(userobj);
-
-
                 try
                 {
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.IsSuccess = true;
                     objResponse.Message = MessageStatement.Update;
-                    var DoctorList = _emr_patientService.DoctorList(CompanyID, UserID);
-                    var userObj = _service.Queryable().Where(a => a.ID == UserID).FirstOrDefault();
-                    decimal[] IdList = null;
-                    List<DoctorList> DoctorCalander = new List<DoctorList>();
-                    if (userObj.IsShowDoctor != null)
-                    {
-                        IdList = userObj.IsShowDoctor.Split(',').Select(decimal.Parse).ToArray();
-                        DoctorCalander = DoctorList.DoctList.Where(a => !IdList.Contains(a.ID)).ToList();
-                    }
-                    else
-                    {
-                        DoctorCalander = DoctorList.DoctList.ToList();
-                    }
-                    objResponse.ResultSet = new
-                    {
-                        IsShowDoctorIds = userObj.IsShowDoctor,
-                        DoctorList = DoctorList,
-                        DoctorCalander = DoctorCalander,
-                    };
+                    //var DoctorList = _emr_patientService.DoctorList(CompanyID, UserID);
+                    //var userObj = _service.Queryable().Where(a => a.ID == UserID).FirstOrDefault();
+                    //List<DoctorList> DoctorCalander = new List<DoctorList>();
+                    //DoctorCalander = DoctorList.CalenderList.ToList();
+                    //objResponse.ResultSet = new
+                    //{
+                    //    IsShowDoctorIds = userObj.IsShowDoctor,
+                    //    DoctorList = DoctorList.DoctList,
+                    //    DoctorCalander = DoctorCalander,
+                    //};
                 }
                 catch (DbUpdateException)
                 {

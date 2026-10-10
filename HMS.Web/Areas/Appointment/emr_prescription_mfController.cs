@@ -1041,7 +1041,7 @@ Model?.emr_prescription_treatment
                             .Where(e => e.UserID == userid).Include(x => x.adm_company).Select(x => new { x.CompanyID, x.adm_company.CompanyName }).ToList();
                 var BloodList = bloodList;
                 var GenderType = genderList;
-                var DoctorList = doctorList.Tables[0];
+                var DoctorList = doctorList.Tables[1];
                 var DoctorCalander = doctorList.Tables[0];
                 decimal[] IdList = null;
                 var isShowIds = isShowDoctorIds;
@@ -1975,7 +1975,7 @@ result?.emr_prescription_treatment
 
 
                 var GenderType = genderList;
-                var DoctorList = doctorData.Tables[0];
+                var DoctorList = doctorData.Tables[1];
                 decimal[] IdList = null;
                 var isShowIds = isShowDoctorIds;
                 if (!string.IsNullOrWhiteSpace(isShowIds))

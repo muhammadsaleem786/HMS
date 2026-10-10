@@ -1,4 +1,4 @@
-﻿import { Component, OnInit,OnDestroy, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, ViewChild, ElementRef, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -35,7 +35,7 @@ import { EncryptionService } from '../../../../CommonService/encryption.service'
     templateUrl: 'AppointmentComponentList.html',
     providers: [AppointmentService, PrescriptionService, ApplicationUserService, BillingService, PatientService, SaleService],
 })
-export class AppointmentComponentList implements OnInit,OnDestroy{
+export class AppointmentComponentList implements OnInit, OnDestroy {
     hour: number;
     minute: number;
     second: number;
@@ -213,7 +213,7 @@ export class AppointmentComponentList implements OnInit,OnDestroy{
     myNameControl = new FormControl();
     openAppointmentModal(longContent) {
         this.AppointmentModel = new emr_Appointment();
-        this._appointmentContentRef= this.modalService.open(longContent, { size: 'lg' });
+        this._appointmentContentRef = this.modalService.open(longContent, { size: 'lg' });
         setTimeout(() => {
             if (this.Rights.indexOf(12) > -1) {
                 this.AppointmentModel.ServiceId = this.ServiceType.ID;
@@ -307,7 +307,7 @@ export class AppointmentComponentList implements OnInit,OnDestroy{
 
     }
     ngOnInit() {
-       
+
         this.DurationList = [
             { "ID": 1, "Name": "Day (s)" },
             { "ID": 2, "Name": "Week (s)" },
@@ -533,7 +533,7 @@ export class AppointmentComponentList implements OnInit,OnDestroy{
         let date = this._CommonService.GetFormatDate(this.AppointmentDate);
         let StatusID = this.AppointmentModel.StatusId;
         this.GetPatientList(date, StatusID);
-        
+
     }
     LoadEditor() {
         this.destroyEditors();
@@ -1309,7 +1309,7 @@ export class AppointmentComponentList implements OnInit,OnDestroy{
             let time1 = this.calculateTimeFormate(time);
             this.AppointmentModel.AppointmentTime = time1;
             this.AppointmentModel.MrNo = Appobj[0].MRNO;
-            this._appointmentContentRef =this.modalService.open(this.ModelContent, { size: 'lg' });
+            this._appointmentContentRef = this.modalService.open(this.ModelContent, { size: 'lg' });
             if (Appobj.length > 0) {
                 this.FindDisabledSlot(Appobj);
                 $("#basicExample").timepicker({
@@ -1686,7 +1686,7 @@ export class AppointmentComponentList implements OnInit,OnDestroy{
                 this.AppointmentModel.BillDate = date;
                 let time1 = this.calculateTimeFormate(time);
                 this.AppointmentModel.AppointmentTime = time1;
-                this._appointmentContentRef= this.modalService.open(this.ModelContent, { size: 'lg' });
+                this._appointmentContentRef = this.modalService.open(this.ModelContent, { size: 'lg' });
                 if (Appobj.length > 0) {
                     this.FindDisabledSlot(Appobj);
                     $("#basicExample").timepicker({
@@ -2740,36 +2740,56 @@ export class AppointmentComponentList implements OnInit,OnDestroy{
     }
     public DoctorIds: any[] = [];
     IsShowDoctor(checkedValue: any, id: any) {
-        this.DoctorIds = [];
-        if (id != null && id != undefined) {
-            if (this.IsShowDoctorIds != null)
-                this.DoctorIds = this.IsShowDoctorIds;
-            this.DoctorIds = JSON.parse("[" + (this.DoctorIds) + "]");
-
-            if (checkedValue) {
-                if (this.DoctorIds.length != 0) {
-                    this.DoctorIds = this.DoctorIds.filter(function (item) {
-                        return item !== id
-                    });
-                }
-            } else {
-                this.DoctorIds.push(id);
-            }
-
-            let ids = this.DoctorIds;
-            this.loader.ShowLoader();
-            this._ApplicationUserService.UserUpdate(ids.toString()).then(m => {
-                if (m.IsSuccess) {
-                    this.IsShowDoctorIds = m.ResultSet.IsShowDoctorIds;
-                    this.DoctorList = m.ResultSet.DoctorList.DoctList;
-                    this.DoctorClanderList = m.ResultSet.DoctorCalander;
-                    this.BindEvent();
-                    this.LoadCalendar(this.AppointmentDate);
-                } else
-                    this.toastr.Error('Error', m.ErrorMessage);
-                this.loader.HideLoader();
-            });
+        if (id == null || id == undefined) {
+            return;
         }
+
+        // Get the existing doctor IDs
+        if (this.IsShowDoctorIds != null && this.IsShowDoctorIds !== '') {
+            this.DoctorIds = Array.isArray(this.IsShowDoctorIds)
+                ? [...this.IsShowDoctorIds]
+                : String(this.IsShowDoctorIds)
+                    .split(',')
+                    .filter(x => x !== '');
+        } else {
+            this.DoctorIds = [];
+        }
+
+        const doctorId = Number(id);
+
+        if (checkedValue) {
+            // Add doctor only if not already selected
+            const exists = this.DoctorIds.some(
+                (x: any) => Number(x) === doctorId
+            );
+
+            if (!exists) {
+                this.DoctorIds.push(doctorId);
+            }
+        } else {
+            // Remove doctor when unchecked
+            this.DoctorIds = this.DoctorIds.filter(
+                (x: any) => Number(x) !== doctorId
+            );
+        }
+        this.loader.ShowLoader();
+        this._ApplicationUserService.UserUpdate(this.DoctorIds.join(',')).then(m => {
+            if (m.IsSuccess) {
+                debugger
+                this.toastr.Success(m.Message);
+                let date = this._CommonService.GetFormatDate(new Date());
+                let StatusID = '0';
+                this.GetPatientList(date, StatusID);
+                // this.IsShowDoctorIds = m.ResultSet.IsShowDoctorIds;
+                // this.DoctorList = m.ResultSet.DoctorList;
+                // this.DoctorClanderList = m.ResultSet.DoctorCalander;
+                // this.BindEvent();
+                // this.LoadCalendar(this.AppointmentDate);
+            } else
+                this.toastr.Error('Error', m.ErrorMessage);
+            this.loader.HideLoader();
+        });
+
     }
     onDateChanged(event: IMyDateModel) {
         if (event) {

@@ -130,6 +130,7 @@ export class ProfileUserComponentForm implements OnInit {
             UserImage: [''],
             RepotFooter: [''],
             Instruction: [''],
+            ShowOnCalendar:[''],
             Pwd: ['', [Validators.required, <any>Validators.minLength(6)]],
         });
         $(".toggle-password").click(function () {

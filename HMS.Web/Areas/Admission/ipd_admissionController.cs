@@ -473,12 +473,8 @@ namespace HMS.Web.API.Areas.Admission.Controllers
                 var TittleList = titleList;
                 var AdmissionTypeList = admissionList;
                 var AdmissionLocation = locationList;
-                var DoctorList = doctorData.Tables[0];
-                decimal[] IdList = null;
-                var isShowIds = isShowDoctorIds;
-                if (!string.IsNullOrWhiteSpace(isShowIds))
-                    IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
-                var DoctorCalander = doctorData.Tables[0];
+                var DoctorList = doctorData.Tables[1];
+                 var DoctorCalander = doctorData.Tables[0];
                 var AdmissionNo = admissionNo;
 
                 decimal getMaxMRNO = mrNo;

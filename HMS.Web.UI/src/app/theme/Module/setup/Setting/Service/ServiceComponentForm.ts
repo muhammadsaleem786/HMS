@@ -81,6 +81,7 @@ export class ServiceComponentForm implements OnInit {
                                 this.isChecked = true;
                             else
                                 this.isChecked = false;
+                            this.onCategoryChange();
                         }
                         this.loader.HideLoader();
                     });
@@ -103,6 +104,7 @@ export class ServiceComponentForm implements OnInit {
         });
     }
     onCategoryChange(): void {
+        debugger;
         const selectedCategory = this.CategoryList.find(
             x => Number(x.ID) === Number(this.model.CategoryId)
         );

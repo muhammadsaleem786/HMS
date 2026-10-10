@@ -69,6 +69,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.SpecialtyId).HasColumnName("SpecialtyId");
             this.Property(t => t.SpecialtyDropdownId).HasColumnName("SpecialtyDropdownId");
             this.Property(t => t.Type).HasColumnName("Type");
+            this.Property(t => t.ShowOnCalendar).HasColumnName("ShowOnCalendar");
             this.Property(t => t.UserImage).HasColumnName("UserImage");
             this.Property(t => t.ExpiryDate).HasColumnName("ExpiryDate");
             this.Property(t => t.IsGenderDropdown).HasColumnName("IsGenderDropdown");

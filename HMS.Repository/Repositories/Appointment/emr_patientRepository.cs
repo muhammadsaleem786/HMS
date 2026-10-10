@@ -160,9 +160,10 @@ namespace HMS.Repository.Repositories.Appointment
                 var ht = new Hashtable();
                 ht.Add("@CompanyId", CompanyID);
                 ht.Add("@UserId", userid);
-                var result = dataAccessManager.GetDataSet("SP_GetDoctorList", ht).Tables[0];
+                var result = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
                 List<DoctorList> Doclist = new List<DoctorList>();
-                foreach (DataRow item in result.Rows)
+                List<DoctorList> Calenderlist = new List<DoctorList>();
+                foreach (DataRow item in result.Tables[0].Rows)
                 {
                     DoctorList lvm = new DoctorList();
                     lvm.Name = item["Name"].ToString();
@@ -182,7 +183,35 @@ namespace HMS.Repository.Repositories.Appointment
                     lvm.Designation = item["Designation"].ToString();
                     lvm.PhoneNo = item["PhoneNo"].ToString();
                     lvm.Footer = item["RepotFooter"].ToString();
-                    lvm.TemplateId= item["TemplateId"].ToString();
+                    lvm.TemplateId = item["TemplateId"].ToString();
+                    lvm.NameUrdu = item["NameUrdu"].ToString();
+                    lvm.HeaderDescription = item["HeaderDescription"].ToString();
+                    lvm.QualificationUrdu = item["QualificationUrdu"].ToString();
+                    lvm.DesignationUrdu = item["DesignationUrdu"].ToString();
+                    Calenderlist.Add(lvm);
+                }
+                objResult.CalenderList = Calenderlist.ToList();
+                foreach (DataRow item in result.Tables[1].Rows)
+                {
+                    DoctorList lvm = new DoctorList();
+                    lvm.Name = item["Name"].ToString();
+                    lvm.ID = Convert.ToDecimal(item["ID"].ToString());
+                    lvm.StartTime = item["StartTime"].ToString();
+                    lvm.EndTime = item["EndTime"].ToString();
+                    lvm.WDMonday = Convert.ToBoolean(item["WDMonday"]);
+                    lvm.WDTuesday = Convert.ToBoolean(item["WDTuesday"]);
+                    lvm.WDWednesday = Convert.ToBoolean(item["WDWednesday"]);
+                    lvm.WDThursday = Convert.ToBoolean(item["WDThursday"]);
+                    lvm.WDFriday = Convert.ToBoolean(item["WDFriday"]);
+                    lvm.WDSaturday = Convert.ToBoolean(item["WDSaturday"]);
+                    lvm.WDSunday = Convert.ToBoolean(item["WDSunday"]);
+                    lvm.IsShowDoctor = item["IsShowDoctor"].ToString();
+                    lvm.IsDoctor = Convert.ToBoolean(item["IsDoctor"]);
+                    lvm.Qualification = item["Qualification"].ToString();
+                    lvm.Designation = item["Designation"].ToString();
+                    lvm.PhoneNo = item["PhoneNo"].ToString();
+                    lvm.Footer = item["RepotFooter"].ToString();
+                    lvm.TemplateId = item["TemplateId"].ToString();
                     lvm.NameUrdu = item["NameUrdu"].ToString();
                     lvm.HeaderDescription = item["HeaderDescription"].ToString();
                     lvm.QualificationUrdu = item["QualificationUrdu"].ToString();

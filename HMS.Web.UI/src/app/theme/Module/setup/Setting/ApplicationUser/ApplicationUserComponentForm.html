@@ -134,8 +134,17 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="row mt-4">
+                                <div class="row mt-4" *ngIf="IsDoctor">
+                                    <div class="col-sm-4 text-right">
+                                        <label> Show On Calendar </label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <input type="checkbox" formControlName="ShowOnCalendar" [(ngModel)]="model.ShowOnCalendar" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4" *ngIf="model.ID">
                                     <div class="col-sm-4 text-right">
                                         <label> IsActive </label>
                                     </div>

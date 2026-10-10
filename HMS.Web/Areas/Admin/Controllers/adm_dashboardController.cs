@@ -218,17 +218,35 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 var end = Convert.ToDateTime(ToDate).Date.AddDays(1);
                 int userId = Request.LoginID();
                 var CompanyID = Request.CompanyID();
-
+                var resultUser = await _adm_userService.Queryable()
+.Where(u => u.ID == userId).Select(z => new
+{
+    AppointmentStatusId = (int?)z.AppointmentStatusId,
+    z.IsShowDoctor
+}).FirstOrDefaultAsync();
                 var roleId = _adm_User_CompanyService.Queryable().Where(u => u.UserID == userId)
                             .Select(u => u.RoleID).FirstOrDefault();
                 // Step 2: Get RoleName from adm_role_mf
                 var roleName = _adm_role_mfService.Queryable().Where(r => r.ID == roleId)
                     .Select(r => r.RoleName).FirstOrDefault();
 
-                decimal? doctorFilterId = null;
+                List<decimal> doctorFilterId = null;
                 if (string.Equals(roleName, "Doctor", StringComparison.OrdinalIgnoreCase))
                 {
-                    doctorFilterId = Convert.ToDecimal(userId);
+                    if (!string.IsNullOrWhiteSpace(resultUser.IsShowDoctor))
+                    {
+                        doctorFilterId = resultUser.IsShowDoctor
+                            .Split(',')
+                            .Select(x => (decimal)Convert.ToDecimal(x.Trim()))
+                            .ToList();
+                    }
+                    else
+                    {
+                        doctorFilterId = new List<decimal>
+                        {
+                            Convert.ToDecimal(userId)
+                        };
+                    }
                 }
                 var incomeByCategory = await _emr_incomeService.Queryable()
                 .AsNoTracking()
@@ -265,19 +283,23 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 var outStandingIncome = incomeByCategory.Sum(x => x.TotalDue);
 
 
-                var appointments = await _emr_appointment_mfService.Queryable()
+                IQueryable<emr_appointment_mf> query = _emr_appointment_mfService.Queryable()
     .AsNoTracking()
     .Where(a => a.CompanyId == CompanyID
              && a.AppointmentDate >= start
-             && a.AppointmentDate < end)
-    .Select(a => new
-    {
-        a.PatientId,
-        a.CompanyId,
-        a.StatusId,
-        Age = a.emr_patient_mf.Age,
-        Gender = a.emr_patient_mf.Gender,
-    })
+             && a.AppointmentDate < end);
+                if (doctorFilterId != null)
+                {
+                    query = query.Where(a => doctorFilterId.Contains(a.DoctorId));
+                }
+                var appointments = await query.Select(a => new
+                {
+                    a.PatientId,
+                    a.CompanyId,
+                    a.StatusId,
+                    Age = a.emr_patient_mf.Age,
+                    Gender = a.emr_patient_mf.Gender,
+                })
     .ToListAsync();
                 var previousAppointments = await _emr_appointment_mfService.Queryable()
     .AsNoTracking()
@@ -304,9 +326,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 IQueryable<emr_patient_bill> billQ = _emr_patient_billService.Queryable()
     .AsNoTracking()
     .Where(b => b.CompanyId == CompanyID && b.BillDate >= start && b.BillDate < end);
-                if (doctorFilterId.HasValue)
+                if (doctorFilterId != null && doctorFilterId.Count > 0)
                 {
-                    billQ = billQ.Where(b => b.DoctorId == doctorFilterId.Value);
+                    billQ = billQ.Where(b => doctorFilterId.Contains(b.DoctorId));
                 }
                 var billAgg = await billQ.GroupBy(_ => 1)
     .Select(g => new

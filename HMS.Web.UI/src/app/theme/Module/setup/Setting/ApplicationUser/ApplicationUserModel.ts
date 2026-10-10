@@ -14,8 +14,9 @@ export class ApplicationUserModel {
     Pwd: string;
     MultilingualId: number;
     SlotTime: any;
-    Charges: number=0;
+    Charges: number = 0;
     TotalUser: number = 0;
+    ShowOnCalendar: boolean = false;
     //AppStartTime: string;
     //AppEndTime: string;
     //OffDay: string;

@@ -103,15 +103,26 @@ namespace HMS.Web.API.Controllers
                     return response;
                 }
                 if (user.Pwd != Model.Pwd || !user.IsActivated || user.UserLock)
-                {
-                    user.LoginFailureNo++;
-                    if (user.LoginFailureNo >= 5 && user.Email.ToLower() != "demo@gmail.com")
-                        user.UserLock = true;
-                    user.ObjectState = ObjectState.Modified;
-                    _service.Update(user);
-                    await _unitOfWorkAsync.SaveChangesAsync();
+                {                   
                     response.IsSuccess = false;
-                    response.ErrorMessage = user.UserLock ? "Your account has been locked due to multiple unsuccessful login attempts. Please reset your password." : "User Name or Password is incorrect.";
+                    if (!user.IsActivated)
+                    {
+                        response.ErrorMessage = "Account is not activated.";
+                    }
+                    else if (user.UserLock)
+                    {
+                        response.ErrorMessage = "Your account has been locked due to multiple unsuccessful login attempts. Please reset your password.";
+                    }
+                    else
+                    {
+                        response.ErrorMessage = "User Name or Password is incorrect.";
+                        user.LoginFailureNo++;
+                        if (user.LoginFailureNo >= 5 && user.Email.ToLower() != "demo@gmail.com")
+                            user.UserLock = true;
+                        user.ObjectState = ObjectState.Modified;
+                        _service.Update(user);
+                        await _unitOfWorkAsync.SaveChangesAsync();
+                    }
                     return response;
                 }
                 user.LastSignIn = Request.DateTimes();
@@ -797,6 +808,7 @@ namespace HMS.Web.API.Controllers
                     Model.UserLock = false;
                     Model.EmployeeID = empID;
                     Model.DrugMode = "B";
+                    //Model.IsShowDoctor = adm_userID.ToString();
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);
                     adm_user_token user_token = new adm_user_token();

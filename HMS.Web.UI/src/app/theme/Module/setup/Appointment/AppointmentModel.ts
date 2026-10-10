@@ -173,6 +173,7 @@ export class InvoiceCompanyInfo {
     Room: string;
     Ward: string;
     DoctorName: string;
+    DocName: string;
     ReceiptNo: string;
     Amount: number;
     Father_Husband: string;

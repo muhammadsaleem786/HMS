@@ -121,7 +121,7 @@ namespace HMS.Repository.Repositories.Admin
                     DisplayRoleID = PFilter.VisibleColumnInfoList.IndexOf("RoleName") > -1;
                     DisplayEmail = PFilter.VisibleColumnInfoList.IndexOf("Email") > -1;
                     DisplayLastLogin = PFilter.VisibleColumnInfoList.IndexOf("LastLogin") > -1;
-                    predicate = (c => c.adm_user_company.Any(x => x.CompanyID == CompanyID) &&
+                    predicate = (c =>
                     (DisplayUserID && c.Name.ToString().Contains(PFilter.SearchText.ToLower()) ||
                     (DisplayRoleID && c.adm_user_company.Any(x => x.adm_role_mf.RoleName.ToLower().Contains(PFilter.SearchText.ToLower())) ||
                     (DisplayEmail && c.Email.ToLower().Contains(PFilter.SearchText.ToLower()) ||

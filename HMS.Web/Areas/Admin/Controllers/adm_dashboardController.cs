@@ -362,15 +362,20 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
                 var today = DateTime.Today;
                 var todaysAppointments = _emr_appointment_mfService.Queryable()
-.Where(mf => mf.CompanyId == CompanyID && mf.AppointmentDate == today)
-.Select(mf => new
-{
-    mf.AppointmentTime,
-    SlotTime = mf.adm_user_mf.SlotTime,
-    PatientName = mf.emr_patient_mf.PatientName,
-    StatusId = mf.StatusId,
-    DoctorName = mf.adm_user_mf.Name
-})
+.Where(mf => mf.CompanyId == CompanyID && mf.AppointmentDate == today);
+                if (doctorFilterId != null && doctorFilterId.Count > 0)
+                {
+                    todaysAppointments = todaysAppointments
+                        .Where(mf => doctorFilterId.Contains(mf.DoctorId));
+                }
+                var rawEvents = todaysAppointments.Select(mf => new
+                {
+                    mf.AppointmentTime,
+                    SlotTime = mf.adm_user_mf.SlotTime,
+                    PatientName = mf.emr_patient_mf.PatientName,
+                    StatusId = mf.StatusId,
+                    DoctorName = mf.adm_user_mf.Name
+                })
 .ToList().Select(mf => new AppointmentDto
 {
     StartTime = mf.AppointmentTime != null
@@ -407,7 +412,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     })
     .ToList();
                 var todaysFollowUps = _emr_prescription_mfService.Queryable()
-      .Where(mf => mf.CompanyID == CompanyID && DbFunctions.TruncateTime(mf.FollowUpDate) == DbFunctions.TruncateTime(DateTime.Today))
+      .Where(mf => mf.CompanyID == CompanyID && DbFunctions.TruncateTime(mf.FollowUpDate) == DbFunctions.TruncateTime(DateTime.Today));
+                if (doctorFilterId != null && doctorFilterId.Count > 0)
+                {
+                    todaysFollowUps = todaysFollowUps
+                        .Where(mf => doctorFilterId.Contains(mf.DoctorId));
+                }
+                var followUpList = todaysFollowUps
       .Select(mf => new
       {
           mf.FollowUpTime,
@@ -520,9 +531,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     IPDIncome = ipdIncome,
                     PathologyIncome = pathologyIncome,
                     GeneralIncome = generalIncome,
-                    TodaysAppointments = todaysAppointments,
+                    TodaysAppointments = rawEvents,
                     TodaysBirthdays = todaysBirthdays,
-                    TodaysFollowUps = todaysFollowUps,
+                    TodaysFollowUps = followUpList,
                     IncomeAndExpense = result,
                 };
 

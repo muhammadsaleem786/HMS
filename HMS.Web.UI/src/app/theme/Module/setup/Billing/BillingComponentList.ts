@@ -174,7 +174,7 @@ export class BillingComponentList {
         });
     }
     PaymentRptModel(PaymentRptModal: any, id: any, paymentId: any) {
-       this.loader.ShowLoader();
+        this.loader.ShowLoader();
         this._BillingService.GetBillByPatient(id).then(m => {
             if (m.IsSuccess) {
                 this.PaymentRptData = [];
@@ -257,7 +257,7 @@ export class BillingComponentList {
     openAddBill(adBill: any, id: any) {
         this.loader.ShowLoader();
         this._BillingService.GetById(id).then(m => {
-           this.modalService.open(adBill, { size: 'md' });
+            this.modalService.open(adBill, { size: 'md' });
             this.model = m.ResultSet.result;
             this.model.PaymentDate = new Date();
             this.loader.HideLoader();
@@ -294,6 +294,10 @@ export class BillingComponentList {
             refundAmount <= 0
         ) {
             this.toastr.Error("Please enter refund amount.");
+            return;
+        }
+        if (this.model.RefundAmount > this.model.PaidAmount.toString()) {
+            this.toastr.Error("Refund amount not greater than paid amount.");
             return;
         }
         this.model.PaidAmount = this.model.PaidAmount - parseInt(this.model.RefundAmount);

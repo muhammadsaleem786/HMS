@@ -96,14 +96,14 @@ namespace HMS.Web.API.Controllers
                     response.ErrorMessage = "User Name or Password is incorrect.";
                     return response;
                 }
-                if (user.ExpiryDate.HasValue && user.ExpiryDate.Value.Date < DateTime.UtcNow.Date)
+                if (!user.ExpiryDate.HasValue || user.ExpiryDate.Value.Date < DateTime.UtcNow.Date)
                 {
                     response.IsSuccess = false;
                     response.ErrorMessage = "Your account is expired. Please contact administrator.";
                     return response;
                 }
                 if (user.Pwd != Model.Pwd || !user.IsActivated || user.UserLock)
-                {                   
+                {
                     response.IsSuccess = false;
                     if (!user.IsActivated)
                     {

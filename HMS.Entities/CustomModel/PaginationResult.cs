@@ -20,13 +20,13 @@ namespace HMS.Entities.CustomModel
         public object AppointmentList { get; set; }
         public object AllStatusList { get; set; }
         public object PatientInfo { get; set; }
-        public object DoctorCalander { get; set; }
+        public object AssignedDoctor { get; set; }
         public object IsShowDoctorIds { get; set; }
         public object ClinicList { get; set; }
         public object BloodList { get; set; }
         public object MedicineList { get; set; }
         public object ServiceType { get; set; }
-        public string TokenNo { get; set; }
+        public object TokenList { get; set; }
         public object Reminderlist {  get; set; }
         public object Followuplist {  get; set; }
         public bool IsBackDatedAppointment { get; set; }

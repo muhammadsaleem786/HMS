@@ -782,9 +782,8 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var result = _emr_patientService.Queryable().Where(a => (a.CompanyId == CompanyID) && (a.PatientName.Contains(term))).Select(z => new
                 {
                     value = z.ID,
-                    label = z.PatientName,
-
-                }).ToList();
+                    label = z.PatientName + " " + (z.Mobile),
+                }).Take(10).ToList();
                 objResponse.ResultSet = new
                 {
                     result = result
@@ -846,6 +845,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             return objResponse;
 
         }
+       
         public class PatientBillSessionDto
         {
             public decimal ID { get; set; }

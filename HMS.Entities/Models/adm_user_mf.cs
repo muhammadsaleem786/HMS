@@ -183,6 +183,7 @@ namespace HMS.Entities.Models
         public string HeaderDescription { get; set; }
         public string HeaderDescriptionUrdu { get; set; }
         public string NameUrdu { get; set; }
+        public Boolean IsShowHeader { get; set; } = true;
         public Nullable<System.DateTime> ActivationTokenDate { get; set; }
         public Nullable<System.DateTime> ActivatedDate { get; set; }
         public Nullable<System.DateTime> LastSignIn { get; set; }

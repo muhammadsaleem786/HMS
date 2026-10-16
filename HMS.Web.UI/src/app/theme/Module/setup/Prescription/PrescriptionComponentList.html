@@ -176,7 +176,7 @@
                 line-height:1.5;
                 word-break:break-word;">
 
-                <div [innerHTML]="DoctorInfo.safeHeaderDescription"></div>
+                <div *ngIf="PatientRXmodel.IsShowHeader"[innerHTML]="DoctorInfo.safeHeaderDescription"></div>
 
             </div>
 
@@ -198,13 +198,13 @@
         font-weight:bold;
         margin-bottom:6px;
         color:#000;
-        line-height:1;">
+        line-height:1;"*ngIf="PatientRXmodel.IsShowHeader">
                     Ref.No: {{PatientRXmodel.MrNo}}
                 </div>
 
                 <!-- LOGO -->
 
-                <img *ngIf="PatientRXmodel.BrandImage"
+                <img *ngIf="PatientRXmodel.BrandImage && PatientRXmodel.IsShowHeader"
                      [src]="PatientRXmodel.BrandImage"
                      style="
             max-width:100px;
@@ -212,7 +212,7 @@
             object-fit:contain;
          ">
 
-                <img *ngIf="!PatientRXmodel.BrandImage"
+                <img *ngIf="!PatientRXmodel.BrandImage && PatientRXmodel.IsShowHeader"
                      src="../assets/app/media/img/icons/doctor-logo.png"
                      style="
             max-width:100px;
@@ -221,7 +221,7 @@
 
                 <!-- BRAND -->
                 <div>
-                    <strong style="font-size:14px; color: #000;">{{PatientRXmodel.BrandDescription}}</strong>
+                    <strong *ngIf="PatientRXmodel.IsShowHeader"style="font-size:14px; color: #000;">{{PatientRXmodel.BrandDescription}}</strong>
                 </div>
             </div>
 
@@ -237,7 +237,7 @@
                     word-break:break-word;
                  ">
 
-                <div [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu"></div>
+                <div *ngIf="PatientRXmodel.IsShowHeader" [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu"></div>
 
             </div>
 

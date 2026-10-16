@@ -31,6 +31,7 @@ export class ProcedureComponentRptForm implements OnInit {
     public DataList: any[];
     public CompanyName: string; public CompanyObj: any;
     public Form1: FormGroup; public total = 0; 
+    public totalProfit = 0; 
     constructor(public _fb: FormBuilder,public _CommonService: CommonService, public loader: LoaderService
         , public _router: Router, private cdr: ChangeDetectorRef, public reportservice: ReportService, private encrypt: EncryptionService) {
         this.loader.ShowLoader();
@@ -88,23 +89,47 @@ export class ProcedureComponentRptForm implements OnInit {
             }
         });
     }
+    LoadDoctor() {
+        $("#DoctorSearch").autocomplete({
+            source: (request, response) => {
+                this.model.DoctorId = null;
+                this.loader.ShowLoader();
+                this.reportservice.DoctorSearch(request.term).then(m => {
+                    response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.DoctorId = ui.item.value;
+                this.model.DoctorName = ui.item.label;
+                return ui.item.label;
+            }
+        });
+    }
     RunReport() {
         this.loader.ShowLoader();
         if (this.model.PatientName == null || this.model.PatientName == "")
             this.model.PatientId = null;
         if (this.model.ProcedureName == null || this.model.ProcedureName == "")
             this.model.ProcedureId = null;
+        if (this.model.DoctorName == null || this.model.DoctorName == "")
+            this.model.DoctorId = null;
         this.reportservice.ProcedureRpt(this.model).then(m => {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {
                 this.total = 0;
+                this.totalProfit = 0;
                 const feeList = result.ResultSet.FeeList;
                 this.DataList = Array.isArray(feeList)[0] ? feeList : Object.values(feeList)[0];
 
                 this.cdr.detectChanges();
-                //this.DataList.forEach(x => {
-                //    this.total += x.PaidAmount
-                //}); 
+                this.DataList.forEach(x => {
+                   this.total += x.PaidAmount
+                }); 
+                this.DataList.forEach(x => {
+                    this.totalProfit += x.Profit
+                }); 
 
                 this.loader.HideLoader();
             } else

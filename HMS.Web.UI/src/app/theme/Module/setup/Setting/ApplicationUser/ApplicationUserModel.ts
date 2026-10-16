@@ -42,7 +42,8 @@ export class ApplicationUserModel {
     TemplateId: number=1;
     UserImage: string;
     BrandImage: string;
-    DrugMode:string;
+    DrugMode: string;
+    IsShowHeader: boolean = true;
     BrandDescription:string;
     GenderDropdown: number[] = [];
     DoctorIds: number[] = [];
@@ -57,6 +58,11 @@ export class user_payment {
     Amount: number;
     Remarks: string;
     Date: Date;
+}
+export class AssignDoctor {
+    ID: number;
+    UserId: number;
+    DoctorId: number;
 }
 
 export class adm_user_company {

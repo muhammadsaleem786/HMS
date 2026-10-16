@@ -331,6 +331,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                                 ID = mf.ID,
                                 Name = mf.Name,
                                 DrugMode = mf.DrugMode,
+                                IsShowHeader=mf.IsShowHeader,
                                 StartTime = emp != null ? emp.StartTime : null,
                                 EndTime = emp != null ? emp.EndTime : null,
                                 SlotTime = mf.SlotTime,
@@ -595,6 +596,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                                 ID = mf.ID,
                                 Name = mf.Name,
                                 DrugMode = mf.DrugMode,
+                                IsShowHeader=mf.IsShowHeader,
                                 StartTime = emp != null ? emp.StartTime : null,
                                 EndTime = emp != null ? emp.EndTime : null,
                                 SlotTime = mf.SlotTime,
@@ -630,7 +632,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         }
                         else if (role == "Doctor")
                         {
-                            doctorResult = doctors.Where(d => ((dynamic)d).ID == UserID).ToList<object>();
+                            doctorResult = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
                         }
                         else
                         {
@@ -642,14 +644,11 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         PatientId = z.PatientId,
                         AppointmentDate = z.AppointmentDate,
                     }).ToList();
-
                     var CurntPrevDateList = CurntPrevDate.AsEnumerable().Select(z => new
                     {
                         AppointmentDate = z.AppointmentDate.ToString("yyyy-MM-dd"),
                         PatientId = z.PatientId,
                     }).ToList();
-
-
                     objResponse.ResultSet = new
                     {
                         CurntPrevDateList = CurntPrevDateList,
@@ -1871,6 +1870,8 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 .Where(u => u.ID == userId)
                 .Select(u => u.IsShowDoctor)
                 .FirstOrDefaultAsync();
+
+
                 //doctor list
                 var companyInfo = await _adm_user_companyService.Queryable()
     .Where(uc => uc.UserID == userId)
@@ -1888,18 +1889,6 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
     .Where(s => s.CompanyId == CompanyID)
     .Select(s => new { s.ID, s.ServiceName, s.Price, s.TotalSessions, s.CategoryId })
     .ToListAsync();
-                var maxCompanyToken = await _adm_companyService.Queryable()
-    .Where(c => c.ID == CompanyID)
-    .Select(c => (int?)c.TokenNo) // nullable to handle empty table
-    .MaxAsync() ?? 0;
-                var nextToken = await _service.Queryable()
-    .Where(mf => mf.CompanyId == CompanyID
-              && DbFunctions.TruncateTime(mf.AppointmentDate) == DbFunctions.TruncateTime(DateTime.Now))
-    .Select(mf => (int?)mf.TokenNo)
-    .MaxAsync() ?? maxCompanyToken;
-
-                nextToken += 1;
-
                 var isBackDatedAppointment = await _adm_companyService.Queryable()
     .Where(c => c.ID == CompanyID)
     .Select(c => c.IsBackDatedAppointment)
@@ -1948,16 +1937,21 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 ht.Add("@UserId", userId);
                 DataAccessManager dataAccessManager = new DataAccessManager();
                 var doctorList = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
+                List<string> doctorIds = doctorList.Tables[0]
+                .AsEnumerable()
+                .Select(row => row["ID"].ToString())
+                .ToList();
+                var tokenList = LoadNextToken(doctorIds);
                 objResult.GenderList = genderList;
                 objResult.DoctorList = doctorList.Tables[1];
                 objResult.AppointmentList = pagedEvents;
                 objResult.AllStatusList = appointmentStatusCounts;
-                objResult.DoctorCalander = doctorList.Tables[0];
+                objResult.AssignedDoctor = doctorList.Tables[0];
                 objResult.IsShowDoctorIds = isShowDoctorId;
                 objResult.ClinicList = companyInfo;
                 objResult.BloodList = bloodList;
                 objResult.ServiceType = consultationService;
-                objResult.TokenNo = nextToken.ToString();
+                objResult.TokenList = tokenList;
                 objResult.IsBackDatedAppointment = isBackDatedAppointment;
                 objResult.TotalRecord = totalRecords;
                 objResult.Reminderlist = reminders;
@@ -2203,17 +2197,6 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
     .Where(s => s.CompanyId == CompanyID)
     .Select(s => new { s.ID, s.ServiceName, s.Price, s.TotalSessions, s.CategoryId })
     .ToListAsync();
-                var maxCompanyToken = await _adm_companyService.Queryable()
-    .Where(c => c.ID == CompanyID)
-    .Select(c => (int?)c.TokenNo) // nullable to handle empty table
-    .MaxAsync() ?? 0;
-                var nextToken = await _service.Queryable()
-    .Where(mf => mf.CompanyId == CompanyID
-              && DbFunctions.TruncateTime(mf.AppointmentDate) == DbFunctions.TruncateTime(DateTime.Now))
-    .Select(mf => (int?)mf.TokenNo)
-    .MaxAsync() ?? maxCompanyToken;
-
-                nextToken += 1;
 
                 var isBackDatedAppointment = await _adm_companyService.Queryable()
     .Where(c => c.ID == CompanyID)
@@ -2263,16 +2246,21 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 ht.Add("@UserId", userId);
                 DataAccessManager dataAccessManager = new DataAccessManager();
                 var doctorList = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
+                List<string> doctorIds = doctorList.Tables[0]
+                .AsEnumerable()
+                .Select(row => row["ID"].ToString())
+                .ToList();
+                var tokenList = LoadNextToken(doctorIds);
                 objResult.GenderList = genderList;
                 objResult.DoctorList = doctorList.Tables[1];
                 objResult.AppointmentList = pagedEvents;
                 objResult.AllStatusList = appointmentStatusCounts;
-                objResult.DoctorCalander = doctorList.Tables[0];
+                objResult.AssignedDoctor = doctorList.Tables[0];
                 objResult.IsShowDoctorIds = isShowDoctorId;
                 objResult.ClinicList = companyInfo;
                 objResult.BloodList = bloodList;
                 objResult.ServiceType = consultationService;
-                objResult.TokenNo = nextToken.ToString();
+                objResult.TokenList = tokenList;
                 objResult.IsBackDatedAppointment = isBackDatedAppointment;
                 objResult.TotalRecord = totalRecords;
                 objResult.Reminderlist = reminders;
@@ -2295,67 +2283,19 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 int userid = Convert.ToInt32(Request.LoginID());
                 DateTime todayDate = Convert.ToDateTime(new DateTime());
                 var CompanyID = Request.CompanyID();
-                var role = _adm_user_companyService.Queryable()
- .Where(u => u.UserID == userid && u.CompanyID == CompanyID)
- .Select(u => u.adm_role_mf.RoleName)
- .FirstOrDefault();
-                var doctorUsers = _adm_user_companyService.Queryable()
-        .Where(u => u.CompanyID == CompanyID && u.adm_role_mf.RoleName == "Doctor")
-        .Select(u => u.adm_user_mf)
-        .OrderBy(u => u.ID)
-        .ToList();
-                var doctors = doctorUsers.Select(mf =>
-                {
-                    var emp = _pr_employee_mfService.Queryable().FirstOrDefault(e => e.ID == mf.EmployeeID);
-
-                    return (object)new
-                    {
-                        ID = mf.ID,
-                        Name = mf.Name,
-                        DrugMode = mf.DrugMode,
-                        StartTime = emp != null ? emp.StartTime : null,
-                        EndTime = emp != null ? emp.EndTime : null,
-                        SlotTime = mf.SlotTime,
-                        WDSunday = emp?.WDSunday ?? false,
-                        WDMonday = emp?.WDMonday ?? false,
-                        WDTuesday = emp?.WDTuesday ?? false,
-                        WDWednesday = emp?.WDWednesday ?? false,
-                        WDThursday = emp?.WDThursday ?? false,
-                        WDFriday = emp?.WDFriday ?? false,
-                        WDSaturday = emp?.WDSaturday ?? false,
-                        IsShowDoctor = mf.IsShowDoctor,
-                        IsDoctor = false,
-                        Qualification = mf.Qualification,
-                        Designation = mf.Designation,
-                        PhoneNo = mf.PhoneNo,
-                        Footer = mf.RepotFooter,
-                        TemplateId = mf.TemplateId,
-                        QualificationUrdu = mf.QualificationUrdu,
-                        DesignationUrdu = mf.DesignationUrdu,
-                        NameUrdu = mf.NameUrdu,
-                        HeaderDescription = mf.HeaderDescription,
-                        HeaderDescriptionUrdu = mf.HeaderDescriptionUrdu,
-                        IsOverLap = mf.IsOverLap
-                    };
-                }).ToList();
-                List<object> result;
-                if (role == "Administrator")
-                {
-                    result = doctors;
-                }
-                else if (role == "Doctor")
-                {
-                    result = doctors.Where(d => ((dynamic)d).ID == userid).ToList<object>();
-                }
-                else
-                {
-                    result = doctors;
-                }
-
-
+                var ht = new Hashtable();
+                ht.Add("@CompanyId", CompanyID);
+                ht.Add("@UserId", userid);
+                DataAccessManager dataAccessManager = new DataAccessManager();
+                var doctorList = dataAccessManager.GetDataSet("SP_GetDoctorList", ht);
+                List<string> doctorIds = doctorList.Tables[0]
+                .AsEnumerable()
+                .Select(row => row["ID"].ToString())
+                .ToList();
+                var tokenList = LoadNextToken(doctorIds);
                 var ServiceType = _emr_service_mfService.Queryable().Where(e => e.CompanyId == CompanyID && e.ServiceName == "Consultation")
                  .Select(a => new { a.ID, a.ServiceName, a.Price }).FirstOrDefault();
-                decimal TokenNo = GetNextToken(CompanyID);
+              
                 var StatusList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 1 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
                 {
                     ID = m.ID,
@@ -2379,9 +2319,9 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {
-                    DoctorList = result,
+                    DoctorList = doctorList.Tables[1],
                     ServiceType = ServiceType,
-                    TokenNo = TokenNo,
+                    TokenList = tokenList,
                     StatusList = StatusList,
                     PatientObj = PatientObj,
                     reminderlist = reminderlist,
@@ -2394,6 +2334,60 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 Logger.Trace.Error(ex);
             }
             return objResponse;
+        }
+        public class DoctorTokenInfo
+        {
+            public string DoctorId { get; set; }
+            public int NextToken { get; set; }
+        }
+
+        public List<DoctorTokenInfo> LoadNextToken(List<string> doctorIds)
+        {
+            if (doctorIds == null || doctorIds.Count == 0)
+                return new List<DoctorTokenInfo>();
+
+            var companyID = Request.CompanyID();
+
+            int maxCompanyToken = _adm_companyService.Queryable()
+                .Where(cm => cm.ID == companyID)
+                .Max(cm => (int?)cm.TokenNo) ?? 0;
+
+            var today = DateTime.Today;
+            var tomorrow = today.AddDays(1);
+
+            var appointments = _service.Queryable()
+                .Where(mf =>
+                    mf.CompanyId == companyID &&
+                    mf.AppointmentDate >= today &&
+                    mf.AppointmentDate < tomorrow &&
+                    doctorIds.Contains(mf.DoctorId.ToString()))
+                .Select(mf => new
+                {
+                    DoctorId = mf.DoctorId,
+                    TokenNo = mf.TokenNo
+                })
+                .ToList();
+
+            var result = doctorIds
+                .Distinct()
+                .Select(doctorId =>
+                {
+                    int maxAppointmentToken = appointments
+                        .Where(a => a.DoctorId.ToString() == doctorId)
+                        .Max(a => (int?)a.TokenNo) ?? 0;
+
+                    return new DoctorTokenInfo
+                    {
+                        DoctorId = doctorId,
+                        NextToken = Math.Max(
+                            maxAppointmentToken,
+                            maxCompanyToken
+                        ) + 1
+                    };
+                })
+                .ToList();
+
+            return result;
         }
         public int GetNextToken(decimal companyId)
         {

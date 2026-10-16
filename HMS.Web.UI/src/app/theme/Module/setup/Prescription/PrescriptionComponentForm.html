@@ -252,7 +252,7 @@
                                 <div class="form-group">
                                     <label class="required">Doctor</label>
                                     <select class="form-control form-control-sm" formControlName="DoctorId" [(ngModel)]="PrescriptionModel.DoctorId" (change)="OnChangeDoctor()">
-                                        <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                        <option *ngFor="let item of AssignedDoctor" [value]="item.ID">
                                             {{item.Name}}
                                         </option>
                                     </select>
@@ -948,7 +948,7 @@
                                         </div>
                                         <div class="col-8">
                                             <select class="form-control form-control-sm form-control-alternative" (change)="DoctorChange()" formControlName="DoctorId" [(ngModel)]="AppointmentModel.DoctorId">
-                                                <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                <option *ngFor="let item of AssignedDoctor" [value]="item.ID">
                                                     {{item.Name}}
                                                 </option>
                                             </select>
@@ -1230,7 +1230,7 @@
                                         </div>
                                         <div class="col-8">
                                             <select class="form-control form-control-sm form-control-alternative" formControlName="DoctorId" [(ngModel)]="AppointmentModel.DoctorId">
-                                                <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                <option *ngFor="let item of AssignedDoctor" [value]="item.ID">
                                                     {{item.Name}}
                                                 </option>
                                             </select>
@@ -1440,7 +1440,7 @@
                 line-height:1.5;
                 word-break:break-word;">
 
-                <div [innerHTML]="DoctorInfo.safeHeaderDescription"></div>
+                <div *ngIf="PatientRXmodel.IsShowHeader" [innerHTML]="DoctorInfo.safeHeaderDescription"></div>
 
             </div>
 
@@ -1462,13 +1462,13 @@
         font-weight:bold;
         margin-bottom:6px;
         color:#000;
-        line-height:1;">
+        line-height:1;" *ngIf="PatientRXmodel.IsShowHeader">
                     Ref.No: {{PatientRXmodel.MrNo}}
                 </div>
 
                 <!-- LOGO -->
 
-                <img *ngIf="PatientRXmodel.BrandImage"
+                <img *ngIf="PatientRXmodel.BrandImage && PatientRXmodel.IsShowHeader"
                      [src]="PatientRXmodel.BrandImage"
                      style="
             max-width:100px;
@@ -1476,7 +1476,7 @@
             object-fit:contain;
          ">
 
-                <img *ngIf="!PatientRXmodel.BrandImage"
+                <img *ngIf="!PatientRXmodel.BrandImage && PatientRXmodel.IsShowHeader"
                      src="../assets/app/media/img/icons/doctor-logo.png"
                      style="
             max-width:100px;
@@ -1485,7 +1485,7 @@
 
                 <!-- BRAND -->
                 <div>
-                    <strong style="font-size:14px; color: #000;">{{PatientRXmodel.BrandDescription}}</strong>
+                    <strong *ngIf="PatientRXmodel.IsShowHeader" style="font-size:14px; color: #000;">{{PatientRXmodel.BrandDescription}}</strong>
                 </div>
             </div>
 
@@ -1501,7 +1501,7 @@
                     word-break:break-word;
                  ">
 
-                <div [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu"></div>
+                <div *ngIf="PatientRXmodel.IsShowHeader"[innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu"></div>
 
             </div>
 
@@ -1781,7 +1781,7 @@
                 text-align:center;
                 font-size:13px;
                 color:#000;
-            " class="border-top-print">
+            " class="border-top-print" *ngIf="PatientRXmodel.IsShowHeader">
                 {{DoctorInfo.Footer}}
             </div>
 

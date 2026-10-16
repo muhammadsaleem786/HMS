@@ -77,7 +77,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     public MedicineList: any[] = [];
     public PatientVitalList: any[] = [];
     public DoctorList: any[] = [];
-    public DoctorClanderList: any[] = [];
+    public AssignedDoctor: any[] = [];
     public FutureAppList: any[] = [];
     public PreviousAppList: any[] = [];
     public BillTypeList: any[] = [];
@@ -110,6 +110,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     public ReminderList: any[] = [];
     public Followuplist: any[] = [];
     public AllStatusList: any[] = [];
+    public TokenList: any[] = [];
     public Events: any[];
     public DisabledSlot: any;
     public Resource: any[];
@@ -135,7 +136,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     public DoctorInfo = new DoctorInfo();
     public PatientRXmodel = new patientInfo();
     public PatientName: any;
-    public TokenNo: any;
     //prescription
     public BillModel = new emr_patient_bill();
     public PrescriptionModel = new emr_prescription_mf();
@@ -219,7 +219,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.AppointmentModel.ServiceId = this.ServiceType.ID;
                 this.AppointmentModel.ServiceName = this.ServiceType.ServiceName;
                 this.AppointmentModel.Price = this.ServiceType.Price;
-                this.AppointmentModel.TokenNo = this.TokenNo;
                 this.AppointmentModel.AppointmentDate = new Date();
                 this.AppointmentModel.BillDate = new Date();
                 if (this.ReminderList.length > 0)
@@ -646,7 +645,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 else
                     this.GenderList = m.GenderList;
                 this.DoctorList = m.DoctorList;
-                this.DoctorClanderList = m.DoctorCalander;
+                this.AssignedDoctor = m.AssignedDoctor;
                 this.AppointmentList = m.AppointmentList;
                 this.IsBackDatedAppointment = m.IsBackDatedAppointment;
                 if (this.AppointmentList != null) {
@@ -674,7 +673,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.ServiceList = m.ServiceType;
                 var ServiceObj = m.ServiceType.filter(z => z.ServiceName == "Consultation")[0];
                 this.ServiceType = ServiceObj;
-                this.TokenNo = m.TokenNo;
+                this.TokenList = m.TokenList;
                 if (ServiceObj != null) {
                     this.AppointmentModel.ServiceId = ServiceObj.ID;
                     this.AppointmentModel.ServiceName = ServiceObj.ServiceName;
@@ -1061,11 +1060,11 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     BindEvent() {
         this.Resource = [];
         this.Events = [];
-        if (this.DoctorClanderList != null) {
-            this.DoctorClanderList.forEach(x => {
+        if (this.AssignedDoctor != null) {
+            this.AssignedDoctor.forEach(x => {
                 let AppObj = this.AppointmentList.filter(a => a.DoctorId == x.ID);
                 let doctorobj = this.DoctorList.filter(a => a.ID == x.ID);
-                if (this.DoctorClanderList.length == this.DoctorList.length) {
+                if (this.AssignedDoctor.length == this.DoctorList.length) {
                     this.DoctorList.filter(a => a.ID == x.ID)[0].IsDoctor = true;
                 }
                 else {
@@ -1272,7 +1271,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     }
     OnClickAppointment(date: any, time: any, doctorId: any, appointmentId: any) {
 
-        var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));
+        var doctorid = this.AssignedDoctor.filter(a => a.ID == parseInt(doctorId));
         var Appobj = this.AppointmentList.filter(a => a.DoctorId == parseInt(doctorId) && a.StartDate.split("T")[1] == time && a.ID == appointmentId);
         var slotTime = new Date();
         slotTime.setHours(time.split(":")[0], time.split(":")[1], time.split(":")[2]);
@@ -1340,11 +1339,15 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     }
     SelectTime() {
         if (this.AppointmentModel.DoctorId != null && this.AppointmentModel.DoctorId != undefined) {
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == this.AppointmentModel.DoctorId);
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == this.AppointmentModel.DoctorId);
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == this.AppointmentModel.DoctorId);
             if (doctorid.length > 0) {
                 let minTime = this.formatAMPM(doctorid[0].StartTime);
                 let maxTime = this.formatAMPM(doctorid[0].EndTime);
+                if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                    this.toastr.Error("Please set the doctor's checkup duration first.")
+                    return;
+                }
                 if (doctorid[0].SlotTime != null) {
                     this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
                 }
@@ -1383,11 +1386,15 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     }
     ChnageSelectTime() {
         if (this.AppointmentModel.DoctorId != null && this.AppointmentModel.DoctorId != undefined) {
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == this.AppointmentModel.DoctorId);
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == this.AppointmentModel.DoctorId);
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == this.AppointmentModel.DoctorId);
             if (doctorid.length > 0) {
                 let minTime = this.formatAMPM(doctorid[0].StartTime);
                 let maxTime = this.formatAMPM(doctorid[0].EndTime);
+                if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                    this.toastr.Error("Please set the doctor's checkup duration first.")
+                    return;
+                }
                 if (doctorid[0].SlotTime != null) {
                     this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
                 }
@@ -1438,12 +1445,18 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     DoctorChange() {
         this.AppointmentModel.AppointmentTime = null;
         this.AppointmentModel.AppointmentTime = '';
+        var Tokenobj = this.TokenList.filter(a => a.DoctorId == this.AppointmentModel.DoctorId.toString());
+        this.AppointmentModel.TokenNo = Tokenobj[0].NextToken;
         $('#basicExample').timepicker('remove');
     }
     FollowUpSelectTime() {
         if (this.PrescriptionModel.DoctorId != null && this.PrescriptionModel.DoctorId != undefined) {
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == this.PrescriptionModel.DoctorId);
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == this.PrescriptionModel.DoctorId);
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == this.PrescriptionModel.DoctorId);
+            if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                this.toastr.Error("Please set the doctor's checkup duration first.")
+                return;
+            }
             if (doctorid[0].SlotTime != null) {
                 this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
             }
@@ -1469,8 +1482,12 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
     }
     ChnageFollowUpSelectTime() {
         if (this.PrescriptionModel.DoctorId != null && this.PrescriptionModel.DoctorId != undefined) {
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == this.PrescriptionModel.DoctorId);
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == this.PrescriptionModel.DoctorId);
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == this.PrescriptionModel.DoctorId);
+            if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                this.toastr.Error("Please set the doctor's checkup duration first.")
+                return;
+            }
             if (doctorid[0].SlotTime != null) {
                 this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
             }
@@ -1548,6 +1565,11 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         let patientBill;
         $("#ServiceSearch").autocomplete({
             source: (request, response) => {
+                if (this.AppointmentModel.PatientId == null || this.AppointmentModel.PatientId == undefined) {
+                    this.toastr.Error('Error', 'Please first select patient.');
+                    this.loader.HideLoader();
+                    return;
+                }
                 this.loader.ShowLoader();
                 this._BillingService.ServiceSearch(request.term, this.AppointmentModel.PatientId.toString()).then(m => {
                     if (m.ResultSet.result.length == 0)
@@ -1572,6 +1594,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.AppointmentModel.ServiceId = ui.item.value;
                 this.AppointmentModel.ServiceName = ui.item.label;
                 this.AppointmentModel.Price = ui.item.Price;
+                this.AppointmentModel.PaidAmount = ui.item.Price;
                 this.AppointmentModel.CategoryId = ui.item.CategoryId;
                 if (this.AppointmentModel.TotalSessions == 0) {
                     this.AppointmentModel.ConsumedSessions = ui.item.TotalSessions;
@@ -1648,11 +1671,11 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this.AppointmentDate = new Date(pndate);
     }
     AddAppointment(date: any, time: any, doctorId: any) {
-
         if (this.ControlRights.CreateRights) {
             this.AppointmentModel = new emr_Appointment();
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == parseInt(doctorId));
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == parseInt(doctorId));
+            var Tokenobj = this.TokenList.filter(a => a.DoctorId == parseInt(doctorId));
             var slotTime = new Date();
             slotTime.setHours(time.split(":")[0], time.split(":")[1], time.split(":")[2]);
             var timeA = new Date();
@@ -1661,13 +1684,12 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             timeB.setHours(doctorid[0].EndTime.split(":")[0], doctorid[0].EndTime.split(":")[1], doctorid[0].EndTime.split(":")[2]);
             if (timeA <= slotTime && timeB >= slotTime) {
                 if (this.Rights.indexOf(12) > -1) {
-
                     this.AppointmentModel.ServiceId = this.ServiceType.ID;
                     this.AppointmentModel.ServiceName = this.ServiceType.ServiceName;
                     this.AppointmentModel.Price = this.ServiceType.Price;
                     this.AppointmentModel.Discount = 0;
                     this.AppointmentModel.PaidAmount = 0;
-                    this.AppointmentModel.TokenNo = this.TokenNo;
+                    this.AppointmentModel.TokenNo = Tokenobj[0].NextToken;
                     this.AppointmentModel.StatusId = 25;
                     this.AppointmentModel.Remarks = "";
                     this.AppointmentModel.AppointmentDate = new Date();
@@ -1676,9 +1698,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
 
                     this.CalAmount();
                 }
-                if (doctorid.length > 0)
+                if (doctorid.length > 0) {
                     this.AppointmentModel.DoctorId = doctorid[0].ID;
-                else
+                    this.AppointmentModel.DoctorName = doctorid[0].Name;
+                } else
                     this.AppointmentModel.DoctorId = parseInt(doctorId);
                 this.Step = doctorid[0].SlotTime;
                 this.AppointmentModel.AppointmentDate = date;
@@ -1754,7 +1777,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             this.isDrop = false;
         }
         else {
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == parseInt(doctorId));
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == parseInt(doctorId));
             var slotTime = new Date();
             slotTime.setHours(time.split(":")[0], time.split(":")[1], time.split(":")[2]);
             var timeA = new Date();
@@ -1783,7 +1806,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.GenderList = m.ResultSet.GenderList;
 
             this.DoctorList = m.ResultSet.DoctorList.DoctList;
-            this.DoctorClanderList = m.ResultSet.DoctorCalander;
+            this.AssignedDoctor = m.ResultSet.AssignedDoctor;
             this.AppointmentList = m.ResultSet.AppointmentList;
             this.StatusList = m.AllStatusList.filter(a => a.ID != 1);
             this.AllStatusList = m.AllStatusList;
@@ -1846,7 +1869,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this.PModel.VisibleColumnInfo = "PatientName#PatientName,AppointmentTime#AppointmentTime";
         this._AppointmentService
             .GetUpdatePatientList(date.toString(), StatusID, this.PModel.CurrentPage, this.PModel.RecordPerPage, this.PModel.VisibleColumnInfo, this.PModel.SortName, this.PModel.SortOrder, this.PModel.SearchText).then(m => {
-
                 this.PModel.TotalRecord = m.TotalRecord;
                 if (this.GenderIds != null) {
                     this.GenderList = m.GenderList.filter(x => this.GenderIds.includes(x.ID));
@@ -1854,7 +1876,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 else
                     this.GenderList = m.GenderList;
                 this.DoctorList = m.DoctorList;
-                this.DoctorClanderList = m.DoctorCalander;
+                this.AssignedDoctor = m.AssignedDoctor;
                 this.AppointmentList = m.AppointmentList;
                 this.IsBackDatedAppointment = m.IsBackDatedAppointment;
                 if (this.AppointmentList != null) {
@@ -1881,7 +1903,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.MadicineTypeList = m.MadicineTypeList;
 
                 this.ServiceType = m.ServiceType[0];
-                this.TokenNo = m.TokenNo;
+                this.TokenList = m.TokenList;
                 if (m.ServiceType != null) {
                     this.AppointmentModel.ServiceId = m.ServiceType.ID;
                     this.AppointmentModel.ServiceName = m.ServiceType.ServiceName;
@@ -1920,7 +1942,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                     this.GenderList = m.GenderList;
                 this.AllStatusList = m.AllStatusList;
                 this.DoctorList = m.DoctorList;
-                this.DoctorClanderList = m.DoctorCalander;
+                this.AssignedDoctor = m.AssignedDoctor;
                 this.AppointmentList = m.AppointmentList;
                 if (this.AppointmentList != null) {
                     this.AppointmentList.forEach(x => {
@@ -2775,14 +2797,13 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this.loader.ShowLoader();
         this._ApplicationUserService.UserUpdate(this.DoctorIds.join(',')).then(m => {
             if (m.IsSuccess) {
-                debugger
                 this.toastr.Success(m.Message);
                 let date = this._CommonService.GetFormatDate(new Date());
                 let StatusID = '0';
                 this.GetPatientList(date, StatusID);
                 // this.IsShowDoctorIds = m.ResultSet.IsShowDoctorIds;
                 // this.DoctorList = m.ResultSet.DoctorList;
-                // this.DoctorClanderList = m.ResultSet.DoctorCalander;
+                // this.AssignedDoctor = m.ResultSet.AssignedDoctor;
                 // this.BindEvent();
                 // this.LoadCalendar(this.AppointmentDate);
             } else
@@ -3393,6 +3414,8 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                     this.DoctorInfo.Qualification = "";
                     this.DoctorInfo.PhoneNo = "";
                 } else {
+
+                    this.PatientRXmodel.IsShowHeader = this.DoctorInfo.IsShowHeader;
                     this.PatientRXmodel.BrandDescription = this.DoctorInfo.BrandDescription;
                     if (this.DoctorInfo.BrandImage != null)
                         this.PatientRXmodel.BrandImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.DoctorInfo.BrandImage;
@@ -3593,6 +3616,8 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                     this.DoctorInfo.Qualification = "";
                     this.DoctorInfo.PhoneNo = "";
                 } else {
+
+                    this.PatientRXmodel.IsShowHeader = this.DoctorInfo.IsShowHeader;
                     this.PatientRXmodel.BrandDescription = this.DoctorInfo.BrandDescription;
                     if (this.DoctorInfo.BrandImage != null)
                         this.PatientRXmodel.BrandImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.DoctorInfo.BrandImage;

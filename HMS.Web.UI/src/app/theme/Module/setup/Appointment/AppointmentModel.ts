@@ -137,6 +137,7 @@ export class patientInfo {
     safePlanNote: SafeHtml;
     FollowUpDate: string;
     Weight: string;
+    IsShowHeader: boolean;
 }
 export class DoctorInfo {
     Name: string;
@@ -153,7 +154,7 @@ export class DoctorInfo {
     BrandImage: string;
     DrugMode: string;
     Instruction: string;
-
+    IsShowHeader: boolean;
 }
 export class InvoiceCompanyInfo {
     CompanyName: string;

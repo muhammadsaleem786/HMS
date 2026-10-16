@@ -108,7 +108,6 @@ export class BillingComponentForm implements OnInit {
             source: (request, response) => {
                 this.loader.ShowLoader();
                 this._BillingService.PatientSearch(request.term).then(m => {
-
                     if (m.ResultSet.result.length == 0)
                         $("#PatientSearch").val('');
                     if (m.ResultSet.result.length != 0)

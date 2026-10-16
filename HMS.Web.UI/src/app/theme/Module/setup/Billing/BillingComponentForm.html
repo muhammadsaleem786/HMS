@@ -40,8 +40,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
-
-                                    <input type="text" id="PatientSearch" (click)="LoadPatient()" formControlName="PatientId" [(ngModel)]="model.PatientName" class="form-control form-control-sm form-control-alternative" placeholder="Search Patient" autocomplete="off">
+                                    <input type="text" id="PatientSearch" (click)="LoadPatient()" formControlName="PatientId" [(ngModel)]="model.PatientName" class="form-control form-control-sm form-control-alternative" placeholder="Search by name " autocomplete="off">
                                     <small class="text-danger" *ngIf="Form1.controls.PatientId.hasError('required') && submitted">
                                         This value is required.
                                     </small>

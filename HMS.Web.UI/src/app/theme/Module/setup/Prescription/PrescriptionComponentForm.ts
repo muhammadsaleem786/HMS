@@ -83,7 +83,8 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
     public ControlRights: any;
     public ComplaintList: any[] = []; public AppointmentList: any[] = [];
     public ObservationList: any[] = [];
-    public InvestigationsList: any[] = []; public DoctorClanderList: any[] = [];
+    public InvestigationsList: any[] = [];
+    public AssignedDoctor: any[] = [];
     public DiagnosisList: any[] = [];
     public RoleName: string; public DisabledSlot: any;
     public PatientRXmodel = new patientInfo();
@@ -374,7 +375,7 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                             this.ObservationList = m.ResultSet.ObservationList;
                             this.GenderList = m.ResultSet.GenderList;
                             this.DoctorList = m.ResultSet.DoctorList;
-                            this.DoctorClanderList = m.ResultSet.DoctorList;
+                            this.AssignedDoctor = m.ResultSet.AssignedDoctor;
                             this.ClinicList = m.ResultSet.ClinicList;
                             this.StatusList = m.ResultSet.StatusList;
                             this.MedicineList = m.ResultSet.MedicineList;
@@ -915,7 +916,7 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 this.PrescriptionModel.DoctorId = this.DoctorList[0].ID;
                 this.PrescriptionModel.Notes = this.DoctorList[0].Instruction;
             }
-            this.DoctorClanderList = m.ResultSet.DoctorList;
+            this.AssignedDoctor = m.ResultSet.AssignedDoctor;
             this.ClinicList = m.ResultSet.ClinicList;
             if (this.ClinicList.length == 1)
                 this.PrescriptionModel.ClinicId = this.ClinicList[0].CompanyID;
@@ -1356,11 +1357,15 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
     }
     SelectTime() {
         if (this.AppointmentModel.DoctorId != null && this.AppointmentModel.DoctorId != undefined) {
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == this.AppointmentModel.DoctorId);
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == this.AppointmentModel.DoctorId);
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == this.AppointmentModel.DoctorId);
             if (doctorid.length > 0) {
                 let minTime = this.formatAMPM(doctorid[0].StartTime);
                 let maxTime = this.formatAMPM(doctorid[0].EndTime);
+                if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                    this.toastr.Error("Please set the doctor's checkup duration first.")
+                    return;
+                }
                 if (doctorid[0].SlotTime != null) {
                     this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
                 }
@@ -1399,11 +1404,15 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
     }
     ChnageSelectTime() {
         if (this.AppointmentModel.DoctorId != null && this.AppointmentModel.DoctorId != undefined) {
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == this.AppointmentModel.DoctorId);
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == this.AppointmentModel.DoctorId);
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == this.AppointmentModel.DoctorId);
             if (doctorid.length > 0) {
                 let minTime = this.formatAMPM(doctorid[0].StartTime);
                 let maxTime = this.formatAMPM(doctorid[0].EndTime);
+                if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                    this.toastr.Error("Please set the doctor's checkup duration first.")
+                    return;
+                }
                 if (doctorid[0].SlotTime != null) {
                     this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
                 }
@@ -1453,9 +1462,12 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
     }
     FollowUpSelectTime() {
         if (this.PrescriptionModel.DoctorId != null && this.PrescriptionModel.DoctorId != undefined) {
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == this.PrescriptionModel.DoctorId);
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == this.PrescriptionModel.DoctorId);
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == this.PrescriptionModel.DoctorId);
-
+            if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                this.toastr.Error("Please set the doctor's checkup duration first.")
+                return;
+            }
             if (doctorid[0].SlotTime != null) {
                 this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
             }
@@ -1481,9 +1493,12 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
     }
     ChnageFollowUpSelectTime() {
         if (this.PrescriptionModel.DoctorId != null && this.PrescriptionModel.DoctorId != undefined) {
-            var doctorid = this.DoctorClanderList.filter(a => a.ID == this.PrescriptionModel.DoctorId);
+            var doctorid = this.AssignedDoctor.filter(a => a.ID == this.PrescriptionModel.DoctorId);
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == this.PrescriptionModel.DoctorId);
-
+            if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                this.toastr.Error("Please set the doctor's checkup duration first.")
+                return;
+            }
             if (doctorid[0].SlotTime != null) {
                 this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
             }
@@ -2142,6 +2157,7 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                     this.DoctorInfo.Qualification = "";
                     this.DoctorInfo.PhoneNo = "";
                 } else {
+                    this.PatientRXmodel.IsShowHeader = this.DoctorInfo.IsShowHeader;
                     this.PatientRXmodel.BrandDescription = this.DoctorInfo.BrandDescription;
                     if (this.DoctorInfo.BrandImage != null)
                         this.PatientRXmodel.BrandImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.DoctorInfo.BrandImage;

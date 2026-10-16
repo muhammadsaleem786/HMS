@@ -109,7 +109,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
                     List<adm_user_company> adm_userCompany = new List<adm_user_company>();
                     adm_userCompany.AddRange(Model.adm_user_company);
-
+                    var userIds = _adm_user_companyService.Queryable().Where(a => a.CompanyID == CompanyID).Select(a => a.UserID).ToList();
+                    var userobj = _service.Queryable().AsNoTracking().Where(a => userIds.Contains(a.ID)).Select(z => new
+                    {
+                        z.ID,
+                        z.ExpiryDate
+                    }).OrderByDescending(a => a.ExpiryDate).FirstOrDefault();
                     var guid = Guid.NewGuid().ToString();
                     var token = "GUID=" + guid + "&type=ApplicationUser";
                     string encrytoken = Cryptography.Encrypt(token);
@@ -138,6 +143,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Model.ForgotTokenDate = Request.DateTimes();
                     Model.MultilingualId = Model.MultilingualId;
                     Model.IsShowDoctor = adm_userID.ToString();
+                    if (userobj != null)
+                        Model.ExpiryDate = userobj.ExpiryDate;
                     Model.ObjectState = ObjectState.Added;
                     _service.Insert(Model);
 
@@ -191,9 +198,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         await _unitOfWorkAsync.SaveChangesAsync();
                         objResponse.Message = MessageStatement.Save;
                         objResponse.IsSuccess = true;
+                        var userObj = _service.Queryable().AsNoTracking().Where(a => a.ID == UserID).FirstOrDefault();
                         objResponse.ResultSet = new
                         {
-                            Model = Model
+                            Model = userObj
                         };
                         EmailService objService = new EmailService();
                         string PayrollRegion = System.Configuration.ConfigurationManager.AppSettings["PayrollRegion"].ToString();
@@ -308,15 +316,42 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
+                var LoginID = Request.LoginID();
                 var role = _adm_role_mfService.Queryable().Where(x => x.CompanyID == CompanyID).ToList();
                 var UserObj = _service.Queryable().Where(e => e.ID.ToString() == Id).Include(x => x.adm_user_company).Include(a => a.user_payment2).FirstOrDefault();
                 var employeeObj = _pr_employee_mfService.Queryable().Where(e => e.CompanyID == CompanyID && e.ID == UserObj.EmployeeID).FirstOrDefault();
+                var userData = _adm_user_companyService.Queryable()
+             .Where(a => a.CompanyID == CompanyID && a.UserID != LoginID).Select(a => new { UserID = a.UserID, RoleId = a.RoleID }).ToList();
+                var DocIdsList = _adm_role_mfService.Queryable()
+             .Where(a => a.CompanyID == CompanyID && a.RoleName == "Doctor").Select(a => a.ID).ToList();
+
+
+                var userIds = userData.Select(a => a.UserID).ToList();
+                var DoctoIds = userData.Where(a => DocIdsList.Contains(a.RoleId)).Select(z => z.UserID).ToList();
+
+
+
+
+
+                var userList = _service.Queryable().AsNoTracking().Where(a => userIds.Contains(a.ID)).Select(z => new
+                {
+                    z.ID,
+                    z.Name,
+                }).ToList();
+
+                var doctorList = userList.Where(a => DoctoIds.Contains(a.ID)).Select(z => new
+                {
+                    z.ID,
+                    z.Name,
+                }).ToList();
 
                 objResponse.ResultSet = new
                 {
                     employeeObj = employeeObj,
                     role = role,
                     UserObj = UserObj,
+                    userData = userList,
+                    doctorList = doctorList
                 };
             }
             catch (Exception ex)
@@ -460,9 +495,17 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         a.IsActivated
     })
     .FirstOrDefault();
-                var userAllow = _service.Queryable().AsNoTracking().Where(a => a.ID == UserID).FirstOrDefault();
-                var userCount = _adm_user_companyService.Queryable()
-     .Count(a => a.CompanyID == CompanyID);
+                var userlist = _adm_user_companyService.Queryable()
+             .Where(a => a.CompanyID == CompanyID).Select(a => a.UserID).ToList();
+                var userData = _service.Queryable().AsNoTracking().Where(a => userlist.Contains(a.ID)).Select(z => new
+                {
+                    z.ID,
+                    z.IsActivated,
+                    z.TotalUser
+                }).ToList();
+                var userAllow = userData.Where(a => a.ID == UserID).FirstOrDefault();
+                var userCount = userData.Count(a => a.IsActivated == true);
+
                 if (existingUser != null
     && !existingUser.IsActivated
     && Model.IsActivated
@@ -541,20 +584,47 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     objResponse.ErrorMessage = MessageStatement.BadRequest;
                     return objResponse;
                 }
-                decimal CompanyID = Request.CompanyID();
+                decimal CompanyID = Model.adm_user_company.Where(a => a.UserID == Model.ID).FirstOrDefault().CompanyID;
                 adm_user_mf admUser = new adm_user_mf();
                 List<adm_user_company> adm_userCompany = new List<adm_user_company>();
                 List<user_payment> user_paymentObj = new List<user_payment>();
+                var userIds = _adm_user_companyService.Queryable().AsNoTracking().Where(a => a.CompanyID == CompanyID).Select(a => a.UserID).ToList();
+                var userlist = _service.Queryable().AsNoTracking().Where(a => userIds.Contains(a.ID)).ToList();
+
+
                 adm_userCompany.AddRange(Model.adm_user_company);
                 user_paymentObj.AddRange(Model.user_payment2);
-                Model.adm_user_company = null;
-                Model.adm_user_company1 = null;
-                Model.user_payment = null;
-                Model.user_payment1 = null;
-                Model.user_payment2 = null;
-                Model.ObjectState = ObjectState.Modified;
-                _service.Update(Model);
-
+                foreach (var item in userlist)
+                {
+                    if (item.ID == Model.ID)
+                    {
+                        Model.adm_user_company = null;
+                        Model.adm_user_company1 = null;
+                        Model.user_payment = null;
+                        Model.user_payment1 = null;
+                        Model.user_payment2 = null;
+                        Model.ObjectState = ObjectState.Modified;
+                        _service.Update(Model);
+                    }
+                    else
+                    {
+                        item.adm_user_company = null;
+                        item.adm_user_company1 = null;
+                        item.user_payment = null;
+                        item.user_payment1 = null;
+                        item.user_payment2 = null;
+                        item.ExpiryDate = Model.ExpiryDate;
+                        item.ObjectState = ObjectState.Modified;
+                        _service.Update(item);
+                    }
+                }
+                //Model.adm_user_company = null;
+                //Model.adm_user_company1 = null;
+                //Model.user_payment = null;
+                //Model.user_payment1 = null;
+                //Model.user_payment2 = null;
+                //Model.ObjectState = ObjectState.Modified;
+                //_service.Update(Model);
                 //foreach (adm_user_company item in adm_userCompany)
                 //{
                 //    item.adm_role_mf = null;

@@ -418,6 +418,7 @@ Model?.emr_prescription_treatment
                             ID = mf.ID,
                             Name = mf.Name,
                             DrugMode = mf.DrugMode,
+                            IsShowHeader = mf.IsShowHeader,
                             StartTime = emp != null ? emp.StartTime : null,
                             EndTime = emp != null ? emp.EndTime : null,
                             SlotTime = mf.SlotTime,
@@ -452,7 +453,7 @@ Model?.emr_prescription_treatment
                     }
                     else if (role == "Doctor")
                     {
-                        result = doctors.Where(d => ((dynamic)d).ID == UserID).ToList<object>();
+                        result = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
                     }
                     else
                     {
@@ -804,6 +805,7 @@ Model?.emr_prescription_treatment
                             ID = mf.ID,
                             Name = mf.Name,
                             DrugMode = mf.DrugMode,
+                            IsShowHeader = mf.IsShowHeader,
                             StartTime = emp != null ? emp.StartTime : null,
                             EndTime = emp != null ? emp.EndTime : null,
                             SlotTime = mf.SlotTime,
@@ -838,7 +840,7 @@ Model?.emr_prescription_treatment
                     }
                     else if (role == "Doctor")
                     {
-                        result = doctors.Where(d => ((dynamic)d).ID == userid).ToList<object>();
+                        result = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
                     }
                     else
                     {
@@ -871,8 +873,8 @@ Model?.emr_prescription_treatment
                         .Where(x => !x.IsInventory)
                         .Select(x => x.Id)
                         .ToList();
-                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName = "", TypeId=a.TypeId, Type = a.sys_drop_down_value1.Value });
-                    var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName = a.adm_generic.GenericName, TypeId=a.CategoryID, Type = a.sys_drop_down_value1.Value });
+                    var medicineList = _emr_medicineService.Queryable().Where(a => a.CompanyID == CompanyID && medicineIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Medicine, GenericName = "", TypeId = a.TypeId, Type = a.sys_drop_down_value1.Value });
+                    var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == CompanyID && inventoryIds.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.Name, GenericName = a.adm_generic.GenericName, TypeId = a.CategoryID, Type = a.sys_drop_down_value1.Value });
                     var MedicineList = itemList.Union(medicineList).ToList();
 
                     objResponse.ResultSet = new
@@ -1042,7 +1044,7 @@ Model?.emr_prescription_treatment
                 var BloodList = bloodList;
                 var GenderType = genderList;
                 var DoctorList = doctorList.Tables[1];
-                var DoctorCalander = doctorList.Tables[0];
+                var AssignedDoctor = doctorList.Tables[0];
                 decimal[] IdList = null;
                 var isShowIds = isShowDoctorIds;
                 if (!string.IsNullOrWhiteSpace(isShowIds))
@@ -1053,7 +1055,7 @@ Model?.emr_prescription_treatment
                     PatientInfo = PatientInfo,
                     GenderList = GenderType,
                     DoctorList = DoctorList,
-                    DoctorCalander = DoctorCalander,
+                    AssignedDoctor = AssignedDoctor,
                     IsShowDoctorIds = IdList,
                     ClinicList = ClinicList,
                     BloodList = BloodList,
@@ -1103,7 +1105,7 @@ Model?.emr_prescription_treatment
         .Union(favoriteIds)
         .Distinct()
         .ToList();
-            var favoriteLookup = favorites.GroupBy(a=>a.ReferenceId)
+            var favoriteLookup = favorites.GroupBy(a => a.ReferenceId)
         .ToDictionary(f => f.Key, f => f.First().ID);
             var complaints = await _emr_complaintService.Queryable()
         .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
@@ -1156,7 +1158,7 @@ Model?.emr_prescription_treatment
         .Union(favoriteIds)
         .Distinct()
         .ToList();
-            var favoriteLookup = favorites.GroupBy(a=>a.ReferenceId)
+            var favoriteLookup = favorites.GroupBy(a => a.ReferenceId)
         .ToDictionary(f => f.Key, f => f.First().ID);
             var observations = await _emr_observationService.Queryable()
         .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
@@ -1209,7 +1211,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
         .Union(favoriteIds)
         .Distinct()
         .ToList();
-            var favoriteLookup = favorites.GroupBy(a=>a.ReferenceId)
+            var favoriteLookup = favorites.GroupBy(a => a.ReferenceId)
         .ToDictionary(f => f.Key, f => f.First().ID);
             var investigations = await _emr_investigationService.Queryable()
         .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
@@ -1261,7 +1263,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
        .Union(favoriteIds)
        .Distinct()
        .ToList();
-            var favoriteLookup = favorites.GroupBy(a=>a.ReferenceId)
+            var favoriteLookup = favorites.GroupBy(a => a.ReferenceId)
         .ToDictionary(f => f.Key, f => f.First().ID);
             var diagnosis = await _emr_diagnosService.Queryable()
         .Where(i => i.CompanyID == companyId && priorityIds.Contains(i.ID))
@@ -1343,7 +1345,6 @@ result?.emr_prescription_treatment
             try
             {
                 var CompanyID = Request.CompanyID();
-
                 DateTime todayDate = DateTime.UtcNow;
                 var patientNewCounts = _emr_patientService.Queryable()
     .Where(p => p.CompanyId == CompanyID)
@@ -1354,7 +1355,6 @@ result?.emr_prescription_treatment
             .Where(a => a.CompanyId == p.CompanyId && DbFunctions.TruncateTime(a.AppointmentDate) <= DbFunctions.TruncateTime(todayDate))
             .Count()
     });
-
                 var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyID == CompanyID).Include(a => a.emr_prescription_complaint).Include(a => a.emr_prescription_diagnos).Include(a => a.emr_prescription_investigation).Include(a => a.emr_prescription_observation).Include(a => a.emr_prescription_treatment).Include(a => a.emr_prescription_treatment_template)
                     .Select(z => new
                     {
@@ -1407,6 +1407,7 @@ result?.emr_prescription_treatment
                         ID = mf.ID,
                         Name = mf.Name,
                         DrugMode = mf.DrugMode,
+                        IsShowHeader = mf.IsShowHeader,
                         StartTime = emp != null ? emp.StartTime : null,
                         EndTime = emp != null ? emp.EndTime : null,
                         SlotTime = mf.SlotTime,
@@ -1441,7 +1442,7 @@ result?.emr_prescription_treatment
                 }
                 else if (role == "Doctor")
                 {
-                    doctorList = doctors.Where(d => ((dynamic)d).ID == userid).ToList<object>();
+                    doctorList = doctors.Where(d => ((dynamic)d).ID == result.DoctorId).ToList<object>();
                 }
                 else
                 {
@@ -1980,7 +1981,7 @@ result?.emr_prescription_treatment
                 var isShowIds = isShowDoctorIds;
                 if (!string.IsNullOrWhiteSpace(isShowIds))
                     IdList = isShowIds.Split(',').Select(decimal.Parse).ToArray();
-                var DoctorCalander = doctorData.Tables[0];
+                var AssignedDoctor = doctorData.Tables[0];
                 //var MedicineList = medicineList;
                 var ClinicList = companyInfo;
                 var BloodList = bloodList;
@@ -1995,7 +1996,7 @@ result?.emr_prescription_treatment
                 {
                     GenderList = GenderType,
                     DoctorList = DoctorList,
-                    DoctorCalander = DoctorCalander,
+                    AssignedDoctor = AssignedDoctor,
                     IsShowDoctorIds = IdList,
                     ClinicList = ClinicList,
                     BloodList = BloodList,

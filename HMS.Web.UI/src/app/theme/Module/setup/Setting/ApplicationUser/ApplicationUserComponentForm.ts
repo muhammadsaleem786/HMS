@@ -1,6 +1,6 @@
 ﻿import { Component, AfterViewInit, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, Renderer2 } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { ApplicationUserModel } from './ApplicationUserModel';
+import { ApplicationUserModel, AssignDoctor } from './ApplicationUserModel';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
 import { ApplicationUserService } from './ApplicationUserService';
 import { ValidationVariables } from '../../../../../AngularConfig/global';
@@ -30,6 +30,7 @@ export class ApplicationUserComponentForm implements OnInit {
     public SpecialtyList = []; public DisplayMember: string; public IsEmpFound: boolean = false;
     public keyword: string;
     public Form1: FormGroup; // our model driven form
+    public Form2: FormGroup; // our model driven form
     public submitted: boolean; // keep track on whether form is submitted
     @Output() pageClose: EventEmitter<number> = new EventEmitter<number>();
     @Input() ScreenName: string;
@@ -42,15 +43,18 @@ export class ApplicationUserComponentForm implements OnInit {
     public IsEdit: boolean = false;
     htmlContent = '';
     public model = new ApplicationUserModel();
+    public DocModel = new AssignDoctor();
     @ViewChild('closeModal') closeModal: ElementRef;
     public WasInside: boolean = false;
     public Keywords: any[] = []; public ControlRights: any;
     public TemplateList: any[] = [];
     public DrugModeList: any[] = [];
+    public UserList: any[] = [];
     public UserProfileImage: string = '';
     public BrandImage: string = ''; public CompanyObj: any;
     public IsNewImage: boolean = true;
     public IsNewBrandImage: boolean = true;
+    public DoctordynamicArray = [];
     @HostListener('click', ['$event'],)
     Clickoutdocument(event) {
         if (!this.WasInside)
@@ -135,7 +139,12 @@ export class ApplicationUserComponentForm implements OnInit {
             BrandDescription: [''],
             DrugMode: [''],
             ShowOnCalendar: [''],
+            IsShowHeader:[''],
             Pwd: ['', [Validators.required, <any>Validators.minLength(6)]],
+        });
+        this.Form2 = this._fb.group({
+            UserId: [''],
+            DoctorId: [''],          
         });
         $(".toggle-password").click(function () {
             $(this).toggleClass("fa-eye fa-eye-slash");
@@ -158,8 +167,11 @@ export class ApplicationUserComponentForm implements OnInit {
                         this.model = m.ResultSet.UserObj;
                         this.DisplayMember = "";
                         this.IsEmpFound = true;
+                        debugger
                         this.model.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescription);
                         this.model.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescriptionUrdu);
+                        this.UserList = m.ResultSet.userData;
+                        this.DoctordynamicArray = m.ResultSet.doctorList;
                         if (m.ResultSet.UserObj.BrandImage != null && m.ResultSet.UserObj.BrandImage != undefined && m.ResultSet.UserObj.BrandImage != "") {
                             this.getImageUrlNameBrand(m.ResultSet.UserObj.BrandImage);
                             this.IsNewBrandImage = false;
@@ -213,6 +225,22 @@ export class ApplicationUserComponentForm implements OnInit {
                 }
             });
         //this.phoneValidate();
+    }
+    onUserChange(userId: any) {
+        if (!userId) {
+            return;
+        }
+        this.loader.ShowLoader();
+        this._ApplicationUserService.GetDoctorAganistDoctor(userId).then(res => {
+            if (res.ResultSet != null) {
+                this.DoctordynamicArray = res.ResultSet.doctorList;
+            }
+            this.loader.HideLoader();
+
+        }).catch(() => {
+            this.loader.HideLoader();
+        });
+
     }
     onRoleChange(event) {
         var findrole = this.RoleList.filter(a => a.ID == parseInt(event) && a.RoleName == "Doctor");

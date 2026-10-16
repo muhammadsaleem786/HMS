@@ -54,11 +54,13 @@ export class DashboardForm implements OnInit {
     incomeANDexpense: any;
     public DoctorList: any[] = [];
     public StatusList: any[] = [];
+    public TokenList: any[] = [];
     public IncomeList = [];
     public ExpenseList = [];
     public MonthList = [];
     public ServiceType: any;
     public ClickValue: string;
+    public CompanyObj: any;
     @ViewChild("longContent") ModelContent: TemplateRef<any>;
     openAppointmentModal(longContent, PatientId) {
         this.loader.ShowLoader();
@@ -67,6 +69,7 @@ export class DashboardForm implements OnInit {
             if (m.IsSuccess) {
                 this.DoctorList = m.ResultSet.DoctorList;
                 this.StatusList = m.ResultSet.StatusList;
+                this.TokenList = m.ResultSet.TokenList;
                 this.AppointmentModel.PatientId = m.ResultSet.PatientObj.ID;
                 this.AppointmentModel.PatientName = m.ResultSet.PatientObj.PatientName;
                 this.AppointmentModel.CNIC = m.ResultSet.PatientObj.CNIC;
@@ -93,7 +96,8 @@ export class DashboardForm implements OnInit {
         this.loader.ShowLoader();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.PayrollRegion = this._CommonService.getPayrollRegion();
-    }
+        this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
+       }
     ngOnInit() {
         var date = new Date();
         var currentdateday = this.datePipe.transform(date, 'dd');
@@ -427,6 +431,8 @@ export class DashboardForm implements OnInit {
     DoctorChange() {
         this.AppointmentModel.AppointmentTime = null;
         this.AppointmentModel.AppointmentTime = '';
+        var Tokenobj = this.TokenList.filter(a => a.DoctorId == this.AppointmentModel.DoctorId.toString());
+        this.AppointmentModel.TokenNo = Tokenobj[0].NextToken;
         $('#basicExample').timepicker('remove');
     }
     Convert12TO24(time12h: any) {
@@ -444,6 +450,10 @@ export class DashboardForm implements OnInit {
             var doctorid = this.DoctorList.filter(a => a.ID == this.AppointmentModel.DoctorId);
             let minTime = this.formatAMPM(doctorid[0].StartTime);
             let maxTime = this.formatAMPM(doctorid[0].EndTime);
+            if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                this.toastr.Error("Please set the doctor's checkup duration first.")
+                return;
+            }
             if (doctorid[0].SlotTime != null) {
                 this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
             }

@@ -90,6 +90,7 @@ namespace HMS.Repository.Repositories.Appointment
                                Date = s.BillDate,
                                PaidAmount = s.PaidAmount,
                                Discount = s.Discount,
+                               RefundAmount = s.RefundAmount,
                                Amount = s.Price,
                                OutstandingBalance = s.OutstandingBalance,
                                CreatedBy = s.adm_user_mf.Name,
@@ -97,7 +98,7 @@ namespace HMS.Repository.Repositories.Appointment
                                AdmissionId = s.AdmissionId,
                                AppointmentId = s.AppointmentId,
                                PatientId = s.PatientId,
-                               AdmissionNo =s.ipd_admission.AdmissionNo,
+                               AdmissionNo = s.ipd_admission.AdmissionNo,
                            }).ToList().Select(z => new
                            {
                                ID = z.ID,
@@ -107,10 +108,11 @@ namespace HMS.Repository.Repositories.Appointment
                                Date = z.Date,
                                PaidAmount = z.PaidAmount,
                                Discount = z.Discount,
+                               RefundAmount = z.RefundAmount,
                                Amount = z.Amount,
                                OutstandingBalance = z.OutstandingBalance,
                                CreatedBy = z.CreatedBy,
-                               AdmissionNo=z.AdmissionNo,
+                               AdmissionNo = z.AdmissionNo,
                                DoctorId = z.DoctorId,
                                AdmissionId = z.AdmissionId,
                                AppointmentId = z.AppointmentId,
@@ -131,6 +133,7 @@ namespace HMS.Repository.Repositories.Appointment
                               Date = s.BillDate,
                               PaidAmount = s.PaidAmount,
                               Discount = s.Discount,
+                              RefundAmount = s.RefundAmount,
                               Amount = s.Price,
                               OutstandingBalance = s.OutstandingBalance,
                               CreatedBy = s.adm_user_mf.Name,
@@ -148,6 +151,7 @@ namespace HMS.Repository.Repositories.Appointment
                               Date = z.Date,
                               PaidAmount = z.PaidAmount,
                               Discount = z.Discount,
+                              RefundAmount = z.RefundAmount,
                               Amount = z.Amount,
                               OutstandingBalance = z.OutstandingBalance,
                               CreatedBy = z.CreatedBy,
@@ -166,7 +170,7 @@ namespace HMS.Repository.Repositories.Appointment
             }
             return objResult;
         }
-          public static PaginationResult BillingList(this IRepository<emr_patient_bill> repository, decimal ID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, bool IgnorePaging = false)
+        public static PaginationResult BillingList(this IRepository<emr_patient_bill> repository, decimal ID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, string PatientId, bool IgnorePaging = false)
         {
             var objResult = new PaginationResult();
             try

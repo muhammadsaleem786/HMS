@@ -303,6 +303,10 @@ export class AdmitAppointSummeryComponentList implements OnInit {
             var Appobj = this.AppointmentList.filter(a => a.DoctorId == this.AppointmentModel.DoctorId);
             let minTime = this.formatAMPM(doctorid[0].StartTime);
             let maxTime = this.formatAMPM(doctorid[0].EndTime);
+            if (doctorid[0].SlotTime == null || doctorid[0].SlotTime == undefined) {
+                this.toastr.Error("Please set the doctor's checkup duration first.")
+                return;
+            }
             if (doctorid[0].SlotTime != null) {
                 this.Step = parseInt(doctorid[0].SlotTime.split(':')[1]);
             }

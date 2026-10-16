@@ -140,7 +140,10 @@ namespace HMS.Repository.Repositories.Appointment
                                 {
                                     DoctorName = usermf.Name,
                                     DoctorId = usermf.ID,
-                                }).OrderBy(a => a.DoctorId).ToList();
+                                }).GroupBy(a => a.DoctorId)
+    .Select(g => g.FirstOrDefault())
+    .OrderBy(a => a.DoctorId)
+    .ToList();
 
 
                 objResult.DoctList = fileList.ToList();
@@ -190,7 +193,6 @@ namespace HMS.Repository.Repositories.Appointment
                     lvm.DesignationUrdu = item["DesignationUrdu"].ToString();
                     Calenderlist.Add(lvm);
                 }
-                objResult.CalenderList = Calenderlist.ToList();
                 foreach (DataRow item in result.Tables[1].Rows)
                 {
                     DoctorList lvm = new DoctorList();
@@ -216,9 +218,11 @@ namespace HMS.Repository.Repositories.Appointment
                     lvm.HeaderDescription = item["HeaderDescription"].ToString();
                     lvm.QualificationUrdu = item["QualificationUrdu"].ToString();
                     lvm.DesignationUrdu = item["DesignationUrdu"].ToString();
+                
                     Doclist.Add(lvm);
                 }
-                objResult.DoctList = Doclist.ToList();
+                objResult.CalenderList = Calenderlist.ToList();
+               objResult.DoctList = Doclist.ToList();
             }
             catch (Exception ex)
             {

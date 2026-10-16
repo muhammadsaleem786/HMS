@@ -32,6 +32,10 @@ export class ApplicationUserService {
         var data = { 'Id': Id };
         return this.http.Get(this.urlToApi + '/GetById', data).then(e => e);
     }
+    GetDoctorAganistDoctor(Id: number): Promise<any> {
+        var data = { 'Id': Id };
+        return this.http.Get(this.urlToApi + '/GetDoctorAganistDoctor', data).then(e => e);
+    }
 
     SaveOrUpdate(entity: ApplicationUserModel): Promise<any> {
         if (isNaN(entity.ID) || entity.ID == 0)

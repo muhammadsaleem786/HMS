@@ -160,7 +160,7 @@ export class AppointmentService {
         var data = { 'term': term };
         return this.http.Get(this.urlToApi + '/searchByPatientName', data).then(e => e);
     }
-    
+
     Delete(Id: string): Promise<any> {
         var data = { 'Id': Id };
         return this.http.Delete(this.urlToApi + '/Delete', data).then(e => e);
@@ -264,7 +264,7 @@ export class AppointmentService {
         var data = { 'PatientId': PatientId, 'DoctorId': DoctorId };
         return this.http.Get(this.PresurlToApiAp + '/PrintPrescription', data).then(e => e);
     }
-    
+
     PrescriptionDropdownList(): Promise<any> {
         return this.http.Get(this.MediurlToApiAp + '/Load', {});
     }

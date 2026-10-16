@@ -180,6 +180,14 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     {
                         ht.Add("@ProcedureId", DBNull.Value);
                     }
+                    if (model.DoctorId != null && model.DoctorId != 0)
+                    {
+                        ht.Add("@DoctorId", model.DoctorId);
+                    }
+                    else
+                    {
+                        ht.Add("@DoctorId", DBNull.Value);
+                    }
                     ht.Add("@CompanyId", CompanyID);
                     ht.Add("@FromeDate", Convert.ToDateTime(model.FromDate));
                     ht.Add("@ToDate", Convert.ToDateTime(model.ToDate));

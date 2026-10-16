@@ -29,9 +29,14 @@
                     </Datetime-Component>
                 </div>
             </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="">Doctor</label>
+                    <input type="text" id="DoctorSearch" (click)="LoadDoctor()" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.DoctorName" class="form-control form-control-sm form-control-alternative" placeholder="Search Doctor" autocomplete="off">
+                </div>
+            </div>
 
-            
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <div class="form-group">
                     <label for="">Service</label>
                     <input type="text" id="ProcedureSearchByName" (click)="LoadProcedure()" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.ProcedureName" placeholder="Search Procedure" autocomplete="off">
@@ -43,7 +48,7 @@
                 <button class="btn btn-primary btn-block" (click)="RunReport()">View</button>
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <label class="opacity0 d-block">Report</label>
                 <div class="dropdown float-right">
                     <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
@@ -52,8 +57,8 @@
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" (click)="DownloadPDF()">Downlaod Pdf</a>
                         <a class="dropdown-item" (click)="DownloadExcel()">Downlaod Excel</a>
-                        
-                       
+
+
                     </div>
                 </div>
             </div>
@@ -109,9 +114,9 @@
                             </td>
                         </tr>
                     </tbody>
-                    <!--<tfoot>
+                    <tfoot>
                         <tr>
-                            <td colspan="2">
+                            <td colspan="4">
                                 <strong>Total</strong>
                             </td>
                             <td class="text-right">
@@ -119,8 +124,13 @@
                                     {{total}}
                                 </strong>
                             </td>
+                            <td class="text-right">
+                                <strong>
+                                    {{totalProfit}}
+                                </strong>
+                            </td>
                         </tr>
-                    </tfoot>-->
+                    </tfoot>
                 </table>
             </div>
         </div>

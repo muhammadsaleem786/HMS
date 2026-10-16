@@ -690,7 +690,7 @@
                                                                                                                     [(ngModel)]="PrescriptionModel.DoctorId"
                                                                                                                     (change)="OnChangeDoctor()"
                                                                                                                     [disabled]="RoleName == 'Doctor' ? true : false">
-                                                                                                                <option *ngFor="let item of DoctorList"
+                                                                                                                <option *ngFor="let item of AssignedDoctor"
                                                                                                                         [value]="item.ID">
                                                                                                                     {{item.Name}}
                                                                                                                 </option>
@@ -2836,7 +2836,7 @@ v.Date
                                             <select class="form-control form-control-sm form-control-alternative"
                                                     (change)="DoctorChange()" formControlName="DoctorId"
                                                     [(ngModel)]="AppointmentModel.DoctorId">
-                                                <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                <option *ngFor="let item of AssignedDoctor" [value]="item.ID">
                                                     {{item.Name}}
                                                 </option>
                                             </select>
@@ -3061,7 +3061,10 @@ v.Date
                                         {{CompanyObj.CompanyName}}
                                     </h3>
                                     <h4 style="text-align: center; margin: 0;">
-                                        {{AppointmentModel.PatientName}}
+                                        {{AppointmentModel.DoctorName}}
+                                    </h4>
+                                    <h4 style="text-align: center; margin: 0;">
+                                      {{AppointmentModel.PatientName}}
                                     </h4>
                                     <p style="text-align: center; margin: 0;">
                                         MR#:{{AppointmentModel.MrNo}}
@@ -3231,7 +3234,7 @@ AppointmentModel.AppointmentDate|date: 'dd-MM-yy
                                             <select class="form-control form-control-sm form-control-alternative"
                                                     (change)="DoctorChange()" formControlName="DoctorId"
                                                     [(ngModel)]="AppointmentModel.DoctorId">
-                                                <option *ngFor="let item of DoctorList" [value]="item.ID">
+                                                <option *ngFor="let item of AssignedDoctor" [value]="item.ID">
                                                     {{item.Name}}
                                                 </option>
                                             </select>
@@ -3620,7 +3623,7 @@ AppointmentModel.AppointmentDate|date: 'dd-MM-yy
                 line-height:1.5;
                 word-break:break-word;">
 
-                <div [innerHTML]="DoctorInfo.safeHeaderDescription"></div>
+                <div *ngIf="PatientRXmodel.IsShowHeader" [innerHTML]="DoctorInfo.safeHeaderDescription"></div>
 
             </div>
 
@@ -3637,7 +3640,7 @@ AppointmentModel.AppointmentDate|date: 'dd-MM-yy
 
                 <!-- REF NO -->
 
-                <div style="
+                <div *ngIf="PatientRXmodel.IsShowHeader" style="
         font-size:12px;
         font-weight:bold;
         margin-bottom:6px;
@@ -3648,7 +3651,7 @@ AppointmentModel.AppointmentDate|date: 'dd-MM-yy
 
                 <!-- LOGO -->
 
-                <img *ngIf="PatientRXmodel.BrandImage"
+                <img *ngIf="PatientRXmodel.BrandImage && PatientRXmodel.IsShowHeader"
                      [src]="PatientRXmodel.BrandImage"
                      style="
             max-width:100px;
@@ -3656,7 +3659,7 @@ AppointmentModel.AppointmentDate|date: 'dd-MM-yy
             object-fit:contain;
          ">
 
-                <img *ngIf="!PatientRXmodel.BrandImage"
+                <img *ngIf="!PatientRXmodel.BrandImage && PatientRXmodel.IsShowHeader"
                      src="../assets/app/media/img/icons/doctor-logo.png"
                      style="
             max-width:100px;
@@ -3665,7 +3668,7 @@ AppointmentModel.AppointmentDate|date: 'dd-MM-yy
 
                 <!-- BRAND -->
                 <div>
-                    <strong style="font-size:14px; color: #000;">{{PatientRXmodel.BrandDescription}}</strong>
+                    <strong *ngIf="PatientRXmodel.IsShowHeader"style="font-size:14px; color: #000;">{{PatientRXmodel.BrandDescription}}</strong>
                 </div>
             </div>
 
@@ -3681,7 +3684,7 @@ AppointmentModel.AppointmentDate|date: 'dd-MM-yy
                     word-break:break-word;
                  ">
 
-                <div [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu"></div>
+                <div *ngIf="PatientRXmodel.IsShowHeader" [innerHTML]="DoctorInfo.safeHeaderDescriptionUrdu"></div>
 
             </div>
 
@@ -3992,8 +3995,8 @@ AppointmentModel.AppointmentDate|date: 'dd-MM-yy
                 text-align:center;
                 font-size:13px;
                 color:#000;
-            " class="border-top-print">
-                {{DoctorInfo.Footer}}
+            " class="border-top-print" *ngIf="PatientRXmodel.IsShowHeader">
+               {{DoctorInfo.Footer}}
             </div>
 
         </div>

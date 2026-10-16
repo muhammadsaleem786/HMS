@@ -96,6 +96,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.DoctorShare).HasColumnName("DoctorShare");
             this.Property(t => t.OwnerShare).HasColumnName("OwnerShare");
             this.Property(t => t.EmployeeID).HasColumnName("EmployeeID");
+            this.Property(t => t.IsShowHeader).HasColumnName("IsShowHeader");
             // Relationships
             this.HasOptional(t => t.sys_drop_down_value)
                 .WithMany(t => t.adm_user_mf)

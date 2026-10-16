@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using static HMS.Web.API.Areas.Appointment.Controllers.emr_appointment_mfController;
 
 namespace HMS.Web.API.Areas.Appointment.Controllers
 {
@@ -791,7 +792,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var StatusList = AllData.Tables[2];
                 var AllStatusList = AllData.Tables[3];
                 var DoctorList = AllData.Tables[4];
-                var DoctorCalander = AllData.Tables[4];
+                var AssignedDoctor = AllData.Tables[4];
+                List<string> doctorIds = AllData.Tables[4]
+                .AsEnumerable()
+                .Select(row => row["ID"].ToString())
+                .ToList();
+                var tokenList = LoadNextToken(doctorIds);
+
                 var Reminderlist = AllData.Tables[12];
                 var Followuplist = AllData.Tables[13];
                 decimal[] IdList = null;
@@ -811,13 +818,13 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 objResult.DoctorList = DoctorList;
                 objResult.AppointmentList = filteredTable;
                 objResult.AllStatusList = AllStatusList;
-                objResult.DoctorCalander = DoctorCalander;
+                objResult.AssignedDoctor = AssignedDoctor;
                 objResult.IsShowDoctorIds = IdList;
                 objResult.ClinicList = ClinicList;
                 objResult.BloodList = BloodList;
                 objResult.MedicineList = MedicineList;
                 objResult.ServiceType = ServiceType;
-                objResult.TokenNo = TokenNo.ToString();
+                objResult.TokenList = tokenList;
                 objResult.IsBackDatedAppointment = IsBackDatedAppointment;
                 objResult.TotalRecord = Convert.ToInt32(TotalRecord);
                 objResult.Reminderlist = Reminderlist;
@@ -829,7 +836,59 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             }
             return objResult;
         }
+        public List<DoctorTokenInfo> LoadNextToken(List<string> doctorIds)
+        {
+            if (doctorIds == null || doctorIds.Count == 0)
+                return new List<DoctorTokenInfo>();
 
+            var companyID = Request.CompanyID();
+
+            int maxCompanyToken = _adm_companyService.Queryable()
+                .Where(cm => cm.ID == companyID)
+                .Max(cm => (int?)cm.TokenNo) ?? 0;
+
+            var today = DateTime.Today;
+            var tomorrow = today.AddDays(1);
+
+            var appointments = _emr_appointment_mfService.Queryable()
+                .Where(mf =>
+                    mf.CompanyId == companyID &&
+                    mf.AppointmentDate >= today &&
+                    mf.AppointmentDate < tomorrow &&
+                    doctorIds.Contains(mf.DoctorId.ToString()))
+                .Select(mf => new
+                {
+                    DoctorId = mf.DoctorId,
+                    TokenNo = mf.TokenNo
+                })
+                .ToList();
+
+            var result = doctorIds
+                .Distinct()
+                .Select(doctorId =>
+                {
+                    int maxAppointmentToken = appointments
+                        .Where(a => a.DoctorId.ToString() == doctorId)
+                        .Max(a => (int?)a.TokenNo) ?? 0;
+
+                    return new DoctorTokenInfo
+                    {
+                        DoctorId = doctorId,
+                        NextToken = Math.Max(
+                            maxAppointmentToken,
+                            maxCompanyToken
+                        ) + 1
+                    };
+                })
+                .ToList();
+
+            return result;
+        }
+        public class DoctorTokenInfo
+        {
+            public string DoctorId { get; set; }
+            public int NextToken { get; set; }
+        }
         [HttpGet]
         [ActionName("MonthLoadData")]
         public ResponseInfo MonthLoadData(string fdate, string tdate, string StatusId)

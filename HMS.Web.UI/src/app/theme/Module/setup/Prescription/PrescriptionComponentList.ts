@@ -165,6 +165,7 @@ export class PrescriptionComponentList {
                     this.DoctorInfo = m.ResultSet.doctor[0];
                     if (this.DoctorInfo.BrandImage != null)
                         this.PatientRXmodel.BrandImage = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.DoctorInfo.BrandImage;
+                    this.PatientRXmodel.IsShowHeader = this.DoctorInfo.IsShowHeader;
                     this.PatientRXmodel.BrandDescription = this.DoctorInfo.BrandDescription;
                 }
                 if (this.DoctorInfo.HeaderDescription) {

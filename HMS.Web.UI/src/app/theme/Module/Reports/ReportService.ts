@@ -81,6 +81,9 @@ export class ReportService {
     } 
     DoctorswisePaymentRpt(entity: ReportModel): Promise<any> {
         return this.http.Post(this.urlToApi + '/DoctorswisePaymentRpt', entity).then(e => e);
+    }
+    DatewiseExpenseRpt(entity: ReportModel): Promise<any> {
+        return this.http.Post(this.urlToApi + '/DatewiseExpenseRpt', entity).then(e => e);
     } 
     DoctorswiseSummaryPaymentRpt(entity: ReportModel): Promise<any> {
         return this.http.Post(this.urlToApi + '/DoctorswiseSummaryPaymentRpt', entity).then(e => e);

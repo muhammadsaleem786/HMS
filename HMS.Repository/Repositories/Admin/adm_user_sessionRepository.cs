@@ -57,44 +57,47 @@ namespace HMS.Repository.Repositories.Admin
 
                 filteredData = filteredData.OrderByDescending(d => (d.ID)).AsQueryable();
                 objResult.TotalRecord = filteredData.Count();
-                if (IgnorePaging)
-                {
 
-                    objResult.DataList = filteredData
-                        .Select(s => new
-                        {
-                            s.ID,
-                            ShiftStart = s.ShiftStartTime,
-                            ShiftEnd = s.ShiftEndTime,
-                            StartingCash = s.StartingCash,
-                            TransactionsCount = s.TransactionsCount,
-                            TotalCollection = s.TotalCollection,
-                            ClosingComments = s.ClosingComments,
-                            OpeningComments = s.OpeningComments,
-                            ClosingBalance = s.ClosingBalance,
-                            Name = s.adm_user_mf.Name,
-                            UserId=s.UserId
-                        }).ToList<object>();
-                }
-                else
-                {
+                var query = IgnorePaging
+    ? filteredData
+    : filteredData
+        .Skip(PFilter.SkipRecord)
+        .Take(PFilter.TakeRecord);
+                var sessions = query
+   .Select(s => new
+   {
+       s.ID,
+       s.ShiftStartTime,
+       s.ShiftEndTime,
+       s.StartingCash,
+       s.TransactionsCount,
+       s.TotalCollection,
+       s.ClosingComments,
+       s.OpeningComments,
+       s.ClosingBalance,
+       Name = s.adm_user_mf.Name,
+       s.UserId
+   })
+   .ToList();
+                objResult.DataList = sessions
+    .Select(s => new
+    {
+        s.ID,
+        ShiftStart = s.ShiftStartTime.AddHours(5),
+        ShiftEnd = s.ShiftEndTime.HasValue
+            ? s.ShiftEndTime.Value.AddHours(5).ToString()
+            : null,
+        s.StartingCash,
+        s.TransactionsCount,
+        s.TotalCollection,
+        s.ClosingComments,
+        s.OpeningComments,
+        s.ClosingBalance,
+        s.Name,
+        s.UserId
+    })
+    .ToList<object>();
 
-                    objResult.DataList = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
-                       .Select(s => new
-                       {
-                           s.ID,
-                           ShiftStart = s.ShiftStartTime,
-                           ShiftEnd = s.ShiftEndTime,
-                           StartingCash = s.StartingCash,
-                           TransactionsCount = s.TransactionsCount,
-                           TotalCollection = s.TotalCollection,
-                           ClosingComments = s.ClosingComments,
-                           OpeningComments = s.OpeningComments,
-                           ClosingBalance = s.ClosingBalance,
-                           Name = s.adm_user_mf.Name,
-                           UserId = s.UserId
-                       }).ToList<object>();
-                }
             }
             catch (Exception ex)
             {
@@ -189,44 +192,48 @@ namespace HMS.Repository.Repositories.Admin
 
                 filteredData = filteredData.OrderByDescending(d => (d.ID)).AsQueryable();
                 objResult.TotalRecord = filteredData.Count();
-                if (IgnorePaging)
-                {
 
-                    objResult.DataList = filteredData
-                        .Select(s => new
-                        {
-                            s.ID,
-                            ShiftStart = s.ShiftStartTime,
-                            ShiftEnd = s.ShiftEndTime,
-                            StartingCash = s.StartingCash,
-                            TransactionsCount = s.TransactionsCount,
-                            TotalCollection = s.TotalCollection,
-                            ClosingComments = s.ClosingComments,
-                            OpeningComments = s.OpeningComments,
-                            ClosingBalance = s.ClosingBalance,
-                            Name = s.adm_user_mf.Name,
-                            UserId = s.UserId
-                        }).ToList<object>();
-                }
-                else
-                {
+                var query = IgnorePaging
+    ? filteredData
+    : filteredData
+        .Skip(PFilter.SkipRecord)
+        .Take(PFilter.TakeRecord);
+                var sessions = query
+    .Select(s => new
+    {
+        s.ID,
+        s.ShiftStartTime,
+        s.ShiftEndTime,
+        s.StartingCash,
+        s.TransactionsCount,
+        s.TotalCollection,
+        s.ClosingComments,
+        s.OpeningComments,
+        s.ClosingBalance,
+        Name = s.adm_user_mf.Name,
+        s.UserId
+    })
+    .ToList();
 
-                    objResult.DataList = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
-                       .Select(s => new
-                       {
-                           s.ID,
-                           ShiftStart = s.ShiftStartTime,
-                           ShiftEnd = s.ShiftEndTime,
-                           StartingCash = s.StartingCash,
-                           TransactionsCount = s.TransactionsCount,
-                           TotalCollection = s.TotalCollection,
-                           ClosingComments = s.ClosingComments,
-                           OpeningComments = s.OpeningComments,
-                           ClosingBalance = s.ClosingBalance,
-                           Name = s.adm_user_mf.Name,
-                           UserId = s.UserId
-                       }).ToList<object>();
-                }
+
+                objResult.DataList = sessions
+      .Select(s => new
+      {
+          s.ID,
+          ShiftStart = s.ShiftStartTime.AddHours(5),
+          ShiftEnd = s.ShiftEndTime.HasValue
+              ? s.ShiftEndTime.Value.AddHours(5).ToString()
+              : null,
+          s.StartingCash,
+          s.TransactionsCount,
+          s.TotalCollection,
+          s.ClosingComments,
+          s.OpeningComments,
+          s.ClosingBalance,
+          s.Name,
+          s.UserId
+      })
+      .ToList<object>();
             }
             catch (Exception ex)
             {

@@ -24,6 +24,7 @@ import { ClinicwiseComponentRptForm } from '../../../theme/Module/HTMLReports/Do
 import { DateWisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DateWisePaymentComponentRptForm';
 import { PaymentSummaryComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/PaymentSummaryComponentRptForm';
 import { PatientWisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/PatientWisePaymentComponentRptForm';
+import { ExpenseComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/ExpenseComponentRptForm';
 import { CurrentStockRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/CurrentStockRptForm';
 import { SaleByPatientRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/SaleByPatientRptForm';
 import { PurchaseRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/PurchaseRptForm';
@@ -38,7 +39,7 @@ import { UserShareComponentRptForm } from '../../../theme/Module/HTMLReports/Doc
         CashFlowRptForm, MedicinewiseRptForm, OutstandingIncomeRptForm, PaymentSummaryRptForm, TreatmentwiseRptForm,
         BirthdayComponentRptForm, DetailedPatientComponentRptForm, FollowupComponentRptForm, OutstandingComponentRptForm, PaymentComponentRptForm,
         ClinicwiseComponentRptForm, PaymentSummaryComponentRptForm, PatientWisePaymentComponentRptForm, DateWisePaymentComponentRptForm,
-        UserShareComponentRptForm,PatientDetailComponentForm, ProfitLossRptForm, CurrentStockRptForm, SaleByPatientRptForm, ProcedureComponentRptForm, FeeComponentForm, AppointmentComponentReportForm, PurchaseRptForm
+        UserShareComponentRptForm,ExpenseComponentRptForm,PatientDetailComponentForm, ProfitLossRptForm, CurrentStockRptForm, SaleByPatientRptForm, ProcedureComponentRptForm, FeeComponentForm, AppointmentComponentReportForm, PurchaseRptForm
     ],
     providers: [
         CookieService,

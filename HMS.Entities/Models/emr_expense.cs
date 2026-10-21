@@ -25,8 +25,11 @@ namespace HMS.Entities.Models
         public string EmployeeName { get; set; }
         [NotMapped]
         public string VendorName { get; set; }
+        [NotMapped]
+        public string DoctorName { get; set; }
         public decimal Amount { get; set; }
         public decimal ClinicId { get; set; }
+        public int? DoctorId { get; set; }
         public Nullable<System.DateTime> InvoiceDate { get; set; }
         public string InvoiceNumber { get; set; }
         public string Vendor { get; set; }

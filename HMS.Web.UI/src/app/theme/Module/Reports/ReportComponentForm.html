@@ -158,6 +158,14 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="row">
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(125)>-1">
+                                    <a class="report_block" routerLink="/home/DocExpenseRpt">
+                                        <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
+                                        <span class="title">
+                                            Date Wise Expense Report
+                                        </span>
+                                    </a>
+                                </div>
                                 <div class="col-sm-3" *ngIf="Rights.indexOf(35)>-1">
                                     <a class="report_block" routerLink="/home/DoctorswiseRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
@@ -186,7 +194,7 @@
                                     <a class="report_block" routerLink="/home/UserShareRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
                                         <span class="title">
-                                           Doctor Share Report
+                                            Doctor Share Report
                                         </span>
                                     </a>
                                 </div>

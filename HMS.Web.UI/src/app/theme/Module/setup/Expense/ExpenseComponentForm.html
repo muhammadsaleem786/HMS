@@ -16,7 +16,21 @@
         <div class="col-sm-12">
             <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
                 <div class="row justify-content-between">
+
                     <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-4 text-right">
+                                <label>
+                                    Doctor
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <input type="text" id="DoctorSearch" (click)="LoadDoctor()" formControlName="DoctorId" [(ngModel)]="model.DoctorName" class="form-control form-control-sm form-control-alternative" placeholder="Search Doctor" autocomplete="off">
+
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-4 text-right">
                                 <label>
@@ -165,7 +179,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
-                                    <input type="text" id="EmployeeSearchByName" formControlName="EmployeeId" [(ngModel)]="model.EmployeeName"(click)="EmployeeSearchableDropdown()" class="form-control form-control-sm form-control-alternative" placeholder="Search Employee">
+                                    <input type="text" id="EmployeeSearchByName" formControlName="EmployeeId" [(ngModel)]="model.EmployeeName" (click)="EmployeeSearchableDropdown()" class="form-control form-control-sm form-control-alternative" placeholder="Search Employee">
                                 </div>
                             </div>
                         </div>
@@ -175,7 +189,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
-                                    <input type="text" id="VendorSearchByName" formControlName="VendorId" [(ngModel)]="model.VendorName"(click)="VendorSearchableDropdown()" class="form-control form-control-sm form-control-alternative" placeholder="Search Vendor">
+                                    <input type="text" id="VendorSearchByName" formControlName="VendorId" [(ngModel)]="model.VendorName" (click)="VendorSearchableDropdown()" class="form-control form-control-sm form-control-alternative" placeholder="Search Vendor">
                                 </div>
                             </div>
                         </div>

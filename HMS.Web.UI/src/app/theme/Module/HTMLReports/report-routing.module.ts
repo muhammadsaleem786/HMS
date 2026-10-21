@@ -19,6 +19,7 @@ import { ClinicwiseComponentRptForm } from '../../../theme/Module/HTMLReports/Do
 import { DateWisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/DateWisePaymentComponentRptForm';
 import { PaymentSummaryComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/PaymentSummaryComponentRptForm';
 import { PatientWisePaymentComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/PatientWisePaymentComponentRptForm';
+import { ExpenseComponentRptForm } from '../../../theme/Module/HTMLReports/DoctorReport/ExpenseComponentRptForm';
 import { CurrentStockRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/CurrentStockRptForm';
 import { SaleByPatientRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/SaleByPatientRptForm';
 import { PurchaseRptForm } from '../../../theme/Module/HTMLReports/InventoryReport/PurchaseRptForm';
@@ -51,6 +52,7 @@ const routes: Routes = [
             { path: 'DoctorswiseRpt', component: DateWisePaymentComponentRptForm, canActivate: [AuthGuard] },
             { path: 'PurRpt', component: PurchaseRptForm, canActivate: [AuthGuard] },
             { path: 'DocPaymentRpt', component: PatientWisePaymentComponentRptForm, canActivate: [AuthGuard] },
+            { path: 'DocExpenseRpt', component: ExpenseComponentRptForm, canActivate: [AuthGuard] },
             { path: 'UserShareRpt', component: UserShareComponentRptForm, canActivate: [AuthGuard] },
               
         ]

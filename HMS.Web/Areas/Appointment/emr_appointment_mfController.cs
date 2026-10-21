@@ -331,7 +331,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                                 ID = mf.ID,
                                 Name = mf.Name,
                                 DrugMode = mf.DrugMode,
-                                IsShowHeader=mf.IsShowHeader,
+                                IsShowHeader = mf.IsShowHeader,
                                 StartTime = emp != null ? emp.StartTime : null,
                                 EndTime = emp != null ? emp.EndTime : null,
                                 SlotTime = mf.SlotTime,
@@ -360,19 +360,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                                 Instruction = mf.Instruction,
                             };
                         }).ToList();
-
-                        if (role == "Administrator")
-                        {
-                            doctorResult = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
-                        }
-                        else if (role == "Doctor")
-                        {
-                            doctorResult = doctors.Where(d => ((dynamic)d).ID == UserID).ToList<object>();
-                        }
-                        else
-                        {
-                            doctorResult = doctors;
-                        }
+                        doctorResult = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>(); ;
                     }
                     if (Model.ReminderId != null)
                     {
@@ -596,7 +584,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                                 ID = mf.ID,
                                 Name = mf.Name,
                                 DrugMode = mf.DrugMode,
-                                IsShowHeader=mf.IsShowHeader,
+                                IsShowHeader = mf.IsShowHeader,
                                 StartTime = emp != null ? emp.StartTime : null,
                                 EndTime = emp != null ? emp.EndTime : null,
                                 SlotTime = mf.SlotTime,
@@ -625,19 +613,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                                 Instruction = mf.Instruction,
                             };
                         }).ToList();
-
-                        if (role == "Administrator")
-                        {
-                            doctorResult = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
-                        }
-                        else if (role == "Doctor")
-                        {
-                            doctorResult = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
-                        }
-                        else
-                        {
-                            doctorResult = doctors;
-                        }
+                        doctorResult = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>(); ;
                     }
                     var CurntPrevDate = _service.Queryable().Where(a => a.CompanyId == CompanyID && a.PatientId == Model.PatientId).Select(z => new
                     {
@@ -2295,7 +2271,7 @@ decimal patientId, ICollection<emr_prescription_investigation> emr_Prescription_
                 var tokenList = LoadNextToken(doctorIds);
                 var ServiceType = _emr_service_mfService.Queryable().Where(e => e.CompanyId == CompanyID && e.ServiceName == "Consultation")
                  .Select(a => new { a.ID, a.ServiceName, a.Price }).FirstOrDefault();
-              
+
                 var StatusList = _sys_drop_down_valueService.Queryable().Where(a => a.DropDownID == 1 && (a.CompanyID == CompanyID || a.CompanyID == null)).Select(m => new
                 {
                     ID = m.ID,

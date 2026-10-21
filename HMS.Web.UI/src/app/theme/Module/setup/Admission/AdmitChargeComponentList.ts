@@ -120,6 +120,7 @@ export class AdmitChargeComponentList implements OnInit {
                 if (result.IsSuccess) {
                     this.toastr.Success(result.Message);
                     this.loader.HideLoader();
+                    this.GetCharge();
                 }
                 else {
                     this.toastr.Error('Error', result.ErrorMessage);

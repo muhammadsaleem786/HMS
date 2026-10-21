@@ -40,9 +40,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
         private readonly Iadm_user_sessionService _adm_user_sessionService;
         private readonly Ipr_employee_mfService _pr_employee_mfService;
         private readonly Ipur_vendorService _pur_vendorService;
+        private readonly Iemr_patientService _emr_patientService;
         public emr_expenseController(IUnitOfWorkAsync unitOfWorkAsync, Iemr_medicineService emr_medicineService, Iadm_companyService adm_companyService, Iemr_expenseService service, Iadm_userService adm_userService, Iemr_appointment_mfService emr_appointment_mfService, Iadm_user_companyService adm_user_companyService,
             Iadm_role_mfService adm_role_mfService, Iadm_user_tokenService adm_user_tokenService, Isys_drop_down_valueService sys_drop_down_valueService,
-            Isys_notification_alertService sys_notification_alertService, Iadm_user_sessionService adm_user_sessionService, Ipr_employee_mfService pr_employee_mfService, Ipur_vendorService pur_vendorService)
+            Iemr_patientService emr_patientService,Isys_notification_alertService sys_notification_alertService, Iadm_user_sessionService adm_user_sessionService, Ipr_employee_mfService pr_employee_mfService, Ipur_vendorService pur_vendorService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
             _service = service;
@@ -58,6 +59,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             _adm_user_sessionService = adm_user_sessionService;
             _pr_employee_mfService = pr_employee_mfService;
             _pur_vendorService = pur_vendorService;
+            _emr_patientService = emr_patientService;
         }
         private bool IsUserShiftOpen(decimal userID, decimal companyID, out string errorMessage)
         {
@@ -252,12 +254,18 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             try
             {
                 var CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                var DoctorList = _emr_patientService.DoctorList(CompanyID, UserID);
+
                 var result = _service.Queryable().Where(e => e.ID.ToString() == Id && e.CompanyId==CompanyID).FirstOrDefault();
                 var employee = _pr_employee_mfService.Queryable().Where(a => a.CompanyID == CompanyID && a.ID == result.EmployeeId).FirstOrDefault();
                 var vendor = _pur_vendorService.Queryable().Where(a => a.CompanyID == CompanyID && a.ID == result.VendorId).FirstOrDefault();
                 result.EmployeeName = employee != null? $"{employee.FirstName} {employee.LastName}": string.Empty;
                 result.VendorName = vendor != null? $"{vendor.FirstName} {vendor.LastName}": string.Empty;
-
+                result.DoctorName = result.DoctorId == 0
+                        ? ""
+                        : DoctorList.DoctList
+                            .FirstOrDefault(a => a.ID == result.DoctorId)?.Name ?? "";
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {

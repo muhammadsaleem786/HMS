@@ -742,6 +742,79 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 return objResponse;
             }
         }
+        [HttpPost]
+        [ActionName("DatewiseExpenseRpt")]
+        public ResponseInfo DatewiseExpenseRpt(ReportModel model)
+        {
+            {
+                var objResponse = new ResponseInfo();
+                try
+                {
+                    decimal CompanyID = Request.CompanyID();
+                    // =========================
+                    // Doctor List
+                    // =========================
+                    var doctorList = _service.Queryable()
+                        .Select(x => new
+                        {
+                            x.ID,
+                            x.Name
+                        }).ToList();
+                    // =========================
+                    // Expense
+                    // =========================
+                    var xpense = _emr_expenseService.Queryable()
+           .Where(a => a.CompanyId == CompanyID &&
+                  DbFunctions.TruncateTime(a.Date) >= DbFunctions.TruncateTime(model.FromDate) &&
+                  DbFunctions.TruncateTime(a.Date) <= DbFunctions.TruncateTime(model.ToDate))
+           .Select(a => new
+           {
+               ID = a.ID,
+               CompanyName = a.adm_company.CompanyName,
+               PaidAmount = a.Amount,
+               DoctorId = (decimal)a.DoctorId,
+               Date = a.Date,
+               Category = a.sys_drop_down_value.Value,
+               Type = "Expense"
+           })
+           .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
+           .ToList();
+                    
+                    // =========================
+                    // Combine All Results
+                    // =========================
+                    var allData = xpense
+            .Select(a => new 
+            {
+                ID = a.ID,
+                DoctorName = doctorList
+                    .Where(z => z.ID == a.DoctorId)
+                    .Select(z => z.Name)
+                    .FirstOrDefault() ?? "",
+                CompanyName = a.CompanyName,
+                PaidAmount = a.PaidAmount,
+                DoctorId = a.DoctorId,
+                Date = a.Date,
+                Type = a.Type,
+                Category=a.Category
+            })
+            .OrderByDescending(x => x.Date)
+            .ToList();
+                    objResponse.IsSuccess = true;
+                    objResponse.ResultSet = new
+                    {
+                        FeeList = allData
+                    };
+                }
+                catch (Exception ex)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = ex.Message;
+                    Logger.Trace.Error(ex);
+                }
+                return objResponse;
+            }
+        }
         public class DoctorWisePaymentVM
         {
             public decimal ID { get; set; }
@@ -1459,7 +1532,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     .Select(z => new AdmUserShareVM
     {
         DoctorId = z.DoctorId,
-        ServiceId = z.ServiceId??0,
+        ServiceId = z.ServiceId ?? 0,
         DoctorShare = z.DoctorShare,
         OwnerShare = z.OwnerShare,
         Category = z.Category,
@@ -1624,7 +1697,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         .OrderByDescending(x => x.Date)
         .ToList();
 
-                
+
                 objResponse.IsSuccess = true;
                 objResponse.ResultSet = new
                 {
@@ -1666,13 +1739,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     item.ShareAmount * share.DoctorShare / 100m;
 
                 item.OwnerShare =
-                    (item.ShareAmount *Convert.ToDecimal(share.OwnerShare) / 100m).ToString();
+                    (item.ShareAmount * Convert.ToDecimal(share.OwnerShare) / 100m).ToString();
             }
             else if (share.SharedMethod == "Fixed")
             {
                 item.DoctorShare = share.DoctorShare;
 
-                item.OwnerShare =(item.ShareAmount - item.DoctorShare).ToString();
+                item.OwnerShare = (item.ShareAmount - item.DoctorShare).ToString();
             }
         }
         public class AdmUserShareVM

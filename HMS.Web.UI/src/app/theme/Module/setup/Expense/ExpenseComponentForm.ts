@@ -3,6 +3,7 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { emr_expense } from './ExpenseModel';
 import { LoaderService } from '../../../../CommonService/LoaderService';
 import { ExpenseService } from './ExpenseService';
+import { PatientService } from './../Patient/PatientService';
 import { ValidationVariables } from '../../../../AngularConfig/global';
 import { CommonService } from '../../../../CommonService/CommonService';
 import { EncryptionService } from '../../../../CommonService/encryption.service';
@@ -18,7 +19,7 @@ declare var $: any; import { debounce } from 'lodash';
     selector: 'setup-ExpenseComponentForm',
     templateUrl: './ExpenseComponentForm.html',
     moduleId: module.id,
-    providers: [ExpenseService],
+    providers: [ExpenseService, PatientService],
 })
 export class ExpenseComponentForm implements OnInit {
     public Form1: FormGroup;
@@ -50,7 +51,7 @@ export class ExpenseComponentForm implements OnInit {
     public Rights: any;
     public ControlRights: any;
     constructor(public _CommonService: CommonService, private encrypt: EncryptionService, public _fb: FormBuilder, public loader: LoaderService
-        , public _ExpenseService: ExpenseService, public commonservice: CommonService
+        , public _ExpenseService: ExpenseService, public commonservice: CommonService, public _PatientService: PatientService
         , public toastr: CommonToastrService, public route: ActivatedRoute, public _router: Router) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
@@ -76,6 +77,8 @@ export class ExpenseComponentForm implements OnInit {
             InvoiceNumber: [''],
             Vendor: [''],
             PaymentStatusId: [''],
+            DoctorId: [''],
+            DoctorName: [''],
             PaymentStatusDropdownId: [''],
             PaymentRemrks: [''],
             Attachment: [''],
@@ -166,6 +169,28 @@ export class ExpenseComponentForm implements OnInit {
             select: (event, ui) => {
                 this.model.VendorId = ui.item.value;
                 this.model.VendorName = ui.item.label;
+            }
+        });
+    }
+    LoadDoctor() {
+        $("#DoctorSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._PatientService.DoctorSearch(request.term).then(m => {
+
+                    if (m.ResultSet.result.length == 0)
+                        $("#DoctorSearch").val('');
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.model.DoctorId = ui.item.value;
+                this.model.DoctorName = ui.item.label;
+
+                return ui.item.label;
             }
         });
     }

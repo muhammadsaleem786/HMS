@@ -21,4 +21,6 @@
     EmployeeName: string;
     VendorId: number;
     VendorName: string;
+    DoctorId: number;
+    DoctorName: string;
 }

@@ -447,18 +447,9 @@ Model?.emr_prescription_treatment
                         };
                     }).ToList();
                     List<object> result;
-                    if (role == "Administrator")
-                    {
-                        result = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
-                    }
-                    else if (role == "Doctor")
-                    {
-                        result = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
-                    }
-                    else
-                    {
-                        result = doctors;
-                    }
+
+                    result = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
+
                     var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(Model.AppointmentDate)).Select(a => new
                     {
                         Measure = a.Measure,
@@ -834,18 +825,9 @@ Model?.emr_prescription_treatment
                         };
                     }).ToList();
                     List<object> result;
-                    if (role == "Administrator")
-                    {
-                        result = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
-                    }
-                    else if (role == "Doctor")
-                    {
-                        result = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
-                    }
-                    else
-                    {
-                        result = doctors;
-                    }
+
+                    result = doctors.Where(d => ((dynamic)d).ID == Model.DoctorId).ToList<object>();
+
                     var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == Model.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(Model.AppointmentDate)).Select(a => new
                     {
                         Measure = a.Measure,
@@ -1436,18 +1418,9 @@ result?.emr_prescription_treatment
                     };
                 }).ToList();
                 List<object> doctorList;
-                if (role == "Administrator")
-                {
-                    doctorList = doctors.Where(d => ((dynamic)d).ID == result.DoctorId).ToList<object>();
-                }
-                else if (role == "Doctor")
-                {
-                    doctorList = doctors.Where(d => ((dynamic)d).ID == result.DoctorId).ToList<object>();
-                }
-                else
-                {
-                    doctorList = doctors;
-                }
+
+                doctorList = doctors.Where(d => ((dynamic)d).ID == result.DoctorId).ToList<object>();
+
                 var vitallist = _emr_vitalService.Queryable().Where(a => a.CompanyID == CompanyID && a.PatientId == result.PatientId && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(result.AppointmentDate)).Select(a => new
                 {
                     Measure = a.Measure,

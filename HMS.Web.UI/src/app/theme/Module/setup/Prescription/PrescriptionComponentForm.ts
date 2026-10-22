@@ -1,6 +1,6 @@
-﻿import { Component, Input, Output, OnInit,OnDestroy, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, Directive, ChangeDetectorRef, TemplateRef } from '@angular/core';
+﻿import { Component, Input, Output, OnInit, OnDestroy, OnChanges, EventEmitter, ViewChild, ElementRef, HostListener, Directive, ChangeDetectorRef, TemplateRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'; import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
+import { VoiceRecognitionService } from './voice-recognition.service';
 import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo, InvoiceCompanyInfo, emr_notes_favorite } from './../Appointment/AppointmentModel';
 import { emr_prescription_mf, emr_prescription_complaint, emr_prescription_diagnos, emr_prescription_investigation, emr_prescription_observation, emr_prescription_treatment, emr_medicine } from './PrescriptionModel';
 import { LoaderService } from '../../../../CommonService/LoaderService';
@@ -12,7 +12,7 @@ import { CommonService } from '../../../../CommonService/CommonService';
 import { EncryptionService } from '../../../../CommonService/encryption.service';
 import { CommonToastrService } from '../../../../CommonService/CommonToastrService';
 import { IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
-import { Observable, from } from 'rxjs';
+import { Observable, from, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -124,9 +124,11 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
     @ViewChild("MedicineTemplate") MedicineTemplateContent: TemplateRef<any>; @ViewChild("longContent") ModelContent: TemplateRef<any>;
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
     @ViewChild("DeepAIModal") DeepAIModal: TemplateRef<any>;
-
-
-
+    activeVoiceField: string = '';
+    isListening = false;
+    voiceError = '';
+    private subscriptions: Subscription[] = [];
+    private clinicalNoteEditor: any;
     openAppointmentModal(longContent) {
         this.AppointmentModel = new emr_Appointment();
         this.modalService.open(longContent, { size: 'lg' });
@@ -186,7 +188,7 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
         });
     }
     constructor(public _CommonService: CommonService, public _fb: FormBuilder, public loader: LoaderService
-        , private sanitizer: DomSanitizer, public _PrescriptionService: PrescriptionService, public commonservice: CommonService, private modalService: NgbModal
+        , private voiceService: VoiceRecognitionService, private sanitizer: DomSanitizer, public _PrescriptionService: PrescriptionService, public commonservice: CommonService, private modalService: NgbModal
         , public toastr: CommonToastrService, private encrypt: EncryptionService, public route: ActivatedRoute, public _router: Router, public _AppointmentService: AppointmentService, public _SaleService: SaleService) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
@@ -551,8 +553,76 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                     this.Addtreatment();
                 }
             });
+        // voice-prescription
+        this.subscriptions.push(
+            this.voiceService.result$.subscribe(text => {
+                this.appendVoiceText(text);
+            })
+        );
+
+        this.subscriptions.push(
+            this.voiceService.listening$.subscribe(value => {
+                this.isListening = value;
+            })
+        );
+
+        this.subscriptions.push(
+            this.voiceService.error$.subscribe(error => {
+                this.voiceError = error;
+            })
+        );
+    }
+    // voice-prescription
+    startVoice(fieldName: string): void {
+        this.voiceError = '';
+
+        if (!this.voiceService.isSupported()) {
+            this.voiceError =
+                'Speech recognition is not supported in this browser.';
+            return;
+        }
+
+        this.activeVoiceField = fieldName;
+        this.voiceService.setLanguage('en-US');
+        this.voiceService.start();
+    }
+    stopVoice(): void {
+        this.voiceService.stop();
+    }
+    private appendVoiceText(text: string): void {
+        debugger;
+        if (!this.activeVoiceField || !text) {
+            return;
+        }
+        const spokenText = text.trim();
+        if (this.activeVoiceField === 'ClinicalNote') {
+            const editor = this.clinicalNoteEditor;
+            if (editor) {
+                editor.focus();
+                editor.insertText(spokenText + ' ');
+            } else {
+                const current = this.PrescriptionModel[this.activeVoiceField] || '';
+
+                this.PrescriptionModel[this.activeVoiceField] = current
+                    ? `${current} ${spokenText}`
+                    : spokenText;
+            }
+        }
+    }
+    private escapeHtml(value: string): string {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
     ngOnDestroy(): void {
+        // voice-prescription
+        this.voiceService.stop();
+        this.subscriptions.forEach(subscription => {
+            subscription.unsubscribe();
+        });
         const CKEDITOR = (window as any).CKEDITOR;
         if (!CKEDITOR || !CKEDITOR.instances) {
             return;
@@ -847,6 +917,7 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                     enterMode: (window as any).CKEDITOR.ENTER_BR,
                     shiftEnterMode: (window as any).CKEDITOR.ENTER_P,
                 });
+                this.clinicalNoteEditor = editor;
                 editor.on('change', () => {
                     const html = editor.getData();
                     this.PrescriptionModel.ClinicalNote = html;
@@ -940,7 +1011,7 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
 
     }
     Convert12TO24(time12h: any) {
-        
+
         const [time, modifier] = time12h.split(' ');
         let [hours, minutes] = time.split(':');
         //if (hours === '12') {
@@ -2231,7 +2302,7 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                         var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                         if (medicineName != null && medicineName != undefined) {
                             item.MedicineName = medicineName.Medicine;
-                            item.GenericName=medicineName.GenericName;
+                            item.GenericName = medicineName.GenericName;
                             item.MedicineType = medicineName.Type;
                             item.TypeId = medicineName.TypeId;
                         }
@@ -2250,10 +2321,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
         });
     }
     getMedicineLabel(medicine: any): string {
-      if (this.DoctorInfo.DrugMode === 'G'){
-        return medicine.GenericName || medicine.MedicineName;
-      }
-      return medicine.MedicineName;
+        if (this.DoctorInfo.DrugMode === 'G') {
+            return medicine.GenericName || medicine.MedicineName;
+        }
+        return medicine.MedicineName;
     }
     AddFavorite(val: any, Type: any) {
         if (val != undefined && val != null) {

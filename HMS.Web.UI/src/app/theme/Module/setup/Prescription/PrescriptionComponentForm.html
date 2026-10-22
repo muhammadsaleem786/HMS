@@ -190,6 +190,29 @@
             min-width: 180px;
             white-space: normal;
         }
+
+     /*voice-prescription*/
+
+    .voice-input {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+        .voice-input textarea {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .voice-input button {
+            white-space: nowrap;
+        }
+
+    .voice-error {
+        color: #dc3545;
+        margin-top: 5px;
+    }
+
 </style>
 <div class="col-sm-12 AddRoleWraper">
     <div class="row headSection paginationHead">
@@ -358,6 +381,21 @@
                                 <div class="row mt-2">
                                     <div class="col-sm-12 mt-2">
                                         <textarea #editorClinicalNote id="editorClinicalNote" name="editor1" [(ngModel)]="PrescriptionModel.ClinicalNote" formControlName="ClinicalNote"></textarea>
+                                        <button type="button"
+                                                class="btn btn-outline-primary"
+                                                (click)="startVoice('ClinicalNote')">
+                                            <i class="fa fa-microphone"></i>
+                                            Speak
+                                        </button>
+
+                                        <button type="button"
+                                                class="btn btn-outline-danger"
+                                                (click)="stopVoice()">
+                                            Stop
+                                        </button>
+                                    </div>
+                                    <div class="voice-error" *ngIf="voiceError">
+                                        {{ voiceError }}
                                     </div>
                                 </div>
                             </ng-template>
@@ -413,6 +451,7 @@
                                                 <i class="fa fa-robot mr-2"></i>
                                                 Clinical Assistant
                                             </div>
+
                                         </div>
 
                                         <div class="col-sm-3">

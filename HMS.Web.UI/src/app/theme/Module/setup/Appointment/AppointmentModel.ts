@@ -183,5 +183,11 @@ export class InvoiceCompanyInfo {
     DOB: string;
     Specialty: string;
     DepartmentType: string;
+    Temperature: string;
+    Weight: string;
+    BP: string;
+    RespiratoryRate: string;
     Sex: string;
+    HeartRate: string;
+    SPO2: string;
 } 

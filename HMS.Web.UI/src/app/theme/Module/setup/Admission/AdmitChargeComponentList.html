@@ -311,155 +311,178 @@
         </button>
     </div>
 
-    <div class="modal-body Invoice_Template" id="printBill-section" style="font-family: Arial, sans-serif; font-size: 14px; color: #555555; background: #FFFFFF;">
-        <div class="Invoice_template" style="width: 100%;">
-            <header style="padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid #AAAAAA; overflow: hidden;">
-
-                <!-- Company Logo -->
-                <div style="float: left; margin-top: 8px;" *ngIf="invoiceModel.length > 0 && invoiceModel.CompanyLogo != null">
-                    <img [src]="invoiceModel.CompanyLogo" class="img-fluid radius" style="max-width: 100px; height: 70px;">
+    <div class="modal-body" id="printBill-section" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #1a1a1a; background: #ffffff;">
+        <div style="width: 100%; background: #ffffff; color: #1a1a1a; font-family: Arial, Helvetica, sans-serif; font-size: 13px;">
+            <header style="overflow: hidden; width: 100%; padding: 4px 0 14px; margin: 0 0 18px; border-bottom: 1px solid #cfcfcf; background: #ffffff;">
+                <div style="float: left; margin-top: 4px;" *ngIf="invoiceModel.length > 0 && invoiceModel.CompanyLogo != null">
+                    <img [src]="invoiceModel.CompanyLogo" style="max-width: 88px; height: 64px; object-fit: contain; display: block;">
                 </div>
-                <div style="float: left; margin-top: 8px;" *ngIf="invoiceModel.length == 0 || invoiceModel.CompanyLogo == null">
-                    <img src="../assets/app/media/img/icons/doctor-logo.png" class="img-fluid radius" style="max-width: 100px; height: 70px;">
+                <div style="float: left; margin-top: 4px;" *ngIf="invoiceModel.length == 0 || invoiceModel.CompanyLogo == null">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" style="max-width: 88px; height: 64px; object-fit: contain; display: block;">
                 </div>
-
-                <!-- Company Details -->
-                <div style="float: right; text-align: right;">
-                    <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{invoiceModel.CompanyName}}</h2>
+                <div style="float: right; text-align: right; line-height: 1.45;">
+                    <h2 style="margin: 0 0 2px; color: #111111; font-weight: 600; font-size: 18px;">{{invoiceModel.CompanyName}}</h2>
                     <div>{{invoiceModel.CompanyAddress1}}</div>
                     <div>{{invoiceModel.Phone}}</div>
-                    <div><a href="mailto:company@example.com" style="color: #0087C3; text-decoration: none;">{{invoiceModel.Email}}</a></div>
+                    <div><a href="mailto:company@example.com" style="color: #111111; text-decoration: none;">{{invoiceModel.Email}}</a></div>
                 </div>
             </header>
 
-            <main>
-                <!-- Invoice To -->
-                <div style="margin-bottom: 50px; overflow: hidden;">
-                    <div style="padding-left: 6px; border-left: 6px solid #0087C3; float: left;">
-                        <div style="color: #777777;">INVOICE TO:</div>
-                        <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">{{invoiceModel.PatientName}}</h2>
-                        <div class="address">{{invoiceModel.Address}}</div>
-                        <div class="address">{{invoiceModel.PatientMobile}}</div>
-                        <div class="email"><a href="mailto:john@example.com" style="color: #0087C3; text-decoration: none;">{{invoiceModel.PatientEmail}}</a></div>
+            <main style="background: #ffffff;">
+                <div style="overflow: hidden; width: 100%; margin-bottom: 22px;">
+                    <div style="float: left; max-width: 58%; line-height: 1.45;">
+                        <div style="font-size: 11px; letter-spacing: 0.06em; color: #666666; margin-bottom: 2px;">INVOICE TO</div>
+                        <h2 style="margin: 0 0 2px; color: #111111; font-weight: 600; font-size: 16px;">{{invoiceModel.PatientName}}</h2>
+                        <div>{{invoiceModel.Address}}</div>
+                        <div>{{invoiceModel.PatientMobile}}</div>
+                        <div><a href="mailto:john@example.com" style="color: #111111; text-decoration: none;">{{invoiceModel.PatientEmail}}</a></div>
                     </div>
                     <div style="float: right; text-align: right;">
-                        <h1 style="color: #0087C3; font-size: 2.4em; line-height: 1em; font-weight: normal; margin: 0 0 10px 0;">{{invoiceModel.InvoiceNumber}}</h1>
-                        <div style="font-size: 1.1em; color: #777777;">Date of Invoice: {{invoiceModel.InvoiceDate |date: 'MM/dd/yyyy'}}</div>
+                        <h1 style="margin: 0 0 6px; color: #111111; font-weight: 600; font-size: 20px; line-height: 1.2;">{{invoiceModel.InvoiceNumber}}</h1>
+                        <div style="color: #444444;">Date of Invoice: {{invoiceModel.InvoiceDate |date: 'MM/dd/yyyy'}}</div>
                     </div>
                 </div>
 
-                <!-- Procedure Item Table -->
                 <div *ngIf="ProcedureItem.length>0">
-                    <h2 style="margin: 10px 0;">Procedure Item</h2>
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                    <h2 style="margin: 8px 0; color: #111111; font-weight: 600; font-size: 14px;">Procedure Item</h2>
+                    <table cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; border-spacing: 0; margin: 0 0 18px; background: #ffffff;">
                         <thead>
                             <tr>
-                                <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
-                                <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Service Name</th>
-                                <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Item</th>
-                                <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Batch</th>
-                                <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap; width: 48px;">#</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap;">Service Name</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap;">Item</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap;">Batch</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: right; vertical-align: top; white-space: nowrap;">Quantity</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let b of ProcedureItem; let i = index;">
-                                <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
-                                <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.ServiceName}}</td>
-                                <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Item}}</td>
-                                <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Batch}}</td>
-                                <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top; width: 48px;">{{i+1}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top;">{{b.ServiceName}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top;">{{b.Item}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top;">{{b.Batch}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: right; vertical-align: top; white-space: nowrap;">{{b.Quantity}}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-
-                <!-- Medicine Table -->
                 <div *ngIf="ProcedureMedicine.length>0">
-                    <h2 style="margin: 10px 0;">Medicine</h2>
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                    <h2 style="margin: 8px 0; color: #111111; font-weight: 600; font-size: 14px;">Medicine</h2>
+                    <table cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; border-spacing: 0; margin: 0 0 18px; background: #ffffff;">
                         <thead>
                             <tr>
-                                <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
-                                <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Medicine</th>
-                                <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap; width: 48px;">#</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap;">Medicine</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: right; vertical-align: top; white-space: nowrap;">Quantity</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let b of ProcedureMedicine; let i = index;">
-                                <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
-                                <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Medicine}}</td>
-                                <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top; width: 48px;">{{i+1}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top;">{{b.Medicine}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: right; vertical-align: top; white-space: nowrap;">{{b.Quantity}}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <!-- payment Table -->
+
                 <div *ngIf="ProcedurePayment.length>0">
-                    <h2 style="margin: 10px 0;">Payment</h2>
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                    <h2 style="margin: 8px 0; color: #111111; font-weight: 600; font-size: 14px;">Payment</h2>
+                    <table cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; border-spacing: 0; margin: 0 0 18px; background: #ffffff;">
                         <thead>
                             <tr>
-                                <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
-                                <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Payment Date</th>
-                                <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Note</th>
-                                <th style="padding: 20px; background: #EEEEEE; text-align: right; border-bottom: 1px solid #FFFFFF;">Amont</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap; width: 48px;">#</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap;">Payment Date</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap;">Note</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: right; vertical-align: top; white-space: nowrap;">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let b of ProcedurePayment; let i = index;">
-                                <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
-                                <td style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">{{b.PaymentDate |date: 'MM/dd/yyyy'}}</td>
-                                <td style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">{{b.Notes}}</td>
-                                <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Amount}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top; width: 48px;">{{i+1}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top;">{{b.PaymentDate |date: 'MM/dd/yyyy'}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top;">{{b.Notes}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: right; vertical-align: top; white-space: nowrap;">{{b.Amount}}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <!-- Charges -->
-                <!-- Charges -->
-                <div *ngIf="ProcedurePayment.length>0" style="width: 33%; float: right; margin-bottom: 20px;">
-                    <div style="font-weight: bold; margin-bottom: 5px;">Procedure Charges</div>
-                    <div>Total Amount: {{(!invoiceModel.Price || invoiceModel.Price == 0) ? TotalAmount : invoiceModel.Price }}</div>
-                    <div>Paid Amount: {{ TotalAmount}}</div>
-                    <hr style="margin: 5px 0;">
-                    <div style="color: #2f3479; font-weight: bold;">
-                        Balance: {{ ((invoiceModel.Price == null || invoiceModel.Price == 0) ? TotalAmount : (invoiceModel.Price || 0)) - (TotalAmount || 0) }}
-                    </div>
-                </div>
-                <div style="clear:both"></div>
 
-                <div style="width: 33%; float: right; margin-bottom: 20px;">
-                    <div style="font-weight: bold; margin-bottom: 5px;">Other Charges</div>
-                    <div>AnnualPE: {{invoiceModel.AnnualPE}}</div>
-                    <div>General: {{invoiceModel.General}}</div>
-                    <div>Medical: {{invoiceModel.Medical}}</div>
-                    <div>ICU Charges: {{invoiceModel.ICUCharges}}</div>
-                    <div>Exam Room: {{invoiceModel.ExamRoom}}</div>
-                    <div>Private Ward: {{invoiceModel.PrivateWard}}</div>
-                    <div>RIP: {{invoiceModel.RIP}}</div>
-                    <div>Other All Charges: {{invoiceModel.OtherAllCharges}}</div>
-                    <hr>
-                    <div style="color: #2f3479; font-weight: bold;">
-                        Total: {{(invoiceModel.AnnualPE || 0) +(invoiceModel.General || 0) +(invoiceModel.Medical || 0) +(invoiceModel.ICUCharges || 0)+(invoiceModel.ExamRoom || 0)+(invoiceModel.PrivateWard || 0) +(invoiceModel.RIP || 0)+(invoiceModel.OtherAllCharges || 0) }}
+                <div *ngIf="ProcedurePayment.length>0" style="width: 320px; max-width: 100%; float: right; margin: 4px 0 22px; background: #ffffff;">
+                    <div style="border: 1px solid #d9d9d9; background: #ffffff;">
+                        <div style="padding: 8px 12px; font-weight: 600; font-size: 13px; text-align: left; border-bottom: 1px solid #222222; background: #ffffff;">Procedure Charges</div>
+                        <div style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">Total Amount</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{(!invoiceModel.Price || invoiceModel.Price == 0) ? TotalAmount : invoiceModel.Price }}</span>
+                        </div>
+                        <div style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">Paid Amount</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{ TotalAmount}}</span>
+                        </div>
+                        <div style="overflow: hidden; padding: 8px 12px; background: #ffffff; border-top: 1px solid #222222; font-weight: 700;">
+                            <span style="float: left; text-align: left;">Balance</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{ ((invoiceModel.Price == null || invoiceModel.Price == 0) ? TotalAmount : (invoiceModel.Price || 0)) - (TotalAmount || 0) }}</span>
+                        </div>
                     </div>
                 </div>
-                <div style="clear:both"></div>
-                <!-- Thank You & Notice -->
-                <div style="font-size: 2em; margin-bottom: 50px;">Thank you!</div>
-                <div style="padding-left: 6px; border-left: 6px solid #0087C3;">
-                    <div>NOTICE:</div>
-                    <div style="font-size: 1.2em;">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                <div style="clear: both;"></div>
+
+                <div style="width: 320px; max-width: 100%; float: right; margin: 4px 0 22px; background: #ffffff;">
+                    <div style="border: 1px solid #d9d9d9; background: #ffffff;">
+                        <div style="padding: 8px 12px; font-weight: 600; font-size: 13px; text-align: left; border-bottom: 1px solid #222222; background: #ffffff;">Other Charges</div>
+                        <div *ngIf="(invoiceModel.AnnualPE || 0) != 0" style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">Annual PE</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.AnnualPE}}</span>
+                        </div>
+                        <div *ngIf="(invoiceModel.General || 0) != 0" style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">General</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.General}}</span>
+                        </div>
+                        <div *ngIf="(invoiceModel.Medical || 0) != 0" style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">Medical</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.Medical}}</span>
+                        </div>
+                        <div *ngIf="(invoiceModel.ICUCharges || 0) != 0" style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">ICU Charges</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.ICUCharges}}</span>
+                        </div>
+                        <div *ngIf="(invoiceModel.ExamRoom || 0) != 0" style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">Exam Room</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.ExamRoom}}</span>
+                        </div>
+                        <div *ngIf="(invoiceModel.PrivateWard || 0) != 0" style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">Private Ward</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.PrivateWard}}</span>
+                        </div>
+                        <div *ngIf="(invoiceModel.RIP || 0) != 0" style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">RIP</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.RIP}}</span>
+                        </div>
+                        <div *ngIf="(invoiceModel.OtherAllCharges || 0) != 0"style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">Other All Charges</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.OtherAllCharges}}</span>
+                        </div>
+                        <div style="overflow: hidden; padding: 8px 12px; background: #ffffff; border-top: 1px solid #222222; font-weight: 700;">
+                            <span style="float: left; text-align: left;">Total</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{(invoiceModel.AnnualPE || 0) +(invoiceModel.General || 0) +(invoiceModel.Medical || 0) +(invoiceModel.ICUCharges || 0)+(invoiceModel.ExamRoom || 0)+(invoiceModel.PrivateWard || 0) +(invoiceModel.RIP || 0)+(invoiceModel.OtherAllCharges || 0) }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="clear: both;"></div>
+
+                <div style="font-size: 18px; margin: 8px 0 16px; color: #111111;">Thank you!</div>
+                <div style="border-top: 1px solid #d9d9d9; padding-top: 10px; color: #333333; line-height: 1.45;">
+                    <strong style="display: block; margin-bottom: 2px; color: #111111;">NOTICE</strong>
+                    <div>A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
                 </div>
             </main>
-
-
-
-            <div class="modal-footer" style="position:fixed; right: 20px; top:0">
-                <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
-                <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
-            </div>
         </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
     </div>
 
 

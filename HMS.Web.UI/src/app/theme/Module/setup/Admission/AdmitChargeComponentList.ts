@@ -145,11 +145,11 @@ export class AdmitChargeComponentList implements OnInit {
             if (m.IsSuccess) {
                 this.invoiceModel = m.ResultSet.result[0][0];
                 if (this.invoiceModel == undefined)
-                    this.invoiceModel = [];
+                    this.invoiceModel = null;
                 this.ProcedureItem = m.ResultSet.result[1];
                 this.ProcedureMedicine = m.ResultSet.result[2];
                 this.ProcedurePayment = m.ResultSet.result[3];
-                if (this.invoiceModel.length > 0 && this.invoiceModel.CompanyLogo != null)
+                if (this.invoiceModel != null && this.invoiceModel.CompanyLogo != null)
                     this.invoiceModel.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.invoiceModel.CompanyLogo;
 
                 this.modalService.open(InvoiceModal, { size: 'lg' });

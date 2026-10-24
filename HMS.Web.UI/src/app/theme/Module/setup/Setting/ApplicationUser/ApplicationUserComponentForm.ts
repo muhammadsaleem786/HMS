@@ -167,7 +167,7 @@ export class ApplicationUserComponentForm implements OnInit {
                         this.model = m.ResultSet.UserObj;
                         this.DisplayMember = "";
                         this.IsEmpFound = true;
-                        debugger
+                        
                         this.model.safeHeaderDescription = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescription);
                         this.model.safeHeaderDescriptionUrdu = this.sanitizer.bypassSecurityTrustHtml(this.model.HeaderDescriptionUrdu);
                         this.UserList = m.ResultSet.userData;

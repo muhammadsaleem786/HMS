@@ -366,7 +366,7 @@ export class SaleInvoiceComponentForm {
             },
             minLength: 3,
             select: (event, ui) => {
-                debugger;
+                ;
                 if (ui.item.stock <= 0 && ui.item.IsAllowNegativeStock == false) {
                     this.toastr.Error("Error", "The item is out of stock.");
                     ui.item.value = null;
@@ -401,7 +401,7 @@ export class SaleInvoiceComponentForm {
         // this.selectPage(this.PModel.CurrentPage);
     }
     SelectBatchAndSerialItem(itemid: any, BatchNumber: any) {
-        debugger
+        
         let itemfind = this.ItemCategoryList.filter(a => a.ID == itemid && a.BatchSarialNumber == BatchNumber);
         var AlreadyBatchItem = this.Invoice_itemdynamicArray.filter(a => a.ItemID == itemid && a.BatchSarialNumber == BatchNumber);
         if (AlreadyBatchItem.length > 0) {
@@ -558,7 +558,7 @@ export class SaleInvoiceComponentForm {
         }
     }
     QuantityChange(rowno: number, Quantity: any, itemid: any) {
-        debugger;
+        ;
         if (Quantity == "")
             Quantity = 0;
         var findobj = this.Invoice_itemdynamicArray[rowno];

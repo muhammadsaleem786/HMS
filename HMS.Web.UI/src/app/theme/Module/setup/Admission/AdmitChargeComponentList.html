@@ -314,10 +314,10 @@
     <div class="modal-body" id="printBill-section" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #1a1a1a; background: #ffffff;">
         <div style="width: 100%; background: #ffffff; color: #1a1a1a; font-family: Arial, Helvetica, sans-serif; font-size: 13px;">
             <header style="overflow: hidden; width: 100%; padding: 4px 0 14px; margin: 0 0 18px; border-bottom: 1px solid #cfcfcf; background: #ffffff;">
-                <div style="float: left; margin-top: 4px;" *ngIf="invoiceModel.length > 0 && invoiceModel.CompanyLogo != null">
+                <div style="float: left; margin-top: 4px;" *ngIf="invoiceModel !=null  && invoiceModel.CompanyLogo != null">
                     <img [src]="invoiceModel.CompanyLogo" style="max-width: 88px; height: 64px; object-fit: contain; display: block;">
                 </div>
-                <div style="float: left; margin-top: 4px;" *ngIf="invoiceModel.length == 0 || invoiceModel.CompanyLogo == null">
+                <div style="float: left; margin-top: 4px;" *ngIf="invoiceModel == null || invoiceModel.CompanyLogo == null">
                     <img src="../assets/app/media/img/icons/doctor-logo.png" style="max-width: 88px; height: 64px; object-fit: contain; display: block;">
                 </div>
                 <div style="float: right; text-align: right; line-height: 1.45;">
@@ -459,7 +459,7 @@
                             <span style="float: left; text-align: left;">RIP</span>
                             <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.RIP}}</span>
                         </div>
-                        <div *ngIf="(invoiceModel.OtherAllCharges || 0) != 0"style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                        <div *ngIf="(invoiceModel.OtherAllCharges || 0) != 0" style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
                             <span style="float: left; text-align: left;">Other All Charges</span>
                             <span style="float: right; text-align: right; min-width: 72px;">{{invoiceModel.OtherAllCharges}}</span>
                         </div>

@@ -264,7 +264,7 @@ export class UserShareComponentList implements OnInit {
         this.model.ServiceId = this.model.ServiceId || null;
         this.model.LabId = this.model.LabId || null;
         this.model.ItemId = this.model.ItemId || null;
-        debugger
+        
         this._UserShareService.SaveOrUpdate(this.model).then(m => {
             var result = JSON.parse(m._body);
             if (result.IsSuccess) {

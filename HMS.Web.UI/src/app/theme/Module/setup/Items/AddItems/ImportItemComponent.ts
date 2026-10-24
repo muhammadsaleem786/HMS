@@ -184,7 +184,7 @@ export class ImportItemComponent {
                 alert(val);
                 return;
             }
-            debugger
+            
             const groupMap = this.createMap(64);
             const unitMap = this.createMap(57);
             const typeMap = this.createMap(59);

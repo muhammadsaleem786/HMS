@@ -141,7 +141,7 @@ export class ServiceComponentForm implements OnInit {
 
             this.submitted = false;
             this.loader.ShowLoader();
-            debugger
+            
             if (this.model.IsItem && this.itemdynamicArray.length > 0) {
                 if (this.itemdynamicArray[0].ItemId != 0 && this.itemdynamicArray[0].ItemId != undefined) {
                     this.model.emr_service_item = this.itemdynamicArray;
@@ -183,7 +183,7 @@ export class ServiceComponentForm implements OnInit {
             source: (request, response) => {
                 this.loader.ShowLoader();
                 this._SaleService.ServiceItemByName(request.term).then(m => {
-                    debugger;
+                    ;
                     if (m.IsSuccess) {
                         if (m.ResultSet.ItemInfo.length == 0) {
                             this.toastr.Error("Error", "The item is not found.");

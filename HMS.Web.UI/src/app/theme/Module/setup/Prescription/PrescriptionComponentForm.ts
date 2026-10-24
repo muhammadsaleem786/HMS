@@ -525,7 +525,7 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                             }
                             if (this.PrescriptionModel.emr_prescription_treatment != null) {
                                 this.PrescriptionModel.emr_prescription_treatment.forEach((item, index) => {
-                                    debugger
+                                    
                                     var medicineName = this.MedicineList.filter(a => a.Id == item.MedicineId && a.Medicine == item.MedicineName)[0];
                                     if (medicineName != null && medicineName != undefined) {
                                         item.MedicineName = medicineName.Medicine;
@@ -2240,7 +2240,7 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                         this.emr_prescription_treatment_dynamicArray.push(item);
                     });
                 }
-                debugger
+                
                 this.modalService.open(this.PrintRxContent, { size: 'lg' });
             }
             else

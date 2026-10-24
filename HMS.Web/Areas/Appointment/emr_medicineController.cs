@@ -129,6 +129,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Modified;
                 Model.sys_drop_down_value = null;
+                Model.ipd_procedure_medication = null;
                 _service.Update(Model);
 
                 try

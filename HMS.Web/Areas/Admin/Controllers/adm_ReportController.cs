@@ -572,34 +572,70 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 try
                 {
                     decimal CompanyID = Request.CompanyID();
-                    var FeeList = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID &&
+                    var feeList = _emr_patient_billService.Queryable().Where(a => a.CompanyId == CompanyID &&
                  DbFunctions.TruncateTime(a.BillDate) >= DbFunctions.TruncateTime(model.FromDate) &&
                  DbFunctions.TruncateTime(a.BillDate) <= DbFunctions.TruncateTime(model.ToDate)).Select(a => new
                  {
                      ID = a.ID,
                      DoctorId = a.DoctorId,
-                     Discount = a.Discount,
                      Price = a.Price,
-                     OutstandingBalance = a.OutstandingBalance,
                      PaidAmount = a.PaidAmount,
                      BillDate = a.BillDate
                  }).Where(a => model.DoctorId == null ? a.DoctorId == a.DoctorId : a.DoctorId == model.DoctorId).OrderByDescending(a => a.ID).ToList();
 
-                    var reslt = FeeList.AsEnumerable().Select(a => new
+                    var doctorIds = feeList
+           .Select(x => x.DoctorId)
+           .Distinct()
+           .ToList();
+
+                    var doctors = _service.Queryable()
+           .Where(d => doctorIds.Contains(d.ID))
+           .Select(d => new
+           {
+               d.ID,
+               d.Name
+           }).GroupBy(d => d.ID).ToDictionary(g => g.Key, g => g.First().Name);
+
+                    var expenses = _emr_expenseService.Queryable()
+      .Where(e => e.CompanyId == CompanyID
+          && e.DoctorId.HasValue
+          && doctorIds.Contains((int)e.DoctorId)
+          && DbFunctions.TruncateTime(e.Date) >= DbFunctions.TruncateTime(model.FromDate)
+          && DbFunctions.TruncateTime(e.Date) <= DbFunctions.TruncateTime(model.ToDate))
+      .GroupBy(e => new
+      {
+          DoctorId = e.DoctorId,
+          Date = DbFunctions.TruncateTime(e.Date)
+      })
+      .Select(g => new
+      {
+          DoctorId = g.Key.DoctorId,
+          Date = g.Key.Date,
+          Expense = g.Sum(x => x.Amount)
+      })
+      .ToList();
+
+
+                    var result = feeList.Select(a => new
                     {
-                        ID = a.ID,
-                        DoctorId = a.DoctorId,
-                        DoctorName = _service.Queryable().Where(z => z.ID == a.DoctorId).Count() > 0 ? _service.Queryable().Where(z => z.ID == a.DoctorId).FirstOrDefault().Name : "",
-                        Discount = a.Discount,
-                        Price = a.Price,
-                        OutstandingBalance = a.OutstandingBalance,
-                        PaidAmount = a.PaidAmount,
-                        BillDate = a.BillDate
+                        a.ID,
+                        a.DoctorId,
+                        DoctorName = doctors.ContainsKey(a.DoctorId)
+                           ? doctors[a.DoctorId]
+                           : "",
+                        Expense = expenses
+        .Where(e => e.DoctorId == a.DoctorId
+            && e.Date.Value.Date == a.BillDate.Date)
+        .Select(e => e.Expense)
+        .FirstOrDefault(),
+                        a.Price,
+                        a.PaidAmount,
+                        a.BillDate
                     }).ToList();
                     objResponse.IsSuccess = true;
                     objResponse.ResultSet = new
                     {
-                        FeeList = reslt,
+                        FeeList = result,
                     };
                 }
                 catch (Exception ex)
@@ -779,12 +815,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
            })
            .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
            .ToList();
-                    
+
                     // =========================
                     // Combine All Results
                     // =========================
                     var allData = xpense
-            .Select(a => new 
+            .Select(a => new
             {
                 ID = a.ID,
                 DoctorName = doctorList
@@ -796,7 +832,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 DoctorId = a.DoctorId,
                 Date = a.Date,
                 Type = a.Type,
-                Category=a.Category
+                Category = a.Category
             })
             .OrderByDescending(x => x.Date)
             .ToList();

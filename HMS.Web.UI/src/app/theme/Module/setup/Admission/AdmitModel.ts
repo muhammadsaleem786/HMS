@@ -52,6 +52,7 @@ export class ipd_admission_discharge {
     UltrasoundRemark: string;
     XRay: string;
     XRayRemark: string;
+    Advice: string;
     Conservative: string;
     Operation: string;
     Date: string;

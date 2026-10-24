@@ -32,7 +32,7 @@ export class DateWisePaymentComponentRptForm implements OnInit {
     public CompanyName: string;
     public CompanyObj: any;
     public Form1: FormGroup; public total = 0;
-    constructor(public _fb: FormBuilder,public _CommonService: CommonService, public loader: LoaderService
+    constructor(public _fb: FormBuilder, public _CommonService: CommonService, public loader: LoaderService
         , public _router: Router, public reportservice: ReportService, private encrypt: EncryptionService) {
         this.loader.ShowLoader();
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
@@ -54,7 +54,7 @@ export class DateWisePaymentComponentRptForm implements OnInit {
             DoctorId: [''],
         });
     }
-    
+
     LoadDoctor() {
         $("#DoctorSearch").autocomplete({
             source: (request, response) => {
@@ -99,8 +99,8 @@ export class DateWisePaymentComponentRptForm implements OnInit {
                 this.total = 0;
                 this.DataList = result.ResultSet.FeeList;
                 this.DataList.forEach(x => {
-                    this.total += x.Price - x.Discount
-                }); 
+                    this.total += x.PaidAmount - x.Expense
+                });
                 this.loader.HideLoader();
             } else
                 this.loader.HideLoader();
@@ -108,60 +108,60 @@ export class DateWisePaymentComponentRptForm implements OnInit {
     }
 
     public DownloadPDF(): void {
-    this.loader.ShowLoader();
-    const data = document.getElementById('RptPDF');
+        this.loader.ShowLoader();
+        const data = document.getElementById('RptPDF');
 
-    html2canvas(data, {
-        scale: 3,
-        useCORS: true,
-        scrollY: -window.scrollY
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
+        html2canvas(data, {
+            scale: 3,
+            useCORS: true,
+            scrollY: -window.scrollY
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
 
-        const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait mode
-        const pageWidth = 210; // A4 width in mm
-        const pageHeight = 297; // A4 height in mm
-        const margin = 10;
+            const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait mode
+            const pageWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
+            const margin = 10;
 
-        const imgWidth = pageWidth - margin * 2;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const imgWidth = pageWidth - margin * 2;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        if (imgHeight < pageHeight - margin * 2) {
-            // Fits in one page
-            pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
-        } else {
-            // Multi-page logic
-            const pageCanvasHeight = canvas.width * (pageHeight - 2 * margin) / imgWidth;
-            const totalPages = Math.ceil(canvas.height / pageCanvasHeight);
+            if (imgHeight < pageHeight - margin * 2) {
+                // Fits in one page
+                pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+            } else {
+                // Multi-page logic
+                const pageCanvasHeight = canvas.width * (pageHeight - 2 * margin) / imgWidth;
+                const totalPages = Math.ceil(canvas.height / pageCanvasHeight);
 
-            for (let i = 0; i < totalPages; i++) {
-                const pageCanvas = document.createElement('canvas');
-                pageCanvas.width = canvas.width;
-                pageCanvas.height = pageCanvasHeight;
+                for (let i = 0; i < totalPages; i++) {
+                    const pageCanvas = document.createElement('canvas');
+                    pageCanvas.width = canvas.width;
+                    pageCanvas.height = pageCanvasHeight;
 
-                const context = pageCanvas.getContext('2d');
-                context!.drawImage(
-                    canvas,
-                    0,
-                    i * pageCanvasHeight,
-                    canvas.width,
-                    pageCanvasHeight,
-                    0,
-                    0,
-                    canvas.width,
-                    pageCanvasHeight
-                );
+                    const context = pageCanvas.getContext('2d');
+                    context!.drawImage(
+                        canvas,
+                        0,
+                        i * pageCanvasHeight,
+                        canvas.width,
+                        pageCanvasHeight,
+                        0,
+                        0,
+                        canvas.width,
+                        pageCanvasHeight
+                    );
 
-                const pageData = pageCanvas.toDataURL('image/png');
-                if (i > 0) pdf.addPage();
-                pdf.addImage(pageData, 'PNG', margin, margin, imgWidth, pageHeight - 2 * margin);
+                    const pageData = pageCanvas.toDataURL('image/png');
+                    if (i > 0) pdf.addPage();
+                    pdf.addImage(pageData, 'PNG', margin, margin, imgWidth, pageHeight - 2 * margin);
+                }
             }
-        }
 
-        pdf.save('Fee.pdf');
-        this.loader.HideLoader();
-    });
-}
+            pdf.save('Fee.pdf');
+            this.loader.HideLoader();
+        });
+    }
 
     public DownloadExcel() {
         var data_type = 'data:application/vnd.ms-excel';

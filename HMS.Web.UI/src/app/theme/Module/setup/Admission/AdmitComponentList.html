@@ -229,8 +229,7 @@
                     <div id="invoice">
                         <h1>INVOICE-{{InvoiceCompanyInfo.invoiceNo}}</h1>
                         <div class="date">Date of Invoice: {{InvoiceCompanyInfo.BillDate |date: 'MM/dd/yyyy'}}</div>
-                        <div class="date">Due Date: 30/06/2014</div>
-                    </div>
+                        </div>
                 </div>
                 <table cellspacing="0" cellpadding="0">
                     <thead>
@@ -294,496 +293,425 @@
 <!-- -----------------   Reprot Modal --------- -->
 <ng-template #ReportModal let-modal>
     <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdateDischarge(Form1.valid)">
-        <div class="modal-body Invoice_Template simple_format DetailReportModal" id="printReport-section">
-            <div class="ReportPAge1 col-sm-12">
+        <div class="modal-body Invoice_Template simple_format DetailReportModal" id="printReport-section"
+             style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #000; background: #fff; width: 100%; box-sizing: border-box; line-height: 1.35; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+            <style>
+                @page {
+                    size: A4 portrait;
+                    margin: 5mm 6mm;
+                }
 
-                <div class="row">
-                    <div class="col-sm-5">
+                body {
+                    margin: 0;
+                    font-size: 12px;
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+            </style>
+            <div class="ReportPAge1" style="width: 100%; box-sizing: border-box; padding: 0;">
+
+                <div style="display: flex; width: 100%; box-sizing: border-box; align-items: center; margin-bottom: 6px;">
+                    <div style="width: 41.66%; box-sizing: border-box; padding: 0 6px;">
                         <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
-                            <img class="img-fluid radius" style="max-width: 100px;" [src]="InvoiceCompanyInfo.CompanyLogo">
+                            <img style="max-width: 68px; width: 68px; max-height: 68px; height: auto; display: block;" [src]="InvoiceCompanyInfo.CompanyLogo">
                         </div>
                         <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
-                            <img class="img-fluid radius" style="max-width: 100px;" src="../assets/app/media/img/icons/doctor-logo.png">
+                            <img style="max-width: 68px; width: 68px; max-height: 68px; height: auto; display: block;" src="../assets/app/media/img/icons/doctor-logo.png">
                         </div>
                     </div>
-                    <div class="col-sm-7">
-                        <div id="company">
-                            <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
-                            <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
-                            <div>Phnoe: {{InvoiceCompanyInfo.CompanyPhone}}</div>
-                            <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                    <div style="width: 58.34%; box-sizing: border-box; padding: 0 6px; text-align: left;">
+                        <div id="company" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #000;">
+                            <h2 style="margin: 0; padding: 0; font-size: 16px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; color: #000; line-height: 1.1;">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                            <div style="font-size: 12px; margin: 0; line-height: 1.35;">{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                            <div style="font-size: 12px; margin: 0; line-height: 1.35;">Phone: {{InvoiceCompanyInfo.CompanyPhone}}</div>
+                            <div style="font-size: 12px; margin: 0;"><a href="mailto:company@example.com" style="color: #000; text-decoration: none;">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
                         </div>
                     </div>
-
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-sm-12">
-                        <div class="text-center">
-                            <h3>Discharge Summary ({{InvoiceCompanyInfo.DepartmentType}})</h3>
-                        </div>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
-                        </p>
-
-                    </div>
-                </div>
-                <div class="row border-bottom section-p-10">
-
-                    <div class="col-sm-6">
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">F/H Name</strong> {{InvoiceCompanyInfo.Father_Husband}}
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl"> DOA</strong> {{InvoiceCompanyInfo.AdmissionDate|date: 'MM/dd/yyyy'}}
-                        </p>
-
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">DOB</strong>{{InvoiceCompanyInfo.DOB|date: 'MM/dd/yyyy'}}
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl"> Consultant</strong> {{InvoiceCompanyInfo.DoctorName}}
-                        </p>
-                    </div>
-
-                    <div class="col-sm-6">
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">Dept</strong> {{InvoiceCompanyInfo.Department}}
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl"> Martial Status</strong> Married
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">Age </strong> {{InvoiceCompanyInfo.Age}}
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl"> Sex</strong>{{InvoiceCompanyInfo.Sex}}
-                        </p>
-
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">Ward/ Room</strong> {{InvoiceCompanyInfo.Ward}}/ {{InvoiceCompanyInfo.Room}}
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl"> Hosp No</strong> 1234
-                        </p>
-                    </div>
-
                 </div>
 
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-4">
-                        <strong class="invoice_lbl">Weight</strong>
+                <div style="display: block; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0 6px 0;">
+                    <div style="width: 100%; box-sizing: border-box; text-align: center;">
+                        <h3 style="margin: 0; font-size: 13px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; text-align: center; color: #000;">Discharge Summary ({{InvoiceCompanyInfo.DepartmentType}})</h3>
                     </div>
-                    <div class="col-sm-8">
-                        <input class="form-control" formControlName="Weight" [(ngModel)]="model.Weight" type="text" />
-                    </div>
-                    <div class="col-sm-4">
-                        <strong class="invoice_lbl">Temperature</strong>
-                    </div>
-                    <div class="col-sm-8">
-                        <input class="form-control" formControlName="Temperature" [(ngModel)]="model.Temperature" type="text" />
-                    </div>
-
+                    <p style="margin: 0; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                        <strong style="font-weight: 700; display: inline-block; min-width: 110px;">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
+                    </p>
+                    <p style="margin: 0; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                        <strong style="font-weight: 700; display: inline-block; min-width: 110px;">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
+                    </p>
                 </div>
 
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-4">
-                        <strong class="invoice_lbl">Diagnosis at Admission (as primary)</strong>
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0;">
+                    <div style="width: 50%; box-sizing: border-box; padding: 0 8px 0 0; vertical-align: top;">
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 110px;">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
+                        </p>
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 110px;">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
+                        </p>
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 110px;">F/H Name</strong> {{InvoiceCompanyInfo.Father_Husband}}
+                        </p>
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 110px;">DOA</strong> {{InvoiceCompanyInfo.AdmissionDate|date: 'MM/dd/yyyy'}}
+                        </p>
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 110px;">DOB</strong> {{InvoiceCompanyInfo.DOB|date: 'MM/dd/yyyy'}}
+                        </p>
+                        <p style="margin: 0; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 110px;">Consultant</strong> {{InvoiceCompanyInfo.DoctorName}}
+                        </p>
                     </div>
-                    <div class="col-sm-8">
-                        <input class="form-control" formControlName="DiagnosisAdmission" [(ngModel)]="model.DiagnosisAdmission" type="text" />
+                    <div style="width: 50%; box-sizing: border-box; padding: 0 0 0 8px; border-left: 1px solid #ccc;">
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 120px;">Dept</strong> {{InvoiceCompanyInfo.Department}}
+                        </p>
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 120px;">Martial Status</strong> Married
+                        </p>
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 120px;">Age</strong> {{InvoiceCompanyInfo.Age}}
+                        </p>
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 120px;">Sex</strong> {{InvoiceCompanyInfo.Sex}}
+                        </p>
+                        <p style="margin: 0; line-height: 1.35; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 120px;">Ward/ Room</strong> {{InvoiceCompanyInfo.Ward}}/ {{InvoiceCompanyInfo.Room}}
+                        </p>
+                        <p style="margin: 0; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                            <strong style="font-weight: 700; display: inline-block; min-width: 120px;">Hosp No</strong>
+                        </p>
                     </div>
                 </div>
 
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-4">
-                        <strong class="invoice_lbl">Complaint &Aacute; Summary of History</strong>
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: center;">
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Weight</div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Weight" [(ngModel)]="model.Weight" [value]="(model.Weight == null || model.Weight === '')? InvoiceCompanyInfo.Weight: model.Weight" type="text" />
                     </div>
-                    <div class="col-sm-8">
-                        <textarea class="form-control" formControlName="ComplaintSummary" [(ngModel)]="model.ComplaintSummary" rows="4"></textarea>
-                    </div>
-                </div>
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-4 mb-3">
-                        <strong class="invoice_lbl">  Condition at Admission</strong>
-                    </div>
-                    <div class="col-sm-7 mb-3">
-                        <input class="form-control" formControlName="ConditionAdmission" [(ngModel)]="model.ConditionAdmission" type="text" />
-                    </div>
-                    <div class="col-sm-4">
-                        <strong class="invoice_lbl">  G.P.E General Condition</strong>
-                    </div>
-                    <div class="col-sm-7">
-                        <input class="form-control" formControlName="GeneralCondition" [(ngModel)]="model.GeneralCondition" type="text" />
-                    </div>
-                </div>
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-4 field-inline">
-                        <strong class="invoice_lbl"> Respiratory Rate</strong><input class="form-control inline" formControlName="RespiratoryRate" [(ngModel)]="model.RespiratoryRate" type="text" />
-                    </div>
-
-                    <div class="col-sm-4 field-inline">
-                        <strong class="invoice_lbl"> B.P</strong> <input class="form-control inline" formControlName="BP" [(ngModel)]="model.BP" type="text" />
-                    </div>
-
-                    <div class="col-sm-4 field-inline">
-                        <strong class="invoice_lbl"> Other</strong> <input class="form-control inline" formControlName="Other" [(ngModel)]="model.Other" type="text" />
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Temperature</div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Temperature" [(ngModel)]="model.Temperature"[value]="(model.Temperature == null || model.Temperature === '')? InvoiceCompanyInfo.Temperature: model.Temperature" type="text" />
                     </div>
                 </div>
 
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-12 text-center mb-3">
-                        <h3 style="font-size: 20px;">Systemic</h3>
-                    </div>
-                    <div class="col-sm-6 field-inline">
-                        <strong class="invoice_lbl"> P/A</strong> <input class="form-control inline" formControlName="PA" [(ngModel)]="model.PA" type="text" />
-                    </div>
-                    <div class="col-sm-6 field-inline">
-                        <strong class="invoice_lbl"> P/V</strong> <input class="form-control inline" formControlName="PV" [(ngModel)]="model.PV" type="text" />
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: center;">
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Diagnosis at Admission (as primary)</div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="DiagnosisAdmission" [(ngModel)]="model.DiagnosisAdmission" type="text" />
                     </div>
                 </div>
 
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-12 text-center mb-3">
-                        <h3 style="font-size: 20px;">Investigation</h3>
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Complaint &Aacute; Summary of History</div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 42px; min-height: 42px; margin: 0; resize: none;" formControlName="ComplaintSummary" [(ngModel)]="model.ComplaintSummary" rows="2"></textarea>
                     </div>
-                    <div class="col-sm-4 field-inline">
-                        <strong class="invoice_lbl"> Urine Proteins</strong> <input class="form-control inline" formControlName="UrineProteins" [(ngModel)]="model.UrineProteins" type="text" />
-                    </div>
-
-                    <div class="col-sm-4 field-inline">
-                        <strong class="invoice_lbl">Sugar</strong> <input class="form-control inline" formControlName="Sugar" [(ngModel)]="model.Sugar" type="text" />
-                    </div>
-
-                    <div class="col-sm-4 field-inline">
-                        <strong class="invoice_lbl">Microscopy</strong> <input class="form-control inline" formControlName="Microscopy" [(ngModel)]="model.Microscopy" type="text" />
-                    </div>
-
-                </div>
-                <div class="row border-bottom section-p-10">
-
-                    <div class="col-sm-2">
-                        <strong class="invoice_lbl">Blood HB</strong><br />
-                        <input class="form-control" formControlName="BloodHB" [(ngModel)]="model.BloodHB" type="text" />
-                    </div>
-                    <div class="col-sm-2">
-                        <strong class="invoice_lbl"> TLC</strong><br />
-                        <input class="form-control" formControlName="TLC" [(ngModel)]="model.TLC" type="text" />
-                    </div>
-                    <div class="col-sm-2">
-                        <strong class="invoice_lbl"> P</strong><br />
-                        <input class="form-control inline" formControlName="P" [(ngModel)]="model.P" type="text" />
-                    </div>
-                    <div class="col-sm-2">
-                        <strong class="invoice_lbl">L</strong><br />
-                        <input class="form-control inline" formControlName="L" [(ngModel)]="model.L" type="text" />
-                    </div>
-                    <div class="col-sm-2">
-                        <strong class="invoice_lbl">E </strong><br />
-                        <input class="form-control inline" formControlName="E" [(ngModel)]="model.E" type="text" />
-                    </div>
-                    <div class="col-sm-2">
-                        <strong class="invoice_lbl">ESR</strong><br />
-                        <input class="form-control inline" formControlName="ESR" [(ngModel)]="model.ESR" type="text" />
-                    </div>
-
                 </div>
 
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-4 field-inline">
-                        <strong class="invoice_lbl">Blood Sugar</strong> <input class="form-control inline" formControlName="BloodSugar" [(ngModel)]="model.BloodSugar" type="text" />
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: center;">
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Condition at Admission</div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="ConditionAdmission" [(ngModel)]="model.ConditionAdmission" type="text" />
                     </div>
-                    <div class="col-sm-4 field-inline">
-                        <strong class="invoice_lbl">Blood Group</strong> <input class="form-control inline" formControlName="BloodGroup" [(ngModel)]="model.BloodGroup" type="text" />
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">G.P.E General Condition</div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="GeneralCondition" [(ngModel)]="model.GeneralCondition" type="text" />
                     </div>
-
-
                 </div>
 
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-4">
-                        <strong class="invoice_lbl">Other</strong>
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: center;">
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Respiratory Rate</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="RespiratoryRate" [(ngModel)]="model.RespiratoryRate"[value]="(model.RespiratoryRate == null || model.RespiratoryRate === '')? InvoiceCompanyInfo.RespiratoryRate: model.RespiratoryRate" type="text" />
                     </div>
-                    <div class="col-sm-8">
-                        <textarea class="form-control" formControlName="OtherRemarks" [(ngModel)]="model.OtherRemarks"></textarea>
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">B.P</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="BP" [(ngModel)]="model.BP"[value]="(model.BP == null || model.BP === '')? InvoiceCompanyInfo.BP: model.BP" type="text" />
                     </div>
-
-                    <div class="col-sm-4">
-                        <strong class="invoice_lbl">Ultrasound</strong> <input class="form-control" formControlName="Ultrasound" [(ngModel)]="model.Ultrasound" type="text" />
+                    <div style="width: 33.34%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Other</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Other" [(ngModel)]="model.Other" type="text" />
                     </div>
-
-                    <div class="col-sm-8">
-                        <strong class="invoice_lbl">Remark</strong>
-                        <textarea class="form-control" formControlName="UltrasoundRemark" [(ngModel)]="model.UltrasoundRemark"></textarea>
-                    </div>
-
                 </div>
 
-
-                <div class="row border-bottom section-p-10">
-
-                    <div class="col-sm-4">
-                        <strong class="invoice_lbl">X-Ray</strong> <input class="form-control" formControlName="XRay" [(ngModel)]="model.XRay" type="text" />
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: center;">
+                    <div style="width: 100%; box-sizing: border-box; text-align: center; padding: 0;">
+                        <h3 style="margin: 0; font-size: 13px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; text-align: center; color: #000;">Systemic</h3>
                     </div>
+                    <div style="width: 50%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 36px;">P/A</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="PA" [(ngModel)]="model.PA" type="text" />
+                    </div>
+                    <div style="width: 50%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 36px;">P/V</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="PV" [(ngModel)]="model.PV" type="text" />
+                    </div>
+                </div>
 
-                    <div class="col-sm-8">
-                        <strong class="invoice_lbl">Remark</strong>
-                        <textarea class="form-control" formControlName="XRayRemark" [(ngModel)]="model.XRayRemark"></textarea>
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: center;">
+                    <div style="width: 100%; box-sizing: border-box; text-align: center; padding: 0;">
+                        <h3 style="margin: 0; font-size: 13px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; text-align: center; color: #000;">Investigation</h3>
+                    </div>
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Urine Proteins</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="UrineProteins" [(ngModel)]="model.UrineProteins" type="text" />
+                    </div>
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Sugar</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Sugar" [(ngModel)]="model.Sugar" type="text" />
+                    </div>
+                    <div style="width: 33.34%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Microscopy</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Microscopy" [(ngModel)]="model.Microscopy" type="text" />
+                    </div>
+                </div>
+
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 16.66%; box-sizing: border-box; padding: 3px 3px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">Blood HB</strong>
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 3px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="BloodHB" [(ngModel)]="model.BloodHB" type="text" />
+                    </div>
+                    <div style="width: 16.66%; box-sizing: border-box; padding: 3px 3px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">TLC</strong>
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 3px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="TLC" [(ngModel)]="model.TLC" type="text" />
+                    </div>
+                    <div style="width: 16.66%; box-sizing: border-box; padding: 3px 3px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">P</strong>
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 3px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="P" [(ngModel)]="model.P" type="text" />
+                    </div>
+                    <div style="width: 16.66%; box-sizing: border-box; padding: 3px 3px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">L</strong>
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 3px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="L" [(ngModel)]="model.L" type="text" />
+                    </div>
+                    <div style="width: 16.66%; box-sizing: border-box; padding: 3px 3px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">E</strong>
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 3px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="E" [(ngModel)]="model.E" type="text" />
+                    </div>
+                    <div style="width: 16.70%; box-sizing: border-box; padding: 3px 3px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">ESR</strong>
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 3px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="ESR" [(ngModel)]="model.ESR" type="text" />
+                    </div>
+                </div>
+
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: center;">
+                    <div style="width: 50%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Blood Sugar</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="BloodSugar" [(ngModel)]="model.BloodSugar" type="text" />
+                    </div>
+                    <div style="width: 50%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Blood Group</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="BloodGroup" [(ngModel)]="model.BloodGroup" type="text" />
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Other</div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="OtherRemarks" [(ngModel)]="model.OtherRemarks"></textarea>
+                    </div>
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">Ultrasound</strong>
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Ultrasound" [(ngModel)]="model.Ultrasound" type="text" />
+                    </div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">Remark</strong>
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="UltrasoundRemark" [(ngModel)]="model.UltrasoundRemark"></textarea>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">X-Ray</strong>
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="XRay" [(ngModel)]="model.XRay" type="text" />
+                    </div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">Remark</strong>
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="XRayRemark" [(ngModel)]="model.XRayRemark"></textarea>
+                    </div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">Advice</strong>
+                    </div>
+                    <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="Advice" [(ngModel)]="model.Advice"></textarea>
+                    </div>
+                </div>
+                <div *ngIf="InvoiceCompanyInfo.DepartmentType == 'Short Stay'" style="width: 45%; box-sizing: border-box; padding: 0 0 0 10px; margin-left: auto;">
+                    <div style="width: 100%; box-sizing: border-box; padding: 3px 0; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 90px;">Signature & Stamp</strong>
                     </div>
                 </div>
             </div>
-            <footer style="page-break-after: always;margin-bottom:30px;"></footer>
-            <!-- ===============  ----  ============= -->
-            <div class="ReportPage2 col-sm-12">
-                <div class="row">
-                    <div class="col-sm-5">
+            <div style="display: block; height: 0; margin: 0; padding: 0; border: 0; line-height: 0; font-size: 0; page-break-after: always; break-after: page;"></div>
+
+            <div *ngIf="InvoiceCompanyInfo.DepartmentType !== 'Short Stay'" class="ReportPage2" style="width: 100%; box-sizing: border-box; padding: 0;">
+                <div style="display: flex; width: 100%; box-sizing: border-box; align-items: center; margin: 0 0 6px 0;">
+                    <div style="width: 41.66%; box-sizing: border-box; padding: 0 6px;">
                         <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
-                            <img class="img-fluid radius" style="max-width: 100px;" [src]="InvoiceCompanyInfo.CompanyLogo">
+                            <img style="max-width: 68px; width: 68px; max-height: 68px; height: auto; display: block;" [src]="InvoiceCompanyInfo.CompanyLogo">
                         </div>
                         <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
-                            <img class="img-fluid radius" style="max-width: 100px;" src="../assets/app/media/img/icons/doctor-logo.png">
+                            <img style="max-width: 68px; width: 68px; max-height: 68px; height: auto; display: block;" src="../assets/app/media/img/icons/doctor-logo.png">
                         </div>
                     </div>
-
-                    <div class="col-sm-7">
-                        <div id="company">
-                            <h2 class="name">{{InvoiceCompanyInfo.CompanyName}}</h2>
-                            <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
-                            <div>Phnoe: {{InvoiceCompanyInfo.CompanyPhone}}</div>
-                            <div><a href="mailto:company@example.com">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                    <div style="width: 58.34%; box-sizing: border-box; padding: 0 6px;">
+                        <div id="company" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #000;">
+                            <h2 style="margin: 0; padding: 0; font-size: 16px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; color: #000; line-height: 1.1;">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                            <div style="font-size: 12px; margin: 0; line-height: 1.35;">{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                            <div style="font-size: 12px; margin: 0; line-height: 1.35;">Phone: {{InvoiceCompanyInfo.CompanyPhone}}</div>
+                            <div style="font-size: 12px; margin: 0;"><a href="mailto:company@example.com" style="color: #000; text-decoration: none;">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
                         </div>
                     </div>
-
                 </div>
 
+                <div style="display: block; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0 6px 0;">
+                    <div style="width: 100%; box-sizing: border-box; text-align: center;">
+                        <h3 style="margin: 0; font-size: 13px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; text-align: center; color: #000;">Discharge Summary ({{InvoiceCompanyInfo.DepartmentType}})</h3>
+                    </div>
+                    <p style="margin: 0; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                        <strong style="font-weight: 700; display: inline-block; min-width: 110px;">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
+                    </p>
+                    <p style="margin: 0; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                        <strong style="font-weight: 700; display: inline-block; min-width: 110px;">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
+                    </p>
+                </div>
 
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-12">
-                        <div class="text-center">
-                            <h3>Discharge Summary ({{InvoiceCompanyInfo.DepartmentType}})</h3>
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: center;">
+                    <div style="width: 100%; box-sizing: border-box; text-align: center; padding: 0;">
+                        <h5 style="margin: 0; font-size: 12px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; text-align: center; color: #000;">Management</h5>
+                    </div>
+                    <div style="width: 50%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
+                        <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Conservative</strong>
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Conservative" [(ngModel)]="model.Conservative" type="text" />
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0;">
+                    <div style="width: 100%; box-sizing: border-box; text-align: center; padding: 0;">
+                        <h5 style="margin: 0; font-size: 12px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; text-align: center; color: #000;">Management</h5>
+                    </div>
+                    <div style="width: 50%; box-sizing: border-box; padding: 0 8px 0 0;">
+                        <div style="width: 100%; box-sizing: border-box; padding: 4px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 80px;">Operation</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Operation" [(ngModel)]="model.Operation" type="text" />
                         </div>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
-                        </p>
-                        <p class="margin-b-0">
-                            <strong class="invoice_lbl">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
-                        </p>
-
-                    </div>
-                </div>
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-12 text-center">
-                        <h5 class="margin-b-0">Management</h5>
-                        <p>
-
-                        </p>
-                    </div>
-                    <div class="col-sm-4 field-inline">
-                        <strong class="invoice_lbl">
-                            Conservative
-                        </strong> <input class="form-control inline" formControlName="Conservative" [(ngModel)]="model.Conservative" type="text" />
-                    </div>
-
-                </div>
-
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-12 text-center">
-                        <h5 class="margin-b-0">Management</h5>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="row">
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Operation
-                                </strong> <input class="form-control inline" formControlName="Operation" [(ngModel)]="model.Operation" type="text" />
-                            </div>
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Surgeon
-                                </strong> <input class="form-control inline" formControlName="Surgeon" [(ngModel)]="model.Surgeon" type="text" />
-                            </div>
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Assistant
-                                </strong> <input class="form-control inline" formControlName="Assistant" [(ngModel)]="model.Assistant" type="text" />
-                            </div>
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Incision
-                                </strong> <input class="form-control inline" formControlName="Incision" [(ngModel)]="model.Incision" type="text" />
-                            </div>
+                        <div style="width: 100%; box-sizing: border-box; padding: 4px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 80px;">Surgeon</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Surgeon" [(ngModel)]="model.Surgeon" type="text" />
                         </div>
-
-                    </div>
-
-                    <div class="col-sm-6">
-                        <div class="row">
-                            <div class="col-sm-12 field-inline Dateinput">
-                                <strong class="invoice_lbl">
-                                    Date
-                                </strong>
-                                <Datetime-Component class="" formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="model.Date">
-                                </Datetime-Component>
-                            </div>
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Assistant
-                                </strong> <input class="form-control inline" formControlName="Assistant" [(ngModel)]="model.Assistant" type="text" />
-                            </div>
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Anaesthesia
-                                </strong> <input class="form-control inline" formControlName="Anaesthesia" [(ngModel)]="model.Anaesthesia" type="text" />
-                            </div>
-
+                        <div style="width: 100%; box-sizing: border-box; padding: 4px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 80px;">Assistant</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Assistant" [(ngModel)]="model.Assistant" type="text" />
                         </div>
-
-
+                        <div style="width: 100%; box-sizing: border-box; padding: 4px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 80px;">Incision</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Incision" [(ngModel)]="model.Incision" type="text" />
+                        </div>
                     </div>
-
-                </div>
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-3">
-                        <strong class="invoice_lbl">Operative Finding</strong>
-
-                    </div>
-                    <div class="col-sm-9">
-                        <textarea class="form-control" formControlName="OperativeFinding" [(ngModel)]="model.OperativeFinding"></textarea>
-                    </div>
-                </div>
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-3">
-                        <strong class="invoice_lbl">Opration Notes</strong>
-
-                    </div>
-                    <div class="col-sm-9">
-                        <textarea class="form-control" formControlName="OprationNotes" [(ngModel)]="model.OprationNotes"> </textarea>
+                    <div style="width: 50%; box-sizing: border-box; padding: 0 0 0 8px;">
+                        <div style="width: 100%; box-sizing: border-box; padding: 4px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 90px;">Date</strong>
+                            <Datetime-Component style="flex: 1; display: block; width: 100%; min-width: 0; box-sizing: border-box; font-size: 12px; font-family: Arial, Helvetica, sans-serif;" formControlName="Date" placeholder="DD/MM/YYYY" [(ngModel)]="model.Date">
+                            </Datetime-Component>
+                        </div>
+                        <div style="width: 100%; box-sizing: border-box; padding: 4px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 90px;">Assistant</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Assistant" [(ngModel)]="model.Assistant" type="text" />
+                        </div>
+                        <div style="width: 100%; box-sizing: border-box; padding: 4px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 90px;">Anaesthesia</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Anaesthesia" [(ngModel)]="model.Anaesthesia" type="text" />
+                        </div>
                     </div>
                 </div>
 
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-3">
-                        <strong class="invoice_lbl">Post OP Medicines</strong>
-                    </div>
-                    <div class="col-sm-9">
-                        <textarea class="form-control" formControlName="OPMedicines" [(ngModel)]="model.OPMedicines"></textarea>
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 25%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Operative Findings</div>
+                    <div style="width: 75%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="OperativeFinding" [(ngModel)]="model.OperativeFinding"></textarea>
                     </div>
                 </div>
 
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-3">
-                        <strong class="invoice_lbl">Post OP Progress</strong>
-                    </div>
-                    <div class="col-sm-9">
-                        <textarea class="form-control" formControlName="OPProgress" [(ngModel)]="model.OPProgress"></textarea>
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 25%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Operation Notes</div>
+                    <div style="width: 75%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="OprationNotes" [(ngModel)]="model.OprationNotes"></textarea>
                     </div>
                 </div>
 
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-3">
-                        <strong class="invoice_lbl">Condition of Discharge</strong>
-                    </div>
-                    <div class="col-sm-9">
-                        <textarea class="form-control" formControlName="ConditionDischarge" [(ngModel)]="model.ConditionDischarge"></textarea>
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 25%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Post OP Medicines</div>
+                    <div style="width: 75%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="OPMedicines" [(ngModel)]="model.OPMedicines"></textarea>
                     </div>
                 </div>
 
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-3 Dateinput">
-                        <strong class="invoice_lbl"> stitches removal Date </strong>
-                        <Datetime-Component formControlName="RemovalDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.RemovalDate">
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 25%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Post OP Progress</div>
+                    <div style="width: 75%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="OPProgress" [(ngModel)]="model.OPProgress"></textarea>
+                    </div>
+                </div>
+
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 25%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Condition And Discharge</div>
+                    <div style="width: 75%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="ConditionDischarge" [(ngModel)]="model.ConditionDischarge"></textarea>
+                    </div>
+                </div>
+
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 25%; box-sizing: border-box; padding: 3px 4px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;">Stitches Removal Date</strong>
+                        <Datetime-Component style="display: block; width: 100%; box-sizing: border-box; font-size: 12px; font-family: Arial, Helvetica, sans-serif;" formControlName="RemovalDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.RemovalDate">
                         </Datetime-Component>
                     </div>
-                    <div class="col-sm-9">
-                        <strong class="invoice_lbl"> By </strong>
-                        <textarea class="form-control" formControlName="CheckedBy" [(ngModel)]="model.CheckedBy"></textarea>
+                    <div style="width: 75%; box-sizing: border-box; padding: 3px 4px;">
+                        <strong style="display: block; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; margin-bottom: 1px;"></strong>
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="CheckedBy" [(ngModel)]="model.CheckedBy"></textarea>
                     </div>
                 </div>
 
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-3">
-                        <strong class="invoice_lbl">Condition of Wound</strong>
-                    </div>
-                    <div class="col-sm-9">
-                        <textarea class="form-control" formControlName="ConditionWound" [(ngModel)]="model.ConditionWound"></textarea>
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 25%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Condition of Wound</div>
+                    <div style="width: 75%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="ConditionWound" [(ngModel)]="model.ConditionWound"></textarea>
                     </div>
                 </div>
 
-
-
-                <div class="row border-bottom section-p-10">
-                    <div class="col-sm-3">
-                        <strong class="invoice_lbl"> Advise/ Medicine</strong>
-
-                    </div>
-                    <div class="col-sm-9">
-                        <textarea class="form-control" formControlName="AdviseMedicine" [(ngModel)]="model.AdviseMedicine"></textarea>
-
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: flex-start;">
+                    <div style="width: 25%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Advise/ Medicine</div>
+                    <div style="width: 75%; box-sizing: border-box; padding: 3px 4px;">
+                        <textarea style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 36px; min-height: 36px; margin: 0; resize: none;" formControlName="AdviseMedicine" [(ngModel)]="model.AdviseMedicine"></textarea>
                     </div>
                 </div>
 
-
-                <div class="row margin-t-15 border-bottom" style="border-block:0;">
-                    <div class="col-sm-3">
-                        <strong class="invoice_lbl"> Follow Up</strong>
-
-                    </div>
-                    <div class="col-sm-3 Dateinput">
-                        <Datetime-Component formControlName="FollowUpDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.FollowUpDate">
+                <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 0; padding: 2px 0 0 0; align-items: flex-start;">
+                    <div style="width: 25%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Follow Up</div>
+                    <div style="width: 30%; box-sizing: border-box; padding: 3px 4px;">
+                        <Datetime-Component style="display: block; width: 100%; box-sizing: border-box; font-size: 12px; font-family: Arial, Helvetica, sans-serif;" formControlName="FollowUpDate" placeholder="DD/MM/YYYY" [(ngModel)]="model.FollowUpDate">
                         </Datetime-Component>
-
                     </div>
-
-                    <div class="col-sm-5" style="width: auto; max-width: fit-content; margin-left: auto;">
-                        <div class="row">
-                            <div class="col-sm-12 field-inline Dateinput">
-                                <strong class="invoice_lbl">
-                                    Date
-                                </strong> <input class="form-control inline" type="date" placeholder="dd/mm/yyy" />
-                            </div>
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Name
-                                </strong> <input class="form-control inline" type="text" />
-                            </div>
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Dr Rubba
-                                </strong> <input class="form-control inline" type="text" />
-                            </div>
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Labour Room
-                                </strong> <input class="form-control inline" type="text" />
-                            </div>
-                            <div class="col-sm-12 field-inline">
-                                <strong class="invoice_lbl">
-                                    Checked By
-                                </strong> <input class="form-control inline" type="text" />
-                            </div>
+                    <div style="width: 45%; box-sizing: border-box; padding: 0 0 0 10px; margin-left: auto;">
+                        <div style="width: 100%; box-sizing: border-box; padding: 3px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 90px;">Date</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" type="date" placeholder="dd/mm/yyy" />
                         </div>
-
+                        <div style="width: 100%; box-sizing: border-box; padding: 3px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 90px;">Name</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" type="text" />
+                        </div>
+                        <div style="width: 100%; box-sizing: border-box; padding: 3px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 90px;">Labour Room</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" type="text" />
+                        </div>
+                        <div style="width: 100%; box-sizing: border-box; padding: 3px 0; display: flex; align-items: center;">
+                            <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 90px;">Checked By</strong>
+                            <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" type="text" />
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
 

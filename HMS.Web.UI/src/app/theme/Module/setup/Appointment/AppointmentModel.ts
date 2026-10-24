@@ -184,4 +184,9 @@ export class InvoiceCompanyInfo {
     Specialty: string;
     DepartmentType: string;
     Sex: string;
+    Temperature: string;
+    Weight: string;
+    BP: string;
+    RespiratoryRate: string;
+    HeartRate: string;
 } 

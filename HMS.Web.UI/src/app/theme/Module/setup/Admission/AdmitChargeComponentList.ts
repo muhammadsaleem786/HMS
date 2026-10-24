@@ -55,6 +55,8 @@ export class AdmitChargeComponentList implements OnInit {
     public ipd_payment_dynamicArray = [];
     public ProcedureItem: any[] = [];
     public ProcedureMedicine: any[] = [];
+    public ProcedurePayment: any[] = [];
+    public ProcedureOtherCharges: any[] = [];
     public PaymentMethodList: any[] = [];
     public PaymentList: any[] = [];
     pagesRange: number[] = []; previousPage: number = 1; public SubTotal: number = 0;
@@ -129,6 +131,12 @@ export class AdmitChargeComponentList implements OnInit {
             });
         }
     }
+    get TotalAmount(): number {
+        return (this.ProcedurePayment || []).reduce(
+            (sum, item) => sum + (Number(item.Amount) || 0),
+            0
+        );
+    }
     openInvoiceModal(InvoiceModal: any) {
         this.loader.ShowLoader();
         let patientid = localStorage.getItem('PatientId');
@@ -140,6 +148,7 @@ export class AdmitChargeComponentList implements OnInit {
                     this.invoiceModel = [];
                 this.ProcedureItem = m.ResultSet.result[1];
                 this.ProcedureMedicine = m.ResultSet.result[2];
+                this.ProcedurePayment = m.ResultSet.result[3];
                 if (this.invoiceModel.length > 0 && this.invoiceModel.CompanyLogo != null)
                     this.invoiceModel.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + this.invoiceModel.CompanyLogo;
 

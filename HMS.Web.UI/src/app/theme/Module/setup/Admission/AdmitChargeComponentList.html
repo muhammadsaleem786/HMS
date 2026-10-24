@@ -1,5 +1,5 @@
 ﻿<style>
-    .btn-xs{
+    .btn-xs {
         height: 34px;
         line-height: 15px;
         margin-top: 10px;
@@ -62,7 +62,7 @@
                                                 <input type="text" class="form-control ml-1" formControlName="Medical" [(ngModel)]="model.Medical" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                             </div>
                                         </div>
-                                            <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
+                                        <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
                                             <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
                                         </div>
                                     </div>
@@ -119,9 +119,9 @@
                                                 <input type="text" class="form-control ml-1" formControlName="RIP" [(ngModel)]="model.RIP" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                             </div>
                                         </div>
-                                            <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
-                                                <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
-                                            </div>
+                                        <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
+                                            <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
+                                        </div>
                                     </div>
 
                                 </ng-template>
@@ -142,15 +142,15 @@
                                                 <input type="text" class="form-control ml-1" formControlName="OtherAllCharges" [(ngModel)]="model.OtherAllCharges" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                             </div>
                                         </div>
-                                            <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
-                                                <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
-                                            </div>
+                                        <div class="modal-footer" *ngIf="ChargeRights.CreateRights">
+                                            <button type="submit" class="btn btn-primary btn-xs" [disabled]="DischargeDate != null">Add & Save</button>
+                                        </div>
                                     </div>
 
                                 </ng-template>
                             </ngb-panel>
                         </ngb-accordion>
-                    
+
                     </form>
                     <div class="tab-content">
                         <ngb-accordion [closeOthers]="true" activeIds="">
@@ -165,7 +165,7 @@
                                 </ng-template>
                                 <ng-template ngbPanelContent>
                                     <div class="TableView">
-                                        <div class="text-right mb-2"*ngIf="PaymentRights.CreateRights">
+                                        <div class="text-right mb-2" *ngIf="PaymentRights.CreateRights">
                                             <button class="btn btn-danger btn-sm" (click)="AddNewPayment(NewPayment)" [disabled]="DischargeDate != null"><i class="icon icon-plus"></i>Add Payment </button>
                                         </div>
                                         <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 mt-3 p-0">
@@ -197,10 +197,10 @@
                                                                 {{item.Notes}}
                                                             </td>
                                                             <td>
-                                                                <span class="icon icon mr-3" (click)="Edit(item.ID)"*ngIf="PaymentRights.EditRights">
+                                                                <span class="icon icon mr-3" (click)="Edit(item.ID)" *ngIf="PaymentRights.EditRights">
                                                                     <i class="icon icon-pencil2"></i>
                                                                 </span>
-                                                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="PaymentRights.DeleteRights"[disabled]="DischargeDate != null">
+                                                                <button class="btn btn-light btn-sm" (click)="Delete(item.ID)" *ngIf="PaymentRights.DeleteRights" [disabled]="DischargeDate != null">
                                                                     <i class="icon icon-trash2 text-danger"></i>
                                                                 </button>
 
@@ -344,63 +344,87 @@
                     </div>
                     <div style="float: right; text-align: right;">
                         <h1 style="color: #0087C3; font-size: 2.4em; line-height: 1em; font-weight: normal; margin: 0 0 10px 0;">{{invoiceModel.InvoiceNumber}}</h1>
-                        <div style="font-size: 1.1em; color: #777777;">Date of Invoice: {{invoiceModel.InvoiceDate}}</div>
-                        <div style="font-size: 1.1em; color: #777777;">Due Date: {{invoiceModel.DueDate}}</div>
+                        <div style="font-size: 1.1em; color: #777777;">Date of Invoice: {{invoiceModel.InvoiceDate |date: 'MM/dd/yyyy'}}</div>
                     </div>
                 </div>
 
                 <!-- Procedure Item Table -->
-                <h2 style="margin: 10px 0;">Procedure Item</h2>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
-                    <thead>
-                        <tr>
-                            <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
-                            <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Service Name</th>
-                            <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Item</th>
-                            <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Batch</th>
-                            <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let b of ProcedureItem; let i = index;">
-                            <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
-                            <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.ServiceName}}</td>
-                            <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Item}}</td>
-                            <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Batch}}</td>
-                            <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div *ngIf="ProcedureItem.length>0">
+                    <h2 style="margin: 10px 0;">Procedure Item</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>
+                                <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
+                                <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Service Name</th>
+                                <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Item</th>
+                                <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Batch</th>
+                                <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let b of ProcedureItem; let i = index;">
+                                <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
+                                <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.ServiceName}}</td>
+                                <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Item}}</td>
+                                <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Batch}}</td>
+                                <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
 
                 <!-- Medicine Table -->
-                <h2 style="margin: 10px 0;">Medicine</h2>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
-                    <thead>
-                        <tr>
-                            <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
-                            <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Medicine</th>
-                            <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let b of ProcedureMedicine; let i = index;">
-                            <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
-                            <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Medicine}}</td>
-                            <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
+                <div *ngIf="ProcedureMedicine.length>0">
+                    <h2 style="margin: 10px 0;">Medicine</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>
+                                <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
+                                <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Medicine</th>
+                                <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let b of ProcedureMedicine; let i = index;">
+                                <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
+                                <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Medicine}}</td>
+                                <td style="padding: 20px; background: #DDDDDD; border-bottom: 1px solid #FFFFFF;">{{b.Quantity}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- payment Table -->
+                <div *ngIf="ProcedurePayment.length>0">
+                    <h2 style="margin: 10px 0;">Payment</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>
+                                <th style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.6em;">#</th>
+                                <th style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">Payment Date</th>
+                                <th style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">Note</th>
+                                <th style="padding: 20px; background: #EEEEEE; text-align: right; border-bottom: 1px solid #FFFFFF;">Amont</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let b of ProcedurePayment; let i = index;">
+                                <td style="padding: 20px; background: #2f3479; text-align: center; color: #FFFFFF; font-size: 1.2em;">{{i+1}}</td>
+                                <td style="padding: 20px; background: #EEEEEE; text-align: left; border-bottom: 1px solid #FFFFFF;">{{b.PaymentDate |date: 'MM/dd/yyyy'}}</td>
+                                <td style="padding: 20px; background: #DDDDDD; text-align: left; border-bottom: 1px solid #FFFFFF;">{{b.Notes}}</td>
+                                <td style="padding: 20px; background: #EEEEEE; border-bottom: 1px solid #FFFFFF;">{{b.Amount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <!-- Charges -->
                 <!-- Charges -->
-                <div style="width: 33%; float: right; margin-bottom: 20px;">
+                <div *ngIf="ProcedurePayment.length>0" style="width: 33%; float: right; margin-bottom: 20px;">
                     <div style="font-weight: bold; margin-bottom: 5px;">Procedure Charges</div>
-                    <div>Price: {{invoiceModel.Price}}</div>
-                    <div>Discount: {{invoiceModel.Discount}}</div>
-                    <div>Paid Amount: {{invoiceModel.PaidAmount}}</div>
+                    <div>Total Amount: {{(!invoiceModel.Price || invoiceModel.Price == 0) ? TotalAmount : invoiceModel.Price }}</div>
+                    <div>Paid Amount: {{ TotalAmount}}</div>
                     <hr style="margin: 5px 0;">
                     <div style="color: #2f3479; font-weight: bold;">
-                        Balance: {{ (invoiceModel.Price || 0) - (invoiceModel.PaidAmount || 0) - (invoiceModel.Discount || 0) }}
+                        Balance: {{ ((invoiceModel.Price == null || invoiceModel.Price == 0) ? TotalAmount : (invoiceModel.Price || 0)) - (TotalAmount || 0) }}
                     </div>
                 </div>
                 <div style="clear:both"></div>

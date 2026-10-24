@@ -134,6 +134,7 @@ export class AdmitComponentList {
             UltrasoundRemark: [''],
             XRay: [''],
             XRayRemark: [''],
+            Advice: [''],
             Conservative: [''],
             Operation: [''],
             Date: [''],
@@ -417,11 +418,11 @@ export class AdmitComponentList {
                     this.InvoiceCompanyInfo.DepartmentType = m.ResultSet.Masterdata[0].Value;
                     this.InvoiceCompanyInfo.AdmissionDate = m.ResultSet.Masterdata[0].AdmissionDate;
                     this.InvoiceCompanyInfo.Sex = m.ResultSet.Masterdata[0].Sex;
-
-                    //this.model.Temperature = m.ResultSet.Masterdata[0].Temperature;
-                    //this.model.Weight = m.ResultSet.Masterdata[0].Weight;
-                    //this.model.BP = m.ResultSet.Masterdata[0].Value;
-                    //this.model.RespiratoryRate = m.ResultSet.Masterdata[0].RespiratoryRate;
+                    this.InvoiceCompanyInfo.Temperature = m.ResultSet.Masterdata[0].Temperature;
+                    this.InvoiceCompanyInfo.Weight = m.ResultSet.Masterdata[0].Weight;
+                    this.InvoiceCompanyInfo.BP = m.ResultSet.Masterdata[0].BP;
+                    this.InvoiceCompanyInfo.RespiratoryRate = m.ResultSet.Masterdata[0].RespiratoryRate;
+                    this.InvoiceCompanyInfo.HeartRate = m.ResultSet.Masterdata[0].HeartRate;
                     if (m.ResultSet.Masterdata[0].CompanyLogo != null)
                         this.InvoiceCompanyInfo.CompanyLogo = GlobalVariable.BASE_Temp_File_URL + this.CompanyObj.CompanyID + '/' + m.ResultSet.Masterdata[0].CompanyLogo;
                 }

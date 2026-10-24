@@ -31,12 +31,12 @@
             </div>
 
             <!--<div class="col-sm-3">
-        <div class="form-group">
-            <label for="">Patient</label>
-            <input type="text" id="PatientSearchByName"(click)="LoadPatient()" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.PatientName" placeholder="Search patient by mobile no." autocomplete="off">
+                <div class="form-group">
+                    <label for="">Patient</label>
+                    <input type="text" id="PatientSearchByName"(click)="LoadPatient()" class="form-control form-control-sm form-control-alternative" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.PatientName" placeholder="Search patient by mobile no." autocomplete="off">
 
-        </div>
-    </div>-->
+                </div>
+            </div>-->
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="">Doctor</label>
@@ -66,9 +66,9 @@
         </div>
 
 
-        <div class="row AddNewItem"id="RptPDF" #RptPDF>
+        <div class="row AddNewItem" id="RptPDF" #RptPDF>
             <div class="col-sm-12">
-                <table class="table Reports_table"  border="1">
+                <table class="table Reports_table" border="1">
                     <thead class="gray_head">
                         <tr>
                             <th>
@@ -76,12 +76,11 @@
                             </th>
                             <th>Date</th>
                             <th>
-                                Fees
-                            </th>                           
-                            <th>
-                                Discount
+                                Income
                             </th>
-                            <th>Tax</th>
+                            <th>
+                                Expense
+                            </th>
                             <th class="text-right">Net</th>
                         </tr>
                     </thead>
@@ -89,25 +88,23 @@
                         <tr *ngFor="let f of DataList">
                             <td>
                                 {{f.DoctorName}}
-                            </td> 
+                            </td>
                             <td>{{f.BillDate| date:'dd/MM/yyyy'}}</td>
                             <td>
-                                {{f.Price| number:'1.2-2'}}
+                                {{f.PaidAmount| number:'1.2-2'}}
                             </td>
-                           
                             <td>
-                                {{f.Discount| number:'1.2-2'}}
+                                {{f.Expense| number:'1.2-2'}}
                             </td>
-                            <td>0.00</td>
-                            <td class="text-right">{{(f.Price-f.Discount)| number:'1.2-2'}}</td>
+                            <td class="text-right">{{(f.PaidAmount-f.Expense)| number:'1.2-2'}}</td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="5">
+                            <td colspan="4">
                                 <strong>Total</strong>
                             </td>
-                            <td  class="text-right">
+                            <td class="text-right">
                                 <strong>
                                     {{total| number:'1.2-2'}}
                                 </strong>
@@ -118,7 +115,7 @@
             </div>
         </div>
     </div>
-  
+
 </div>
 
 

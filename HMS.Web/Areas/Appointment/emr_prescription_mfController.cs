@@ -128,6 +128,14 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
+
+                var dictorInfo = _adm_userService.Queryable().Where(a => a.ID == Model.DoctorId).FirstOrDefault();
+                if (dictorInfo != null && dictorInfo.IsActivated == false)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "Doctor is not activated.";
+                    return objResponse;
+                }
                 List<emr_prescription_complaint> emr_prescription_complaint = new List<emr_prescription_complaint>();
                 emr_prescription_complaint.AddRange(Model.emr_prescription_complaint);
 

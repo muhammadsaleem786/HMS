@@ -104,7 +104,6 @@ export class ServiceComponentForm implements OnInit {
         });
     }
     onCategoryChange(): void {
-        debugger;
         const selectedCategory = this.CategoryList.find(
             x => Number(x.ID) === Number(this.model.CategoryId)
         );
@@ -142,8 +141,9 @@ export class ServiceComponentForm implements OnInit {
 
             this.submitted = false;
             this.loader.ShowLoader();
+            debugger
             if (this.model.IsItem && this.itemdynamicArray.length > 0) {
-                if (this.itemdynamicArray[0].ItemId != 0) {
+                if (this.itemdynamicArray[0].ItemId != 0 && this.itemdynamicArray[0].ItemId != undefined) {
                     this.model.emr_service_item = this.itemdynamicArray;
                 }
             } else {
@@ -183,23 +183,30 @@ export class ServiceComponentForm implements OnInit {
             source: (request, response) => {
                 this.loader.ShowLoader();
                 this._SaleService.ServiceItemByName(request.term).then(m => {
-                    const items = m.ResultSet.ItemInfo.map(item => ({
-                        label: item.label + " (qty:" + item.stock + ")",
-                        value: item.value,
-                        CostPrice: item.CostPrice,
-                        ItemTypeId: item.Type,
-                        stock: item.stock,
-                        CategoryId: item.CategoryId,
-                        TypeValue: item.TypeValue,
-                        IsAllowNegativeStock: item.IsAllowNegativeStock,
-                    }));
-                    response(items);
+                    debugger;
+                    if (m.IsSuccess) {
+                        if (m.ResultSet.ItemInfo.length == 0) {
+                            this.toastr.Error("Error", "The item is not found.");
+                            this.loader.HideLoader();
+                            return;
+                        }
+                        const items = m.ResultSet.ItemInfo.map(item => ({
+                            label: item.label + " (qty:" + item.stock + ")",
+                            value: item.value,
+                            CostPrice: item.CostPrice,
+                            ItemTypeId: item.Type,
+                            stock: item.stock,
+                            CategoryId: item.CategoryId,
+                            TypeValue: item.TypeValue,
+                            IsAllowNegativeStock: item.IsAllowNegativeStock,
+                        }));
+                        response(items);
+                    }
                     this.loader.HideLoader();
                 });
             },
             minLength: 3,
             select: (event, ui) => {
-
                 if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
                     this.toastr.Error("Error", "The item is out of stock.");
                     ui.item.value = "";

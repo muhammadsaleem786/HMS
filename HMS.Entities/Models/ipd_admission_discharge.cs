@@ -22,6 +22,7 @@ namespace HMS.Entities.Models
         public string GeneralCondition { get; set; }
         public string RespiratoryRate { get; set; }
         public string OtherRemarks { get; set; }
+        public string Advice { get; set; }
         public string CheckedBy { get; set; }
         public string BP { get; set; }
         public string Other { get; set; }

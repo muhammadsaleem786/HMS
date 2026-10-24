@@ -54,6 +54,7 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.UltrasoundRemark).HasColumnName("UltrasoundRemark");
             this.Property(t => t.XRay).HasColumnName("XRay");
             this.Property(t => t.XRayRemark).HasColumnName("XRayRemark");
+            this.Property(t => t.Advice).HasColumnName("Advice");
             this.Property(t => t.Conservative).HasColumnName("Conservative");
             this.Property(t => t.Operation).HasColumnName("Operation");
             this.Property(t => t.Date).HasColumnName("Date");

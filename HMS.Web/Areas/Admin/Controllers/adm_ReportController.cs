@@ -578,7 +578,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                  {
                      ID = a.ID,
                      DoctorId = a.DoctorId,
-                     Price = a.Price,
                      PaidAmount = a.PaidAmount,
                      BillDate = a.BillDate
                  }).Where(a => model.DoctorId == null ? a.DoctorId == a.DoctorId : a.DoctorId == model.DoctorId).OrderByDescending(a => a.ID).ToList();
@@ -616,22 +615,26 @@ namespace HMS.Web.API.Areas.Admin.Controllers
       .ToList();
 
 
-                    var result = feeList.Select(a => new
+                    var result = feeList.GroupBy(a => new
                     {
-                        a.ID,
                         a.DoctorId,
-                        DoctorName = doctors.ContainsKey(a.DoctorId)
-                           ? doctors[a.DoctorId]
-                           : "",
+                        Date = a.BillDate.Date
+                    }).Select( g=> new
+                    {
+                        DoctorId = g.Key.DoctorId,
+                        DoctorName = doctors.ContainsKey(g.Key.DoctorId)
+            ? doctors[g.Key.DoctorId]
+            : "",
+                        PaidAmount = g.Sum(x => x.PaidAmount),
+                        BillDate = g.Key.Date,
                         Expense = expenses
-        .Where(e => e.DoctorId == a.DoctorId
-            && e.Date.Value.Date == a.BillDate.Date)
-        .Select(e => e.Expense)
-        .FirstOrDefault(),
-                        a.Price,
-                        a.PaidAmount,
-                        a.BillDate
-                    }).ToList();
+            .Where(e =>
+                e.DoctorId == g.Key.DoctorId &&
+                e.Date.HasValue &&
+                e.Date.Value.Date == g.Key.Date)
+            .Sum(e => e.Expense)
+                    })
+    .OrderByDescending(x => x.BillDate).ToList();
                     objResponse.IsSuccess = true;
                     objResponse.ResultSet = new
                     {

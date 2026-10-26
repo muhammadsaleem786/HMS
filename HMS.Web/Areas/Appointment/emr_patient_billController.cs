@@ -815,7 +815,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                     Price = z.Price,
                     z.TotalSessions,
                     z.CategoryId,
-                }).ToList();
+                }).Take(10).ToList();
                 var patientBillList = new List<PatientBillSessionDto>();
                 if (!string.IsNullOrWhiteSpace(patientId) &&
            decimal.TryParse(patientId, out decimal patientIdValue))

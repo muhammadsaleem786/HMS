@@ -91,7 +91,8 @@ namespace HMS.Repository.Repositories.Appointment
                             CNIC = s.CNIC,
                             Image = s.Image,
                             Gender = s.Gender,
-                            Age=s.Age
+                            Address = s.Address,
+                            Age = s.Age
                         }).ToList<object>();
                 }
                 else
@@ -102,6 +103,7 @@ namespace HMS.Repository.Repositories.Appointment
                        {
                            s.ID,
                            PatientName = s.PatientName,
+                           Address = s.Address,
                            DOB = s.DOB,
                            Email = s.Email,
                            Mobile = s.Mobile,
@@ -218,11 +220,11 @@ namespace HMS.Repository.Repositories.Appointment
                     lvm.HeaderDescription = item["HeaderDescription"].ToString();
                     lvm.QualificationUrdu = item["QualificationUrdu"].ToString();
                     lvm.DesignationUrdu = item["DesignationUrdu"].ToString();
-                
+
                     Doclist.Add(lvm);
                 }
                 objResult.CalenderList = Calenderlist.ToList();
-               objResult.DoctList = Doclist.ToList();
+                objResult.DoctList = Doclist.ToList();
             }
             catch (Exception ex)
             {

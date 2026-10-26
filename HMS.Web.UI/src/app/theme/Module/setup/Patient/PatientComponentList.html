@@ -31,6 +31,7 @@
                         <thead class="grid-header">
                             <tr>
                                 <th>Name </th>
+                                <th>Address </th>
                                 <th> DOB </th>
                                 <th> Email </th>
                                 <th> Mobile </th>
@@ -54,6 +55,9 @@
                                     <a>
                                         {{item.PatientName}}
                                     </a>
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{ item.Address}}
                                 </td>
                                 <td (click)="AddRecord(item.ID)">
                                     {{ item.DOB ? (item.DOB | date: 'MM/dd/yyyy') : (item.Age + ' years') }}

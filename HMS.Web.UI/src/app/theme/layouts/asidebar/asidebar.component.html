@@ -71,77 +71,75 @@
             <span class="title">Lab</span>
         </a>
     </li>
-    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive">
-        <a>
-            <div class="dropdown dropright">
-                <a data-toggle="dropdown" class="text-white">
-                    <span class="iconImage">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M16 12a2 2 0 1 1 4 0a2 2 0 0 1-4 0zm-6 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0zm-6 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0zm2-1a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm6 0a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm6 0a1 1 0 1 0 0 2a1 1 0 0 0 0-2z" fill="currentColor" /></svg>
-                    </span>
-                    More
-                </a>
-                <div class="dropdown-menu">
-                    <ul>
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(63)>-1">
-                            <a routerLink="/home/Sale/savesale" [queryParams]="{ id: 0 }">
-                                <span><i class="icon-wallet iconImage"></i></span>
-                                <span class="title">POS</span>
-                            </a>
-                        </li>
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(123)>-1">
-                            <a routerLink="/home/saleinv" [queryParams]="{ id: 0 }">
-                                <span><i class="icon-wallet iconImage"></i></span>
-                                <span class="title">Sale</span>
-                            </a>
-                        </li>
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(61)>-1">
-                            <a routerLink="/home/Item">
-                                <span><i class="icon-wallet iconImage"></i></span>
-                                <span class="title">Items</span>
-                            </a>
-                        </li>
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(20)>-1">
-                            <a routerLink="Income">
-                                <span><i class="icon-wallet iconImage"></i></span>
-                                <span class="title">Income</span>
-                            </a>
-                        </li>
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(14)>-1">
-                            <a routerLink="Expense">
-                                <span><i class="icon-cash-dollar iconImage"></i></span>
-                                <span class="title">Expenses</span>
-                            </a>
-                        </li>
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(62)>-1">
-                            <a routerLink="/home/Invoice">
-                                <span><i class="icon-wallet iconImage"></i></span>
-                                <span class="title">Purchases</span>
-                            </a>
-                        </li>
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(76)>-1">
-                            <a routerLink="/home/session">
-                                <span><i class="icon-chart-settings iconImage"></i></span>
-                                <span class="title">Session</span>
-                            </a>
-                        </li>
+    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive more-menu">
+        <div class="dropdown dropright">
+            <a data-toggle="dropdown" class="text-white">
+                <span class="iconImage">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M16 12a2 2 0 1 1 4 0a2 2 0 0 1-4 0zm-6 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0zm-6 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0zm2-1a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm6 0a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm6 0a1 1 0 1 0 0 2a1 1 0 0 0 0-2z" fill="currentColor" /></svg>
+                </span>
+                More
+            </a>
+            <div class="dropdown-menu">
+                <ul>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(63)>-1">
+                        <a routerLink="/home/Sale/savesale" [queryParams]="{ id: 0 }">
+                            <span><i class="icon-wallet iconImage"></i></span>
+                            <span class="title">POS</span>
+                        </a>
+                    </li>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(123)>-1">
+                        <a routerLink="/home/saleinv" [queryParams]="{ id: 0 }">
+                            <span><i class="icon-wallet iconImage"></i></span>
+                            <span class="title">Sale</span>
+                        </a>
+                    </li>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(61)>-1">
+                        <a routerLink="/home/Item">
+                            <span><i class="icon-wallet iconImage"></i></span>
+                            <span class="title">Items</span>
+                        </a>
+                    </li>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(20)>-1">
+                        <a routerLink="Income">
+                            <span><i class="icon-wallet iconImage"></i></span>
+                            <span class="title">Income</span>
+                        </a>
+                    </li>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(14)>-1">
+                        <a routerLink="Expense">
+                            <span><i class="icon-cash-dollar iconImage"></i></span>
+                            <span class="title">Expenses</span>
+                        </a>
+                    </li>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(62)>-1">
+                        <a routerLink="/home/Invoice">
+                            <span><i class="icon-wallet iconImage"></i></span>
+                            <span class="title">Purchases</span>
+                        </a>
+                    </li>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(76)>-1">
+                        <a routerLink="/home/session">
+                            <span><i class="icon-chart-settings iconImage"></i></span>
+                            <span class="title">Session</span>
+                        </a>
+                    </li>
 
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Modules.indexOf(5)>-1">
-                            <a routerLink="/home/report">
-                                <span><i class="icon-chart-settings iconImage"></i></span>
-                                <span class="title">Reports</span>
-                            </a>
-                        </li>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Modules.indexOf(5)>-1">
+                        <a routerLink="/home/report">
+                            <span><i class="icon-chart-settings iconImage"></i></span>
+                            <span class="title">Reports</span>
+                        </a>
+                    </li>
 
-                        <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(118)>-1">
-                            <a routerLink="/home/setup">
-                                <span><i class="icon-cog iconImage"></i></span>
-                                <span class="title">Setting</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(118)>-1">
+                        <a routerLink="/home/setup">
+                            <span><i class="icon-cog iconImage"></i></span>
+                            <span class="title">Setting</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-        </a>
+        </div>
     </li>
 
 

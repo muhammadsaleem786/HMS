@@ -18,7 +18,7 @@ namespace HMS.Repository.Repositories.Lab
     {
         public static PaginationResult Pagination(this IRepository<lab_patient_test> repository, decimal CompanyID, int CurrentPageNo, int RecordPerPage, string VisibleColumnInfo, string SortName, string SortOrder, string SearchText, bool IgnorePaging = false)
         {
-            
+
             var objResult = new PaginationResult();
             try
             {
@@ -42,7 +42,7 @@ namespace HMS.Repository.Repositories.Lab
                 }
 
                 IQueryable<lab_patient_test> filteredData = repository.Queryable().Where(predicate);
-                
+
                 var baseQuery = repository.Queryable().Where(x => x.CompanyId == CompanyID);
                 var dashboardCounts = baseQuery
                        .GroupBy(x => 1)
@@ -233,8 +233,8 @@ namespace HMS.Repository.Repositories.Lab
                           statusId = s.StatusId,
                           orderedDate = s.CreatedDate,
                           catalogId = s.CatalogId,
-                          invoiceno=s.InvoiceNo
-                      }).ToList<object>();
+                          invoiceno = s.InvoiceNo
+                      }).OrderByDescending(a=>a.testId).ToList<object>();
                 }
                 else
                 {
@@ -256,7 +256,7 @@ namespace HMS.Repository.Repositories.Lab
                         orderedDate = s.CreatedDate,
                         catalogId = s.CatalogId,
                         invoiceno = s.InvoiceNo
-                    }).ToList<object>();
+                    }).OrderByDescending(a => a.testId).ToList<object>();
                 }
             }
             catch (Exception ex)

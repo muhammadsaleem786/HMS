@@ -1186,6 +1186,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                     });
             },
             eventClick: (event) => {
+                debugger
                 var dateTime = event.start.format();
                 var time = dateTime.split('T');
                 let CalendarDate = time[0];
@@ -1208,17 +1209,34 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.OnClickAppointment(CalendarDate, CalendarTime, event.resourceId, event.id);
             },
             dayClick: (date, jsEvent, view, resource) => {
-
+                debugger;
                 var dateTime = date.format();
                 var time = dateTime.split('T');
                 let CalendarDate = time[0];
                 let CalendarTime = time[1];
-
                 this.CheckDayClik(date, CalendarTime);
                 if (this.isDayClik) {
                     let dateDay = date._d.getDay();
                     for (var i = 0; i < resource.businessHours.length; i++) {
                         if (resource.businessHours[i].dow.includes(dateDay)) {
+                            debugger;
+                            let isBooked = this.AppointmentList.some((event: any): boolean => {
+                                let startDate = moment(event.StartDate);
+                                let eventDate = startDate.format('YYYY-MM-DD');
+                                let eventTime = startDate.format('HH:mm:ss');
+                               
+                                return eventDate === CalendarDate
+                                    && eventTime === CalendarTime
+                                    && event.DoctorId == resource.id;
+                            });
+                            var doctor = this.DoctorList.filter(
+                                a => a.ID.toString() == resource.id
+                            )[0];
+                            var allowOverlap = doctor ? doctor : null;
+                            if (isBooked && (!allowOverlap || allowOverlap.IsOverLap === false)) {
+                                this.toastr.Error('This time slot is already booked.');
+                                return;
+                            }
                             this.AddAppointment(CalendarDate, CalendarTime, resource.id);
                         }
                     }
@@ -1270,7 +1288,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this.Form1.controls['CNIC'].setValue(input, { emitEvent: false });
     }
     OnClickAppointment(date: any, time: any, doctorId: any, appointmentId: any) {
-
         var doctorid = this.AssignedDoctor.filter(a => a.ID == parseInt(doctorId));
         var Appobj = this.AppointmentList.filter(a => a.DoctorId == parseInt(doctorId) && a.StartDate.split("T")[1] == time && a.ID == appointmentId);
         var slotTime = new Date();

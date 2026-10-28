@@ -124,7 +124,8 @@
                     <div class="uk-overflow-container col-sm-12 p-0">
                         <table id="lab_dashboard_table" class="uk-table table" cellspacing="0" style="width: 100%; min-width: 1100px;">
                             <thead class="grid-header">
-                                <tr>  <th style="width: 10px;"></th>
+                                <tr>
+                                    <th style="width: 10px;"></th>
                                     <th style="width: 110px;">Test</th>
                                     <th style="min-width: 220px;">Patient</th>
                                     <th style="width: 110px;">Sample</th>
@@ -138,10 +139,10 @@
                             <tbody>
                                 <tr *ngFor="let item of activeCases">
                                     <td>
-                                         <span class="font-weight-bold">{{ item.testId }}</span>
+                                        <span class="font-weight-bold">{{ item.testId }}</span>
                                     </td>
                                     <td>
-                                       
+
                                         <div class="TextOverflow" style="max-width: 190px;">
                                             {{ item.testName }}
                                         </div>
@@ -180,7 +181,7 @@
                                             'badge-info': item.statusId === 3,
                                             'badge-success': item.statusId === 4
                                           }">
-                                            {{ item.status }} 
+                                            {{ item.status }}
                                         </span>
                                     </td>
                                     <td>
@@ -207,7 +208,7 @@
                                             <button class="btn btn-light btn-sm mr-1" (click)="openInvoiceModal(item.invoiceno)">
                                                 <i class="icon icon-printer"></i> Print Invoice
                                             </button>
-                                            
+
                                             <button *ngIf="item.statusId==4" (click)="openReportModal(item.testId)" class="btn btn-light btn-sm mr-1">
                                                 <i class="icon icon-printer"></i> Generate Report
                                             </button>
@@ -540,14 +541,14 @@
                         </div>
                         <div class="col-md-5 mb-3">
                             <label class="font-weight-500">Patient <span class="text-danger">*</span></label>
-                        <div class="d-flex">
-                             <input type="text" id="PatientSearch" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="PatientTestmodel.PatientName" (click)="LoadPatient()" placeholder="Search by mobile no" autocomplete="off">
-                            <div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient()">
-                                <span class="svgIcon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
-                                </span>
+                            <div class="d-flex">
+                                <input type="text" id="PatientSearch" class="form-control form-control-sm form-control-alternative" formControlName="PatientName" [(ngModel)]="PatientTestmodel.PatientName" (click)="LoadPatient()" placeholder="Search by mobile no" autocomplete="off">
+                                <div class="input-group-prepend btn btn-light" style="width:50px;" (click)="openNewPatient()">
+                                    <span class="svgIcon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg);-webkit-transform: rotate(360deg);transform: rotate(360deg);width: 22px;margin-right: 13px;height: 22px;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="#626262" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5e72e4;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></g></svg>
+                                    </span>
+                                </div>
                             </div>
-                        </div>
                             <small class="text-danger" *ngIf="patientTestForm.controls.PatientId.hasError('required') && submitted">
                                 This value is required.
                             </small>
@@ -1051,102 +1052,80 @@
                 <span>&times;</span>
             </button>
         </div>
-        <style>
-            @page {
-                size: A4;
-                margin: 12mm
-            }
+        <div id="printReport" style="font-family:'Segoe UI',Calibri,Arial,sans-serif;font-size:12.5px;color:#1c2430;margin:0;padding:8px 16px 18px;max-width:210mm;box-sizing:border-box;background:#fff;line-height:1.45;">
 
-            @media print {
-                body {
-                    margin: 0
-                }
-            }
-        </style>
-        <div id="printReport" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#000;margin:0;padding:12mm;max-width:210mm;box-sizing:border-box">
+            <div style="display:flex;align-items:center;padding:4px 0 12px;border-bottom:3px solid #1e3a5f;">
+                <div *ngIf="ReportModel.CompanyLogo != '' && ReportModel.CompanyLogo != null" style="flex:0 0 130px;width:130px;height:130px;margin-right:28px;display:flex;align-items:center;justify-content:center;">
+                    <img [src]="ReportModel.CompanyLogo" alt="Lab logo" style="width:130px;height:130px;object-fit:contain;" />
+                </div>
+                <div [innerHTML]="ReportModel.safeHeader" style="flex:1;min-width:0;padding-left:8px;text-align:left;align-self:center;color:#1e3a5f;font-family:'Segoe UI',Calibri,Arial,sans-serif;"></div>
+            </div>
 
-            <!-- Header -->
-            <table style="width:100%;border-collapse:collapse;margin-bottom:4px">
+            <div style="text-align:center;margin-top:8px;font-size:12px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:#1e3a5f;">Department of Pathology</div>
+            <table style="width:100%;border-collapse:collapse;background:#1e3a5f;color:#fff;margin:6px 0 14px;">
                 <tr>
-                    <td style="width:60px;vertical-align:top">
-                        <div *ngIf="ReportModel.CompanyLogo != '' && ReportModel.CompanyLogo != null" style="width:50px;height:50px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#c00;font-weight:bold"><img [src]="ReportModel.CompanyLogo" style="max-width:50px;max-height:50px;" class="img-fluid radius" /></div>
-                    </td>
-                    <td style="vertical-align:top;text-align:center">
-                      <div [innerHTML]="ReportModel.safeHeader"></div>
-                    </td>
-                    <td style="width:70px;vertical-align:top;text-align:right;font-size:8px;font-weight:bold;color:#0066cc"><!--CAP<br>ACCREDITED--></td>
+                    <td style="width:28%;padding:8px 10px;vertical-align:middle;color:#fff;font-size:11px;font-family:'Segoe UI',Calibri,Arial,sans-serif;"></td>
+                    <td style="width:44%;padding:8px 10px;vertical-align:middle;color:#fff;text-align:center;font-weight:700;font-size:15px;letter-spacing:0.3px;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Clinical Chemistry Report</td>
+                    <td style="width:28%;padding:8px 10px;"></td>
                 </tr>
             </table>
 
-            <!-- Report title header -->
-            <div style="text-align:center;margin-top:8px;font-size:11px">Department of Pathology</div>
-            <div style="border-top:2px solid #000;margin-top:4px"></div>
-            <table style="width:100%;border-collapse:collapse;background:#e8e8e8;border-bottom:1px solid #000;margin-bottom:10px">
+            <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
                 <tr>
-                    <td style="width:28%;padding:5px 6px;font-size:9px;vertical-align:middle">VIEW: 07-Jun-2026 12:35:47</td>
-                    <td style="width:44%;text-align:center;font-weight:bold;font-size:14px;padding:5px 6px;vertical-align:middle">Clinical Chemistry Report</td>
-                    <td style="width:28%;text-align:right;padding:5px 6px;font-size:9px;vertical-align:middle"></td>
-                </tr>
-            </table>
-
-            <!-- Patient Info -->
-            <table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:10px">
-                <tr>
-                    <td style="width:50%;vertical-align:top;padding-right:10px">
-                        <table style="font-family:Arial,Helvetica,sans-serif;width:100%;border-collapse:collapse;font-size:12px;">
-                            <tr><td style="width:100px">MRNO:</td><td style="font-weight:bold">{{ ReportModel?.MRNO }}</td></tr>
-                            <tr><td>Name:</td><td style="font-weight:bold">{{ ReportModel?.PatientName }}</td></tr>
-                            <tr><td>Date of Birth:</td><td>{{ ReportModel?.DOB }}</td></tr>
-                            <tr><td>Age/Sex:</td><td>{{ReportModel?.Age | number:'1.0-2'}} Year(s)/{{ ReportModel?.Gender }}</td></tr>
-                            <tr><td>Phone:</td><td>{{ ReportModel?.Phone }}</td></tr>
-                            <tr><td>Address:</td><td>{{ ReportModel?.Address }}</td></tr>
+                    <td style="width:50%;vertical-align:top">
+                        <table style="width:100%;border-collapse:collapse">
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">MRNO</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;"><strong>{{ ReportModel?.MRNO }}</strong></td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Name</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;"><strong>{{ ReportModel?.PatientName }}</strong></td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Date of Birth</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.DOB }}</td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Age / Sex</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.Age | number:'1.0-2' }} Year(s) / {{ ReportModel?.Gender }}</td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Phone</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.Phone }}</td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Address</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.Address }}</td></tr>
                         </table>
                     </td>
                     <td style="width:50%;vertical-align:top">
-                        <table style="font-family:Arial,Helvetica,sans-serif;width:100%;border-collapse:collapse;font-size:12px;">
-                            <tr><td style="width:130px">Ordered By:</td><td>{{ ReportModel?.OrderedBy }}</td></tr>
-                            <tr><td>Referring Physician:</td><td>{{ ReportModel?.ReferringPhysician }}</td></tr>
-                            <tr><td>In-house Consultant:</td><td></td></tr>
-                            <tr><td>Report Destination:</td><td>{{ReportModel?.CollectionCenter}}</td></tr>
-                            <tr><td>Requested:</td><td>{{ReportModel?.RequestedDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
-                            <tr><td>Specimen Collected:</td><td>{{ReportModel?.CollectedDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
-                            <tr><td>Reported:</td><td>{{ReportModel?.ReportedDate| date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
+                        <table style="width:100%;border-collapse:collapse">
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Ordered By</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.OrderedBy }}</td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Referring Physician</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.ReferringPhysician }}</td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">In-house Consultant</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;"></td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Report Destination</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.CollectionCenter }}</td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Requested</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.RequestedDate | date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Specimen Collected</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.CollectedDate | date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
+                            <tr><td style="width:132px;padding:3px 8px 3px 0;color:#5c6b7a;font-size:11.5px;white-space:nowrap;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Reported</td><td style="padding:3px 12px 3px 0;font-size:13px;color:#1c2430;vertical-align:top;font-family:'Segoe UI',Calibri,Arial,sans-serif;">{{ ReportModel?.ReportedDate | date:'dd-MMM-yyyy HH:mm:ss' }}</td></tr>
                         </table>
                     </td>
                 </tr>
             </table>
 
-            <!-- Results -->
-            <div style="font-weight:bold;font-size:10px;margin-bottom:4px">Chemistry - {{ReportModel?.SampleName}}</div>
-            <table style="font-family:Arial,Helvetica,sans-serif;width:100%;border-collapse:collapse;font-size:9px;border:1px solid #000;font-size:12px;">
-                <tr style="background:#e8e8e8;font-weight:bold">
-                    <td style="border:1px solid #000;padding:3px 5px;width:22%">TEST(s)</td>
-                    <td style="border:1px solid #000;padding:3px 5px;width:14%">NORMAL</td>
-                    <td style="border:1px solid #000;padding:3px 5px;width:10%">UNIT(s)</td>
-                    <td style="border:1px solid #000;padding:3px 5px;text-align:center">Result</td>
-                </tr>
-                <tr *ngFor="let item of ReportModel?.InvoiceModel;let even = even; let odd = odd"  [style.background-color]="even ? '#f2f2f2' : '#ffffff'">
-                    <td style="border:1px solid #000;padding:3px 5px">{{ item.TestName }}</td>
-                    <td style="border:1px solid #000;padding:3px 5px">{{ item.NormalRange }}</td>
-                    <td style="border:1px solid #000;padding:3px 5px">{{ item.Unit }}</td>
-                    <td style="border:1px solid #000;padding:3px 5px;text-align:center">
-                        <span [class.text-danger]="item.Status === 'Critical'"
-                              [class.font-weight-bold]="item.Status === 'Normal'|| item.Status === 'Abnormal'">
-
-                            {{item.CurrentResult}}
-
-                        </span>
-                    </td>
-                </tr>
+            <div style="font-weight:700;font-size:13px;color:#1e3a5f;margin:2px 0 6px;padding-left:8px;border-left:3px solid #1e3a5f;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Chemistry - {{ ReportModel?.SampleName }}</div>
+            <table style="width:100%;border-collapse:collapse;font-size:12.5px;font-family:'Segoe UI',Calibri,Arial,sans-serif;">
+                <thead>
+                    <tr>
+                        <th style="width:34%;background:#1e3a5f;color:#fff;font-weight:600;text-align:left;padding:8px;border:1px solid #1e3a5f;letter-spacing:0.2px;">TEST(s)</th>
+                        <th style="width:22%;background:#1e3a5f;color:#fff;font-weight:600;text-align:left;padding:8px;border:1px solid #1e3a5f;letter-spacing:0.2px;">NORMAL</th>
+                        <th style="width:16%;background:#1e3a5f;color:#fff;font-weight:600;text-align:left;padding:8px;border:1px solid #1e3a5f;letter-spacing:0.2px;">UNIT(s)</th>
+                        <th style="background:#1e3a5f;color:#fff;font-weight:600;text-align:center;padding:8px;border:1px solid #1e3a5f;letter-spacing:0.2px;">Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of ReportModel?.InvoiceModel; let even = even">
+                        <td [style.background]="even ? '#f4f7fb' : '#ffffff'" style="padding:7px 8px;border:1px solid #d5dbe3;vertical-align:middle;">{{ item.TestName }}</td>
+                        <td [style.background]="even ? '#f4f7fb' : '#ffffff'" style="padding:7px 8px;border:1px solid #d5dbe3;vertical-align:middle;">{{ item.NormalRange }}</td>
+                        <td [style.background]="even ? '#f4f7fb' : '#ffffff'" style="padding:7px 8px;border:1px solid #d5dbe3;vertical-align:middle;">{{ item.Unit }}</td>
+                        <td [style.background]="even ? '#f4f7fb' : '#ffffff'" style="padding:7px 8px;border:1px solid #d5dbe3;vertical-align:middle;text-align:center;">
+                            <span [class.text-danger]="item.Status === 'Critical'"
+                                  [class.font-weight-bold]="item.Status === 'Normal'|| item.Status === 'Abnormal'"
+                                  [style.color]="item.Status === 'Critical' ? '#dc3545' : null"
+                                  [style.font-weight]="item.Status === 'Normal' || item.Status === 'Abnormal' ? '700' : null">{{ item.CurrentResult }}</span>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
 
-            <!-- Notes -->
-            <div style="margin-top:14px;font-size:9px;font-weight:bold;line-height:1.5" [innerHTML]="ReportModel.safeFooter">
-                
-            </div>
+            <div [innerHTML]="ReportModel.safeFooter" style="margin-top:20px;padding-top:10px;border-top:1px solid #c5ced8;text-align:center;font-family:'Segoe UI',Calibri,Arial,sans-serif;font-size:10px;line-height:1.45;font-weight:500;color:#3d4a57;"></div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary"
+            <button type="button"
+                    class="btn btn-primary"
                     ngxPrint
                     printSectionId="printReport"
                     useExistingCss="true">

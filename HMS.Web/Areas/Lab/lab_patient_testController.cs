@@ -185,6 +185,7 @@ namespace HMS.Web.API.Areas.Lab.Controllers
                         lab_result_mf = null,
                         emr_investigation = null,
                         PriorityId = Model.PriorityId,
+                        DoctorId = Model.DoctorId,
                         StatusId = 1,
                         InvoiceNo = invoiceNo,
                         AccessCode = accesscode,

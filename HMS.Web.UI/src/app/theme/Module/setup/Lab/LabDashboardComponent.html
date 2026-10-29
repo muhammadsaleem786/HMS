@@ -572,7 +572,7 @@
                         </div>
                         <div class="col-md-3 mb-3">
                             <label class="font-weight-500">Referring Physician</label>
-                            <input type="text" formControlName="ReferringPhysician" [(ngModel)]="PatientTestmodel.ReferringPhysician" class="form-control form-control-sm" placeholder="Enter Physician" autocomplete="off" />
+                            <input type="text" id="DoctorSearch" (click)="LoadDoctor()" formControlName="DoctorId" [(ngModel)]="PatientTestmodel.ReferringPhysician" class="form-control form-control-sm form-control-alternative" placeholder="Enter Physician" autocomplete="off">
                         </div>
                         <div class="col-md-9 mb-3">
                             <label class="font-weight-500">Clinical Notes</label>

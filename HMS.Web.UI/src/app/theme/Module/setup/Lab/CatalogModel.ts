@@ -14,6 +14,7 @@
     CompletedDate: Date;
     InProgressDate: Date;
     ReferringPhysician: string;
+    DoctorId: number;
     DiscountAmount: number = 0;
     Discount: number;
     DiscountType: string;

@@ -26,6 +26,7 @@ namespace HMS.Entities.Models
         public Nullable<DateTime> CompletedDate { get; set; }
         public Nullable<DateTime> InProgressDate { get; set; }
         public string ReferringPhysician { get; set; }
+        public Nullable<decimal> DoctorId { get; set; }
         public Nullable<decimal> DiscountAmount { get; set; }
         public Nullable<decimal> Discount { get; set; }
         public string DiscountType { get; set; }

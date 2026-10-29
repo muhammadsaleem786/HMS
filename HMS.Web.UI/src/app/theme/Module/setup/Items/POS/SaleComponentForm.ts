@@ -607,11 +607,11 @@ export class SaleComponentForm {
             this.toastr.Error("Error", "Please select at least one item.");
             return;
         }
-        const distinctGroups = new Set(this.model.pur_sale_dt.map(item => item.GroupId));
-        if (distinctGroups.size > 1) {
-            this.toastr.Error("Error", "Please select items of the same group type.");
-            return;
-        }
+        //  const distinctGroups = new Set(this.model.pur_sale_dt.map(item => `${item.GroupId}_${item.ItemID}`));
+        // if (distinctGroups.size > 1) {
+        //     this.toastr.Error("Error", "Please select items of the same group type.");
+        //     return;
+        // }
         const saleTypeId = this.model.SaleTypeID;
         if (this.model.ID > 0)
             this.model.SaleTypeID = 2
@@ -661,12 +661,12 @@ export class SaleComponentForm {
     SaleOnHold() {
         var isValid: boolean = false;
         this.model.pur_sale_dt = this.Sale_itemdynamicArray;
-        const distinctGroups = new Set(this.model.pur_sale_dt.map(item => item.GroupId));
-        if (distinctGroups.size > 1) {
-            this.toastr.Error("Error", "Please select items of the same group type.");
-            isValid = false;
-            return;
-        }
+        // const distinctGroups = new Set(this.model.pur_sale_dt.map(item => item.GroupId));
+        // if (distinctGroups.size > 1) {
+        //     this.toastr.Error("Error", "Please select items of the same group type.");
+        //     isValid = false;
+        //     return;
+        // }
         if (this.model.pur_sale_dt.length == 0) {
             this.toastr.Error("Error", "Please select at least one item.");
             isValid = false;
@@ -975,11 +975,11 @@ export class SaleComponentForm {
             this.toastr.Error("Error", "Please select at least one item.");
             return;
         }
-        const distinctGroups = new Set(this.model.pur_sale_dt.map(item => item.GroupId));
-        if (distinctGroups.size > 1) {
-            this.toastr.Error("Error", "Please select items of the same group type.");
-            return;
-        }
+        // const distinctGroups = new Set(this.model.pur_sale_dt.map(item => item.GroupId));
+        // if (distinctGroups.size > 1) {
+        //     this.toastr.Error("Error", "Please select items of the same group type.");
+        //     return;
+        // }
         this.PayableAmount = this.Total;
         this.Payment = this.Total;
         this.ReceivedAmount = this.Total;

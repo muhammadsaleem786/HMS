@@ -6,6 +6,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LoaderService } from '../../../../CommonService/LoaderService';
 import { ValidationVariables } from '../../../../AngularConfig/global';
 import { CommonService } from '../../../../CommonService/CommonService';
+import { PatientService } from './../Patient/PatientService';
 import { CommonToastrService } from '../../../../CommonService/CommonToastrService';
 import { LabService } from './LabService';
 import { GlobalVariable } from '../../../../AngularConfig/global';
@@ -21,7 +22,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 @Component({
     selector: 'app-LabDashboard',
     templateUrl: './LabDashboardComponent.html',
-    providers: [LabService, AppointmentService],
+    providers: [LabService, AppointmentService, PatientService],
 })
 export class LabDashboardComponent implements OnInit {
     public PModel = new PaginationModel();
@@ -108,9 +109,9 @@ export class LabDashboardComponent implements OnInit {
     };
 
     constructor(public _fb: FormBuilder, public _router: Router
-        , public commonservice: CommonService, public toastr: CommonToastrService
+        , public commonservice: CommonService, public _PatientService: PatientService, public toastr: CommonToastrService
         , public loader: LoaderService, public _AppointmentService: AppointmentService, private encrypt: EncryptionService, public _labService: LabService
-        , private modalService: NgbModal,private sanitizer: DomSanitizer) {
+        , private modalService: NgbModal, private sanitizer: DomSanitizer) {
         this.PayrollRegion = this.commonservice.getPayrollRegion();
         this.Rights = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('Rights')));
         this.TestControlRights = this.commonservice.ScreenRights("115");
@@ -155,6 +156,7 @@ export class LabDashboardComponent implements OnInit {
             CompletedDate: [''],
             InProgressDate: [''],
             ReferringPhysician: [''],
+            DoctorId: [''],
             DiscountAmount: [''],
             Discount: [''],
             DiscountType: [''],
@@ -283,6 +285,29 @@ export class LabDashboardComponent implements OnInit {
                 this.PatientTestmodel.Age = ui.item.Age;
                 this.PatientTestmodel.Gender = ui.item.Gender;
                 this.SelectedPatientTestLoad(ui.item.value);
+                return ui.item.label;
+            }
+        });
+    }
+    LoadDoctor() {
+        $("#DoctorSearch").autocomplete({
+            source: (request, response) => {
+                this.loader.ShowLoader();
+                this._PatientService.DoctorSearch(request.term).then(m => {
+                    if (m.ResultSet.result.length == 0)
+                    {
+                        this.PatientTestmodel.DoctorId = null;
+                        this.PatientTestmodel.ReferringPhysician = request.term;
+                    }
+                    if (m.ResultSet.result.length != 0)
+                        response(m.ResultSet.result);
+                    this.loader.HideLoader();
+                });
+            },
+            minLength: 3,
+            select: (event, ui) => {
+                this.PatientTestmodel.DoctorId = ui.item.value;
+                this.PatientTestmodel.ReferringPhysician = ui.item.label;
                 return ui.item.label;
             }
         });

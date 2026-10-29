@@ -619,7 +619,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     {
                         a.DoctorId,
                         Date = a.BillDate.Date
-                    }).Select( g=> new
+                    }).Select(g => new
                     {
                         DoctorId = g.Key.DoctorId,
                         DoctorName = doctors.ContainsKey(g.Key.DoctorId)
@@ -814,6 +814,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                DoctorId = (decimal)a.DoctorId,
                Date = a.Date,
                Category = a.sys_drop_down_value.Value,
+               Remarks = a.Remark,
                Type = "Expense"
            })
            .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
@@ -835,6 +836,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 DoctorId = a.DoctorId,
                 Date = a.Date,
                 Type = a.Type,
+                Remarks = a.Remarks,
                 Category = a.Category
             })
             .OrderByDescending(x => x.Date)
@@ -1572,6 +1574,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     {
         DoctorId = z.DoctorId,
         ServiceId = z.ServiceId ?? 0,
+        LabId = z.LabId ?? 0,
+        ItemId = z.ItemId ?? 0,
         DoctorShare = z.DoctorShare,
         OwnerShare = z.OwnerShare,
         Category = z.Category,
@@ -1626,22 +1630,32 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     })
                     .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
                     .ToList();
-                List<DoctorShareWiseVM> ipdResult = ipdIncome.Select(a => new DoctorShareWiseVM
+                List<DoctorShareWiseVM> ipdResult = ipdIncome.Select(a =>
                 {
-                    ID = a.ID,
-                    MRNO = a.MRNO,
-                    OutstandingBalance = a.OutstandingBalance,
-                    ShareAmount = _ipd_paymentService.Queryable()
-                        .Where(z => z.AdmissionId == a.ID && z.CompanyId == CompanyID)
-                        .Sum(y => (decimal?)y.Amount) ?? 0m,
-                    ServiceId = _ipd_procedure_mfService.Queryable()
-                        .Where(z => z.AdmissionId == a.ID && z.CompanyId == CompanyID).FirstOrDefault().ServiceId,
-                    Discount = a.Discount,
-                    DoctorId = a.DoctorId,
-                    PatientName = a.PatientName,
-                    Date = a.Date,
-                    Type = a.Type,
-                    Category = a.Category
+                    var procedure = _ipd_procedure_mfService.Queryable()
+                    .FirstOrDefault(z =>
+                        z.AdmissionId == a.ID &&
+                        z.CompanyId == CompanyID);
+                    var shareAmount = _ipd_paymentService.Queryable()
+                        .Where(z =>
+                            z.AdmissionId == a.ID &&
+                            z.CompanyId == CompanyID)
+                        .Sum(y => (decimal?)y.Amount) ?? 0m;
+
+                    return new DoctorShareWiseVM
+                    {
+                        ID = a.ID,
+                        MRNO = a.MRNO,
+                        OutstandingBalance = a.OutstandingBalance,
+                        ShareAmount = shareAmount,
+                        ServiceId = procedure != null ? procedure.ServiceId : 0,
+                        Discount = a.Discount,
+                        DoctorId = a.DoctorId,
+                        PatientName = a.PatientName,
+                        Date = a.Date,
+                        Type = a.Type,
+                        Category = a.Category
+                    };
                 }).ToList();
                 foreach (var item in ipdResult)
                 {
@@ -1666,7 +1680,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         PatientName = a.emr_patient_mf.PatientName,
                         Date = a.Date,
                         Type = "Pharmacy",
-                        ServiceId = 1,
+                        ServiceId = 0,
                         Category = "Pharmacy",
                     })
                     .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
@@ -1690,12 +1704,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         OutstandingBalance = 0m,
                         ShareAmount = a.Total,
                         Discount = a.DiscountAmount,
-                        DoctorId = null,
+                        DoctorId = a.DoctorId,
                         PatientName = a.emr_patient_mf.PatientName,
                         Date = a.CreatedDate,
                         Type = "Laboratory",
                         Category = "Laboratory",
-                        ServiceId = 1,
+                        ServiceId = a.CatalogId,
                     })
                     .Where(a => model.DoctorId == null || a.DoctorId == model.DoctorId)
                     .ToList();
@@ -1755,8 +1769,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         {
             var share = userShares.FirstOrDefault(x =>
                 x.DoctorId == item.DoctorId &&
-                x.ServiceId == item.ServiceId &&
-                x.Category == item.Category);
+                x.Category == item.Category &&
+                (
+                item.Category == "Pharmacy" ? x.ItemId == item.ServiceId :
+            item.Category == "Laboratory" ? x.LabId == item.ServiceId :
+            x.ServiceId == item.ServiceId
+                )
+                );
 
             if (share == null)
             {
@@ -1791,6 +1810,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         {
             public decimal DoctorId { get; set; }
             public decimal ServiceId { get; set; }
+            public decimal LabId { get; set; }
+            public decimal ItemId { get; set; }
             public decimal DoctorShare { get; set; }
             public string OwnerShare { get; set; }
             public string Category { get; set; }

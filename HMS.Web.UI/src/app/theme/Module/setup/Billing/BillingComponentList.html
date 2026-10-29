@@ -25,6 +25,7 @@
                             <tr>
                                 <th>Bill No </th>
                                 <th> Patient </th>
+                                <th> Service Type </th>
                                 <th>Remarks</th>
                                 <th> Doctor </th>
                                 <th> Date </th>
@@ -45,6 +46,9 @@
                                 <td (click)="AddRecord(item.ID)">
                                     {{item.PatientName}}
                                 </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Service}}
+                                </td>                                
                                 <td (click)="AddRecord(item.ID)">
                                     {{item.Remarks}}
                                 </td>

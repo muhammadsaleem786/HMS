@@ -72,6 +72,7 @@
                                 Location
                             </th>
                             <th>Category</th>
+                            <th>Remarks</th>
                             <th>Date</th>
                             <th>Type</th>
                             <th class="text-right">
@@ -91,6 +92,9 @@
                                 {{p.Category}}
                             </td>
                             <td>
+                                {{p.Remarks}}
+                            </td>
+                            <td>
                                 {{p.Date| date:'dd/MM/yyyy'}}
                             </td>
                             <td>
@@ -103,7 +107,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="5">
+                            <td colspan="6">
                                 <strong>Total</strong>
                             </td>
                             <td class="text-right">

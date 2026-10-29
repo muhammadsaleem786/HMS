@@ -328,6 +328,7 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
             { "ID": "5", "Name": "5" },
         ];
         this.PModel.SortName = "";
+        this.PModel.RecordPerPage = 30;
         this.getPages(this.PModel.TotalRecord, this.PModel.RecordPerPage);
         this.selectPatientPage(this.PModel.CurrentPage);
         $('#PatientNameSearch').autocomplete({

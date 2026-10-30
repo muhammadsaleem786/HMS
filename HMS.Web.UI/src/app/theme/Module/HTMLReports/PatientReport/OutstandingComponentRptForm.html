@@ -58,38 +58,40 @@
                 <table class="table Reports_table"  border="1">
                     <thead class="gray_head">
                         <tr>
+                            <th>Sr.No.</th>
                             <th>
-                                Patient Name			
+                                Patient Name
                             </th>
                             <th>
                                 Mobile No
                             </th>
                             <th>Mr.No</th>
-                           
+
                             <th class="text-right">
                                 Outstanding Amount
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let b of DataList">
+                        <tr *ngFor="let b of DataList; let i = index">
+                            <td>{{ i + 1 }}</td>
                             <td>
                                 {{b.PatientName}}
                             </td>
-                           
-                           
+
+
                             <td>
                                 {{b.Mobile}}
                             </td>
                             <td>{{b.MrNo}}</td>
                             <td class="text-right">
                                 {{b.OutstandingBalance| number:'1.2-2'}}
-                            </td>                     
+                            </td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="3">
+                            <td colspan="4">
                                 <strong>Total</strong>
                             </td>
                             <td  class="text-right">

@@ -71,6 +71,7 @@
                 <table class="table Reports_table" border="1">
                     <thead class="gray_head">
                         <tr>
+                            <th>Sr.No.</th>
                             <th>
                                 Date / Time
                             </th>
@@ -103,7 +104,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let app of DataList">
+                        <tr *ngFor="let app of DataList; let i = index">
+                            <td>{{ i + 1 }}</td>
                             <td>
                                 {{app.AppointmentDate|date: 'MM/dd/yyyy'}}
                             </td>

@@ -59,15 +59,13 @@
 
                 </div>
             </div>
-
         </div>
-
-
         <div class="row AddNewItem" id="RptPDF" #RptPDF>
             <div class="col-sm-12">
                 <table class="table Reports_table" border="1">
                     <thead class="gray_head">
                         <tr>
+                            <th>Sr.No.</th>
                             <th>
                                 Date
                             </th>
@@ -82,7 +80,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let c of DataList">
+                        <tr *ngFor="let c of DataList ; let i = index">
+                            <td>{{ i + 1 }}</td>
                             <td>
                                 {{c.Date|date: 'MM/dd/yyyy'}}
                             </td>
@@ -100,7 +99,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                                 <strong>Total</strong>
                             </td>
                             <td class="text-right">

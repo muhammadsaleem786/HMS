@@ -71,6 +71,7 @@
                 <table class="table Reports_table"  border="1">
                     <thead class="gray_head">
                         <tr>
+                            <th>Sr.No.</th>
                             <th>
                                 P- No
                             </th>
@@ -105,22 +106,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let p of DataList">
+                        <tr *ngFor="let p of DataList ; let i = index">
+                            <td>{{ i + 1 }}</td>
                             <td>
                                 {{p.ID}}
                             </td>
-                           
-                           
+
+
                             <td>
                                 {{p.PatientName}}
                             </td>
-                           
+
                             <td>
                                 {{p.Mobile}}
                             </td>
 
-                           
-                            
+
+
                             <td>
                                 {{p.Email}}
                             </td>
@@ -138,12 +140,12 @@
                             <td>
                                 {{p.BloodGroup}}
                             </td>
-                            
+
                             <td>
                                 {{p.Address}}
                             </td>
-                            <td>{{p.CreatedDate|date: 'MM/dd/yyyy'}}</td>                           
-                            
+                            <td>{{p.CreatedDate|date: 'MM/dd/yyyy'}}</td>
+
                         </tr>
                     </tbody>
                   

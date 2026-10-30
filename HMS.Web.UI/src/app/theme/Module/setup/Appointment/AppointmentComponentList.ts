@@ -1187,7 +1187,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                     });
             },
             eventClick: (event) => {
-                debugger
                 var dateTime = event.start.format();
                 var time = dateTime.split('T');
                 let CalendarDate = time[0];
@@ -1210,17 +1209,15 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.OnClickAppointment(CalendarDate, CalendarTime, event.resourceId, event.id);
             },
             dayClick: (date, jsEvent, view, resource) => {
-                debugger;
                 var dateTime = date.format();
                 var time = dateTime.split('T');
                 let CalendarDate = time[0];
                 let CalendarTime = time[1];
-                this.CheckDayClik(date, CalendarTime);
+                this.CheckDayClik(dateTime, CalendarTime);
                 if (this.isDayClik) {
-                    let dateDay = date._d.getDay();
+                    let dateDay = date.day(); //date._d.getDay();
                     for (var i = 0; i < resource.businessHours.length; i++) {
                         if (resource.businessHours[i].dow.includes(dateDay)) {
-                            debugger;
                             let isBooked = this.AppointmentList.some((event: any): boolean => {
                                 let startDate = moment(event.StartDate);
                                 let eventDate = startDate.format('YYYY-MM-DD');

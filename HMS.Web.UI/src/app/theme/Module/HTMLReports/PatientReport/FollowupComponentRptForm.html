@@ -71,7 +71,8 @@
             <div class="col-sm-12">
                 <table class="table Reports_table"  border="1">
                     <thead class="gray_head">
-                        <tr>
+                        <tr><th>Sr.No.</th>
+
                             <th>
                                 Patient Name
                             </th>
@@ -86,7 +87,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let p of DataList">
+                        <tr *ngFor="let p of DataList; let i = index">
+                            <td>{{ i + 1 }}</td>
                             <td>
                                 {{p.PatientName}}
                             </td>

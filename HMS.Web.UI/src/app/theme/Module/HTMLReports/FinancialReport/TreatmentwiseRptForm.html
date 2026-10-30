@@ -59,28 +59,30 @@
                 <table class="table Reports_table"  border="1">
                     <thead class="gray_head">
                         <tr>
+                            <th>Sr.No.</th>
                             <th>
                                 Treatment Name
                             </th>
                             <th>
                                 No. of Treatments
                             </th>
-                           
+
                             <th class="text-right">
                                 Total Treatment Fees (PKR )
                             </th>
-                         
+
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let t of DataList">
+                        <tr *ngFor="let t of DataList ; let i = index">
+                            <td>{{ i + 1 }}</td>
                             <td>
                                 {{t.TreatmentName}}
                             </td>
                             <td>
                                 {{t.Nooftreatment}}
                             </td>
-                           
+
                             <td class="text-right">
                                 {{t.Totalfee| number:'1.2-2'}}
                             </td>
@@ -88,7 +90,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                                 <strong>Total</strong>
                             </td>
                             <td  class="text-right">

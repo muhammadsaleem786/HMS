@@ -72,6 +72,7 @@
                 <table class="table Reports_table"  border="1">
                     <thead class="gray_head">
                         <tr>
+                            <th>Sr.No.</th>
                             <th>
                                 Location
                             </th>
@@ -83,11 +84,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let c of DataList">
+                        <tr *ngFor="let c of DataList ; let i = index">
+                            <td>{{ i + 1 }}</td>
                             <td>
                                 {{c.CompanyName}}
                             </td>
-                           
+
                             <td class="text-right">
                                 {{c.TotalIncome| number:'1.2-2'}}
                             </td>
@@ -95,7 +97,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="1">
+                            <td colspan="2">
                                 <strong>Total</strong>
                             </td>
                             <td  class="text-right">

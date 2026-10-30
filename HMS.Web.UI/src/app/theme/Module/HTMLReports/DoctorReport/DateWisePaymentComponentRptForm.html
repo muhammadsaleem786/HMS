@@ -71,6 +71,7 @@
                 <table class="table Reports_table" border="1">
                     <thead class="gray_head">
                         <tr>
+                            <th>Sr.No.</th>
                             <th>
                                 Doctor Name
                             </th>
@@ -85,7 +86,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let f of DataList">
+                        <tr *ngFor="let f of DataList ; let i = index">
+                            <td>{{ i + 1 }}</td>
                             <td>
                                 {{f.DoctorName}}
                             </td>
@@ -101,7 +103,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">
+                            <td colspan="5">
                                 <strong>Total</strong>
                             </td>
                             <td class="text-right">

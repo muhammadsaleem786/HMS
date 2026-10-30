@@ -58,6 +58,7 @@
                 <table class="table Reports_table"  border="1">
                     <thead class="gray_head">
                         <tr>
+                            <th>Sr.No.</th>
                             <th>
 
                                 Date Of Birth
@@ -65,7 +66,7 @@
                             <th>
                                 Patient Name
                             </th>
-                           
+
                             <th>
                                 Gender
                             </th>
@@ -74,13 +75,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let b of DataList">
+                        <tr *ngFor="let b of DataList; let i = index">
+                            <td>{{ i + 1 }}</td>
                             <td>
                                 {{b.DOB|date: 'MM/dd/yyyy'}}
                             </td>
                             <td>
                                 {{b.PatientName}}
-                            </td>                           
+                            </td>
                             <td>
                                 {{b.Gender}}
                             </td>

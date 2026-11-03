@@ -60,7 +60,7 @@
                                     {{ item.Address}}
                                 </td>
                                 <td (click)="AddRecord(item.ID)">
-                                    {{ item.DOB ? (item.DOB | date: 'MM/dd/yyyy') : (item.Age + ' years') }}
+                                    {{ item.Age}}
                                 </td>
                                 <td (click)="AddRecord(item.ID)">
                                     {{item.Email}}

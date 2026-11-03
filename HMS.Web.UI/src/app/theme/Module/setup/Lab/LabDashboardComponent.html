@@ -20,6 +20,231 @@
             vertical-align: middle;
         }
 
+    .lab-ops .lab-ops-actions .card,
+    .lab-ops .lab-stat {
+        background: #fff;
+        border: 1px solid #e4eaf2 !important;
+        border-radius: 14px !important;
+        box-shadow: 0 8px 22px rgba(28, 39, 68, 0.06) !important;
+    }
+
+    .lab-ops .lab-ops-actions .card {
+        cursor: pointer;
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+        .lab-ops .lab-ops-actions .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(47, 52, 121, 0.12) !important;
+        }
+
+    .lab-ops .lab-ops-action-icon {
+        width: 48px;
+        height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #eef1fb !important;
+        color: #2f3479 !important;
+        border-radius: 14px !important;
+        padding: 0 !important;
+        min-width: 48px;
+    }
+
+        .lab-ops .lab-ops-action-icon i {
+            font-size: 18px;
+            color: #2f3479;
+        }
+
+    .lab-ops .lab-stat {
+        min-height: 112px;
+        padding: 16px 18px 14px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .lab-ops .lab-stat:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: #2f3479;
+        }
+
+    .lab-ops .lab-ops-stats .col-md-3:nth-child(1) .lab-stat {
+        background: linear-gradient(180deg, #f3f5ff 0%, #fff 58%);
+    }
+
+    .lab-ops .lab-ops-stats .col-md-3:nth-child(2) .lab-stat {
+        background: linear-gradient(180deg, #eef8fc 0%, #fff 58%);
+    }
+
+        .lab-ops .lab-ops-stats .col-md-3:nth-child(2) .lab-stat:before {
+            background: #1d7aa8;
+        }
+
+    .lab-ops .lab-ops-stats .col-md-3:nth-child(3) .lab-stat {
+        background: linear-gradient(180deg, #f1faf4 0%, #fff 58%);
+    }
+
+        .lab-ops .lab-ops-stats .col-md-3:nth-child(3) .lab-stat:before {
+            background: #1f8a4c;
+        }
+
+    .lab-ops .lab-ops-stats .col-md-3:nth-child(4) .lab-stat {
+        background: linear-gradient(180deg, #fff4f3 0%, #fff 58%);
+    }
+
+        .lab-ops .lab-ops-stats .col-md-3:nth-child(4) .lab-stat:before {
+            background: #c0392b;
+        }
+
+    .lab-ops .lab-stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .lab-ops .lab-stat-label {
+        font-size: 12px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: #66758a;
+        font-weight: 600;
+    }
+
+    .lab-ops .lab-stat-value {
+        font-size: 34px;
+        line-height: 1;
+        font-weight: 700;
+        color: #1b2440;
+        letter-spacing: -0.6px;
+    }
+
+    .lab-ops .lab-stat .badge {
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 10px;
+    }
+
+    .lab-ops .lab-ops-cases .Cardview.fullHeight {
+        min-height: 0;
+        border: 1px solid #e6ebf2;
+        border-radius: 14px;
+        box-shadow: 0 8px 22px rgba(28, 39, 68, 0.05);
+        overflow: visible;
+    }
+
+    .lab-ops .uk-overflow-container {
+        overflow: visible;
+    }
+
+    .lab-ops .lab-ops-cases .form-control {
+        border-radius: 8px;
+        border-color: #dbe3ec;
+        height: 36px;
+        background: #fff;
+    }
+
+    .lab-ops .lab-ops-table thead th {
+        background: #f5f7fb !important;
+        color: #66758a !important;
+        font-size: 11px !important;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        border-bottom: 1px solid #e6ebf2 !important;
+        font-weight: 600;
+    }
+
+    .lab-ops .lab-ops-table tbody td {
+        border-top: 1px solid #f0f3f7;
+        vertical-align: middle;
+        padding: 12px 10px;
+    }
+
+    .lab-ops .lab-ops-table tbody tr:hover td {
+        background: #f8fafc;
+    }
+
+    .lab-ops .lab-ops-row-actions {
+        white-space: nowrap;
+    }
+
+        .lab-ops .lab-ops-row-actions select.form-control {
+            width: 140px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+    .lab-ops .lab-ops-more {
+        background: #2f3479;
+        color: #fff;
+        border: 0;
+        border-radius: 8px;
+        height: 32px;
+        padding: 0 12px;
+        vertical-align: middle;
+    }
+
+        .lab-ops .lab-ops-more:hover,
+        .lab-ops .lab-ops-more:focus {
+            background: #262b66;
+            color: #fff;
+        }
+
+    .lab-ops .lab-ops-actions-menu {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 6px;
+    }
+
+        .lab-ops .lab-ops-actions-menu .dropdown-menu {
+            min-width: 170px;
+            border: 1px solid #e6ebf2;
+            border-radius: 10px;
+            box-shadow: 0 10px 24px rgba(28, 39, 68, 0.12);
+            padding: 6px;
+            z-index: 30;
+        }
+
+        .lab-ops .lab-ops-actions-menu .dropdown-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            border: 0;
+            border-radius: 7px;
+            padding: 8px 10px;
+            font-size: 13px;
+            color: #1c2430;
+            cursor: pointer;
+        }
+
+            .lab-ops .lab-ops-actions-menu .dropdown-item:hover,
+            .lab-ops .lab-ops-actions-menu .dropdown-item:focus,
+            .lab-ops .lab-ops-actions-menu .dropdown-item:active,
+            .lab-ops .lab-ops-actions-menu .dropdown-item:focus:active {
+                background: #f4f6fb !important;
+                color: #2f3479 !important;
+                outline: none !important;
+                box-shadow: none !important;
+                border: 0 !important;
+            }
+
+    .lab-ops .lab-ops-more:focus,
+    .lab-ops .lab-ops-more:active {
+        outline: none !important;
+        box-shadow: none !important;
+        background: #2f3479 !important;
+        color: #fff !important;
+    }
+
     @media print {
 
         .modal-header,
@@ -36,9 +261,9 @@
         }
     }
 </style>
-<div class="margin-t-68 removeAction px-4">
+<div class="margin-t-68 removeAction px-4 lab-ops">
     <!-- Page Header -->
-    <div class="row headSection paginationHead">
+    <div class="row headSection paginationHead lab-ops-head">
         <div class="col-sm-8">
             <div class="row">
                 <div class="col max-content">
@@ -55,12 +280,12 @@
         </div>
     </div>
     <!-- Primary Actions -->
-    <div class="row mt-3">
+    <div class="row mt-3 lab-ops-actions">
         <div class="col-md-3 col-sm-6 mb-3" *ngFor="let action of primaryActions">
             <div class="card shadow-sm border-0 h-100 cursor-pointer" (click)="onPrimaryActionClick(action)">
                 <div class="card-body d-flex align-items-center">
                     <div class="mr-3">
-                        <span class="badge badge-danger-light rounded-circle p-3">
+                        <span class="badge badge-danger-light rounded-circle p-3 lab-ops-action-icon">
                             <i [class]="action.icon"></i>
                         </span>
                     </div>
@@ -73,23 +298,19 @@
         </div>
     </div>
     <!-- KPI Summary -->
-    <div class="row mt-3">
+    <div class="row mt-2 lab-ops-stats">
         <div class="col-md-3 col-sm-6 mb-3" *ngFor="let stat of summaryStats">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">{{ stat.label }}</p>
-                            <h3 class="mb-0">{{ stat.value }}</h3>
-                        </div>
-                        <span class="badge" [ngClass]="stat.badgeClass">{{ stat.badgeText }}</span>
-                    </div>
+            <div class="lab-stat h-100">
+                <div class="lab-stat-top">
+                    <span class="lab-stat-label">{{ stat.label }}</span>
+                    <span class="badge" [ngClass]="stat.badgeClass">{{ stat.badgeText }}</span>
                 </div>
+                <div class="lab-stat-value">{{ stat.value }}</div>
             </div>
         </div>
     </div>
     <!-- Active Cases -->
-    <div class="row mt-4">
+    <div class="row mt-2 lab-ops-cases">
         <div class="col-12">
             <div class="row mb-3 align-items-center">
                 <div class="col-md-12 mb-2 mb-md-0">
@@ -122,7 +343,7 @@
             <div class="Cardview fullHeight m-0">
                 <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
                     <div class="uk-overflow-container col-sm-12 p-0">
-                        <table id="lab_dashboard_table" class="uk-table table" cellspacing="0" style="width: 100%; min-width: 1100px;">
+                        <table id="lab_dashboard_table" class="uk-table table lab-ops-table" cellspacing="0" style="width: 100%; min-width: 1100px;">
                             <thead class="grid-header">
                                 <tr>
                                     <th style="width: 10px;"></th>
@@ -133,7 +354,7 @@
                                     <th style="width: 110px;">Priority</th>
                                     <th style="width: 130px;">Status</th>
                                     <th style="width: 130px;">Ordered Date</th>
-                                    <th class="text-right" style="min-width: 220px;">Actions</th>
+                                    <th class="text-right" style="width: 230px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -194,34 +415,34 @@
                                             </p>
                                         </div>
                                     </td>
-                                    <td class="text-right">
-                                        <select *ngIf="item.statusId !==4" class="form-control form-control-sm d-inline-block w-auto mr-2"
+                                    <td class="text-right lab-ops-row-actions">
+                                        <select *ngIf="item.statusId !==4" class="form-control form-control-sm"
                                                 [(ngModel)]="item.statusId" (change)="onStatusChange(item)">
                                             <option *ngFor="let opt of statusFilters" [ngValue]="opt.ID">
                                                 {{ opt.Value }}
                                             </option>
                                         </select>
-                                        <div>
-                                            <button *ngIf="item.statusId==2 || item.statusId==3|| item.statusId==4" class="btn btn-light btn-sm mr-1" (click)="openPrintModal(item)">
-                                                <i class="icon icon-printer"></i> Print
+                                        <div class="dropdown lab-ops-actions-menu">
+                                            <button type="button" class="btn btn-sm dropdown-toggle lab-ops-more" data-toggle="dropdown">
+                                                Actions
                                             </button>
-                                            <button class="btn btn-light btn-sm mr-1" (click)="openInvoiceModal(item.invoiceno)">
-                                                <i class="icon icon-printer"></i> Print Invoice
-                                            </button>
-
-                                            <button *ngIf="item.statusId==4" (click)="openReportModal(item.testId)" class="btn btn-light btn-sm mr-1">
-                                                <i class="icon icon-printer"></i> Generate Report
-                                            </button>
-                                            <button *ngIf="item.statusId==3" class="btn btn-danger btn-sm"
-                                                    type="button"
-                                                    (click)="onOpenEnterResultFromCase(item)">
-                                                Enter Results
-                                            </button>
-                                            <button *ngIf="item.statusId==1" class="btn btn-danger btn-sm"
-                                                    type="button"
-                                                    (click)="Delete(item.testId)">
-                                                Delete
-                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <button *ngIf="item.statusId==2 || item.statusId==3|| item.statusId==4" type="button" class="dropdown-item" (click)="openPrintModal(item)">
+                                                    Print
+                                                </button>
+                                                <button type="button" class="dropdown-item" (click)="openInvoiceModal(item.invoiceno)">
+                                                    Print Invoice
+                                                </button>
+                                                <button *ngIf="item.statusId==4" type="button" class="dropdown-item" (click)="openReportModal(item.testId)">
+                                                    Generate Report
+                                                </button>
+                                                <button *ngIf="item.statusId==3" type="button" class="dropdown-item" (click)="onOpenEnterResultFromCase(item)">
+                                                    Enter Results
+                                                </button>
+                                                <button *ngIf="item.statusId==1" type="button" class="dropdown-item" (click)="Delete(item.testId)">
+                                                    Delete
+                                                </button>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -572,7 +793,7 @@
                         </div>
                         <div class="col-md-3 mb-3">
                             <label class="font-weight-500">Referring Physician</label>
-                            <input type="text" id="DoctorSearch" (click)="LoadDoctor()" formControlName="DoctorId" [(ngModel)]="PatientTestmodel.ReferringPhysician" class="form-control form-control-sm form-control-alternative" placeholder="Enter Physician" autocomplete="off">
+                            <input type="text" formControlName="ReferringPhysician" [(ngModel)]="PatientTestmodel.ReferringPhysician" class="form-control form-control-sm" placeholder="Enter Physician" autocomplete="off" />
                         </div>
                         <div class="col-md-9 mb-3">
                             <label class="font-weight-500">Clinical Notes</label>
@@ -755,66 +976,52 @@
 
         <div id="print-RxPrintLabModal" class="modal-body p-3">
 
-            <!-- LABEL DESIGN -->
-            <div class="border rounded p-3">
+            <div style="width:100%;max-width:100%;box-sizing:border-box;margin:0 auto;padding:8px 6px;background:#fff;color:#000;font-family:'Segoe UI',Arial,sans-serif;font-size:12px;line-height:1.35;">
 
-                <!-- Barcode -->
-                <div class="text-center mb-3">
-                    <div style="font-size:20px; letter-spacing:3px;">
-                        ||||| {{ selectedSample.serialNo }} |||||
-                    </div>
-                    <small class="text-muted">Scan barcode above</small>
+                <div style="text-align:center;border-bottom:1px dashed #000;padding-bottom:8px;margin-bottom:8px;">
+                    <div style="font-family:'Courier New',monospace;font-size:15px;font-weight:700;letter-spacing:2px;word-break:break-word;">||||| {{ selectedSample.serialNo }} |||||</div>
+                    <div style="font-size:10px;margin-top:3px;">Scan barcode above</div>
                 </div>
 
-                <!-- Sample ID -->
-                <div class="text-center mb-3">
-                    <div class="text-muted">Sample ID</div>
-                    <h4 class="mb-0">{{ selectedSample.serialNo }}</h4>
+                <div style="text-align:center;margin-bottom:8px;">
+                    <div style="font-size:10px;letter-spacing:0.6px;">SAMPLE ID</div>
+                    <div style="font-size:16px;font-weight:700;word-break:break-word;">{{ selectedSample.serialNo }}</div>
                 </div>
 
-                <hr>
+                <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                    <tr>
+                        <td style="padding:3px 4px;font-weight:700;width:42%;vertical-align:top;">Patient</td>
+                        <td style="padding:3px 4px;text-align:right;word-break:break-word;">{{ selectedSample.patientName }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 4px;font-weight:700;vertical-align:top;">Patient ID</td>
+                        <td style="padding:3px 4px;text-align:right;word-break:break-word;">{{ selectedSample.patientCode }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 4px;font-weight:700;vertical-align:top;">Sample Type</td>
+                        <td style="padding:3px 4px;text-align:right;">
+                            <span style="display:inline-block;border:1px solid #000;padding:1px 6px;font-weight:700;font-size:11px;">{{ selectedSample.sampleType }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 4px;font-weight:700;vertical-align:top;">Priority</td>
+                        <td style="padding:3px 4px;text-align:right;">
+                            <span style="display:inline-block;border:1px solid #000;padding:1px 6px;font-weight:700;font-size:11px;">{{ selectedSample.priority }}</span>
+                        </td>
+                    </tr>
+                </table>
 
-                <div class="row">
-                    <div class="col-6"><b>Patient:</b></div>
-                    <div class="col-6 text-right">{{ selectedSample.patientName }}</div>
+                <div style="border-top:1px dashed #000;margin-top:8px;padding-top:8px;">
+                    <div style="font-weight:700;margin-bottom:4px;">Tests Ordered</div>
+                    <div *ngFor="let t of selectedSample.Details" style="padding:1px 0 1px 8px;">• {{ t.testName }}</div>
                 </div>
 
-                <div class="row">
-                    <div class="col-6"><b>Patient ID:</b></div>
-                    <div class="col-6 text-right">{{ selectedSample.patientCode }}</div>
-                </div>
-
-                <div class="row mt-2">
-                    <div class="col-6"><b>Sample Type:</b></div>
-                    <div class="col-6 text-right">
-                        <span class="badge badge-danger">{{ selectedSample.sampleType }}</span>
-                    </div>
-                </div>
-
-                <div class="row mt-2">
-                    <div class="col-6"><b>Priority:</b></div>
-                    <div class="col-6 text-right">
-                        <span class="badge badge-warning">{{ selectedSample.priority }}</span>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div>
-                    <b>Tests Ordered:</b>
-                    <ul class="mb-0">
-                        <li *ngFor="let t of selectedSample.Details">
-                            {{ t.testName }}
-                        </li>
-                    </ul>
-                </div>
-
-                <hr>
-
-                <div class="d-flex justify-content-between">
-                    <small>Collection Date: {{ selectedSample.orderedDate | date:'yyyy-MM-dd' }}</small>
-                    <small>Time: {{ selectedSample.orderedDate | date:'HH:mm:ss' }}</small>
-                </div>
+                <table style="width:100%;border-collapse:collapse;border-top:1px dashed #000;margin-top:8px;font-size:10px;">
+                    <tr>
+                        <td style="padding-top:6px;text-align:left;">Collection Date: {{ selectedSample.orderedDate | date:'yyyy-MM-dd' }}</td>
+                        <td style="padding-top:6px;text-align:right;white-space:nowrap;">Time: {{ selectedSample.orderedDate | date:'HH:mm:ss' }}</td>
+                    </tr>
+                </table>
 
             </div>
 
@@ -1064,7 +1271,7 @@
             <div style="text-align:center;margin-top:8px;font-size:12px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:#1e3a5f;">Department of Pathology</div>
             <table style="width:100%;border-collapse:collapse;background:#1e3a5f;color:#fff;margin:6px 0 14px;">
                 <tr>
-                    <td style="width:28%;padding:8px 10px;vertical-align:middle;color:#fff;font-size:11px;font-family:'Segoe UI',Calibri,Arial,sans-serif;"></td>
+                    <td style="width:28%;padding:8px 10px;vertical-align:middle;color:#fff;font-size:11px;font-family:'Segoe UI',Calibri,Arial,sans-serif;">VIEW: 07-Jun-2026 12:35:47</td>
                     <td style="width:44%;padding:8px 10px;vertical-align:middle;color:#fff;text-align:center;font-weight:700;font-size:15px;letter-spacing:0.3px;font-family:'Segoe UI',Calibri,Arial,sans-serif;">Clinical Chemistry Report</td>
                     <td style="width:28%;padding:8px 10px;"></td>
                 </tr>

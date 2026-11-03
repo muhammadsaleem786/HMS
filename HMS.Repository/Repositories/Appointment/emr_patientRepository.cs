@@ -76,10 +76,11 @@ namespace HMS.Repository.Repositories.Appointment
 
                 filteredData = filteredData.OrderByDescending(d => (d.ID)).AsQueryable();
                 objResult.TotalRecord = filteredData.Count();
+                var data = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord).ToList();
                 if (IgnorePaging)
                 {
 
-                    objResult.DataList = filteredData
+                    objResult.DataList = data
                         .Select(s => new
                         {
                             s.ID,
@@ -92,13 +93,13 @@ namespace HMS.Repository.Repositories.Appointment
                             Image = s.Image,
                             Gender = s.Gender,
                             Address = s.Address,
-                            Age = s.Age
+                            Age = s.DOB.HasValue ? CalculateAge(s.DOB.Value) :  (s.Age.HasValue ? $"{s.Age.Value:0.##} Years" : "")
                         }).ToList<object>();
                 }
                 else
                 {
 
-                    objResult.DataList = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
+                    objResult.DataList = data
                        .Select(s => new
                        {
                            s.ID,
@@ -111,8 +112,7 @@ namespace HMS.Repository.Repositories.Appointment
                            Gender = s.Gender,
                            Image = s.Image,
                            CNIC = s.CNIC,
-                           Age = s.Age
-
+                           Age = s.DOB.HasValue ? CalculateAge(s.DOB.Value) :  (s.Age.HasValue ? $"{s.Age.Value:0.##} Years" : "")
                        }).ToList<object>();
 
                 }
@@ -123,7 +123,28 @@ namespace HMS.Repository.Repositories.Appointment
             }
             return objResult;
         }
+        public static string CalculateAge(DateTime dob)
+        {
+            DateTime today = DateTime.Today;
+            int years = today.Year - dob.Year;
+            int months = today.Month - dob.Month;
+            int days = today.Day - dob.Day;
 
+            if (days < 0)
+            {
+                months--;
+                days += DateTime.DaysInMonth(
+                    today.Year,
+                    today.Month == 1 ? 12 : today.Month - 1
+                );
+            }
+            if (months < 0)
+            {
+                years--;
+                months += 12;
+            }
+            return $"{years} Years, {months} Months, {days} Days";
+        }
         public static PaginationResult SerachDoctorList(this IRepository<emr_patient_mf> repository, decimal CompanyID, decimal userid)
         {
             var objResult = new PaginationResult();

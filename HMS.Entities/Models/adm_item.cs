@@ -15,6 +15,7 @@ namespace HMS.Entities.Models
         {
             this.pur_invoice_dt = new List<pur_invoice_dt>();
             this.sale_invoice_dt = new List<sale_invoice_dt>();
+            this.quote_invoice_dt = new List<quote_invoice_dt>();
             this.pur_sale_dt = new List<pur_sale_dt>();
             this.pur_sale_hold_dt = new List<pur_sale_hold_dt>();
             this.inv_stock = new List<inv_stock>();
@@ -74,6 +75,7 @@ namespace HMS.Entities.Models
         public virtual sys_drop_down_value sys_drop_down_value4 { get; set; }
         public virtual ICollection<pur_invoice_dt> pur_invoice_dt { get; set; }
         public virtual ICollection<sale_invoice_dt> sale_invoice_dt { get; set; }
+        public virtual ICollection<quote_invoice_dt> quote_invoice_dt { get; set; }
         public virtual ICollection<pur_sale_dt> pur_sale_dt { get; set; }
         public virtual ICollection<pur_sale_hold_dt> pur_sale_hold_dt { get; set; }
         public virtual ICollection<inv_stock> inv_stock { get; set; }

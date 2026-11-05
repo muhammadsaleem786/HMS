@@ -171,16 +171,18 @@ export class SaleInvoiceComponentForm {
                             this.SubTotal = 0;
                             this.IsCustomerDetail = true;
                             this.model.sale_invoice_dt.forEach((item, index) => {
-                                let itemObj = itemList.filter(x => x.ID == item.ItemID);
-                                if (item.Discount == null) {
+                                let itemObj = itemList.find(x =>
+                                    x.ID == (item.ItemTypeId == 1 ? item.ItemID : item.ServiceID)
+                                );
+                                 if (item.Discount == null) {
                                     item.Discount = item.DiscountAmount;
                                     item.DiscountType = 2;
                                 } else
                                     item.DiscountType = 1;
 
                                 if (itemObj.length != 0)
-                                    item.ItemType = itemObj[0].Value;
-                                item.Item = itemObj[0].Name;
+                                    item.ItemType = itemObj.Value;
+                                item.Item = itemObj.Name;
                                 this.Invoice_itemdynamicArray.push(item);
                             });
                             if (this.model.sale_invoice_dt.length > 0) {
@@ -291,6 +293,8 @@ export class SaleInvoiceComponentForm {
         dynamicList.forEach((item, index) => {
             if (item.ItemID != undefined && item.ItemID != null && item.ItemID != "")
                 this.Invoice_itemdynamicArray.push(item);
+            else if (item.ServiceID != undefined && item.ServiceID != null && item.ServiceID != "")
+                this.Invoice_itemdynamicArray.push(item);
         });
         var Formdate = this._CommonService.GetFormatDate(this.model.InvoiceDate);
 
@@ -338,7 +342,21 @@ export class SaleInvoiceComponentForm {
         }
     }
     changeItemType(itemType: string, indx: any) {
-
+        this.Invoice_itemdynamicArray[indx] = {
+            ...this.Invoice_itemdynamicArray[indx],
+            ServiceID: 0,
+            ItemID: null,
+            Item: null,
+            MenualItemDescription: true,
+            Quantity: 0,
+            Rate: 0,
+            SalePrice: 0,
+            Amount: 0,
+            PriceID: 0,
+            ItemType: 0,
+            ItemTypeId: itemType
+        };
+        this.CalculateSubTotal();
     }
     ChangeStatus(isValid: boolean, ApprovalStatusID: any) {
         if (this.model.CustomerID != null && this.model.InvoiceDate != null) {
@@ -390,11 +408,15 @@ export class SaleInvoiceComponentForm {
                     this.loadBatchAndSerialItem(ui.item.value, indx);
                     ui.item.value = null;
                 } else {
-                    this.Invoice_itemdynamicArray[indx].ItemID = ui.item.value;
+                    if (ui.item.ProdItemTypeId == 2) {
+                        this.Invoice_itemdynamicArray[indx].ServiceID = ui.item.value;
+                    } else {
+                        this.Invoice_itemdynamicArray[indx].ItemID = ui.item.value;
+                    }
                     this.Invoice_itemdynamicArray[indx].Item = ui.item.label;
                     this.Invoice_itemdynamicArray[indx].MenualItemDescription = true;
                     this.Invoice_itemdynamicArray[indx].Quantity = 1;
-                    this.Invoice_itemdynamicArray[indx].Rate = ui.item.PurchasePrice;
+                    this.Invoice_itemdynamicArray[indx].Rate = ui.item.SalePrice;
                     this.Invoice_itemdynamicArray[indx].SalePrice = ui.item.SalePrice;
                     this.Invoice_itemdynamicArray[indx].Amount = (1 * ui.item.SalePrice);
                     this.Invoice_itemdynamicArray[indx].PriceID = 0;

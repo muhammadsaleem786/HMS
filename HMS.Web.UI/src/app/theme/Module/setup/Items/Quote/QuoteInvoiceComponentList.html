@@ -1,0 +1,211 @@
+﻿<div class="margin-t-68 removeAction">
+    <div class="row headSection paginationHead">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col max-content">
+                    <h3 class="page-heading mt-d-inline-block">
+                        Quote Invoices
+                    </h3>
+                </div>
+                <div class="col">
+                    <input class="form-control" placeholder="Search" type="text" [(ngModel)]="PModel.SearchText" (keyup)="Refresh()" maxlength="30" aria-describedby="basic-addon1" />
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right flex-row flex-end">
+            <a class="btn btn-danger" *ngIf="ControlRights.CreateRights" (click)="AddRecord('0')">New Quote</a>
+        </div>
+    </div>
+    <div class="Cardview px-3 pb-3">
+        <div class="TableView">
+            <div class="dataTables_wrapper form-inline dt-uikit md-processed col-sm-12 p-0">
+                <div class="uk-overflow-container col-sm-12 p-0">
+                    <table id="dt_tableTools" class="uk-table" cellspacing="0" style="width: 100%;">
+                        <thead class="grid-header">
+                            <tr>
+                                <th>Date </th>
+                                <th> Invoice No </th>
+                                <th> Customer Name</th>
+                                <th>Status</th>
+                                <th>Due Date</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of InvoiveList" index as i>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.date |date: 'dd/MM/yyyy'}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.Invoiceno}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.CompanyName}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.status}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.duedate |date: 'dd/MM/yyyy'}}
+                                </td>
+                                <td (click)="AddRecord(item.ID)">
+                                    {{item.amount}}
+                                </td>
+                                <td (click)="openInvoiceModal(InvoiceModal,item.ID)">
+                                    <span class="icon icon-p text-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             width="1em"
+                                             height="1em"
+                                             viewBox="0 0 48 48"
+                                             style="font-size:30px;"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.8"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round"
+                                             aria-hidden="true">
+
+                                            <!-- Document -->
+                                            <path d="M12 5h16l9 9v29H12a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3Z" />
+
+                                            <!-- Folded corner -->
+                                            <path d="M28 5v9h9" />
+
+                                            <!-- Quotation marks -->
+                                            <path d="M17 23h5v5h-5v-5Zm0 0c0-3 1-5 4-6" />
+                                            <path d="M27 23h5v5h-5v-5Zm0 0c0-3 1-5 4-6" />
+
+                                            <!-- Document lines -->
+                                            <path d="M17 34h15M17 38h10" />
+                                        </svg>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr [hidden]="!(InvoiveList.length == 0)" style="background:#fff;">
+                                <td [attr.colspan]="10" align="center">
+                                    <p><img src="../../assets/app/media/img/noResult.gif" class="NoDataImg" /></p>
+                                    <strong class="nodateFound">No record found</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="float: left; margin-top: 30px; font-size: 13px; color: #33396f;font-weight: normal;" class="dataTables_info" id="dt_tableTools_info" role="status" aria-live="polite">Showing {{((PModel.CurrentPage-1) * PModel.RecordPerPage) + 1}} - {{((PModel.CurrentPage * PModel.RecordPerPage) > PModel.TotalRecord ? PModel.TotalRecord : (PModel.CurrentPage * PModel.RecordPerPage))}} </div>
+                <ul class="uk-pagination" [hidden]="!(PModel.TotalRecord > PModel.RecordPerPage)">
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == 1}"><a (click)="selectPage(previousPage)">Previous</a></li>
+                    <li class="paginate_button" *ngFor="let page of pagesRange" [class.uk-active]="page == PModel.CurrentPage">
+                        <a (click)="selectPage(page)">
+                            {{page}}
+                        </a>
+                    </li>
+                    <li class="paginate_button" [ngClass]="{'uk-disabled' : PModel.CurrentPage == totalPages}"><a (click)="selectPage(nextPage)">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #InvoiceModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <img src="../assets/app/media/img/icons/adddoc.png" class="img-fluid icon">Invoice
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body" id="printBill-section" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #1a1a1a; background: #ffffff;">
+        <div style="width: 100%; background: #ffffff; color: #1a1a1a; font-family: Arial, Helvetica, sans-serif; font-size: 13px;">
+            <header style="overflow: hidden; width: 100%; padding: 4px 0 14px; margin: 0 0 18px; border-bottom: 1px solid #cfcfcf; background: #ffffff;">
+                <div style="float: left; margin-top: 4px;" *ngIf="InvoiceCompanyInfo !=null  && InvoiceCompanyInfo.CompanyLogo != null">
+                    <img [src]="InvoiceCompanyInfo.CompanyLogo" style="max-width: 88px; height: 64px; object-fit: contain; display: block;">
+                </div>
+                <div style="float: left; margin-top: 4px;" *ngIf="InvoiceCompanyInfo == null || InvoiceCompanyInfo.CompanyLogo == null">
+                    <img src="../assets/app/media/img/icons/doctor-logo.png" style="max-width: 88px; height: 64px; object-fit: contain; display: block;">
+                </div>
+                <div style="float: right; text-align: right; line-height: 1.45;">
+                    <h2 style="margin: 0 0 2px; color: #111111; font-weight: 600; font-size: 18px;">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                    <div>{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                    <div>{{InvoiceCompanyInfo.CompanyPhone}}</div>
+                    <div><a href="mailto:company@example.com" style="color: #111111; text-decoration: none;">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                </div>
+            </header>
+
+            <main style="background: #ffffff;">
+                <div style="overflow: hidden; width: 100%; margin-bottom: 22px;">
+                    <div style="float: left; max-width: 58%; line-height: 1.45;">
+                        <div style="font-size: 11px; letter-spacing: 0.06em; color: #666666; margin-bottom: 2px;">INVOICE TO</div>
+                        <h2 style="margin: 0 0 2px; color: #111111; font-weight: 600; font-size: 16px;">{{InvoiceCompanyInfo.PatientName}}</h2>
+                        <div>{{InvoiceCompanyInfo.PatientAddress}}</div>
+                        <div>{{InvoiceCompanyInfo.PatientMobile}}</div>
+                        <div><a href="mailto:john@example.com" style="color: #111111; text-decoration: none;">{{InvoiceCompanyInfo.PatientEmail}}</a></div>
+                    </div>
+                    <div style="float: right; text-align: right;">
+                        <h1 style="margin: 0 0 6px; color: #111111; font-weight: 600; font-size: 20px; line-height: 1.2;">{{InvoiceCompanyInfo.invoiceNo}}</h1>
+                        <div style="color: #444444;">Date of Invoice: {{InvoiceCompanyInfo.BillDate |date: 'MM/dd/yyyy'}}</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 style="margin: 8px 0; color: #111111; font-weight: 600; font-size: 14px;">Detail</h2>
+                    <table cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; border-spacing: 0; margin: 0 0 18px; background: #ffffff;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap; width: 48px;">#</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap;">Service Name</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap;">Rate</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: left; vertical-align: top; white-space: nowrap;">QTY</th>
+                                <th style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #222222; font-size: 13px; font-weight: 600; text-align: right; vertical-align: top; white-space: nowrap;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let b of InvoiceBillModel; let i = index;">
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top; width: 48px;">{{i+1}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top;">{{b.ItemName}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top;">{{b.Rate}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: left; vertical-align: top;">{{b.Quantity}}</td>
+                                <td style="padding: 8px 10px; background: #ffffff; color: #1a1a1a; border: none; border-bottom: 1px solid #e4e4e4; font-size: 13px; font-weight: 400; text-align: right; vertical-align: top; white-space: nowrap;">{{b.Amount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="width: 320px; max-width: 100%; float: right; margin: 4px 0 22px; background: #ffffff;">
+                    <div style="border: 1px solid #d9d9d9; background: #ffffff;">
+                        <div style="padding: 8px 12px; font-weight: 600; font-size: 13px; text-align: left; border-bottom: 1px solid #222222; background: #ffffff;">Total Charges</div>
+                        <div style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">Total Amount</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{SubTotal}}</span>
+                        </div>
+                        <div style="overflow: hidden; padding: 6px 12px; background: #ffffff;">
+                            <span style="float: left; text-align: left;">Discount Amount</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{ TotalDiscount}}</span>
+                        </div>
+                        <div style="overflow: hidden; padding: 8px 12px; background: #ffffff; border-top: 1px solid #222222; font-weight: 700;">
+                            <span style="float: left; text-align: left;">Balance</span>
+                            <span style="float: right; text-align: right; min-width: 72px;">{{Total }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="clear: both;"></div>
+
+                <div style="font-size: 18px; margin: 8px 0 16px; color: #111111;">Thank you!</div>
+                <div style="border-top: 1px solid #d9d9d9; padding-top: 10px; color: #333333; line-height: 1.45;">
+                    <strong style="display: block; margin-bottom: 2px; color: #111111;">NOTICE</strong>
+                    <div>A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click')">Close</button>
+        <button type="button" class="btn btn-danger" useExistingCss="true" data-dismiss="modal" printSectionId="printBill-section" ngxPrint>Print</button>
+    </div>
+
+
+</ng-template>
+
+

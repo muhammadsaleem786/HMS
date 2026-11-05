@@ -38,6 +38,10 @@ export class ImportItemComponent {
     public unitGroups: string[] = [];
     public typeGroups: string[] = [];
     public categoryGroups: string[] = [];
+    public vendorGroups: string[] = [];
+    public genericGroups: string[] = [];
+    public vendorMap: Map<string, number> = new Map<string, number>();
+    public genericMap: Map<string, number> = new Map<string, number>();
     public importMastersList: any[] = [];
     data: AOA = [[1, 2], [3, 4]];
     wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
@@ -69,12 +73,24 @@ export class ImportItemComponent {
                 var CategoryList = list.filter(f => f.DropDownID === 58);
 
                 this.validGroups = GroupList.map(x => x.Value.toLowerCase());
-
                 this.unitGroups = unitList.map(x => x.Value.toLowerCase());
-
                 this.typeGroups = ItemTypeList.map(x => x.Value.toLowerCase());
-
                 this.categoryGroups = CategoryList.map(x => x.Value.toLowerCase());
+                this.vendorGroups = res.ResultSet.vendorlist.map(x => x.Value.toLowerCase());
+                this.genericGroups = res.ResultSet.genericlist.map(x => x.Value.toLowerCase());
+                this.vendorMap = new Map<string, number>(
+                    res.ResultSet.vendorlist.map(x => [
+                        x.Value.trim().toLowerCase(),
+                        Number(x.ID)
+                    ] as [string, number])
+                );
+
+                this.genericMap = new Map<string, number>(
+                    res.ResultSet.genericlist.map(x => [
+                        x.Value.trim().toLowerCase(),
+                        Number(x.ID)
+                    ] as [string, number])
+                );
             }
         });
     }
@@ -122,6 +138,12 @@ export class ImportItemComponent {
                     this.AddToErrorList(x, 'Track Inventory is missing', true);
                 else if (x.POSItem == undefined)
                     this.AddToErrorList(x, 'POS Item is missing', true);
+
+                else if (x.Vendor != null && x.Vendor.trim() !== '' && !this.vendorGroups.includes(x.Vendor.toLowerCase()))
+                    this.AddToErrorList(x, 'Invalid Vendor name', true);
+
+                else if (x.Formulation != null && x.Formulation.trim() !== '' && !this.genericGroups.includes(x.Formulation.toLowerCase()))
+                    this.AddToErrorList(x, 'Invalid Formulation name', true);
                 this.RecordStatusModel.NewRecords++;
             });
             if (this.ExcelErrorList.length > 0) {
@@ -184,51 +206,30 @@ export class ImportItemComponent {
                 alert(val);
                 return;
             }
-            
+
             const groupMap = this.createMap(64);
             const unitMap = this.createMap(57);
             const typeMap = this.createMap(59);
             const categoryMap = this.createMap(58);
-            // const groupMap = new Map<string, number>([
-            //     ['pharmacy', 1],
-            //     ['ot', 2],
-            //     ['lab', 3],
-            // ]);
-            // const typeMap = new Map<string, number>([
-            //     ['goods', 1],
-            //     ['service', 2],
-            //     ['batch', 3],
-            //     ['sarial', 4],
-            // ]);
-            // const unitMap = new Map<string, number>([
-            //     ['box', 1],
-            //     ['sqm', 2],
-            //     ['dz', 3],
-            //     ['ft', 5],
-            //     ['g', 6],
-            //     ['kg', 7],
-            //     ['km', 8],
-            //     ['mg', 9],
-            //     ['mt', 10],
-            //     ['pcs', 11],
-            // ]);
-            // const categoryMap = new Map<string, number>([
-            //     ['sachet', 1],
-            //     ['tablet', 2],
-            //     ['capsules', 3],
-            //     ['drops', 4],
-            //     ['injections', 5],
-            //     ['syrup', 6],
-            //     ['drip', 7],
-            //     ['ot', 8],
-            //     ['lab', 9],
-            // ]);
+
             this.ExcelDataList = JSON.parse(JSON.stringify(dataList));
             this.ExcelDataList.forEach(x => {
                 if (x['Group'] != undefined) {
                     const groupKey = x['Group'].toLowerCase();
                     if (groupMap.has(groupKey)) {
                         x['GroupId'] = groupMap.get(groupKey);
+                    }
+                }
+                if (x['Vendor'] != undefined) {
+                    const vendorKey = x['Vendor'].toLowerCase();
+                    if (this.vendorMap.has(vendorKey)) {
+                        x['VendorId'] = this.vendorMap.get(vendorKey);
+                    }
+                }
+                if (x['Formulation'] != undefined) {
+                    const genricKey = x['Formulation'].toLowerCase();
+                    if (this.genericMap.has(genricKey)) {
+                        x['GenericId'] = this.genericMap.get(genricKey);
                     }
                 }
                 if (x['Type'] != undefined) {

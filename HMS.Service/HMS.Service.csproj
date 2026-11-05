@@ -161,6 +161,8 @@
     <Compile Include="Services\Employee\sys_holidaysService.cs" />
     <Compile Include="Services\Items\adm_item_logService.cs" />
     <Compile Include="Services\Items\inv_stockService.cs" />
+    <Compile Include="Services\Items\quote_invoice_dtService.cs" />
+    <Compile Include="Services\Items\quote_invoice_mfService.cs" />
     <Compile Include="Services\Items\sale_paymentService.cs" />
     <Compile Include="Services\Items\sale_invoice_dtService.cs" />
     <Compile Include="Services\Items\sale_invoice_mfService.cs" />

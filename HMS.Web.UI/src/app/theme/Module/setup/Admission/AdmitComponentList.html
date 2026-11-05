@@ -229,7 +229,7 @@
                     <div id="invoice">
                         <h1>INVOICE-{{InvoiceCompanyInfo.invoiceNo}}</h1>
                         <div class="date">Date of Invoice: {{InvoiceCompanyInfo.BillDate |date: 'MM/dd/yyyy'}}</div>
-                        </div>
+                    </div>
                 </div>
                 <table cellspacing="0" cellpadding="0">
                     <thead>
@@ -307,7 +307,7 @@
                     font-family: Arial, Helvetica, sans-serif;
                 }
             </style>
-            <div class="ReportPAge1" style="width: 100%; box-sizing: border-box; padding: 0;">
+            <div *ngIf="InvoiceCompanyInfo.DepartmentType != 'Emergency'" class="ReportPAge1" style="width: 100%; box-sizing: border-box; padding: 0;">
 
                 <div style="display: flex; width: 100%; box-sizing: border-box; align-items: center; margin-bottom: 6px;">
                     <div style="width: 41.66%; box-sizing: border-box; padding: 0 6px;">
@@ -390,7 +390,7 @@
                     </div>
                     <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">Temperature</div>
                     <div style="width: 66.67%; box-sizing: border-box; padding: 3px 4px;">
-                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Temperature" [(ngModel)]="model.Temperature"[value]="(model.Temperature == null || model.Temperature === '')? InvoiceCompanyInfo.Temperature: model.Temperature" type="text" />
+                        <input style="width: 100%; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="Temperature" [(ngModel)]="model.Temperature" [value]="(model.Temperature == null || model.Temperature === '')? InvoiceCompanyInfo.Temperature: model.Temperature" type="text" />
                     </div>
                 </div>
 
@@ -422,11 +422,11 @@
                 <div style="display: flex; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0; align-items: center;">
                     <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
                         <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Respiratory Rate</strong>
-                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="RespiratoryRate" [(ngModel)]="model.RespiratoryRate"[value]="(model.RespiratoryRate == null || model.RespiratoryRate === '')? InvoiceCompanyInfo.RespiratoryRate: model.RespiratoryRate" type="text" />
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="RespiratoryRate" [(ngModel)]="model.RespiratoryRate" [value]="(model.RespiratoryRate == null || model.RespiratoryRate === '')? InvoiceCompanyInfo.RespiratoryRate: model.RespiratoryRate" type="text" />
                     </div>
                     <div style="width: 33.33%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
                         <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">B.P</strong>
-                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="BP" [(ngModel)]="model.BP"[value]="(model.BP == null || model.BP === '')? InvoiceCompanyInfo.BP: model.BP" type="text" />
+                        <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" formControlName="BP" [(ngModel)]="model.BP" [value]="(model.BP == null || model.BP === '')? InvoiceCompanyInfo.BP: model.BP" type="text" />
                     </div>
                     <div style="width: 33.34%; box-sizing: border-box; padding: 3px 4px; display: flex; align-items: center;">
                         <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px;">Other</strong>
@@ -545,7 +545,7 @@
             </div>
             <div style="display: block; height: 0; margin: 0; padding: 0; border: 0; line-height: 0; font-size: 0; page-break-after: always; break-after: page;"></div>
 
-            <div *ngIf="InvoiceCompanyInfo.DepartmentType !== 'Short Stay'" class="ReportPage2" style="width: 100%; box-sizing: border-box; padding: 0;">
+            <div *ngIf="InvoiceCompanyInfo.DepartmentType !== 'Short Stay' && InvoiceCompanyInfo.DepartmentType !== 'Emergency'" class="ReportPage2" style="width: 100%; box-sizing: border-box; padding: 0;">
                 <div style="display: flex; width: 100%; box-sizing: border-box; align-items: center; margin: 0 0 6px 0;">
                     <div style="width: 41.66%; box-sizing: border-box; padding: 0 6px;">
                         <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
@@ -709,6 +709,183 @@
                         <div style="width: 100%; box-sizing: border-box; padding: 3px 0; display: flex; align-items: center;">
                             <strong style="font-weight: 700; font-size: 12px; font-family: Arial, Helvetica, sans-serif; white-space: nowrap; margin-right: 6px; min-width: 90px;">Checked By</strong>
                             <input style="flex: 1; width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #000; padding: 3px 4px; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; height: 22px; margin: 0;" type="text" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display: block; height: 0; margin: 0; padding: 0; border: 0; line-height: 0; font-size: 0; page-break-after: always; break-after: page;"></div>
+
+            <!-- PAGE 3: Emergency / ER Patient Slip matching the provided design -->
+            <div *ngIf="InvoiceCompanyInfo.DepartmentType == 'Emergency'" class="ReportPage3" style="width: 100%; box-sizing: border-box; padding: 0;">
+                <div style="display: flex; width: 100%; box-sizing: border-box; align-items: center; margin: 0 0 6px 0;">
+                    <div style="width: 41.66%; box-sizing: border-box; padding: 0 6px;">
+                        <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo != '' && InvoiceCompanyInfo.CompanyLogo != null ">
+                            <img style="max-width: 68px; width: 68px; max-height: 68px; height: auto; display: block;" [src]="InvoiceCompanyInfo.CompanyLogo">
+                        </div>
+                        <div id="logo" *ngIf="InvoiceCompanyInfo.CompanyLogo =='' || InvoiceCompanyInfo.CompanyLogo == null ">
+                            <img style="max-width: 68px; width: 68px; max-height: 68px; height: auto; display: block;" src="../assets/app/media/img/icons/doctor-logo.png">
+                        </div>
+                    </div>
+                    <div style="width: 58.34%; box-sizing: border-box; padding: 0 6px;">
+                        <div id="company" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #000;">
+                            <h2 style="margin: 0; padding: 0; font-size: 16px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; color: #000; line-height: 1.1;">{{InvoiceCompanyInfo.CompanyName}}</h2>
+                            <div style="font-size: 12px; margin: 0; line-height: 1.35;">{{InvoiceCompanyInfo.CompanyAddress}}</div>
+                            <div style="font-size: 12px; margin: 0; line-height: 1.35;">Phone: {{InvoiceCompanyInfo.CompanyPhone}}</div>
+                            <div style="font-size: 12px; margin: 0;"><a href="mailto:company@example.com" style="color: #000; text-decoration: none;">{{InvoiceCompanyInfo.CompanyEmail}}</a></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: block; width: 100%; box-sizing: border-box; border-bottom: 1px solid #000; padding: 4px 0 6px 0;">
+                    <div style="width: 100%; box-sizing: border-box; text-align: center;">
+                        <h3 style="margin: 0; font-size: 13px; font-weight: 700; font-family: Arial, Helvetica, sans-serif; text-align: center; color: #000;">Discharge Summary ({{InvoiceCompanyInfo.DepartmentType}})</h3>
+                    </div>
+                    <p style="margin: 0; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                        <strong style="font-weight: 700; display: inline-block; min-width: 110px;">MR#</strong> {{InvoiceCompanyInfo.MRNo}}
+                    </p>
+                    <p style="margin: 0; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+                        <strong style="font-weight: 700; display: inline-block; min-width: 110px;">Patient Name</strong> {{InvoiceCompanyInfo.PatientName}}
+                    </p>
+                </div>
+                <!-- Top Bordered Header Box -->
+                <div style="border: 1px solid #000; width: 100%; box-sizing: border-box; margin-bottom: 6px;">
+                    <div style="display: flex; width: 100%; border-bottom: 1px solid #000; box-sizing: border-box;">
+                        <div style="flex: 2; padding: 4px 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>ER No.:</strong> {{InvoiceCompanyInfo.ERNo}}
+                        </div>
+                        <div style="flex: 2; padding: 4px 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>Date:</strong> {{InvoiceCompanyInfo.AdmissionDate | date: 'MM/dd/yyyy'}}
+                        </div>
+                        <div style="flex: 2; padding: 4px 6px; box-sizing: border-box; font-size: 12px;">
+                            <strong>Time:</strong> {{InvoiceCompanyInfo.Time}}
+                        </div>
+                    </div>
+                    <div style="display: flex; width: 100%; border-bottom: 1px solid #000; box-sizing: border-box;">
+                        <div style="flex: 4; padding: 4px 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>Patient Name:</strong> {{InvoiceCompanyInfo.PatientName}}
+                        </div>
+                        <div style="flex: 2; padding: 4px 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>Age:</strong> {{InvoiceCompanyInfo.Age}}
+                        </div>
+                        <div style="flex: 2; padding: 4px 6px; box-sizing: border-box; font-size: 12px;">
+                            <strong>Gender:</strong> {{InvoiceCompanyInfo.Sex}}
+                        </div>
+                    </div>
+                    <div style="display: flex; width: 100%; box-sizing: border-box;">
+                        <div style="flex: 4; padding: 4px 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>CNIC/Contact:</strong> {{InvoiceCompanyInfo.CNICContact}}
+                        </div>
+                        <div style="flex: 2; padding: 4px 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>MR No.:</strong> {{InvoiceCompanyInfo.MRNo}}
+                        </div>
+                        <div style="flex: 2; padding: 4px 6px; box-sizing: border-box; font-size: 12px;">
+                            <strong>Bed:</strong> {{InvoiceCompanyInfo.Bed}}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1. TRIAGE & VITAL SIGNS -->
+                <div style="font-weight: 700; font-size: 12px; margin-bottom: 3px; font-family: Arial, Helvetica, sans-serif;">1. TRIAGE & VITAL SIGNS</div>
+                <div style="border: 1px solid #000; width: 100%; box-sizing: border-box; margin-bottom: 6px;">
+                    <div style="display: flex; width: 100%; border-bottom: 1px solid #000; box-sizing: border-box;">
+                        <div style="flex: 1; padding: 4px 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>BP:</strong> {{model.BP}}
+                        </div>
+                        <div style="flex: 1; padding: 4px 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>Pulse:</strong> {{model.Pulse}}
+                        </div>
+                        <div style="flex: 1; padding: 4px 6px; box-sizing: border-box; font-size: 12px;">
+                            <strong>RR:</strong> {{model.RespiratoryRate}}
+                        </div>
+                    </div>
+                    <div style="display: flex; width: 100%; box-sizing: border-box;">
+                        <div style="flex: 1; padding: 4px 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>Temp:</strong> {{model.Temperature}}
+                        </div>
+                        <div style="flex: 1; padding: 4px 6px; border-right: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>SpO₂:</strong> {{model.SpO2}}
+                        </div>
+                        <div style="flex: 1; padding: 4px 6px; box-sizing: border-box; font-size: 12px;">
+                            <strong>GCS:</strong> {{model.GCS}}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CHIEF COMPLAINT / PRESENTING HISTORY -->
+                <div style="font-weight: 700; font-size: 12px; margin-bottom: 3px; font-family: Arial, Helvetica, sans-serif;">2. CHIEF COMPLAINT / PRESENTING HISTORY</div>
+                <div style="border: 1px solid #000; width: 100%; height: 50px; box-sizing: border-box; margin-bottom: 6px; padding: 4px 6px; font-size: 12px;">
+                    {{model.ComplaintSummary}}
+                </div>
+
+                <!-- 3. EXAMINATION -->
+                <div style="font-weight: 700; font-size: 12px; margin-bottom: 3px; font-family: Arial, Helvetica, sans-serif;">3. EXAMINATION</div>
+                <div style="border: 1px solid #000; width: 100%; height: 50px; box-sizing: border-box; margin-bottom: 6px; padding: 4px 6px; font-size: 12px;">
+                    <div style="color: #555; margin-bottom: 2px; font-size: 11px;"></div>
+                    {{model.GeneralCondition}}  {{model.PA}}  {{model.PV}}
+                </div>
+
+                <!-- 4. PROVISIONAL / WORKING DIAGNOSIS -->
+                <div style="font-weight: 700; font-size: 12px; margin-bottom: 3px; font-family: Arial, Helvetica, sans-serif;">4. PROVISIONAL / WORKING DIAGNOSIS</div>
+                <div style="border: 1px solid #000; width: 100%; height: 40px; box-sizing: border-box; margin-bottom: 6px; padding: 4px 6px; font-size: 12px;">
+                    {{model.DiagnosisAdmission}}
+                </div>
+
+                <!-- 5. INVESTIGATIONS -->
+                <div style="font-weight: 700; font-size: 12px; margin-bottom: 3px; font-family: Arial, Helvetica, sans-serif;">5. INVESTIGATIONS</div>
+                <div style="border: 1px solid #000; width: 100%; box-sizing: border-box; margin-bottom: 6px; padding: 6px; font-size: 11px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 4px;">
+                        <span><input type="checkbox" /> CBC</span>
+                        <span><input type="checkbox" /> RBS</span>
+                        <span><input type="checkbox" /> LFT</span>
+                        <span><input type="checkbox" /> RFT</span>
+                        <span><input type="checkbox" /> Electrolytes</span>
+                        <span><input type="checkbox" /> Urine R/E</span>
+                        <span><input type="checkbox" /> ECG</span>
+                        <span><input type="checkbox" /> X-Ray</span>
+                    </div>
+                    <div>
+                        <span><input type="checkbox" /> Ultrasound</span> &nbsp;
+                        <span><strong>Other:</strong> {{model.OtherRemarks}}</span>
+                    </div>
+                </div>
+
+                <!-- 6. EMERGENCY TREATMENT / MEDICATIONS / PROCEDURES -->
+                <div style="font-weight: 700; font-size: 12px; margin-bottom: 3px; font-family: Arial, Helvetica, sans-serif;">6. EMERGENCY TREATMENT / MEDICATIONS / PROCEDURES</div>
+                <div style="border: 1px solid #000; width: 100%; height: 50px; box-sizing: border-box; margin-bottom: 6px; padding: 4px 6px; font-size: 12px;">
+                    {{model.Advice}}
+                </div>
+
+                <!-- 7. DISPOSITION -->
+                <div style="font-weight: 700; font-size: 12px; margin-bottom: 3px; font-family: Arial, Helvetica, sans-serif;">7. DISPOSITION</div>
+                <div style="border: 1px solid #000; width: 100%; box-sizing: border-box; margin-bottom: 6px;">
+                    <div style="display: flex; width: 100%; border-bottom: 1px solid #000; box-sizing: border-box; background: #f9f9f9; font-size: 11px;">
+                        <div style="flex: 1; padding: 4px; border-right: 1px solid #000;"><input type="checkbox" /> Discharged</div>
+                        <div style="flex: 1; padding: 4px; border-right: 1px solid #000;"><input type="checkbox" /> Admitted</div>
+                        <div style="flex: 1; padding: 4px; border-right: 1px solid #000;"><input type="checkbox" /> Observation</div>
+                        <div style="flex: 1; padding: 4px; border-right: 1px solid #000;"><input type="checkbox" /> Referred</div>
+                        <div style="flex: 1; padding: 4px;"><input type="checkbox" /> LAMA</div>
+                    </div>
+                    <div style="padding: 4px 6px; min-height: 35px; font-size: 12px;">
+                        <strong>Advice / Follow-up:</strong> {{model.Advice}}
+                    </div>
+                </div>
+
+                <!-- Signatures Section -->
+                <div style="border: 1px solid #000; width: 100%; box-sizing: border-box; margin-bottom: 6px;">
+                    <div style="display: flex; width: 100%; border-bottom: 1px solid #000; box-sizing: border-box;">
+                        <div style="flex: 1; padding: 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>Emergency Doctor:</strong> {{InvoiceCompanyInfo.DoctorName}}
+                        </div>
+                        <div style="flex: 1; padding: 6px; box-sizing: border-box; font-size: 12px;">
+                            <strong>Signature:</strong> ___________________________
+                        </div>
+                    </div>
+                    <div style="display: flex; width: 100%; box-sizing: border-box;">
+                        <div style="flex: 1; padding: 6px; border-right: 1px solid #000; box-sizing: border-box; font-size: 12px;">
+                            <strong>Nurse / Staff:</strong> ___________________________
+                        </div>
+                        <div style="flex: 1; padding: 6px; box-sizing: border-box; font-size: 12px;">
+                            <strong>Signature:</strong> ___________________________
                         </div>
                     </div>
                 </div>

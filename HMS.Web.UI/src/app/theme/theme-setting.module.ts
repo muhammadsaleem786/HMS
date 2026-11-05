@@ -66,6 +66,8 @@ import { SaleInvoiceComponentList } from '../theme/Module/setup/Items/Sale/SaleI
 import { SaleInvoiceComponentForm } from '../theme/Module/setup/Items/Sale/SaleInvoiceComponentForm';
 import { SalePaymentComponentForm } from '../theme/Module/setup/Items/SalePayment/SalePaymentComponentForm';
 import { SalePaymentComponentList } from '../theme/Module/setup/Items/SalePayment/SalePaymentComponentList';
+import { QuoteInvoiceComponentList } from '../theme/Module/setup/Items/Quote/QuoteInvoiceComponentList';
+import { QuoteInvoiceComponentForm } from '../theme/Module/setup/Items/Quote/QuoteInvoiceComponentForm';
 
 //end
 //admin module
@@ -175,6 +177,11 @@ const routes: Routes = [
      { path: 'saleinv/saveinvoice:id', component: SaleInvoiceComponentForm },
     { path: 'saleinv/saveinvoice', component: SaleInvoiceComponentForm },
     { path: 'saleinv', component: SaleInvoiceComponentList },
+
+    { path: 'quoteinv/saveinvoice:id', component: QuoteInvoiceComponentForm },
+    { path: 'quoteinv/saveinvoice', component: QuoteInvoiceComponentForm },
+    { path: 'quoteinv', component: QuoteInvoiceComponentList },
+
     { path: 'salepayment/savepayment:id', component: SalePaymentComponentForm },
     { path: 'salepayment/savepayment', component: SalePaymentComponentForm },
     { path: 'salepayment', component: SalePaymentComponentList },
@@ -254,7 +261,7 @@ const routes: Routes = [
         //end
         //Item Module
         IncomeComponentForm, IncomeComponentList, ItemComponentList, ItemComponentForm, VendorComponentList, VendorComponentForm,
-        SaleInvoiceComponentList, SaleInvoiceComponentForm,  InvoiceComponentList, InvoiceComponentForm, ItemPaymentComponentForm
+        SaleInvoiceComponentList, SaleInvoiceComponentForm, QuoteInvoiceComponentList, QuoteInvoiceComponentForm,  InvoiceComponentList, InvoiceComponentForm, ItemPaymentComponentForm
         , ExpenseComponentList, ExpenseComponentForm, ItemPaymentComponentList, RestockComponentList, ExpireComponentList, ImportItemComponent, SalePaymentComponentList, SalePaymentComponentForm,
         //end
         //admin module

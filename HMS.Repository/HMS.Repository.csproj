@@ -160,6 +160,8 @@
     <Compile Include="Repositories\Employee\sys_holidaysRepository.cs" />
     <Compile Include="Repositories\Items\adm_item_logRepository.cs" />
     <Compile Include="Repositories\Items\inv_stockRepository.cs" />
+    <Compile Include="Repositories\Items\quote_Invoice_dtRepository.cs" />
+    <Compile Include="Repositories\Items\quote_Invoice_mfRepository.cs" />
     <Compile Include="Repositories\Items\sale_paymentRepository.cs" />
     <Compile Include="Repositories\Items\sale_Invoice_dtRepository.cs" />
     <Compile Include="Repositories\Items\sale_Invoice_mfRepository.cs" />

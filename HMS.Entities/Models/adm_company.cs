@@ -65,6 +65,8 @@ namespace HMS.Entities.Models
             this.pur_invoice_dt = new List<pur_invoice_dt>();
             this.sale_invoice_mf = new List<sale_invoice_mf>();
             this.sale_invoice_dt = new List<sale_invoice_dt>();
+            this.quote_invoice_mf = new List<quote_invoice_mf>();
+            this.quote_invoice_dt = new List<quote_invoice_dt>();
             this.pur_sale_mf = new List<pur_sale_mf>();
             this.pur_sale_dt = new List<pur_sale_dt>();
             this.ipd_input_output = new List<ipd_input_output>();
@@ -207,6 +209,8 @@ namespace HMS.Entities.Models
         public virtual ICollection<sale_invoice_mf> sale_invoice_mf { get; set; }
         public virtual ICollection<sale_invoice_dt> sale_invoice_dt { get; set; }
         public virtual ICollection<pur_sale_mf> pur_sale_mf { get; set; }
+        public virtual ICollection<quote_invoice_mf> quote_invoice_mf { get; set; }
+        public virtual ICollection<quote_invoice_dt> quote_invoice_dt { get; set; }
         public virtual ICollection<pur_sale_dt> pur_sale_dt { get; set; }
         public virtual ICollection<pur_sale_hold_mf> pur_sale_hold_mf { get; set; }
         public virtual ICollection<pur_sale_hold_dt> pur_sale_hold_dt { get; set; }

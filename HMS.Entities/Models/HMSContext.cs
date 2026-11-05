@@ -118,6 +118,9 @@ namespace HMS.Entities.Models
         public DbSet<sale_invoice_mf> sale_invoice_mf { get; set; }
         public DbSet<sale_invoice_dt> sale_invoice_dt { get; set; }
         public DbSet<sale_payment> sale_payment { get; set; }
+        public DbSet<quote_invoice_mf> quote_invoice_mf { get; set; }
+        public DbSet<quote_invoice_dt> quote_invoice_dt { get; set; }
+   
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new contactMap());
@@ -221,6 +224,8 @@ namespace HMS.Entities.Models
             modelBuilder.Configurations.Add(new emr_investigation_ItemMap());
             modelBuilder.Configurations.Add(new sale_invoice_mfMap());
             modelBuilder.Configurations.Add(new sale_invoice_dtMap());
+            modelBuilder.Configurations.Add(new quote_invoice_mfMap());
+            modelBuilder.Configurations.Add(new quote_invoice_dtMap());
             modelBuilder.Configurations.Add(new sale_paymentMap());
 
         }

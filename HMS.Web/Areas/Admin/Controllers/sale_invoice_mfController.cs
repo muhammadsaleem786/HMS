@@ -537,7 +537,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     if (_inv_stockService.Queryable().Count() > 0)
                         InvID = (_inv_stockService.Queryable().Where(e => e.CompanyId == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
 
-                    foreach (sale_invoice_dt item in saleorderitem)
+                    foreach (sale_invoice_dt item in saleorderitem.Where(a => a.ItemTypeId == 1).ToList())
                     {
                         var findItem = itemList.Where(a => a.ID == item.ItemID && a.CompanyId == CompanyID).FirstOrDefault();
                         adm_item_log adm_item_log_obj = new adm_item_log();
@@ -572,7 +572,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                 //log maintain                               
                                 adm_item_log_obj.ID = LogID;
                                 adm_item_log_obj.CompanyId = CompanyID;
-                                adm_item_log_obj.ItemId = item.ItemID;
+                                adm_item_log_obj.ItemId = item.ItemID ?? 0;
                                 adm_item_log_obj.Quantity = item.Quantity.ToString();
                                 adm_item_log_obj.Type = "Sale to customer";
                                 adm_item_log_obj.CreatedBy = Request.LoginID();
@@ -592,7 +592,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                             //log maintain                               
                             adm_item_log_obj.ID = LogID;
                             adm_item_log_obj.CompanyId = CompanyID;
-                            adm_item_log_obj.ItemId = item.ItemID;
+                            adm_item_log_obj.ItemId = item.ItemID ?? 0;
                             adm_item_log_obj.Quantity = "+" + item.Quantity;
                             adm_item_log_obj.Type = "Sale item not find";
                             adm_item_log_obj.CreatedBy = Request.LoginID();

@@ -24,6 +24,7 @@ export class sale_invoice_dt {
     CompanyID: number;
     InvoiceID: number;
     ItemID: number;
+    ServiceID:number;
     ItemTypeId: number=1;
     ItemDescription: string;
     Quantity: number;

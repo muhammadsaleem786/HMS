@@ -156,6 +156,8 @@ namespace HMS.Web.API
                   .RegisterType<IRepositoryAsync<ipd_specialized_equipment_maintenance>, Repository<ipd_specialized_equipment_maintenance>>()
                  .RegisterType<IRepositoryAsync<sale_invoice_mf>, Repository<sale_invoice_mf>>()
                  .RegisterType<IRepositoryAsync<sale_invoice_dt>, Repository<sale_invoice_dt>>()
+                 .RegisterType<IRepositoryAsync<quote_invoice_mf>, Repository<quote_invoice_mf>>()
+                 .RegisterType<IRepositoryAsync<quote_invoice_dt>, Repository<quote_invoice_dt>>()
                  .RegisterType<IRepositoryAsync<sale_payment>, Repository<sale_payment>>()
 
 
@@ -269,6 +271,8 @@ namespace HMS.Web.API
                 .RegisterType<IStoredProcedureService, StoredProcedureService>()
                  .RegisterType<Isale_invoice_mfService, sale_invoice_mfService>()
                 .RegisterType<Isale_invoice_dtService, sale_invoice_dtService>()
+                 .RegisterType<Iquote_invoice_mfService, quote_invoice_mfService>()
+                .RegisterType<Iquote_invoice_dtService, quote_invoice_dtService>()
                 .RegisterType<Isale_paymentService, sale_paymentService>();
 
         }

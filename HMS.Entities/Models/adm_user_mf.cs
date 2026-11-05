@@ -150,6 +150,8 @@ namespace HMS.Entities.Models
             this.lab_result_dt1 = new List<lab_result_dt>();
             this.emr_investigation_Item = new List<emr_investigation_Item>();
             this.emr_investigation_Item1 = new List<emr_investigation_Item>();
+            this.quote_invoice_mf = new List<quote_invoice_mf>();
+            this.quote_invoice_mf1 = new List<quote_invoice_mf>();
         }
         public decimal ID { get; set; }
         public string Email { get; set; }
@@ -353,6 +355,8 @@ namespace HMS.Entities.Models
         public virtual ICollection<sale_invoice_mf> sale_invoice_mf { get; set; }
         public virtual ICollection<sale_invoice_mf> sale_invoice_mf1 { get; set; }
         public virtual ICollection<inv_stock> inv_stock { get; set; }
+        public virtual ICollection<quote_invoice_mf> quote_invoice_mf { get; set; }
+        public virtual ICollection<quote_invoice_mf> quote_invoice_mf1 { get; set; }
         public virtual ICollection<inv_stock> inv_stock1 { get; set; }
         public virtual ICollection<pur_sale_mf> pur_sale_mf { get; set; }
         public virtual ICollection<pur_sale_mf> pur_sale_mf1 { get; set; }

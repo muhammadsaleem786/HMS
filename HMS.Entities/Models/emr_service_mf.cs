@@ -17,6 +17,7 @@ namespace HMS.Entities.Models
             this.adm_user_share = new List<adm_user_share>();
             this.adm_user_share = new List<adm_user_share>();
             this.sale_invoice_dt = new List<sale_invoice_dt>();
+            this.quote_invoice_dt = new List<quote_invoice_dt>();
         }
         public decimal ID { get; set; }
         public decimal CompanyId { get; set; }
@@ -45,6 +46,7 @@ namespace HMS.Entities.Models
         public virtual ICollection<ipd_procedure_mf> ipd_procedure_mf { get; set; }
         public virtual ICollection<adm_user_share> adm_user_share { get; set; }
         public virtual ICollection<sale_invoice_dt> sale_invoice_dt { get; set; }
+        public virtual ICollection<quote_invoice_dt> quote_invoice_dt { get; set; }
 
     }
 }

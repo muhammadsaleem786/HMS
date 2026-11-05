@@ -124,9 +124,6 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
     @ViewChild("MedicineTemplate") MedicineTemplateContent: TemplateRef<any>; @ViewChild("longContent") ModelContent: TemplateRef<any>;
     @ViewChild("PrintRx") PrintRxContent: TemplateRef<any>;
     @ViewChild("DeepAIModal") DeepAIModal: TemplateRef<any>;
-
-
-
     openAppointmentModal(longContent) {
         this.AppointmentModel = new emr_Appointment();
         this.modalService.open(longContent, { size: 'lg' });
@@ -164,13 +161,11 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
             this.model.MRNO = m.ResultSet.MRNO;
             this.BillTypeList = m.ResultSet.BillTypeList;
             this.TittleList = m.ResultSet.TittleList;
-
             this.model.BillTypeId = 1;
             this.model.PrefixTittleId = 1;
             this.loader.HideLoader();
             this.modalService.open(content, { size: 'lg' });
         });
-
     }
     OpenMedicinePrescription() {
         this.loader.ShowLoader();

@@ -2509,8 +2509,6 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 this.InvestigationsList = [];
                 this.DiagnosisList = [];
                 this.emr_vital_dynamicArray = [];
-
-
                 m.ResultSet.vitallist.forEach((item, index) => {
                     this.emr_vital_dynamicArray.push(item);
                 });

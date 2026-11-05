@@ -10,7 +10,7 @@ import { LoaderService } from '../../../../CommonService/LoaderService';
 import { CommonToastrService } from '../../../../CommonService/CommonToastrService';
 import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { GlobalVariable } from '../../../../AngularConfig/global';
-import { emr_patient, emr_Appointment, emr_document, emr_vital, patientInfo, DoctorInfo, InvoiceCompanyInfo } from './../Appointment/AppointmentModel';
+import { InvoiceCompanyInfo } from './../Appointment/AppointmentModel';
 @Component({
     moduleId: module.id,
     templateUrl: 'BillingComponentList.html',

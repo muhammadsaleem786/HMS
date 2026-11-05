@@ -236,6 +236,8 @@
     <Content Include="src\app\theme\Module\setup\Items\AddItems\ImportItemComponent.html" />
     <Content Include="src\app\theme\Module\setup\Items\AddItems\ItemComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Items\AddItems\RestockComponentList.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Quote\QuoteInvoiceComponentForm.html" />
+    <Content Include="src\app\theme\Module\setup\Items\Quote\QuoteInvoiceComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Items\SalePayment\SalePaymentComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Items\SalePayment\SalePaymentComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Items\Sale\SaleInvoiceComponentForm.html" />
@@ -247,8 +249,6 @@
     <Content Include="src\app\theme\Module\setup\Items\POS\SaleComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Items\POS\SaleHoldComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Items\POS\SaleComponentList.html" />
-    <Content Include="src\app\theme\Module\setup\Items\Customer\CustomerComponentForm.html" />
-    <Content Include="src\app\theme\Module\setup\Items\Customer\CustomerComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentForm.html" />
     <Content Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentList.html" />
     <Content Include="src\app\theme\Module\setup\Lab\LabDashboardComponent.html" />
@@ -528,6 +528,10 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\ItemModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\ItemService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\AddItems\RestockComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Quote\QuoteInvoiceComponentForm.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Quote\QuoteInvoiceComponentList.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Quote\QuoteInvoiceModel.ts" />
+    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Quote\QuoteInvoiceService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\SalePayment\SalePaymentComponentForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\SalePayment\SalePaymentComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\SalePayment\SalePaymentModel.ts" />
@@ -550,10 +554,6 @@
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\POS\SaleModel.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\POS\SaleHoldService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\POS\SaleService.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Customer\CustomerComponentForm.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Customer\CustomerComponentList.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Customer\CustomerModel.ts" />
-    <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Customer\CustomerService.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentForm.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorComponentList.ts" />
     <TypeScriptCompile Include="src\app\theme\Module\setup\Items\Vendor\VendorModel.ts" />

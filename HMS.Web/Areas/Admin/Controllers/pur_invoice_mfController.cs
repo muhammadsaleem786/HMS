@@ -96,7 +96,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         }
         [HttpGet]
         [ActionName("LoadDropdown")]
-        public ResponseInfo LoadDropdown(string DropdownIds)
+        public async Task<ResponseInfo> LoadDropdown(string DropdownIds)
         {
             var objResponse = new ResponseInfo();
             try
@@ -127,7 +127,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Type = z.sys_drop_down_value2.Value,
                     Name = z.Name
                 });
-
+                var BillNo=await GenerateInvoiceNo(CompanyID);
                 dropdownValues = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && Ids.Contains(e.DropDownID)).ToList();
                 if (dropdownValues != null)
                 {
@@ -135,7 +135,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     {
                         dropdownValues = dropdownValues,
                         ItemList = ItemList,
-                        companyInfo = companyInfo
+                        companyInfo = companyInfo,
+                        BillNo = BillNo
                     };
                     objResponse.IsSuccess = true;
                 }
@@ -153,6 +154,24 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             }
             return objResponse;
         }
+        public async Task<string> GenerateInvoiceNo(long companyId)
+        {
+            var invoiceNumbers = await _service.Queryable()
+                .Where(x => x.CompanyID == companyId &&
+                            x.BillNo.StartsWith("INV-"))
+                .Select(x => x.BillNo)
+                .ToListAsync();
+
+            var maxNo = invoiceNumbers
+                .Select(x => int.TryParse(x.Substring(4), out int number) ? number : 0)
+                .DefaultIfEmpty(0)
+                .Max();
+
+            var nextNo = maxNo + 1;
+
+            return $"INV-{nextNo:D6}";
+        }
+
         [HttpPost]
         [HttpGet]
         [ActionName("SearchVandorByName")]

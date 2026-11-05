@@ -42,13 +42,21 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.DiscountAmount).HasColumnName("DiscountAmount");
             this.Property(t => t.BatchSarialNumber).HasColumnName("BatchSarialNumber");
             this.Property(t => t.ExpiredWarrantyDate).HasColumnName("ExpiredWarrantyDate");
+            this.Property(t => t.ItemTypeId).HasColumnName("ItemTypeId");
+            this.Property(t => t.ServiceID).HasColumnName("ServiceID");
             // Relationships          
             this.HasRequired(t => t.adm_company)
                 .WithMany(t => t.sale_invoice_dt)
                 .HasForeignKey(d => d.CompanyID);
-            this.HasRequired(t => t.adm_item)
+
+            this.HasOptional(t => t.adm_item)
                 .WithMany(t => t.sale_invoice_dt)
                 .HasForeignKey(d => new { d.ItemID, d.CompanyID });
+
+            this.HasOptional(t => t.emr_service_mf)
+    .WithMany(t => t.sale_invoice_dt)
+    .HasForeignKey(d => new { d.ServiceID, d.CompanyID });
+
             this.HasRequired(t => t.sale_invoice_mf)
                 .WithMany(t => t.sale_invoice_dt)
                 .HasForeignKey(d => new { d.InvoiceID, d.CompanyID });          

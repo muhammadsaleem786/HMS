@@ -53,7 +53,7 @@ namespace HMS.Entities.Models.Mapping
                 .WithMany(t => t.sale_invoice_mf1)
                 .HasForeignKey(d => d.ModifiedBy);
 
-            this.HasRequired(t => t.sale_customer)
+            this.HasRequired(t => t.emr_patient_mf)
                 .WithMany(t => t.sale_invoice_mf)
                 .HasForeignKey(d => new { d.CustomerID, d.CompanyID });          
 

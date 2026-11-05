@@ -38,6 +38,6 @@ namespace HMS.Entities.Models
         public virtual adm_user_mf adm_user_mf1 { get; set; }
         public virtual ICollection<sale_invoice_dt> sale_invoice_dt { get; set; }
         public virtual ICollection<sale_payment> sale_payment { get; set; }
-        public virtual sale_customer sale_customer { get; set; }
+        public virtual emr_patient_mf emr_patient_mf { get; set; }
     }
 }

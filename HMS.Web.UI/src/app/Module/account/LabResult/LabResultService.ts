@@ -19,8 +19,8 @@ export class LabResultService {
         return this.http.Get(this.urlToApi + '/GetById', data).then(e => e);
     }
 
-    ReportGenerate(Id: string): Promise<any> {
-        var data = { 'Id': Id};
+    ReportGenerate(Id: string, CompanyId: string): Promise<any> {
+        var data = { 'Id': Id, 'CompanyId': CompanyId };
         return this.http.Get(this.urlToApi + '/ReportGenerate', data).then(e => e);
     }
     FormLoad(): Promise<any> {

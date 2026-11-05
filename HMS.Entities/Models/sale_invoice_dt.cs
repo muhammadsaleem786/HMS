@@ -13,8 +13,10 @@ namespace HMS.Entities.Models
         public decimal ID { get; set; }
         public decimal CompanyID { get; set; }
         public decimal InvoiceID { get; set; }
-        public decimal ItemID { get; set; }
+        public Nullable<decimal> ItemID { get; set; }
+        public Nullable<decimal> ServiceID { get; set; }
         public string ItemDescription { get; set; }
+        public int ItemTypeId { get; set; }
         public Nullable<decimal> Quantity { get; set; }
         public Nullable<decimal> Rate { get; set; }
         public Nullable<decimal> SalePrice { get; set; }
@@ -24,9 +26,10 @@ namespace HMS.Entities.Models
         public Nullable<decimal> CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<decimal> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedDate { get; set; }   
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
         public virtual adm_company adm_company { get; set; }
         public virtual adm_item adm_item { get; set; }
+        public virtual emr_service_mf emr_service_mf { get; set; }
         public virtual sale_invoice_mf sale_invoice_mf { get; set; }
         public string BatchSarialNumber { get; set; }
         public Nullable<System.DateTime> ExpiredWarrantyDate { get; set; }

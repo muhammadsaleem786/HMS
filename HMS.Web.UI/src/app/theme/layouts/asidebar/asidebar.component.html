@@ -90,7 +90,13 @@
                     <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(123)>-1">
                         <a routerLink="/home/saleinv" [queryParams]="{ id: 0 }">
                             <span><i class="icon-wallet iconImage"></i></span>
-                            <span class="title">Sale</span>
+                            <span class="title">Sales</span>
+                        </a>
+                    </li>
+                    <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(126)>-1">
+                        <a routerLink="/home/quoteinv" [queryParams]="{ id: 0 }">
+                            <span><i class="icon-wallet iconImage"></i></span>
+                            <span class="title">Quotes</span>
                         </a>
                     </li>
                     <li routerLinkActive="active" [hidden]="!DashboardMenu.IsShowMenus()" class="skyblueActive" *ngIf="Rights.indexOf(61)>-1">

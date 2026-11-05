@@ -37,11 +37,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Iemr_instructionService _emr_instructionService;
         private readonly Ipur_vendorService _pur_vendorService;
         private readonly Iadm_genericService _adm_genericService;
-
         public adm_itemController(IUnitOfWorkAsync unitOfWorkAsync, Iadm_itemService Service,
         Isys_drop_down_valueService sys_drop_down_valueService,
   Iadm_companyService iadm_companyService, Iinv_stockService inv_stockService,
-  Iadm_item_logService adm_item_logService,
+  Iadm_item_logService adm_item_logService, 
         IStoredProcedureService ProcedureService, Iemr_instructionService emr_instructionService, Ipur_vendorService pur_vendorService, Iadm_genericService adm_genericService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
@@ -830,11 +829,16 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                 (e.CompanyID == null || e.CompanyID == CompanyID) &&
                                 Ids.Contains(e.DropDownID))
                             .ToList();
+                var vendorlist = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(a => new { ID = a.ID, Value = a.CompanyName }).ToList();
+                var genericlist = _adm_genericService.Queryable().Where(e => e.CompanyId == CompanyID).Select(a => new { ID = a.ID, Value = a.GenericName }).ToList();
+               
                 if (dropdownValues != null)
                 {
                     objResponse.ResultSet = new
                     {
                         dropdownValues = dropdownValues,
+                        vendorlist= vendorlist,
+                        genericlist = genericlist,
                     };
                     objResponse.IsSuccess = true;
                 }
@@ -912,7 +916,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     .FirstOrDefault();
                 var vendorName = _pur_vendorService.Queryable()
            .AsNoTracking()
-           .Where(v => v.ID == result.VendorId)
+           .Where(v => v.ID == result.VendorId && v.CompanyID== CompanyID)
            .Select(v => v.CompanyName)
            .FirstOrDefault();
                 objResponse.ResultSet = new

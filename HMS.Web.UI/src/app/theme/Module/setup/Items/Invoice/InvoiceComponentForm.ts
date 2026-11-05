@@ -289,6 +289,8 @@ export class InvoiceComponentForm {
             if (m.IsSuccess) {
                 let list = m.ResultSet.dropdownValues;
                 this.ItemList = m.ResultSet.ItemList;
+                if (!this.IsEdit)
+                    this.model.BillNo = m.ResultSet.BillNo;
                 if (this.model.IsItemLevelDiscount)
                     this.TransLevelType = "2";
                 else

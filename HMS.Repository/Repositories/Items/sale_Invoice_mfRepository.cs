@@ -33,7 +33,7 @@ namespace HMS.Repository.Repositories.Items
                     predicate = (c => c.CompanyID == CompanyID &&
                     (DisplayNo && (c.OrderNo).Contains(PFilter.SearchText.ToLower()) ||
                     (DisplayReference && (c.InvoiceNo).ToString().Contains(PFilter.SearchText.ToLower()) ||
-                     (DisplayCompanyName && c.sale_customer.CompanyName.ToString().ToLower().Contains(PFilter.SearchText.ToLower())
+                     (DisplayCompanyName && c.emr_patient_mf.PatientName.ToString().ToLower().Contains(PFilter.SearchText.ToLower())
                   ))));
                 }
                 if (IgnorePaging)
@@ -49,7 +49,7 @@ namespace HMS.Repository.Repositories.Items
                 Expression<Func<sale_invoice_mf, string>> orderingFunction = (c =>
                                                              OrderByNo ? c.OrderNo :
                                                               OrderByReference ? c.InvoiceNo.ToString() :
-                                                             OrderByCompanyName ? c.sale_customer.CompanyName.ToString() : ""
+                                                             OrderByCompanyName ? c.emr_patient_mf.PatientName.ToString() : ""
                                                                );
 
                 if (PFilter.OrderBy == "ID")
@@ -67,7 +67,7 @@ namespace HMS.Repository.Repositories.Items
                 }
                 if (IgnorePaging)
                 {
-                    var result = filteredData.Include(x => x.sale_invoice_dt).Include(x => x.sale_customer).Include(z => z.sale_payment)
+                    var result = filteredData.Include(x => x.sale_invoice_dt).Include(x => x.emr_patient_mf).Include(z => z.sale_payment)
 
                         .Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord).Select(s => new
                         {
@@ -76,10 +76,10 @@ namespace HMS.Repository.Repositories.Items
                             status = s.SaveStatus == 1 ? "Draft" : "Publish",
                             date = s.InvoiceDate.Month + "/" + s.InvoiceDate.Day + "/" + s.InvoiceDate.Year,
                             duedate = s.DueDate.Month + "/" + s.DueDate.Day + "/" + s.DueDate.Year,
-                            name = s.sale_customer.FirstName + " " + s.sale_customer.LastName,
+                            name = s.emr_patient_mf.PatientName,
                             amount = s.Total,
                             DueBalance = s.Total - (s.sale_payment.Count() > 0 ? s.sale_payment.Sum(a => a.Amount) : 0),
-                            DisplayName = s.sale_customer.DisplayName,
+                            DisplayName = s.emr_patient_mf.PatientName,
                             isSelected = false,
                             SaveStatus = s.SaveStatus
                         }).OrderByDescending(a => a.ID).ToList();
@@ -100,7 +100,7 @@ namespace HMS.Repository.Repositories.Items
                 }
                 else
                 {
-                    var result = filteredData.Include(x => x.sale_invoice_dt).Include(a => a.sale_customer).Include(z => z.sale_payment)
+                    var result = filteredData.Include(x => x.sale_invoice_dt).Include(a => a.emr_patient_mf).Include(z => z.sale_payment)
                         .Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
                    .Select(s => new
                    {
@@ -109,11 +109,11 @@ namespace HMS.Repository.Repositories.Items
                        status = s.SaveStatus == 1 ? "Draft" : "Publish",
                        date = s.InvoiceDate.Month + "/" + s.InvoiceDate.Day + "/" + s.InvoiceDate.Year,
                        duedate = s.DueDate.Month + "/" + s.DueDate.Day + "/" + s.DueDate.Year,
-                       name = s.sale_customer.FirstName + " " + s.sale_customer.LastName,
+                       name = s.emr_patient_mf.PatientName,
                        amount = s.Total,
                        DueBalance = s.Total - (s.sale_payment.Count() > 0 ? s.sale_payment.Sum(a => a.Amount) : 0),
                        isSelected = false,
-                       DisplayName = s.sale_customer.DisplayName,
+                       DisplayName = s.emr_patient_mf.PatientName,
                        SaveStatus = s.SaveStatus,
                    }).OrderByDescending(a => a.ID).ToList();
                     objResult.DataList = result.AsEnumerable().Select(z => new InvoiceResponse

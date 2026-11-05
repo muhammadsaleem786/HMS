@@ -50,6 +50,8 @@ export class ImpoertItemModel {
     Unit: string;
     UnitID: number;
     Category: string;
+    Vendor: string;
+    Formulation: string;
     CategoryID: number;   
     CostPrice: number;
     SalePrice: number;

@@ -31,23 +31,23 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly Isys_drop_down_valueService _sys_drop_down_valueService;
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Isale_invoice_mfService _service;
+        private readonly Iemr_service_mfService _emr_service_mfService;
         private readonly Isale_invoice_dtService _sale_invoice_dtService;
         private readonly Iadm_companyService _adm_companyService;
-        private readonly Isale_customerService _sale_customerService;
         private readonly Iadm_itemService _adm_itemService;
         private readonly Iadm_userService _adm_userService;
         private readonly Iinv_stockService _inv_stockService;
         private readonly Iadm_item_logService _adm_item_logService;
         private readonly Iadm_user_companyService _adm_user_companyService;
         private readonly Iadm_user_sessionService _adm_user_sessionService;
-
+        private readonly Iemr_patientService _emr_patientService;
         public sale_invoice_mfController(IUnitOfWorkAsync unitOfWorkAsync,
-        Isale_invoice_mfService Service,
+        Isale_invoice_mfService Service, Iemr_patientService emr_patientService,
            Isale_invoice_dtService sale_invoice_dtService,
          Isys_drop_down_valueService sys_drop_down_valueService,
           Iadm_itemService adm_itemService,
           Iadm_userService adm_userService,
-          Isale_customerService sale_customerService,
+          Iemr_service_mfService emr_service_mfService,
              Iadm_user_companyService adm_user_companyService,
               Iinv_stockService inv_stockService,
               Iadm_item_logService adm_item_logService, Iadm_user_sessionService adm_user_sessionService,
@@ -56,7 +56,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
             _procedureService = ProcedureService;
-            _sale_customerService = sale_customerService;
+            _emr_patientService = emr_patientService;
             _service = Service;
             _sale_invoice_dtService = sale_invoice_dtService;
             _adm_companyService = adm_companyService;
@@ -66,7 +66,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _inv_stockService = inv_stockService;
             _adm_user_sessionService = adm_user_sessionService;
             _adm_item_logService = adm_item_logService;
-
+            _emr_service_mfService = emr_service_mfService;
         }
 
         [HttpGet]
@@ -96,7 +96,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         }
         [HttpGet]
         [ActionName("LoadDropdown")]
-        public ResponseInfo LoadDropdown(string DropdownIds)
+        public async Task<ResponseInfo> LoadDropdown(string DropdownIds)
         {
             var objResponse = new ResponseInfo();
             try
@@ -104,7 +104,6 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 var CompanyID = Request.CompanyID();
                 List<sys_drop_down_value> dropdownValues = new List<sys_drop_down_value>();
                 var Ids = DropdownIds.Split(',').Select(s => int.Parse(s)).ToArray();
-
                 var companyInfo = _adm_companyService.Queryable().Where(a => a.ID == CompanyID).Select(z => new
                 {
 
@@ -127,7 +126,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Type = z.sys_drop_down_value2.Value,
                     Name = z.Name
                 });
-
+                var InvoiceNo = await GenerateInvoiceNo(CompanyID);
                 dropdownValues = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && Ids.Contains(e.DropDownID)).ToList();
                 if (dropdownValues != null)
                 {
@@ -135,7 +134,8 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     {
                         dropdownValues = dropdownValues,
                         ItemList = ItemList,
-                        companyInfo = companyInfo
+                        companyInfo = companyInfo,
+                        InvoiceNo = InvoiceNo
                     };
                     objResponse.IsSuccess = true;
                 }
@@ -153,6 +153,82 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             }
             return objResponse;
         }
+        public async Task<string> GenerateInvoiceNo(long companyId)
+        {
+            var invoiceNumbers = await _service.Queryable()
+                .Where(x => x.CompanyID == companyId &&
+                            x.InvoiceNo.StartsWith("INV-"))
+                .Select(x => x.InvoiceNo)
+                .ToListAsync();
+
+            var maxNo = invoiceNumbers
+                .Select(x => int.TryParse(x.Substring(4), out int number) ? number : 0)
+                .DefaultIfEmpty(0)
+                .Max();
+
+            var nextNo = maxNo + 1;
+
+            return $"INV-{nextNo:D6}";
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("SearchAllItemByName")]
+        public async Task<ResponseInfo> SearchAllItemByName(string term, string ItemTypeId)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+                object ItemInfo;
+                if (ItemTypeId == "1")
+                {
+                    ItemInfo = _adm_itemService.Queryable().Where(a => a.CompanyId == CompanyID && (a.Name.Contains(term))).Include(a => a.inv_stock).Select(z => new
+                    {
+                        value = z.ID,
+                        label = z.Name,
+                        SalePrice = z.SalePrice,
+                        PurchasePrice = z.CostPrice,
+                        Type = z.ItemTypeId,
+                        TypeValue = z.sys_drop_down_value2.Value,
+                        CategoryId = z.CategoryID,
+                        IsAllowNegativeStock = z.IsAllowNegativeStock,
+                        stock = z.inv_stock.Any() ? z.inv_stock.Sum(a => a.Quantity) : 0,
+                        GroupId = z.GroupId,
+                        ItemTypeId = ItemTypeId
+                    }).ToList();
+                }
+                else
+                {
+                    ItemInfo = _emr_service_mfService.Queryable().Where(a => a.CompanyId == CompanyID && (a.ServiceName.Contains(term))).Select(z => new
+                    {
+                        value = z.ID,
+                        label = z.ServiceName,
+                        SalePrice = z.Price,
+                        PurchasePrice = 0,
+                        Type = 0,
+                        TypeValue = "",
+                        CategoryId = 0,
+                        IsAllowNegativeStock = 0,
+                        stock = 0,
+                        GroupId = 0,
+                        ItemTypeId = ItemTypeId
+                    }).ToList();
+                }
+                objResponse.ResultSet = new
+                {
+                    ItemInfo = ItemInfo
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+        }
+
         [HttpPost]
         [HttpGet]
         [ActionName("SearchCustomerByName")]
@@ -163,15 +239,24 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 decimal CompanyID = Request.CompanyID();
                 decimal UserID = Request.LoginID();
-                var CustomerInfo = _sale_customerService.Queryable().Where(a => a.CompanyID == CompanyID && (a.DisplayName.Contains(term))).Select(z => new
-                {
-                    value = z.ID,
-                    label = z.DisplayName
-
-                }).ToList();
+                var PatientInfo = await _emr_patientService.Queryable()
+           .AsNoTracking()
+           .Where(a => a.CompanyId == CompanyID && (a.Mobile.Contains(term)))
+           .Select(z => new
+           {
+               value = z.ID,
+               label = z.PatientName + " " + (z.Mobile),
+               PatientName = z.PatientName,
+               Phone = z.Mobile,
+               CNIC = z.CNIC,
+               Age = z.Age,
+               Gender = z.Gender,
+               MRNO = z.MRNO,
+               ReminderId = z.ReminderId
+           }).Take(10).ToListAsync();
                 objResponse.ResultSet = new
                 {
-                    CustomerInfo = CustomerInfo
+                    CustomerInfo = PatientInfo
                 };
             }
             catch (Exception ex)
@@ -199,15 +284,31 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 var CompanyID = Request.CompanyID();
 
-                var result = _service.Queryable().Where(e => e.CompanyID == CompanyID && e.ID.ToString() == Id).Include(x => x.sale_invoice_dt).Include(a => a.sale_customer).FirstOrDefault();
-                var itemids = result.sale_invoice_dt.Select(a => a.ItemID).ToList();
-                var itemList = _adm_itemService.Queryable().Where(a => itemids.Contains(a.ID) && a.CompanyId == CompanyID)
+                var result = _service.Queryable().Where(e => e.CompanyID == CompanyID && e.ID.ToString() == Id).Include(x => x.sale_invoice_dt).Include(a => a.emr_patient_mf).FirstOrDefault();
+                if (result == null)
+                {
+                    objResponse.IsSuccess = false;
+                    objResponse.ErrorMessage = "Invoice not found.";
+                    return objResponse;
+                }
+                var itemids = result.sale_invoice_dt.Select(a => a.ItemID).Distinct().ToList();
+                var serviceids = result.sale_invoice_dt.Select(a => a.ServiceID).Distinct().ToList();
+                var itemObj = _adm_itemService.Queryable().Where(a => itemids.Contains(a.ID) && a.CompanyId == CompanyID)
                                  .Select(z => new
                                  {
                                      z.ID,
-                                     z.Name,
-                                     z.sys_drop_down_value2.Value
+                                     Name = z.Name,
+                                     Value = z.sys_drop_down_value2.Value
                                  }).ToList();
+
+                var serviceObj = _emr_service_mfService.Queryable().Where(a => serviceids.Contains(a.ID) && a.CompanyId == CompanyID)
+                                .Select(z => new
+                                {
+                                    z.ID,
+                                    Name = z.ServiceName,
+                                    Value = "",
+                                }).ToList();
+                var itemList = itemObj.Union(serviceObj).ToList();
 
                 objResponse.ResultSet = new
                 {
@@ -262,7 +363,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     Website = z.Website,
                     CompanyLogo = z.CompanyLogo,
                 }).FirstOrDefault();
-                var Customer = _sale_customerService.Queryable().Where(a => a.CompanyID == CompanyID).FirstOrDefault();
+                var Customer = _emr_patientService.Queryable().Where(a => a.CompanyId == CompanyID && a.ID.ToString() == Id).FirstOrDefault();
 
                 objResponse.ResultSet = new
                 {
@@ -319,7 +420,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.sale_invoice_dt = null;
                 Model.adm_user_mf = null;
                 Model.adm_company = null;
-                Model.sale_customer = null;
+                Model.emr_patient_mf = null;
                 Model.adm_user_mf1 = null;
                 _service.Insert(Model);
                 //insert sale_order_item
@@ -400,7 +501,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.adm_user_mf = null;
                 Model.adm_user_mf1 = null;
                 Model.adm_company = null;
-                Model.sale_customer = null;
+                Model.emr_patient_mf = null;
                 Model.ModifiedBy = Request.LoginID();
                 Model.ModifiedDate = Request.DateTimes();
                 Model.ObjectState = ObjectState.Modified;
@@ -455,7 +556,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                 //log maintain                               
                                 adm_item_log_obj.ID = LogID;
                                 adm_item_log_obj.CompanyId = CompanyID;
-                                adm_item_log_obj.ItemId = item.ItemID;
+                                adm_item_log_obj.ItemId = item.ItemID ?? 0;
                                 adm_item_log_obj.Quantity = "-" + item.Quantity;
                                 adm_item_log_obj.Type = "Sale to customer";
                                 adm_item_log_obj.CreatedBy = Request.LoginID();
@@ -467,7 +568,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                 LogID++;
                             }
                             else
-                            {                               
+                            {
                                 //log maintain                               
                                 adm_item_log_obj.ID = LogID;
                                 adm_item_log_obj.CompanyId = CompanyID;

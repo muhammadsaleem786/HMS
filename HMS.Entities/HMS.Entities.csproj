@@ -137,7 +137,6 @@
     <Compile Include="Models\Mapping\ipd_specialized_equipment_maintenanceMap.cs" />
     <Compile Include="Models\Mapping\pr_time_logMap.cs" />
     <Compile Include="Models\Mapping\ipd_paymentMap.cs" />
-    <Compile Include="Models\Mapping\sale_customerMap.cs" />
     <Compile Include="Models\Mapping\sale_paymentMap.cs" />
     <Compile Include="Models\Mapping\sale_invoice_dtMap.cs" />
     <Compile Include="Models\Mapping\sale_invoice_mfMap.cs" />
@@ -315,7 +314,6 @@
     <Compile Include="Models\pur_sale_hold_mf.cs" />
     <Compile Include="Models\pur_sale_mf.cs" />
     <Compile Include="Models\pur_invoice_mf.cs" />
-    <Compile Include="Models\sale_customer.cs" />
     <Compile Include="Models\pur_vendor.cs" />
     <Compile Include="Models\sys_drop_down_mf.cs" />
     <Compile Include="Models\sys_drop_down_value.cs" />

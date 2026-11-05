@@ -115,7 +115,6 @@ namespace HMS.Entities.Models
 
         public DbSet<emr_investigation_Item> emr_investigation_Item { get; set; }
         public DbSet<lab_result_mf> lab_result_mf { get; set; }
-        public DbSet<sale_customer> sale_customer { get; set; }
         public DbSet<sale_invoice_mf> sale_invoice_mf { get; set; }
         public DbSet<sale_invoice_dt> sale_invoice_dt { get; set; }
         public DbSet<sale_payment> sale_payment { get; set; }
@@ -220,7 +219,6 @@ namespace HMS.Entities.Models
             modelBuilder.Configurations.Add(new lab_result_mfMap());
             modelBuilder.Configurations.Add(new lab_result_dtMap());
             modelBuilder.Configurations.Add(new emr_investigation_ItemMap());
-            modelBuilder.Configurations.Add(new sale_customerMap());
             modelBuilder.Configurations.Add(new sale_invoice_mfMap());
             modelBuilder.Configurations.Add(new sale_invoice_dtMap());
             modelBuilder.Configurations.Add(new sale_paymentMap());

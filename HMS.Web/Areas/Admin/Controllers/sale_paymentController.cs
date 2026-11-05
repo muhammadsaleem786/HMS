@@ -33,7 +33,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         private readonly IUnitOfWorkAsync _unitOfWorkAsync;
         private readonly Isale_paymentService _service;
         private readonly Iadm_companyService _adm_companyService;
-        private readonly Isale_customerService _sale_customerService;
+        private readonly Iemr_patientService _emr_patientService;
         private readonly Iadm_itemService _adm_itemService;
         private readonly Iadm_userService _adm_userService;
         private readonly Iinv_stockService _inv_stockService;
@@ -45,7 +45,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
            Isys_drop_down_valueService sys_drop_down_valueService,
           Iadm_itemService adm_itemService,
           Iadm_userService adm_userService,
-          Isale_customerService sale_customerService,
+         Iemr_patientService emr_patientService,
              Iadm_user_companyService adm_user_companyService,
               Iinv_stockService inv_stockService,
                Isale_invoice_mfService pur_invoice_mfService,
@@ -54,7 +54,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             _unitOfWorkAsync = unitOfWorkAsync;
             _sys_drop_down_valueService = sys_drop_down_valueService;
             _procedureService = ProcedureService;
-            _sale_customerService = sale_customerService;
+            _emr_patientService = emr_patientService;
             _service = Service;
             _sale_invoice_mfService = pur_invoice_mfService;
             _adm_companyService = adm_companyService;

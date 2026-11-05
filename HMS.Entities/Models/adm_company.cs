@@ -63,7 +63,6 @@ namespace HMS.Entities.Models
             this.pur_vendor = new List<pur_vendor>();
             this.pur_invoice_mf = new List<pur_invoice_mf>();
             this.pur_invoice_dt = new List<pur_invoice_dt>();
-            this.sale_customer = new List<sale_customer>();
             this.sale_invoice_mf = new List<sale_invoice_mf>();
             this.sale_invoice_dt = new List<sale_invoice_dt>();
             this.pur_sale_mf = new List<pur_sale_mf>();
@@ -106,7 +105,7 @@ namespace HMS.Entities.Models
         public string PharmacyName { get; set; }
         public string InvoiceNote { get; set; }
         public bool IsCNICMandatory { get; set; }
-        public Nullable<int> TokenNo {  get; set; }
+        public Nullable<int> TokenNo { get; set; }
         public string ContactPersonLastName { get; set; }
         public bool IsShowBillReceptionist { get; set; }
         public string CompanyAddress1 { get; set; }
@@ -205,7 +204,6 @@ namespace HMS.Entities.Models
         public virtual ICollection<pur_vendor> pur_vendor { get; set; }
         public virtual ICollection<pur_invoice_mf> pur_invoice_mf { get; set; }
         public virtual ICollection<pur_invoice_dt> pur_invoice_dt { get; set; }
-        public virtual ICollection<sale_customer> sale_customer { get; set; }
         public virtual ICollection<sale_invoice_mf> sale_invoice_mf { get; set; }
         public virtual ICollection<sale_invoice_dt> sale_invoice_dt { get; set; }
         public virtual ICollection<pur_sale_mf> pur_sale_mf { get; set; }

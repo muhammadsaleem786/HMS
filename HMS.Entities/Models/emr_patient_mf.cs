@@ -16,6 +16,7 @@ namespace HMS.Entities.Models
             this.pur_sale_hold_mf = new List<pur_sale_hold_mf>();
             this.lab_patient_test = new List<lab_patient_test>();
             this.lab_result_mf = new List<lab_result_mf>();
+            this.sale_invoice_mf = new List<sale_invoice_mf>();
         }
 
         public decimal ID { get; set; }
@@ -80,6 +81,6 @@ namespace HMS.Entities.Models
         public virtual ICollection<pur_sale_hold_mf> pur_sale_hold_mf { get; set; }
         public virtual adm_reminder_mf adm_reminder_mf { get; set; }
         public virtual ICollection<lab_patient_test> lab_patient_test { get; set; }
-    
+        public virtual ICollection<sale_invoice_mf> sale_invoice_mf { get; set; }
     }
 }

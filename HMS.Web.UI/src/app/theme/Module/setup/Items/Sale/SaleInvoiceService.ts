@@ -19,6 +19,10 @@ export class SaleInvoiceService {
         var data = { 'term': term };
         return this.http.Get(this.urlToApi + '/SearchCustomerByName', data).then(e => e);
     }
+    SearchAllItemByName(term: string,ItemTypeId: string): Promise<any> {
+        var data = { 'term': term, 'ItemTypeId': ItemTypeId };
+        return this.http.Get(this.urlToApi + '/SearchAllItemByName', data).then(e => e);
+    }
     ExportData(ExportType: number, CurrentPage: number, RecordPerPage: number, VisibleColumnInfo: string, SortName: string, SortOrder: string, SearchText: string): Promise<any> {
 
         var data = { 'ExportType': ExportType, 'CurrentPageNo': CurrentPage, 'RecordPerPage': RecordPerPage, 'VisibleColumnInfo': VisibleColumnInfo, 'SortName': SortName, 'SortOrder': SortOrder, 'SearchText': SearchText, 'IgnorePaging': true };

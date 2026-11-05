@@ -510,7 +510,6 @@ namespace HMS.Web.API.Areas.Lab.Controllers
             try
             {
                 decimal companyId = Request.CompanyID();
-
                 var invoice = _service.Queryable().Where(x => x.ID.ToString() == id && x.CompanyId == companyId)
                     .Select(z => new
                     {

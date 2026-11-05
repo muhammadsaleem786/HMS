@@ -894,13 +894,10 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                 var itemList = _adm_itemService.Queryable().Include(a => a.adm_generic).Where(a => a.CompanyId == companyId && inventoryids.Contains(a.ID)).Select(a => new { Id = a.ID, Medicine = a.adm_generic != null ? a.Name + " (" + a.adm_generic.GenericName + ")" : a.Name });
                 var MedicineList = medicineList.Union(itemList).ToList();
                 var userobj = _adm_userService.Queryable().Where(a => a.ID == doctorId).FirstOrDefault();
-                var vitalObj = new List<object>();
-                if (prescription != null)
-                {
-                    vitalObj = _emr_vitalService.Queryable()
+                var vitalObj = _emr_vitalService.Queryable()
                         .Where(a => a.CompanyID == companyId
                             && a.PatientId == patientid
-                            && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(prescription.AppointmentDate))
+                            && DbFunctions.TruncateTime(a.Date) == DbFunctions.TruncateTime(date))
                         .Select(z => new
                         {
                             z.ID,
@@ -913,7 +910,6 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                             Unit = z.sys_drop_down_value.Unit
                         })
                         .ToList<object>();
-                }
                 objResponse.ResultSet = new
                 {
                     patientInfo = patientinfo,

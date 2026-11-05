@@ -23,7 +23,7 @@
                         <label class="required">Customer</label>
                     </div>
                     <div class="col-sm-4">
-                        <input type="text" id="txtCustomer" class="form-control form-control-sm form-control-alternative" formControlName="CustomerName" [(ngModel)]="model.CustomerName" (click)="LoadCustomer()" placeholder="Search Customer" autocomplete="off">
+                        <input type="text" id="txtCustomer" class="form-control form-control-sm form-control-alternative" formControlName="CustomerName" [(ngModel)]="model.CustomerName" (click)="LoadCustomer()" placeholder="Search customer by no." autocomplete="off">
                     </div>
                 </div>
 
@@ -33,12 +33,12 @@
                             <label class="required">Invoice No</label>
                         </div>
                         <div class="col-sm-4  small-input">
-                            <input type="text" formControlName="InvoiceNo" [(ngModel)]="model.InvoiceNo" maxlength="150" class="form-control input-sm">
+                            <input type="text" formControlName="InvoiceNo" [(ngModel)]="model.InvoiceNo" maxlength="150" class="form-control input-sm" readonly />
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col-sm-2">
-                            <label>Order No</label>
+                            <label>Reference No</label>
                         </div>
                         <div class="col-sm-4  small-input">
                             <input type="text" formControlName="OrderNo" [(ngModel)]="model.OrderNo" maxlength="50" class="form-control input-sm">
@@ -72,6 +72,7 @@
                             <table class="Reports_table noramal-padding margin-top10">
                                 <thead class="line-item-header">
                                     <tr>
+                                        <th class="line-item-column" style="width:150px;">Item Type</th>
                                         <th class="line-item-column" style="width:150px;">Item</th>
                                         <th class="line-item-column" style="width:150px;">Quantity</th>
                                         <th class="line-item-column" style="width:150px;">Sale Price</th>
@@ -81,16 +82,20 @@
                                 <thead>
                                     <tr *ngFor="let dynamic of Invoice_itemdynamicArray; let i = index;">
                                         <td>
+                                            <select class="form-control form-control-sm" (change)="changeItemType($event.target.value, i)" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.ItemTypeId">
+                                                <option *ngFor="let item of ItemTypeList" [value]="item.id">
+                                                    {{item.Name}}
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
                                             <input class="form-control form-control-sm" id="txtItem_{{i}}" [ngModelOptions]="{standalone:true}" (click)="LoadItem(i)" [(ngModel)]="dynamic.Item" placeholder="Serach Item" />
-                                            <!--<select [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.ItemID" class="form-control ItemDetail1" (change)="loadItemDetail(dynamic.ItemID,i)">
-                                                <option *ngFor="let item of ItemList" [ngValue]="item.ID">{{item.Name}}</option>
-                                            </select>-->
                                         </td>
                                         <td>
                                             <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.Quantity" [readonly]="dynamic.ItemType == 'Sarial'" (change)="QuantityChange(i,dynamic.Quantity,dynamic.ItemID)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.SalePrice"(change)="RateChange(i,dynamic.SalePrice)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="dynamic.SalePrice" (change)="RateChange(i,dynamic.SalePrice)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
                                         </td>
                                         <td class="relative">
                                             {{dynamic.Amount}}

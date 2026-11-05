@@ -23,7 +23,8 @@ export class sale_invoice_dt {
     ID: number;
     CompanyID: number;
     InvoiceID: number;
-    ItemID: number;   
+    ItemID: number;
+    ItemTypeId: number=1;
     ItemDescription: string;
     Quantity: number;
     Rate: number;

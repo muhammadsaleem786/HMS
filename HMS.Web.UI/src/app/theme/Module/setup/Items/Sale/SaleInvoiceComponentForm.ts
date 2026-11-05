@@ -11,8 +11,6 @@ import { ValidationVariables, GlobalVariable } from '../../../../../AngularConfi
 import { CommonService } from '../../../../../CommonService/CommonService';
 import { CommonToastrService } from '../../../../../CommonService/CommonToastrService';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
-import { CustomerModel } from '../Customer/CustomerModel';
-import { CustomerService } from '../Customer/CustomerService';
 import { SalePaymentService } from '../SalePayment/SalePaymentService';
 import { filter } from 'rxjs/operators';
 import { PaginationModel, PaginationConfig } from '../../../../../CommonComponent/PaginationComponentConfig';
@@ -24,10 +22,9 @@ declare var $: any;
 @Component({
     moduleId: module.id,
     templateUrl: 'SaleInvoiceComponentForm.html',
-    providers: [CustomerService, ItemService, SaleService, SalePaymentService, SaleInvoiceService],
+    providers: [ItemService, SaleService, SalePaymentService, SaleInvoiceService],
 })
 export class SaleInvoiceComponentForm {
-    public customerModel = new CustomerModel();
     public model = new SaleInvoiceModel();
     public batchModel = new BatchModel();
     public Invoice_itemdynamicArray = [];
@@ -94,6 +91,7 @@ export class SaleInvoiceComponentForm {
     public TransLevelType: string;
     public DiscountAmount: number = 0;
     public DiscountTypeList = [];
+    public ItemTypeList = [];
     public DisType: number = 1;
     public IsVendorDialogActive: boolean = false;
     public IsPurchaseInfo: boolean = false;
@@ -125,7 +123,7 @@ export class SaleInvoiceComponentForm {
     @ViewChild("ItemCategory") ItemCategory: TemplateRef<any>;
     constructor(public _CommonService: CommonService, public loader: LoaderService
         , public _router: Router, public _InvoiceService: SaleInvoiceService, public _fb: FormBuilder
-        , private modalService: NgbModal, public route: ActivatedRoute, public toastr: CommonToastrService, public _CustomerService: CustomerService,
+        , private modalService: NgbModal, public route: ActivatedRoute, public toastr: CommonToastrService,
         private _ItemService: ItemService, public _PaymentService: SalePaymentService, public _SaleService: SaleService, private encrypt: EncryptionService
     ) {
         this.loader.ShowLoader();
@@ -138,6 +136,8 @@ export class SaleInvoiceComponentForm {
         this.LoadDropDown();
         this.DiscountTypeList.push({ "id": 1, "Name": "%" });
         this.DiscountTypeList.push({ "id": 2, "Name": "PKR" });
+        this.ItemTypeList.push({ "id": 1, "Name": "Inventory" });
+        this.ItemTypeList.push({ "id": 2, "Name": "Service" });
         this.DisTypeList.push({ "IsItemLevelDiscount": false, "Name": "At transaction level" });
         this.DisTypeList.push({ "IsItemLevelDiscount": true, "Name": "At line item level" });
         this.model.InvoiceDate = new Date();
@@ -154,8 +154,8 @@ export class SaleInvoiceComponentForm {
                         if (m.ResultSet != null) {
                             this.Invoice_itemdynamicArray = [];
                             this.model = m.ResultSet.result;
-                            if (m.ResultSet.result.sale_customer != null)
-                                this.model.CustomerName = m.ResultSet.result.sale_customer.DisplayName;
+                            if (m.ResultSet.result.emr_patient_mf != null)
+                                this.model.CustomerName = m.ResultSet.result.emr_patient_mf.PatientName;
                             let itemList = m.ResultSet.itemList;
                             if (this.model.Discount == null) {
                                 this.DisType = 2;
@@ -266,6 +266,8 @@ export class SaleInvoiceComponentForm {
             if (m.IsSuccess) {
                 let list = m.ResultSet.dropdownValues;
                 this.ItemList = m.ResultSet.ItemList;
+                if (!this.IsEdit)
+                    this.model.InvoiceNo = m.ResultSet.InvoiceNo;
                 if (this.model.IsItemLevelDiscount)
                     this.TransLevelType = "2";
                 else
@@ -276,6 +278,10 @@ export class SaleInvoiceComponentForm {
     }
 
     SaveOrUpdate(isValid: boolean): void {
+        if (this.model.CustomerID == undefined || this.model.CustomerID == null) {
+            this.toastr.Error("please select customer.");
+            return;
+        }
         if (this.model.InvoiceNo == undefined || this.model.InvoiceNo == null || this.model.InvoiceNo == "") {
             this.toastr.Error("Invoice# is required.");
             return;
@@ -331,6 +337,9 @@ export class SaleInvoiceComponentForm {
             });
         }
     }
+    changeItemType(itemType: string, indx: any) {
+
+    }
     ChangeStatus(isValid: boolean, ApprovalStatusID: any) {
         if (this.model.CustomerID != null && this.model.InvoiceDate != null) {
             isValid = true;
@@ -341,11 +350,16 @@ export class SaleInvoiceComponentForm {
         this.CalculateSubTotal();
     }
     LoadItem(indx: any) {
+        var obj = this.Invoice_itemdynamicArray[indx];
+        if (obj && obj.ItemTypeId == null) {
+            this.toastr.Error("Please select item type first.");
+            return;
+        }
         var id = ("#txtItem_" + indx);
         $(id).autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._SaleService.SearchAllItemByName(request.term).then(m => {
+                this._InvoiceService.SearchAllItemByName(request.term, obj.ItemTypeId).then(m => {
                     this.ItemList = m.ResultSet.ItemInfo;
                     const items = m.ResultSet.ItemInfo.map(item => ({
                         label: item.label + " (qty:" + item.stock + ")",
@@ -359,6 +373,7 @@ export class SaleInvoiceComponentForm {
                         PurchasePrice: item.PurchasePrice,
                         TrackInventory: item.TrackInventory,
                         IsAllowNegativeStock: item.IsAllowNegativeStock,
+                        ProdItemTypeId: item.ItemTypeId,
                     }));
                     response(items);
                     this.loader.HideLoader();
@@ -366,8 +381,7 @@ export class SaleInvoiceComponentForm {
             },
             minLength: 3,
             select: (event, ui) => {
-                ;
-                if (ui.item.stock <= 0 && ui.item.IsAllowNegativeStock == false) {
+                if (ui.item.stock <= 0 && ui.item.IsAllowNegativeStock == false && ui.item.ProdItemTypeId != 2) {
                     this.toastr.Error("Error", "The item is out of stock.");
                     ui.item.value = null;
                     return;
@@ -385,6 +399,7 @@ export class SaleInvoiceComponentForm {
                     this.Invoice_itemdynamicArray[indx].Amount = (1 * ui.item.SalePrice);
                     this.Invoice_itemdynamicArray[indx].PriceID = 0;
                     this.Invoice_itemdynamicArray[indx].ItemType = ui.item.TypeValue;
+                    this.Invoice_itemdynamicArray[indx].ItemTypeId = ui.item.ProdItemTypeId;
                 }
                 this.CalculateSubTotal();
             }
@@ -401,7 +416,7 @@ export class SaleInvoiceComponentForm {
         // this.selectPage(this.PModel.CurrentPage);
     }
     SelectBatchAndSerialItem(itemid: any, BatchNumber: any) {
-        
+
         let itemfind = this.ItemCategoryList.filter(a => a.ID == itemid && a.BatchSarialNumber == BatchNumber);
         var AlreadyBatchItem = this.Invoice_itemdynamicArray.filter(a => a.ItemID == itemid && a.BatchSarialNumber == BatchNumber);
         if (AlreadyBatchItem.length > 0) {
@@ -558,7 +573,6 @@ export class SaleInvoiceComponentForm {
         }
     }
     QuantityChange(rowno: number, Quantity: any, itemid: any) {
-        ;
         if (Quantity == "")
             Quantity = 0;
         var findobj = this.Invoice_itemdynamicArray[rowno];

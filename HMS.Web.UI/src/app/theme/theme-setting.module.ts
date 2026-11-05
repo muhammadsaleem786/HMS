@@ -62,8 +62,6 @@ import { IncomeComponentList } from '../theme/Module/setup/Income/IncomeComponen
 import { ExpenseComponentForm } from '../theme/Module/setup/Expense/ExpenseComponentForm';
 import { ExpenseComponentList } from '../theme/Module/setup/Expense/ExpenseComponentList';
 
-import { CustomerComponentList } from '../theme/Module/setup/Items/Customer/CustomerComponentList';
-import { CustomerComponentForm } from '../theme/Module/setup/Items/Customer/CustomerComponentForm';
 import { SaleInvoiceComponentList } from '../theme/Module/setup/Items/Sale/SaleInvoiceComponentList';
 import { SaleInvoiceComponentForm } from '../theme/Module/setup/Items/Sale/SaleInvoiceComponentForm';
 import { SalePaymentComponentForm } from '../theme/Module/setup/Items/SalePayment/SalePaymentComponentForm';
@@ -174,10 +172,7 @@ const routes: Routes = [
     { path: 'Invoice/saveinvoice', component: InvoiceComponentForm },
     { path: 'Invoice', component: InvoiceComponentList },
 
-    { path: 'Customer/savecustomer:id', component: CustomerComponentForm },
-    { path: 'Customer/savecustomer', component: CustomerComponentForm },
-    { path: 'Customer', component: CustomerComponentList },
-    { path: 'saleinv/saveinvoice:id', component: SaleInvoiceComponentForm },
+     { path: 'saleinv/saveinvoice:id', component: SaleInvoiceComponentForm },
     { path: 'saleinv/saveinvoice', component: SaleInvoiceComponentForm },
     { path: 'saleinv', component: SaleInvoiceComponentList },
     { path: 'salepayment/savepayment:id', component: SalePaymentComponentForm },
@@ -259,7 +254,7 @@ const routes: Routes = [
         //end
         //Item Module
         IncomeComponentForm, IncomeComponentList, ItemComponentList, ItemComponentForm, VendorComponentList, VendorComponentForm,
-        SaleInvoiceComponentList, SaleInvoiceComponentForm, CustomerComponentList, CustomerComponentForm, InvoiceComponentList, InvoiceComponentForm, ItemPaymentComponentForm
+        SaleInvoiceComponentList, SaleInvoiceComponentForm,  InvoiceComponentList, InvoiceComponentForm, ItemPaymentComponentForm
         , ExpenseComponentList, ExpenseComponentForm, ItemPaymentComponentList, RestockComponentList, ExpireComponentList, ImportItemComponent, SalePaymentComponentList, SalePaymentComponentForm,
         //end
         //admin module

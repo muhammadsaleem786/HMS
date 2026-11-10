@@ -72,7 +72,7 @@ namespace HMS.Repository.Repositories.Admin
                 }
                 else
                 {
-                    objResult.DataList = filteredData
+                    objResult.DataList = filteredData.Skip(PFilter.SkipRecord).Take(PFilter.TakeRecord)
                     .Include(i => i.sys_drop_down_value).Include(i => i.sys_drop_down_value1)
                     .Select(s => new
                     {

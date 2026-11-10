@@ -422,6 +422,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 Model.adm_company = null;
                 Model.emr_patient_mf = null;
                 Model.adm_user_mf1 = null;
+                Model.sale_payment = null;
                 _service.Insert(Model);
                 //insert sale_order_item
                 decimal invoicItemID = 1;

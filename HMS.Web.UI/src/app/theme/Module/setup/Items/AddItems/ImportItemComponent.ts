@@ -38,9 +38,8 @@ export class ImportItemComponent {
     public unitGroups: string[] = [];
     public typeGroups: string[] = [];
     public categoryGroups: string[] = [];
-    public vendorGroups: string[] = [];
+    public brandGroups: string[] = [];
     public genericGroups: string[] = [];
-    public vendorMap: Map<string, number> = new Map<string, number>();
     public genericMap: Map<string, number> = new Map<string, number>();
     public importMastersList: any[] = [];
     data: AOA = [[1, 2], [3, 4]];
@@ -63,7 +62,7 @@ export class ImportItemComponent {
     }
 
     LoadImportMasters() {
-        this._ItemService.GetImportMasters("64,57,59,58").then(res => {
+        this._ItemService.GetImportMasters("64,57,59,58,73").then(res => {
             if (res.IsSuccess) {
                 this.importMastersList = res.ResultSet.dropdownValues;
                 let list = res.ResultSet.dropdownValues;
@@ -71,20 +70,14 @@ export class ImportItemComponent {
                 var unitList = list.filter(f => f.DropDownID === 57);
                 var ItemTypeList = list.filter(f => f.DropDownID === 59);
                 var CategoryList = list.filter(f => f.DropDownID === 58);
-
+                var CategoryList = list.filter(f => f.DropDownID === 58);
+                var BrandList = list.filter(f => f.DropDownID === 73);
                 this.validGroups = GroupList.map(x => x.Value.toLowerCase());
                 this.unitGroups = unitList.map(x => x.Value.toLowerCase());
                 this.typeGroups = ItemTypeList.map(x => x.Value.toLowerCase());
                 this.categoryGroups = CategoryList.map(x => x.Value.toLowerCase());
-                this.vendorGroups = res.ResultSet.vendorlist.map(x => x.Value.toLowerCase());
+                this.brandGroups = BrandList.map(x => x.Value.toLowerCase());
                 this.genericGroups = res.ResultSet.genericlist.map(x => x.Value.toLowerCase());
-                this.vendorMap = new Map<string, number>(
-                    res.ResultSet.vendorlist.map(x => [
-                        x.Value.trim().toLowerCase(),
-                        Number(x.ID)
-                    ] as [string, number])
-                );
-
                 this.genericMap = new Map<string, number>(
                     res.ResultSet.genericlist.map(x => [
                         x.Value.trim().toLowerCase(),
@@ -112,21 +105,21 @@ export class ImportItemComponent {
             this.ImportList.forEach(x => {
                 if (x.Group == undefined)
                     this.AddToErrorList(x, 'Grroup is missing', true);
-                else if (!this.validGroups.includes(x.Group.toLowerCase()))
+                else if (!this.validGroups.includes(x.Group.trim().toLowerCase()))
                     this.AddToErrorList(x, 'Invalid group name', true);
                 else if (x.Type == undefined)
                     this.AddToErrorList(x, 'Type is missing', true);
-                else if (!this.typeGroups.includes(x.Type.toLowerCase()))
+                else if (!this.typeGroups.includes(x.Type.trim().toLowerCase()))
                     this.AddToErrorList(x, 'Invalid Type name', true);
                 else if (x.Name == undefined)
                     this.AddToErrorList(x, 'Name is missing', true);
                 else if (x.Unit == undefined)
                     this.AddToErrorList(x, 'Unit is missing', true);
-                else if (!this.unitGroups.includes(x.Unit.toLowerCase()))
+                else if (!this.unitGroups.includes(x.Unit.trim().toLowerCase()))
                     this.AddToErrorList(x, 'Invalid Unit name', true);
                 else if (x.Category == undefined)
                     this.AddToErrorList(x, 'Category is missing', true);
-                else if (!this.categoryGroups.includes(x.Category.toLowerCase()))
+                else if (!this.categoryGroups.includes(x.Category.trim().toLowerCase()))
                     this.AddToErrorList(x, 'Invalid Category name', true);
                 else if (x.CostPrice == undefined)
                     this.AddToErrorList(x, 'Cost Price is missing', true);
@@ -138,11 +131,9 @@ export class ImportItemComponent {
                     this.AddToErrorList(x, 'Track Inventory is missing', true);
                 else if (x.POSItem == undefined)
                     this.AddToErrorList(x, 'POS Item is missing', true);
-
-                else if (x.Vendor != null && x.Vendor.trim() !== '' && !this.vendorGroups.includes(x.Vendor.toLowerCase()))
-                    this.AddToErrorList(x, 'Invalid Vendor name', true);
-
-                else if (x.Formulation != null && x.Formulation.trim() !== '' && !this.genericGroups.includes(x.Formulation.toLowerCase()))
+                else if (x.Brand != null && x.Brand.trim() !== '' && !this.brandGroups.includes(x.Brand.trim().toLowerCase()))
+                    this.AddToErrorList(x, 'Invalid Brand name', true);
+                else if (x.Formulation != null && x.Formulation.trim() !== '' && !this.genericGroups.includes(x.Formulation.trim().toLowerCase()))
                     this.AddToErrorList(x, 'Invalid Formulation name', true);
                 this.RecordStatusModel.NewRecords++;
             });
@@ -211,7 +202,7 @@ export class ImportItemComponent {
             const unitMap = this.createMap(57);
             const typeMap = this.createMap(59);
             const categoryMap = this.createMap(58);
-
+            const brandMap = this.createMap(73);
             this.ExcelDataList = JSON.parse(JSON.stringify(dataList));
             this.ExcelDataList.forEach(x => {
                 if (x['Group'] != undefined) {
@@ -220,10 +211,10 @@ export class ImportItemComponent {
                         x['GroupId'] = groupMap.get(groupKey);
                     }
                 }
-                if (x['Vendor'] != undefined) {
-                    const vendorKey = x['Vendor'].toLowerCase();
-                    if (this.vendorMap.has(vendorKey)) {
-                        x['VendorId'] = this.vendorMap.get(vendorKey);
+                if (x['Brand'] != undefined) {
+                    const brandKey = x['Brand'].toLowerCase();
+                    if (brandMap.has(brandKey)) {
+                        x['BrandId'] = brandMap.get(brandKey);
                     }
                 }
                 if (x['Formulation'] != undefined) {

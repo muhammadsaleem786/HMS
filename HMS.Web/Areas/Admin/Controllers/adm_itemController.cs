@@ -40,7 +40,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
         public adm_itemController(IUnitOfWorkAsync unitOfWorkAsync, Iadm_itemService Service,
         Isys_drop_down_valueService sys_drop_down_valueService,
   Iadm_companyService iadm_companyService, Iinv_stockService inv_stockService,
-  Iadm_item_logService adm_item_logService, 
+  Iadm_item_logService adm_item_logService,
         IStoredProcedureService ProcedureService, Iemr_instructionService emr_instructionService, Ipur_vendorService pur_vendorService, Iadm_genericService adm_genericService)
         {
             _unitOfWorkAsync = unitOfWorkAsync;
@@ -534,7 +534,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             var objResponse = new ResponseInfo();
             try
             {
-                
+
                 decimal CompanyID = Request.CompanyID();
                 var itemObj = _service.Queryable().Where(a => a.CompanyId == CompanyID && a.ID == Model.ID).FirstOrDefault();
                 if (itemObj == null)
@@ -829,15 +829,13 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                                 (e.CompanyID == null || e.CompanyID == CompanyID) &&
                                 Ids.Contains(e.DropDownID))
                             .ToList();
-                var vendorlist = _pur_vendorService.Queryable().Where(e => e.CompanyID == CompanyID).Select(a => new { ID = a.ID, Value = a.CompanyName }).ToList();
                 var genericlist = _adm_genericService.Queryable().Where(e => e.CompanyId == CompanyID).Select(a => new { ID = a.ID, Value = a.GenericName }).ToList();
-               
+
                 if (dropdownValues != null)
                 {
                     objResponse.ResultSet = new
                     {
                         dropdownValues = dropdownValues,
-                        vendorlist= vendorlist,
                         genericlist = genericlist,
                     };
                     objResponse.IsSuccess = true;
@@ -916,7 +914,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
     .FirstOrDefault();
                 var vendorName = _pur_vendorService.Queryable()
            .AsNoTracking()
-           .Where(v => v.ID == result.VendorId && v.CompanyID== CompanyID)
+           .Where(v => v.ID == result.VendorId && v.CompanyID == CompanyID)
            .Select(v => v.CompanyName)
            .FirstOrDefault();
                 objResponse.ResultSet = new
@@ -1281,7 +1279,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 decimal nextItemLogId = (_adm_item_logService.Queryable().Select(x => (decimal?)x.ID).Max() ?? 0) + 1;
                 decimal nextItemId = (_service.Queryable().Where(x => x.CompanyId == CompanyID).Select(x => (decimal?)x.ID).Max() ?? 0) + 1;
 
-               
+
                 ExcelDataList.ForEach(item =>
                 {
                     item.CreatedBy = currentLoginId;
@@ -1295,6 +1293,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     item.CategoryDropDownID = (int)sys_dropdown_mfEnum.CategoryDropDownID;
                     item.ItemTypeDropDownID = (int)sys_dropdown_mfEnum.ItemTypeDropDownID;
                     item.GroupDropDownId = (int)sys_dropdown_mfEnum.GroupDropDownId;
+                    item.BrandDropdownId = (int)sys_dropdown_mfEnum.BrandDropDownId;
                     item.sys_drop_down_value = null;
                     item.sys_drop_down_value1 = null;
                     item.emr_service_item = null;

@@ -298,7 +298,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     GroupId = z.GroupId,
                     TrackInventory = z.TrackInventory,
                     IsAllowNegativeStock = z.IsAllowNegativeStock,
-                }).ToList();
+                }).OrderByDescending(x => x.stock).Take(10).ToList();
                 objResponse.ResultSet = new
                 {
                     ItemInfo = ItemInfo
@@ -661,10 +661,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 List<pur_sale_dt> purorderitem = new List<pur_sale_dt>();
                 purorderitem.AddRange(Model.pur_sale_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
-                // Fetch item groups using the list of item IDs
-                var itemGroups = _adm_itemService.Queryable()
-                    .Where(i => i.CompanyId == CompanyID && itemIds.Contains(i.ID))
-                    .ToDictionary(i => i.ID, i => i.GroupId);
+               
                 //insert pur_sale_mf
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
@@ -812,11 +809,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 List<pur_sale_dt> purorderitem = new List<pur_sale_dt>();
                 purorderitem.AddRange(Model.pur_sale_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
-                // Fetch item groups using the list of item IDs
-                var itemGroups = _adm_itemService.Queryable()
-                    .Where(i => i.CompanyId == CompanyID && itemIds.Contains(i.ID))
-                    .ToDictionary(i => i.ID, i => i.GroupId);
-
+               
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
                     ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;

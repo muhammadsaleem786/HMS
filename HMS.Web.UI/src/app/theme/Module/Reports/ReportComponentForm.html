@@ -17,7 +17,8 @@
 
 
         <ngb-tabset [destroyOnHide]="false">
-            <ngb-tab title="Financial Reports">
+            <ngb-tab title="Financial Reports"
+                     *ngIf="Rights.indexOf(1) > -1 || Rights.indexOf(38) > -1 || Rights.indexOf(27) > -1|| Rights.indexOf(28) > -1|| Rights.indexOf(29) > -1|| Rights.indexOf(130) > -1">
                 <ng-template ngbTabContent>
                     <div class="row">
                         <div class="col-sm-12">
@@ -55,7 +56,6 @@
                                         </span>
                                     </a>
                                 </div>
-
                                 <div class="col-sm-3" *ngIf="Rights.indexOf(29)>-1">
                                     <a class="report_block" routerLink="/home/TreatmentwiseRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
@@ -64,7 +64,7 @@
                                         </span>
                                     </a>
                                 </div>
-                                <div class="col-sm-3" *ngIf="Rights.indexOf(29)>-1">
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(130)>-1">
                                     <a class="report_block" routerLink="/home/ProlossRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
                                         <span class="title">
@@ -77,7 +77,7 @@
                     </div>
                 </ng-template>
             </ngb-tab>
-            <ngb-tab title="Patient Reports">
+            <ngb-tab title="Patient Reports"*ngIf="Rights.indexOf(17) > -1 || Rights.indexOf(71) > -1 || Rights.indexOf(16) > -1|| Rights.indexOf(30) > -1|| Rights.indexOf(31) > -1|| Rights.indexOf(15) > -1|| Rights.indexOf(32) > -1|| Rights.indexOf(33) > -1">
                 <ng-template ngbTabContent>
                     <div class="row">
                         <div class="col-sm-12">
@@ -108,7 +108,6 @@
                                         </span>
                                     </a>
                                 </div>
-
                                 <div class="col-sm-3" *ngIf="Rights.indexOf(31)>-1">
                                     <a class="report_block" routerLink="/home/PaymentRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
@@ -153,7 +152,7 @@
                     </div>
                 </ng-template>
             </ngb-tab>
-            <ngb-tab title="Doctor Reports">
+            <ngb-tab title="Doctor Reports"*ngIf="Rights.indexOf(125) > -1 || Rights.indexOf(35) > -1 || Rights.indexOf(36) > -1|| Rights.indexOf(37) > -1|| Rights.indexOf(121) > -1">
                 <ng-template ngbTabContent>
                     <div class="row">
                         <div class="col-sm-12">
@@ -204,12 +203,12 @@
                     </div>
                 </ng-template>
             </ngb-tab>
-            <ngb-tab title="Inventory Reports">
+            <ngb-tab title="Inventory Reports" *ngIf="Rights.indexOf(127) > -1 || Rights.indexOf(128) > -1 || Rights.indexOf(129) > -1">
                 <ng-template ngbTabContent>
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="row">
-                                <div class="col-sm-3" *ngIf="Rights.indexOf(35)>-1">
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(127)>-1">
                                     <a class="report_block" routerLink="/home/CurrentRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
                                         <span class="title">
@@ -217,7 +216,7 @@
                                         </span>
                                     </a>
                                 </div>
-                                <div class="col-sm-3" *ngIf="Rights.indexOf(36)>-1">
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(128)>-1">
                                     <a class="report_block" routerLink="/home/SaleRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
                                         <span class="title">
@@ -225,7 +224,7 @@
                                         </span>
                                     </a>
                                 </div>
-                                <div class="col-sm-3" *ngIf="Rights.indexOf(36)>-1">
+                                <div class="col-sm-3" *ngIf="Rights.indexOf(129)>-1">
                                     <a class="report_block" routerLink="/home/PurRpt">
                                         <img src="../assets/app/media/img/icons/Report.png" class="img-fluid icon">
                                         <span class="title">

@@ -145,6 +145,7 @@ export class SaleComponentForm {
                                     this.TransLevelType = "1";
                                 this.Total = this.model.Total;
                                 this.SubTotal = 0;
+                                let SubAmount = 0;
                                 this.model.pur_sale_dt.forEach((item, index) => {
                                     if (item.Discount == null) {
                                         item.Discount = item.DiscountAmount;
@@ -156,8 +157,9 @@ export class SaleComponentForm {
                                     item.Stock = ItemObj[0].stock;
                                     item.GroupId = ItemObj[0].GroupId;
                                     this.Sale_itemdynamicArray.push(item);
-                                    this.SubTotal += item.TotalAmount;
+                                    SubAmount += item.TotalAmount;
                                 });
+                                this.SubTotal = this.roundToTwoDecimal(SubAmount);
                                 this.loader.HideLoader();
                             } else
                                 this.loader.HideLoader();
@@ -179,6 +181,7 @@ export class SaleComponentForm {
                                     this.TransLevelType = "1";
                                 this.Total = this.saleHoldModel.Total;
                                 this.SubTotal = 0;
+                                let SubAmount = 0;
                                 this.saleHoldModel.pur_sale_hold_dt.forEach((item, index) => {
                                     if (item.Discount == null) {
                                         item.Discount = item.DiscountAmount;
@@ -190,8 +193,9 @@ export class SaleComponentForm {
                                     item.Stock = ItemObj[0].stock;
                                     item.GroupId = ItemObj[0].GroupId;
                                     this.Sale_itemdynamicArray.push(item);
-                                    this.SubTotal += item.TotalAmount;
+                                    SubAmount += item.TotalAmount;
                                 });
+                                this.SubTotal = this.roundToTwoDecimal(SubAmount);
                                 this.saleHoldModel.SaleHoldId = this.model.ID;
                                 this.saleHoldModel.ID = 0;
                                 this.model = Object.assign(new SaleModel(), this.saleHoldModel);
@@ -285,7 +289,6 @@ export class SaleComponentForm {
             minLength: 3,
             select: (event, ui) => {
                 if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
-
                     this.toastr.Error("Error", "The item is out of stock.");
                     ui.item.value = null;
                     return;
@@ -361,7 +364,7 @@ export class SaleComponentForm {
         $('#customerSearch').autocomplete({
             source: (request, response) => {
                 this.loader.ShowLoader();
-                this._AppointmentService.searchByName(request.term).then(m => {
+                this._AppointmentService.searchByNameAndPhone(request.term).then(m => {
                     this.patientInfo = m.ResultSet.PatientInfo;
                     response(m.ResultSet.PatientInfo);
                     this.loader.HideLoader();
@@ -973,6 +976,10 @@ export class SaleComponentForm {
         this.model.pur_sale_dt = this.Sale_itemdynamicArray;
         if (this.model.pur_sale_dt.length == 0) {
             this.toastr.Error("Error", "Please select at least one item.");
+            return;
+        }
+        if (this.model.CustomerId == null || this.model.CustomerId == undefined) {
+            this.toastr.Error("Error", "Please select customer.");
             return;
         }
         // const distinctGroups = new Set(this.model.pur_sale_dt.map(item => item.GroupId));

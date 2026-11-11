@@ -146,7 +146,10 @@ export class AppointmentService {
         var data = { 'term': term };
         return this.http.Get(this.urlToApi + '/DoctorSearch', data).then(e => e);
     }
-
+    searchByNameAndPhone(term: string): Promise<any> {
+        var data = { 'term': term };
+        return this.http.Get(this.urlToApi + '/searchByNameAndPhone', data).then(e => e);
+    }
 
     searchByName(term: string): Promise<any> {
         var data = { 'term': term };

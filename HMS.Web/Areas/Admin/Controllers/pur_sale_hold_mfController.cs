@@ -421,7 +421,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 {
                     result = result,
                     ItemList = ItemList,
-                    PatientInfo= PatientInfo,
+                    PatientInfo = PatientInfo,
                     IsRefund = true,
                 };
             }
@@ -499,14 +499,10 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 List<pur_sale_hold_dt> purorderitem = new List<pur_sale_hold_dt>();
                 purorderitem.AddRange(Model.pur_sale_hold_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
-                // Fetch item groups using the list of item IDs
-                var itemGroups = _adm_itemService.Queryable()
-                    .Where(i => itemIds.Contains(i.ID))
-                    .ToDictionary(i => i.ID, i => i.GroupId);
                 //insert pur_sale_hold_mf
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) +1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyID = CompanyID;
                 Model.CreatedBy = Request.LoginID();
@@ -614,14 +610,9 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                 List<pur_sale_hold_dt> purorderitem = new List<pur_sale_hold_dt>();
                 purorderitem.AddRange(Model.pur_sale_hold_dt);
                 var itemIds = purorderitem.Select(x => x.ItemID).ToList();
-                // Fetch item groups using the list of item IDs
-                var itemGroups = _adm_itemService.Queryable()
-                    .Where(i => itemIds.Contains(i.ID))
-                    .ToDictionary(i => i.ID, i => i.GroupId);
-
                 decimal ID = 1;
                 if (_service.Queryable().Count() > 0)
-                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) +1;
+                    ID = (_service.Queryable().Where(e => e.CompanyID == CompanyID).Max(x => (decimal?)x.ID) ?? 0) + 1;
                 Model.ID = ID;
                 Model.CompanyID = CompanyID;
                 Model.CreatedBy = Request.LoginID();

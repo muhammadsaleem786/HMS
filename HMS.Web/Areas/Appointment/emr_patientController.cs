@@ -273,7 +273,7 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         z.PatientId,
                         z.TotalSessions,
                         z.ConsumedSessions
-                    }).OrderByDescending(a=>a.ID).ToList();
+                    }).OrderByDescending(a => a.ID).ToList();
                 objResponse.ResultSet = new
                 {
                     PatientInfo = PatientInfo.Select(z => new
@@ -290,8 +290,47 @@ namespace HMS.Web.API.Areas.Appointment.Controllers
                         ServiceName = serviceObj?.ServiceName,
                         ServiceID = serviceObj?.ID,
                         ServicePrice = serviceObj?.Price,
-                        patientBill= patientBill,
+                        patientBill = patientBill,
                     })
+                };
+            }
+            catch (Exception ex)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = ex.Message;
+                Logger.Trace.Error(ex);
+            }
+            return objResponse;
+
+        }
+        [HttpPost]
+        [HttpGet]
+        [ActionName("searchByNameAndPhone")]
+        public async Task<ResponseInfo> searchByNameAndPhone(string term)
+        {
+            var objResponse = new ResponseInfo();
+            try
+            {
+                decimal CompanyID = Request.CompanyID();
+                decimal UserID = Request.LoginID();
+
+
+                var PatientInfo = await _service.Queryable()
+            .AsNoTracking()
+            .Where(a => a.CompanyId == CompanyID &&
+              (
+                    (a.Mobile != null && a.Mobile.Contains(term)) ||
+                    (a.PatientName != null && a.PatientName.Contains(term))
+                ))
+            .Select(z => new
+            {
+                value = z.ID,
+                label = z.PatientName + " " + (z.Mobile)
+            }).Distinct().Take(10)
+            .ToListAsync();
+                objResponse.ResultSet = new
+                {
+                    PatientInfo = PatientInfo
                 };
             }
             catch (Exception ex)

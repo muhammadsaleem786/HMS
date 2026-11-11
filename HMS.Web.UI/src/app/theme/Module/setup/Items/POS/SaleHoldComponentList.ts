@@ -116,7 +116,7 @@ export class SaleHoldComponentList {
                 this.Id = id;
                 this.IsList = false;
                 this._router.navigate(['home/Sale/savesale'], { queryParams: { id: this.Id } });
-                this.toastr.Success(m.Message);
+                //this.toastr.Success(m.Message);
             }
             this.Refresh();
         });

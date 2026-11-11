@@ -511,6 +511,7 @@ body {
                 border: 0px;
                 margin-left: 21px;
                 box-shadow: 1px 1px 10px #d9d9d9;
+                height:390px;
 
                 ul {
                     margin-top: 0;
@@ -4591,14 +4592,14 @@ label.custom-control-label {
 
 @media (min-width: 768px) {
     .sidebar-container ul li.more-menu .dropdown-menu {
-        top: auto;
+        /*top: auto;*/
         bottom: 0;
         left: 100%;
         right: auto;
         margin-top: 0;
         margin-bottom: 0;
         max-height: calc(100vh - 16px);
-        overflow-y: auto;
+        /*overflow-y: auto;*/
     }
 }
 

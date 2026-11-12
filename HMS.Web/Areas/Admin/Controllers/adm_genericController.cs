@@ -80,6 +80,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     await _unitOfWorkAsync.SaveChangesAsync();
                     objResponse.Message = MessageStatement.Save;
                     objResponse.IsSuccess = true;
+                    objResponse.ResultSet = new
+                    {
+                        Model.ID,
+                        Model.GenericName
+                    };
                 }
                 catch (DbUpdateException)
                 {

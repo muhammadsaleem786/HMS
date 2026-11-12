@@ -1073,9 +1073,11 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             {
                 var CompanyID = Request.CompanyID();
                 var InstructionList = _emr_instructionService.Queryable().Where(a => a.CompanyID == CompanyID).Select(a => new { ID = a.ID, Name = a.Instructions }).ToList();
+                var dropdown = _sys_drop_down_valueService.Queryable().Where(e => (e.CompanyID == null || e.CompanyID == CompanyID) && e.DropDownID == 24 || e.DropDownID == 67).Select(a => new { a.ID, a.Value, DropDownID = a.DropDownID }).ToList();
                 objResponse.ResultSet = new
                 {
-                    InstructionList = InstructionList
+                    InstructionList = InstructionList,
+                    Dropdown = dropdown
                 };
                 objResponse.IsSuccess = true;
             }

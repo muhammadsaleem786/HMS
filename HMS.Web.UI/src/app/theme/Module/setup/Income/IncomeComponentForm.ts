@@ -143,6 +143,10 @@ export class IncomeComponentForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#DoctorSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.DoctorId = ui.item.value;
                 this.model.DoctorName = ui.item.label;

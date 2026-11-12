@@ -114,6 +114,10 @@ export class AdverseDrugComponentForm implements OnInit {
                 });
             }, 300),
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.PatientName = ui.item.PatientName;
                 this.model.PatientId = ui.item.value;

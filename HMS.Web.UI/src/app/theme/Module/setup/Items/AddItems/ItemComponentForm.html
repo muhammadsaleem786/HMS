@@ -25,6 +25,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
+                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#BrandModal" (click)="AddMasterData(BrandModal,'group')"></i>
                                     <input type="text" id="GroupSearch" (click)="LoadGroup()" formControlName="GroupId" [(ngModel)]="model.GroupName" class="form-control form-control-sm form-control-alternative" placeholder="Search Group" autocomplete="off">
                                     <small class="text-danger" *ngIf="Form1.controls.GroupId.hasError('required') && submitted">
                                         This value is required.
@@ -40,8 +41,8 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
+                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#BrandModal" (click)="AddMasterData(BrandModal,'type')"></i>
                                     <input type="text" id="TypeSearch" (click)="LoadType()" formControlName="ItemTypeId" [(ngModel)]="model.TypeName" class="form-control form-control-sm form-control-alternative" placeholder="Search Item Type" autocomplete="off">
-
                                     <small class="text-danger" *ngIf="Form1.controls.ItemTypeId.hasError('required') && submitted">
                                         This value is required.
                                     </small>
@@ -80,6 +81,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
+                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#BrandModal" (click)="AddMasterData(BrandModal,'unit')"></i>
                                     <input type="text" id="UnitSearch" (click)="LoadUnit()" formControlName="UnitID" [(ngModel)]="model.UnitName" class="form-control form-control-sm form-control-alternative" placeholder="Search Unit" autocomplete="off">
                                     <small class="text-danger" *ngIf="Form1.controls.UnitID.hasError('required') && submitted">
                                         This value is required.
@@ -95,6 +97,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
+                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#BrandModal" (click)="AddMasterData(BrandModal,'category')"></i>
                                     <input type="text" id="CategorySearch" (click)="LoadCategory()" formControlName="CategoryID" [(ngModel)]="model.CategoryName" class="form-control form-control-sm form-control-alternative" placeholder="Search Category" autocomplete="off">
                                     <small class="text-danger" *ngIf="Form1.controls.CategoryID.hasError('required') && submitted">
                                         This value is required.
@@ -171,6 +174,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
+                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#BrandModal" (click)="AddMasterData(BrandModal,'brand')"></i>
                                     <input type="text" id="BrandSearch" (click)="LoadBrand()" formControlName="BrandId" [(ngModel)]="model.BrandName" class="form-control form-control-sm form-control-alternative" placeholder="Search Brand" autocomplete="off">
                                 </div>
                             </div>
@@ -183,6 +187,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="form-group">
+                                    <i class="fa fa-plus-square pull-right" data-toggle="modal" data-target="#GenericModal" (click)="AddGeneric(GenericModal)"></i>
                                     <input type="text" id="FormulationSearch" (click)="LoadFormulation()" formControlName="GenericId" [(ngModel)]="model.FormulationName" class="form-control form-control-sm form-control-alternative" placeholder="Search Formulation" autocomplete="off">
                                 </div>
                             </div>
@@ -288,6 +293,118 @@
     </div>
 </div>
 
+<ng-template #GenericModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" *ngIf="IsEdit==false">Add Formulation</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form2" novalidate (ngSubmit)="FormulationSaveOrUpdate(Form2.valid)">
+        <div class="modal-body bg-secondary">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Specialty </label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm form-control-alternative" formControlName="SpecialtyId" [(ngModel)]="genericmodel.SpecialtyId">
+                                <option *ngFor="let item of SpecialtyList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <small class="text-danger" *ngIf="Form2.controls.SpecialtyId.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Category </label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control form-control-sm form-control-alternative" formControlName="CategoryID" [(ngModel)]="genericmodel.CategoryID">
+                                <option *ngFor="let item of CategoryList" [value]="item.ID">
+                                    {{item.Value}}
+                                </option>
+                            </select>
+                            <small class="text-danger" *ngIf="Form2.controls.CategoryID.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Formulation Name </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="GenericName" [(ngModel)]="genericmodel.GenericName" class="form-control form-control-sm form-control-alternative" placeholder="Formulation Name">
+                            <small class="text-danger" *ngIf="Form2.controls.GenericName.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Common Use </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="" formControlName="CommonUse" [(ngModel)]="genericmodel.CommonUse" class="form-control form-control-sm form-control-alternative" placeholder="Common Use">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4 text-right">
+                            <label class="form-control-label mt-2" for="input-username">Is Active </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="checkbox" class="" formControlName="IsActive" [(ngModel)]="genericmodel.IsActive">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </form>
+</ng-template>
+<ng-template #BrandModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title"> {{ IsBrand ? 'Add Brand' : IsUnit ? 'Add Unit' : IsCategory ? 'Add Category': IsGroup ? 'Add Group': IsType ? 'Add Type' : '' }}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="Form3" novalidate (ngSubmit)="BrandSaveOrUpdate(Form3.valid)">
+        <div class="modal-body bg-secondary">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row form-group">
+                        <div class="col-4 text-right" *ngIf="IsBrand">
+                            <label class="form-control-label mt-2" for="input-username">
+                                {{ IsBrand ? 'Brand Name' : IsUnit ? 'Unit Name' : IsCategory ? 'Category Name': IsGroup ? 'Group Name' : IsType ? 'Type Name' : 'Name' }}
+                            </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="Value" maxlength="150" class="form-control" [(ngModel)]="Dropmodel.Value" placeholder="Enter Name">
+                            <small class="text-danger" *ngIf="Form3.controls.Value.hasError('required') && submitted">
+                                This value is required.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </form>
+</ng-template>
 
 
 

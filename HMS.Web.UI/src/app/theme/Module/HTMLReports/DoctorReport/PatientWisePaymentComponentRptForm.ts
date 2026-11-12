@@ -65,6 +65,10 @@ export class PatientWisePaymentComponentRptForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#DoctorSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.DoctorId = ui.item.value;
                 this.model.DoctorName = ui.item.label;
@@ -82,6 +86,10 @@ export class PatientWisePaymentComponentRptForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.PatientName = ui.item.label;
                 this.model.PatientId = ui.item.value;

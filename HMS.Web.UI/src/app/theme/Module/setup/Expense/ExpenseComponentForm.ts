@@ -149,6 +149,10 @@ export class ExpenseComponentForm implements OnInit {
                 });
             }, 300),
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#EmployeeSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.EmployeeId = ui.item.value;
                 this.model.EmployeeName = ui.item.label;
@@ -166,6 +170,10 @@ export class ExpenseComponentForm implements OnInit {
                 });
             }, 300),
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#VendorSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.VendorId = ui.item.value;
                 this.model.VendorName = ui.item.label;
@@ -186,6 +194,10 @@ export class ExpenseComponentForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#DoctorSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.DoctorId = ui.item.value;
                 this.model.DoctorName = ui.item.label;

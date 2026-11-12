@@ -342,6 +342,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientNameSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.PatientName = ui.item.label;
                 $("#PatientNameSearch").val(ui.item.label);
@@ -777,6 +781,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#DoctorSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.ReferredBy = ui.item.label;
                 return ui.item.label;
@@ -1027,6 +1035,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $(id).val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.emr_prescription_treatment_dynamicArray[indx].MedicineId = ui.item.value;
                 this.emr_prescription_treatment_dynamicArray[indx].MedicineName = ui.item.Name;
@@ -1050,6 +1062,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $(id).val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.emr_prescription_treatment_dynamicArray[indx].InstructionId = ui.item.value;
                 this.emr_prescription_treatment_dynamicArray[indx].Instructions = ui.item.label;
@@ -1540,6 +1556,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             }, 300),
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearchByName').val(ui.item.PatientName);
+            },
             select: (event, ui) => {
                 var billObj = ui.item.patientBill.filter(a => a.PatientId == ui.item.value)[0];
                 if (billObj == undefined || billObj.TotalSessions == null || billObj.TotalSessions == undefined) {
@@ -1597,6 +1617,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#ServiceSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 if (patientBill == undefined || patientBill.length == 0) {
                     this.AppointmentModel.TotalSessions = 0;
@@ -2851,6 +2875,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#ComplaintSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.complaintModel = new emr_prescription_complaint();
                 var findComp = this.emr_prescription_complaint_dynamicArray.filter(a => a.Complaint == ui.item.label);
@@ -2880,6 +2908,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#ObservationSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.observationModel = new emr_prescription_observation();
                 var findComp = this.emr_prescription_observation_dynamicArray.filter(a => a.Observation == ui.item.label);
@@ -2909,6 +2941,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#InvestigationSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
 
                 this.investigationModel = new emr_prescription_investigation();
@@ -2938,6 +2974,10 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#DiagnosSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.diagnosModel = new emr_prescription_diagnos();
                 var findComp = this.emr_prescription_diagnos_dynamicArray.filter(a => a.Diagnos == ui.item.label);

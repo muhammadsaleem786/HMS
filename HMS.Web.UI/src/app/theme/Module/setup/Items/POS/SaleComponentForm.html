@@ -34,10 +34,10 @@
                 <div class="col-md-7 pt-3">
                     <div class="row">
                         <div class="col-md-6">
-                            <input type="text" class="form-control form-control-lg" id="itemSearchBarcode" placeholder="Start scanning"  [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true">
+                            <input type="text" class="form-control form-control-lg" id="itemSearchBarcode" placeholder="Start scanning">
                         </div>
                         <div class="col-md-6">
-                            <input type="text" id="itemSearch" formControlName="ItemName" [(ngModel)]="model.ItemName" class="form-control form-control-lg form-control-alternative" (click)="LoadSearchableDropdown()" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" placeholder="Start typing to search" autocomplete="off">
+                            <input type="text" id="itemSearch" formControlName="ItemName" [(ngModel)]="model.ItemName" class="form-control form-control-lg form-control-alternative" (click)="LoadSearchableDropdown()" placeholder="Start typing to search" autocomplete="off">
                         </div>
                     </div>
                     <div class="row mt-3">

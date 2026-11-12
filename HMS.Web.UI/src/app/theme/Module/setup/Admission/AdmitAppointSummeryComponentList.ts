@@ -383,6 +383,10 @@ export class AdmitAppointSummeryComponentList implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.AppointmentModel.PatientName = ui.item.label;
                 this.AppointmentModel.PatientId = ui.item.value;
@@ -406,6 +410,10 @@ export class AdmitAppointSummeryComponentList implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#ServiceSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.AppointmentModel.ServiceId = ui.item.value;
                 this.AppointmentModel.ServiceName = ui.item.label;

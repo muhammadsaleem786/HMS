@@ -150,6 +150,10 @@ export class AdmitLabsComponentList implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PrioritySearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.PriorityId = ui.item.value;
                 this.model.PriorityName = ui.item.label;
@@ -170,6 +174,10 @@ export class AdmitLabsComponentList implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#TestIdSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.enterResultSearchId = ui.item.value;
                 this.enterResultSearchValue = ui.item.label;

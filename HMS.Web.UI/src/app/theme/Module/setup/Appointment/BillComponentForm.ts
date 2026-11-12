@@ -174,6 +174,10 @@ export class BillComponentForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#BillDoctorSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.BillModel.DoctorId = ui.item.value;
                 this.BillModel.DoctorName = ui.item.label;
@@ -191,6 +195,10 @@ export class BillComponentForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.BillModel.PatientId = ui.item.value;
                 this.BillModel.PatientName = ui.item.label;
@@ -209,6 +217,10 @@ export class BillComponentForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#BillServiceSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.BillModel.ServiceId = ui.item.value;
                 this.BillModel.ServiceName = ui.item.label;

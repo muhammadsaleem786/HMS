@@ -1158,6 +1158,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#AppPatientSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.AppointmentModel.PatientName = ui.item.label;
                 this.AppointmentModel.PatientId = ui.item.value;
@@ -1176,6 +1180,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.patientInfo = ui.item;
                 this.PrescriptionModel.PatientName = ui.item.label;
@@ -1278,6 +1286,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $(id).val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.emr_prescription_treatment_dynamicArray[indx].InstructionId = ui.item.value;
                 this.emr_prescription_treatment_dynamicArray[indx].Instructions = ui.item.label;
@@ -1314,6 +1326,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $(id).val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.emr_prescription_treatment_dynamicArray[indx].MedicineId = ui.item.value;
                 this.emr_prescription_treatment_dynamicArray[indx].MedicineName = ui.item.Name;
@@ -1601,6 +1617,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#ServiceSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.AppointmentModel.ServiceId = ui.item.value;
                 this.AppointmentModel.ServiceName = ui.item.label;
@@ -1622,6 +1642,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#ComplaintSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.complaintModel = new emr_prescription_complaint();
                 var findComp = this.emr_prescription_complaint_dynamicArray.filter(a => a.Complaint == ui.item.label);
@@ -1651,6 +1675,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#ObservationSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.observationModel = new emr_prescription_observation();
                 var findComp = this.emr_prescription_observation_dynamicArray.filter(a => a.Observation == ui.item.label);
@@ -1680,6 +1708,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#InvestigationSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.investigationModel = new emr_prescription_investigation();
                 var findComp = this.emr_prescription_investigation_dynamicArray.filter(a => a.Investigation == ui.item.label);
@@ -1708,6 +1740,10 @@ export class PrescriptionComponentForm implements OnInit, OnDestroy {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#DiagnosSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.diagnosModel = new emr_prescription_diagnos();
                 var findComp = this.emr_prescription_diagnos_dynamicArray.filter(a => a.Diagnos == ui.item.label);

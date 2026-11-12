@@ -1,5 +1,5 @@
 ﻿import { FormGroup, FormControl, FormBuilder, Validators, FormsModule } from '@angular/forms';
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { PaginationModel, PaginationConfig } from '../../../../../CommonComponent/PaginationComponentConfig';
 import { CommonService } from '../../../../../CommonService/CommonService';
@@ -7,19 +7,26 @@ import { LoaderService } from '../../../../../CommonService/LoaderService';
 import { GlobalVariable } from '../../../../../AngularConfig/global';
 import { ItemService } from './ItemService';
 import { ItemModel } from './ItemModel';
+import { GenericService } from '../../Setting/Generic/GenericService';
+import { adm_generic } from '../../Setting/Generic/GenericModel';
+import { DropDownService } from '../../Setting/DropDown/DropDownService';
+import { sys_drop_down_value } from '../../Setting/DropDown/DropDownModel';
 import { ActivatedRoute } from '@angular/router';
 import { CommonToastrService } from '../../../../../CommonService/CommonToastrService';
 import { ValidationVariables } from '../../../../../AngularConfig/global';
 import { filter } from 'rxjs/operators';
 import { EncryptionService } from '../../../../../CommonService/encryption.service';
+import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 declare var $: any;
 @Component({
     moduleId: module.id,
     templateUrl: 'ItemComponentForm.html',
-    providers: [ItemService],
+    providers: [ItemService, GenericService, DropDownService],
 })
 export class ItemComponentForm {
     public model = new ItemModel();
+    public genericmodel = new adm_generic();
+    public Dropmodel = new sys_drop_down_value();
     public Id: string;
     public submitted: boolean;
     public IsList: boolean = true;
@@ -31,14 +38,26 @@ export class ItemComponentForm {
     public sub: any;
     public IsEdit: boolean = false;
     public Form1: FormGroup;
+    public Form2: FormGroup;
+    public Form3: FormGroup;
     public Image: string = '';
     public IsNewImage: boolean = true;
     public isDisabled: boolean = false;
     public IsTrackInventory: boolean = false;
     public AttachImage: string = '';
     public ControlRights: any; public CompanyObj: any;
-    constructor(public _CommonService: CommonService, public loader: LoaderService
-        , public _router: Router, public _ItemService: ItemService, public _fb: FormBuilder
+    public SpecialtyList: any[] = [];
+    public CategoryList: any[] = [];
+    public IsBrand: boolean= false;
+    public IsUnit: boolean = false;
+    public IsCategory: boolean = false;
+    public IsGroup: boolean = false;
+    public IsType: boolean = false;
+
+    @ViewChild("GenericModal") ModelContent: TemplateRef<any>;
+    @ViewChild("BrandModal") BrandModal: TemplateRef<any>;
+    constructor(public _CommonService: CommonService, public _dropdownService: DropDownService, private modalService: NgbModal, public loader: LoaderService
+        , public _router: Router, public _GenericService: GenericService, public _ItemService: ItemService, public _fb: FormBuilder
         , public route: ActivatedRoute, public toastr: CommonToastrService,
         private encrypt: EncryptionService) {
         this.loader.ShowLoader();
@@ -47,7 +66,7 @@ export class ItemComponentForm {
         this.ControlRights = this._CommonService.ScreenRights("61");
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
     }
-    ngOnInit() {    
+    ngOnInit() {
         this.LoadDropDown();
         this.sub = this.route.queryParams
             .pipe(filter(params => params.id))
@@ -133,12 +152,98 @@ export class ItemComponentForm {
             BrandId: [''],
             BrandName: [''],
         });
+        this.Form2 = this._fb.group({
+            GenericName: ['', [Validators.required]],
+            CommonUse: [''],
+            SpecialtyId: ['', [Validators.required]],
+            CategoryID: ['', [Validators.required]],
+            CategoryDropDownID: [''],
+            SpecialtyDropDownID: [''],
+            IsActive: ['', [Validators.required]],
+        });
+        this.Form3 = this._fb.group({
+            Value: ['', [Validators.required]],
+        });
     }
     ShowInventory(event: any) {
         if (event === false)
             this.IsTrackInventory = true;
         else
             this.IsTrackInventory = false;
+    }
+    AddGeneric(BrandModal: any) {
+        this.modalService.open(BrandModal, { size: 'md' });
+    }
+    AddMasterData(GenericModal: any, addType: any) {
+        this.IsUnit = addType === 'unit';
+        this.IsBrand = addType === 'brand';
+        this.IsCategory = addType === 'category';
+        this.IsGroup = addType === 'group';
+        this.IsType = addType === 'type';
+        this.Form3.reset();
+        this.modalService.open(GenericModal, { size: 'md' });
+    }
+
+    BrandSaveOrUpdate(isValid: boolean): void {
+        this.submitted = true; // set form submit to true
+        if (isValid) {
+            this.submitted = false;
+            this.loader.ShowLoader();
+            this.Dropmodel.DropDownID = this.IsBrand ? 73 : this.IsUnit ? 57 : this.IsCategory ? 58 : this.IsGroup ? 64 : this.IsType ? 59 : 0;
+            this._dropdownService.SaveOrUpdate(this.Dropmodel).then(m => {
+                var result = JSON.parse(m._body);
+                if (result.IsSuccess) {                   
+                    if (this.IsBrand) {
+                        this.model.BrandId = result.ResultSet.ID;
+                        this.model.BrandName = result.ResultSet.Value;
+                    }
+                    else if (this.IsCategory) {
+                        this.model.CategoryID = result.ResultSet.ID;
+                        this.model.CategoryName = result.ResultSet.Value;
+                    }
+                    else if (this.IsUnit) {
+                        this.model.UnitID = result.ResultSet.ID;
+                        this.model.UnitName = result.ResultSet.Value;
+                    }
+                    else if (this.IsGroup) {
+                        this.model.GroupId = result.ResultSet.ID;
+                        this.model.GroupName = result.ResultSet.Value;
+                    }
+                    else if (this.IsType) {
+                        this.model.ItemTypeId = result.ResultSet.ID;
+                        this.model.TypeName = result.ResultSet.Value;
+                    }
+                    this.Dropmodel = new sys_drop_down_value();
+                    this.toastr.Success(result.Message);
+                    this.modalService.dismissAll(this.BrandModal);
+                }
+                else
+                    this.toastr.Error('Error', result.ErrorMessage);
+                this.loader.HideLoader();
+            });
+        }
+    }
+    FormulationSaveOrUpdate(isValid: boolean): void {
+        this.submitted = true; // set form submit to true
+        if (isValid) {
+            this.submitted = false;
+            this.loader.ShowLoader();
+            this._GenericService.SaveOrUpdate(this.genericmodel).then(m => {
+                var result = JSON.parse(m._body);
+                if (result.IsSuccess) {
+                    this.model.GenericId = result.ResultSet.ID;
+                    this.model.FormulationName = result.ResultSet.GenericName;
+                    this.genericmodel = new adm_generic();
+                    this.toastr.Success(result.Message);
+                    this.modalService.dismissAll(this.ModelContent);
+                    this.loader.HideLoader();
+                }
+                else {
+                    this.toastr.Error('Error', result.ErrorMessage);
+                    this.loader.HideLoader();
+                }
+            });
+        }
     }
     SaveOrUpdate(isValid: boolean): void {
         this.submitted = true;
@@ -219,7 +324,6 @@ export class ItemComponentForm {
             }
         });
     }
-
     LoadVendor() {
         $("#VendorSearch").autocomplete({
             source: (request, response) => {
@@ -234,6 +338,10 @@ export class ItemComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#VendorSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.VendorId = ui.item.value;
                 this.model.VendorName = ui.item.label;
@@ -255,6 +363,10 @@ export class ItemComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#FormulationSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.GenericId = ui.item.value;
                 this.model.FormulationName = ui.item.label;
@@ -298,6 +410,10 @@ export class ItemComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#TypeSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.ItemTypeId = ui.item.value;
                 this.model.TypeName = ui.item.label;
@@ -342,6 +458,10 @@ export class ItemComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#CategorySearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.CategoryID = ui.item.value;
                 this.model.CategoryName = ui.item.label;
@@ -350,12 +470,13 @@ export class ItemComponentForm {
             }
         });
     }
-    
     LoadDropDown() {
         this.loader.ShowLoader();
         this._ItemService.FormLoad().then(m => {
             if (m.IsSuccess) {
                 this.InstructionsList = m.ResultSet.InstructionList;
+                this.SpecialtyList = m.ResultSet.Dropdown.filter(a => a.DropDownID == 24);
+                this.CategoryList = m.ResultSet.Dropdown.filter(a => a.DropDownID == 67);
                 if (this.IsEdit == false)
                     this.model.ItemTypeId = 1;
                 this.loader.HideLoader();

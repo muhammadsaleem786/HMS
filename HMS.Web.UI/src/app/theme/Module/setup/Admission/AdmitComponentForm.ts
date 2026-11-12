@@ -426,6 +426,10 @@ export class AdmitComponentForm implements OnInit {
                 });
             }, 300),
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.modelAdmission.PatientName = ui.item.label;
                 this.modelAdmission.PatientId = ui.item.value;
@@ -451,6 +455,10 @@ export class AdmitComponentForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#DoctorSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.ReferredBy = ui.item.label;
                 //this.emr_prescription_treatment_dynamicArray[indx].MedicineName = ui.item.label;

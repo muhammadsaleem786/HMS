@@ -64,6 +64,10 @@ export class SaleByPatientRptForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#ItemSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.ItemId = ui.item.value;
                 this.model.ItemName = ui.item.label;
@@ -82,6 +86,10 @@ export class SaleByPatientRptForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.PatientName = ui.item.label;
                 this.model.PatientId = ui.item.value;

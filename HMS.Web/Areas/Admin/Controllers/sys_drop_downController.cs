@@ -124,8 +124,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         await _unitOfWorkAsync.SaveChangesAsync();
                         objResponse.Message = MessageStatement.Save;
                         objResponse.IsSuccess = true;
-
-                        objResponse.ResultSet = GetValuesList(Model);
+                        objResponse.ResultSet = new
+                        {
+                            Model.ID,
+                            Model.Value,
+                            result = GetValuesList(Model)
+                        };
                     }
                     catch (DbUpdateException)
                     {
@@ -158,13 +162,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
 
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    objResponse.IsSuccess = false;
-                    objResponse.ErrorMessage = MessageStatement.BadRequest;
-                    return objResponse;
-                }
-
+                //if (!ModelState.IsValid)
+                //{
+                //    objResponse.IsSuccess = false;
+                //    objResponse.ErrorMessage = MessageStatement.BadRequest;
+                //    return objResponse;
+                //}
                 //decimal CompanyID = Request.CompanyID();
                 //if (string.IsNullOrEmpty(Model.Value))
                 //{
@@ -185,7 +188,12 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                         await _unitOfWorkAsync.SaveChangesAsync();
                         objResponse.Message = MessageStatement.Save;
                         objResponse.IsSuccess = true;
-                        objResponse.ResultSet = GetValuesList(Model);
+                        objResponse.ResultSet = new
+                        {
+                            Model.ID,
+                            Model.Value,
+                            result = GetValuesList(Model)
+                        };
                     }
                     catch (DbUpdateException)
                     {

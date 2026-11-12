@@ -157,6 +157,7 @@ export class SummeryComponentList implements OnInit {
             this.BillTypeList = m.ResultSet.BillTypeList;
             this.TittleList = m.ResultSet.TittleList;
             this.model = m.ResultSet.patientInfo;
+            debugger;
             if (this.model.Image != null || this.model.Image != undefined) {
                 this.getPatientImageUrlName(this.model.Image);
                 this.IsNewPatientImage = false;

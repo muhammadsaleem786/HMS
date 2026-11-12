@@ -279,6 +279,10 @@ export class LabDashboardComponent implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.PatientTestmodel.PatientId = ui.item.value;
                 this.PatientTestmodel.PatientName = ui.item.label;
@@ -305,6 +309,10 @@ export class LabDashboardComponent implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#DoctorSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.PatientTestmodel.DoctorId = ui.item.value;
                 this.PatientTestmodel.ReferringPhysician = ui.item.label;
@@ -351,6 +359,10 @@ export class LabDashboardComponent implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PrioritySearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.PatientTestmodel.PriorityId = ui.item.value;
                 this.PatientTestmodel.PriorityName = ui.item.label;
@@ -371,6 +383,10 @@ export class LabDashboardComponent implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#TestIdSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.enterResultSearchId = ui.item.value;
                 this.enterResultSearchValue = ui.item.label;

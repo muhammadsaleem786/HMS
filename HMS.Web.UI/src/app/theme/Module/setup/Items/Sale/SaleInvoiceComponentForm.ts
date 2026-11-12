@@ -256,6 +256,10 @@ export class SaleInvoiceComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#txtCustomer').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.CustomerName = ui.item.label;
                 this.model.CustomerID = ui.item.value;
@@ -398,6 +402,10 @@ export class SaleInvoiceComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $(id).val(ui.item.label);
+            },
             select: (event, ui) => {
                 if (ui.item.stock <= 0 && ui.item.IsAllowNegativeStock == false && ui.item.ProdItemTypeId != 2) {
                     this.toastr.Error("Error", "The item is out of stock.");

@@ -206,6 +206,10 @@ export class ServiceComponentForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#txtDrug_' + val).val(ui.item.label);
+            },
             select: (event, ui) => {
                 if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
                     this.toastr.Error("Error", "The item is out of stock.");

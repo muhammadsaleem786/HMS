@@ -129,6 +129,10 @@ export class InvestigationComponentList {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#CategorySearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.CategoryId = ui.item.value;
                 this.model.CategoryName = ui.item.label;
@@ -149,6 +153,10 @@ export class InvestigationComponentList {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#SampleSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.SampleId = ui.item.value;
                 this.model.SampleName = ui.item.label;

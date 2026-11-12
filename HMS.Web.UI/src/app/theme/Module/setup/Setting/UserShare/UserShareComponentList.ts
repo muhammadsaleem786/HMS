@@ -144,7 +144,10 @@ export class UserShareComponentList implements OnInit {
             },
 
             minLength: 3,
-
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#serviceSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.ServiceId = null;
                 this.model.LabId = null;

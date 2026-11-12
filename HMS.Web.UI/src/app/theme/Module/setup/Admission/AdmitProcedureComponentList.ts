@@ -165,6 +165,10 @@ export class AdmitProcedureComponentList implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#txtService').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.PatientProcedure = ui.item.label;
                 this.model.ServiceId = ui.item.value;
@@ -204,6 +208,10 @@ export class AdmitProcedureComponentList implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $(id).val(ui.item.label);
+            },
             select: (event, ui) => {
                 if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
                     this.toastr.Error("Error", "The item is out of stock.");
@@ -233,6 +241,10 @@ export class AdmitProcedureComponentList implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $(id).val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.ipd_procedure_charged_dynamicArray[indx].Batch = ui.item.label;
                 this.ipd_procedure_charged_dynamicArray[indx].BatchId = ui.item.value;
@@ -250,6 +262,10 @@ export class AdmitProcedureComponentList implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $(id).val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.ipd_procedure_medication_dynamicArray[indx].MedicineId = ui.item.value;
                 this.ipd_procedure_medication_dynamicArray[indx].MedicineName = ui.item.label;

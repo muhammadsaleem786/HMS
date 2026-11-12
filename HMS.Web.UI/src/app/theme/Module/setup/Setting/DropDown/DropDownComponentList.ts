@@ -1,8 +1,8 @@
 ﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { DropDownService } from './DropDownService';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { sys_drop_down_value } from './DropDownModel';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { PaginationModel, PaginationConfig } from '../../../../../CommonComponent/PaginationComponentConfig';
 import { CommonService } from '../../../../../CommonService/CommonService';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
@@ -200,10 +200,11 @@ export class DropDownComponentList {
             this._dropdownService.SaveOrUpdate(this.model).then(m => {
                 var result = JSON.parse(m._body);
                 if (result.IsSuccess) {
+                    debugger
                     if (this.model.DependedDropDownValueID == null) {
-                        this.PaginationList = result.ResultSet;
+                        this.PaginationList = result.ResultSet.result;
                     } else {
-                        this.DTDropDownList = result.ResultSet;
+                        this.DTDropDownList = result.ResultSet.result;
                         this.DTDDChange();
                     }
                     this.Clear();

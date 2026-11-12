@@ -122,10 +122,10 @@ export class SaleComponentForm {
                     this.loader.ShowLoader();
                     this.IsEdit = true;
                     var saleholdId = this._AsidebarService.GetSaleHoldValue();
-                    if (saleholdId == "0") {
+                    debugger;
+                    if (saleholdId == "0" || saleholdId == "") {
                         this._SaleService.GetById(this.model.ID).then(m => {
                             if (m.ResultSet != null) {
-
                                 this.Sale_itemdynamicArray = [];
                                 this.model = m.ResultSet.result;
                                 if (m.ResultSet.PatientInfo != null) {
@@ -156,10 +156,12 @@ export class SaleComponentForm {
                                     item.TypeValue = ItemObj[0].TypeValue;
                                     item.Stock = ItemObj[0].stock;
                                     item.GroupId = ItemObj[0].GroupId;
+                                    item.Quantity = -item.Quantity;
                                     this.Sale_itemdynamicArray.push(item);
                                     SubAmount += item.TotalAmount;
                                 });
                                 this.SubTotal = this.roundToTwoDecimal(SubAmount);
+                                this.CalculateSubTotal();
                                 this.loader.HideLoader();
                             } else
                                 this.loader.HideLoader();
@@ -204,7 +206,7 @@ export class SaleComponentForm {
                                     this.CustomerId = m.ResultSet.PatientInfo.value;
                                     this.model.CustomerId = this.CustomerId;
                                 }
-
+                                this.CalculateSubTotal();
                                 this.loader.HideLoader();
                             } else
                                 this.loader.HideLoader();
@@ -287,6 +289,10 @@ export class SaleComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#itemSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 if (ui.item.stock < 0 && ui.item.IsAllowNegativeStock == false) {
                     this.toastr.Error("Error", "The item is out of stock.");
@@ -319,6 +325,7 @@ export class SaleComponentForm {
                         this.Sale_itemdynamicArray.push(obj);
                         this.CalculateSubTotal();
                     }
+                    $('#itemSearch').val('');
                 }
             }
         });
@@ -371,6 +378,10 @@ export class SaleComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#customerSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.PatientName = ui.item.label;
                 this.CustomerId = ui.item.value;

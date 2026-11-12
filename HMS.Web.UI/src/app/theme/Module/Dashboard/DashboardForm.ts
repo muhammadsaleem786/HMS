@@ -340,6 +340,10 @@ export class DashboardForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#PatientSearchByName').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.AppointmentModel.PatientName = ui.item.label;
                 this.AppointmentModel.PatientId = ui.item.value;
@@ -508,6 +512,10 @@ export class DashboardForm implements OnInit {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#ServiceSearch').val(ui.item.label);
+            },
             select: (event, ui) => {
                 if (patientBill == undefined || patientBill.length == 0) {
                     this.AppointmentModel.TotalSessions = 0;

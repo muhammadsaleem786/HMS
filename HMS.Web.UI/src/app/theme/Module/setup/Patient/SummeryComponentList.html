@@ -1,9 +1,22 @@
-﻿<div class="col-sm-12 AddRoleWraper">
+﻿
+<div class="col-sm-12 AddRoleWraper">
     <div class="row headSection paginationHead">
-        <div class="col-sm-8 no-padding">
-            <h3 class="page-heading mt-d-inline-block">
-                Patient Summary
-            </h3>
+        <div class="patient-header">
+            <!-- LEFT: Patient Information -->
+            <div class="patient-details">
+                <div class="patient-name">
+                    {{model.PatientName}}
+                </div>
+                <div class="patient-info-row">
+                    <span class="patient-info">
+                        {{ model.Gender == 1 ? 'Male' : model.Gender == 2 ? 'Female' : 'Other' }}
+                    </span>
+                    <span class="divider">|</span>
+                    <span class="patient-info">
+                        {{model.Age}} Y
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="Cardview m-0 px-2">

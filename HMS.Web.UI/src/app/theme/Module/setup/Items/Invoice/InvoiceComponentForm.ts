@@ -277,6 +277,10 @@ export class InvoiceComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $('#txtVandor').val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.model.VendorName = ui.item.label;
                 this.model.VendorID = ui.item.value;
@@ -393,6 +397,10 @@ export class InvoiceComponentForm {
                 });
             },
             minLength: 3,
+            focus: (event, ui) => {
+                event.preventDefault();
+                $(id).val(ui.item.label);
+            },
             select: (event, ui) => {
                 this.Invoice_itemdynamicArray[indx].ItemID = ui.item.value;
                 this.Invoice_itemdynamicArray[indx].Item = ui.item.label;

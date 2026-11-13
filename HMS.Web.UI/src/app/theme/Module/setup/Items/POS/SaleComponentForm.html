@@ -31,13 +31,13 @@
         </div>
         <form [formGroup]="Form1" novalidate (ngSubmit)="SaveOrUpdate(Form1.valid)">
             <div class="row">
-                <div class="col-md-7 pt-3">
+                <div class="col-md-7 pt-3" *ngIf="CompanyInfo.IsPOSCategory">
                     <div class="row">
                         <div class="col-md-6">
-                            <input type="text" class="form-control form-control-lg" id="itemSearchBarcode" placeholder="Start scanning">
+                            <input type="text" class="form-control form-control-lg" id="itemSearchBarcode" placeholder="Start scanning"[attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true">
                         </div>
                         <div class="col-md-6">
-                            <input type="text" id="itemSearch" formControlName="ItemName" [(ngModel)]="model.ItemName" class="form-control form-control-lg form-control-alternative" (click)="LoadSearchableDropdown()" placeholder="Start typing to search" autocomplete="off">
+                            <input type="text" id="itemSearch" formControlName="ItemName" [(ngModel)]="model.ItemName" class="form-control form-control-lg form-control-alternative" (click)="LoadSearchableDropdown()" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true"placeholder="Start typing to search" autocomplete="off">
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -50,15 +50,34 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-5 pt-3 card_sideBar">
-                    <div>
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control form-control-lg ui-autocomplete-input" id="customerSearch" [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName" (focus)="LoadPatentSearchableDropdown()" placeholder="Select customer" autocomplete="off">
-                            <span class="input-group-append" data-toggle="modal" data-target="#CustomerModal" id="newCustBtn" (click)="openNewPatient(content)">
-                                <span class="input-group-text"> <i class="fa fa-plus"> </i>Add New</span>
-                            </span>
+                <div [ngClass]="CompanyInfo.IsPOSCategory
+                    ? 'col-md-5 pt-3 card_sideBar'
+                    : 'col-12 pt-3 card_sideBar'">
+                    <div class="d-flex">
+                        <div class="col-sm-8" *ngIf="!CompanyInfo.IsPOSCategory">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control form-control-lg" id="itemSearchBarcode" placeholder="Start scanning" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" id="itemSearch" formControlName="ItemName" [(ngModel)]="model.ItemName" class="form-control form-control-lg form-control-alternative" (click)="LoadSearchableDropdown()" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" placeholder="Start typing to search" autocomplete="off">
+                                </div>
+                            </div>
                         </div>
+
+
+                        <div style="flex-grow:1;">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control form-control-lg ui-autocomplete-input" id="customerSearch" [ngModelOptions]="{standalone:true}" [(ngModel)]="PatientName" (focus)="LoadPatentSearchableDropdown()" placeholder="Select customer" autocomplete="off">
+                                <span class="input-group-append" data-toggle="modal" data-target="#CustomerModal" id="newCustBtn" (click)="openNewPatient(content)">
+                                    <span class="input-group-text"> <i class="fa fa-plus"> </i>Add New</span>
+                                </span>
+                            </div>
+                        </div>
+
                     </div>
+                   
+
                     <div class="table-responsive carttable">
                         <table class="table table-hover" style="table-layout: fixed; width: 100%;font-size: 11px;">
                             <colgroup>
@@ -72,7 +91,7 @@
                             </colgroup>
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>Name</th>
                                     <th>Qty</th>
                                     <th>Price</th>
                                     <th>Disc.Type</th>
@@ -127,12 +146,14 @@
                             <span>Discount</span>
                         </div>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control text-right input-sm text-" formControlName="Discount" [(ngModel)]="model.Discount" (change)="OverAllDiscountValue(model.Discount)" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                            <select class="form-control input-medium-select" (change)="changeOverAllDiscountType($event.target.value)" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" formControlName="DiscountType" [(ngModel)]="model.DiscountType">
-                                <option *ngFor="let item of DiscountTypeList" [value]=item.id>
-                                    {{item.Name}}
-                                </option>
-                            </select>
+                            <div class="d-flex mb-3">
+                                <input type="text" class="form-control text-right input-sm text-" formControlName="Discount" [(ngModel)]="model.Discount" (change)="OverAllDiscountValue(model.Discount)" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                <select class="form-control input-medium-select" style="width:20%; min-width:80px" (change)="changeOverAllDiscountType($event.target.value)" [attr.disabled]="((model.SaleTypeID != 2 && model.ID == 0) || IsRefund) ? null : true" formControlName="DiscountType" [(ngModel)]="model.DiscountType">
+                                    <option *ngFor="let item of DiscountTypeList" [value]=item.id>
+                                        {{item.Name}}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="row  mx-0 py-2 border-top">
@@ -144,10 +165,12 @@
                         </div>
                     </div>
                     <div class="col-md-12 mt-3 pay_button">
-                        <button *ngIf="((this.model.SaleTypeID!=2 && this.model.ID==0)||this.IsRefund) && ControlRights.CreateRights" type="button" (click)="PaymentSave()" class="btn btn-lg btn-primary btn-block"><span>Pay </span> <span>{{Total}}</span></button>
-                        <button *ngIf="this.IsRefund==false && this.model.SaleTypeID!=2" type="submit" class="btn btn-lg btn-primary btn-block"><span>Return </span> <span>{{Total}}</span></button>
-                        <div class="btn btn-lg btn-primary btn-block" (click)="PrintRxform(Form1.valid)">
-                            <span>Print And Pay </span> <span>{{Total}}</span>
+                        <div class="d-flex" style="gap:3px">
+                            <button *ngIf="((this.model.SaleTypeID!=2 && this.model.ID==0)||this.IsRefund) && ControlRights.CreateRights" type="button" (click)="PaymentSave()" class="btn btn-lg btn-primary btn-block"><span>Pay </span> <span>{{Total}}</span></button>
+                            <button *ngIf="this.IsRefund==false && this.model.SaleTypeID!=2" type="submit" class="btn mt-0 btn-lg btn-primary btn-block"><span>Return </span> <span>{{Total}}</span></button>
+                            <div class="btn btn-lg btn-primary btn-block mt-0" (click)="PrintRxform(Form1.valid)">
+                                <span>Print And Pay </span> <span>{{Total}}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, OnChanges,OnDestroy, EventEmitter, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, Input, Output, OnInit, OnChanges, OnDestroy, EventEmitter, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Company } from '../../../models/company.model';
 import { LoaderService } from '../../../../../CommonService/LoaderService';
@@ -80,6 +80,7 @@ export class CompanyComponentForm implements OnInit, OnDestroy {
             Phone: ['', [Validators.pattern(ValidationVariables.PhoneNo)]],
             Fax: [''],
             ID: [''],
+            IsPOSCategory: [''],
             Website: [''],
             LanguageID: [''],
             GenderID: [''],

@@ -156,7 +156,7 @@ export class SaleComponentForm {
                                     item.TypeValue = ItemObj[0].TypeValue;
                                     item.Stock = ItemObj[0].stock;
                                     item.GroupId = ItemObj[0].GroupId;
-                                    item.Quantity = -item.Quantity;
+                                    //item.Quantity = -item.Quantity;
                                     this.Sale_itemdynamicArray.push(item);
                                     SubAmount += item.TotalAmount;
                                 });
@@ -250,7 +250,6 @@ export class SaleComponentForm {
             if (m.IsSuccess) {
                 this.CategoryList = m.ResultSet.dropdownValues;
                 let PatientInfo = m.ResultSet.PatientInfo;
-
                 this.CompanyInfo = m.ResultSet.companyInfo;
                 if (PatientInfo != null) {
                     this.PatientName = PatientInfo.label;

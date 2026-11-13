@@ -301,12 +301,9 @@ export class AppointmentComponentList implements OnInit, OnDestroy {
         this.UsersObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('currentUser')));
         this.CompanyObj = JSON.parse(this.encrypt.decryptionAES(localStorage.getItem('company')));
         this.IsCNICMandatory = this.CompanyObj.IsCNICMandatory;
-
         this.GenderIds = this.UsersObj.IsGenderDropdown;
-
     }
     ngOnInit() {
-
         this.DurationList = [
             { "ID": 1, "Name": "Day (s)" },
             { "ID": 2, "Name": "Week (s)" },

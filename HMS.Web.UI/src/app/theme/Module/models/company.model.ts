@@ -7,6 +7,7 @@ export class Company {
     CompanyName: string;
     CompanyTypeID: number;
     CompanyAddress1: string;
+    IsPOSCategory: boolean = true;
     CompanyAddress2: string;
     CompanyToken: string;
     CityDropDownId: number;

@@ -88,6 +88,8 @@ namespace HMS.Entities.Models.Mapping
             this.Property(t => t.LabHeader).HasColumnName("LabHeader");
             this.Property(t => t.LabFooter).HasColumnName("LabFooter");
             this.Property(t => t.LabImage).HasColumnName("LabImage");
+            this.Property(t => t.IsPOSCategory).HasColumnName("IsPOSCategory");
+
             // Relationships
             this.HasOptional(t => t.adm_user_mf)
                 .WithMany(t => t.adm_company)

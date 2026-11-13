@@ -317,6 +317,12 @@ export class CommonService {
         var region = this.encrypt.decryptionAES(localStorage.getItem("PayrollRegion"));
         return region;
     }
+    IsAccountExpire(): Promise<any> {
+        var data = {};
+        return this.http.Get(this.BASE_Api_URL + '/api/admin/adm_user/IsAccountExpire', {}).then(m => {
+            return m;
+        });
+    }
     IsPayrollRegion(){
         localStorage.setItem('PayrollRegion', GlobalVariable.PayrollRegion);
     }
@@ -341,7 +347,16 @@ export class CommonService {
         //    format = dd;
         //return dateFormat[0] + '-' + dateFormat[1] + '-' + dateFormat[2];
     };
+    handleExpiry(): void {
+        const keysToRemove = [
+            'IsLogin', 'currentUser', 'UserID', 'Token',
+            'PayrollRegion', 'Currency', 'ValidTo',
+            'Modules', 'Rights', 'ControlLevelRights'
+        ];
 
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+       
+    }
     GetFormatDatePk(dat) {
         var date = new Date(dat);
         var yyyy = date.getFullYear();

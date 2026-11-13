@@ -102,6 +102,7 @@ namespace HMS.Entities.Models
         public int CompanyTypeDropDownID { get; set; }
         public Nullable<int> CompanyTypeID { get; set; }
         public string ReceiptFooter { get; set; }
+        public Boolean IsPOSCategory { get; set; }
         public Nullable<int> GenderID { get; set; }
         public string ContactPersonFirstName { get; set; }
         public string PharmacyName { get; set; }

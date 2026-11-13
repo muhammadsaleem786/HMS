@@ -154,6 +154,7 @@ namespace HMS.Web.API.Areas.Admin.Controllers
                     PharmacyLogo = z.IsPharmacy == true ? z.PharmacyLogo : null,
                     PharmacyName = z.IsPharmacy == true ? z.PharmacyName : null,
                     InvoiceNote = z.IsPharmacy == true ? z.InvoiceNote : null,
+                    IsPOSCategory = z.IsPOSCategory,
                 }).FirstOrDefault();
                 if (dropdownValues != null)
                 {

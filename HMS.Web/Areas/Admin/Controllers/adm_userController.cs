@@ -248,7 +248,43 @@ namespace HMS.Web.API.Areas.Admin.Controllers
             }
             return objResponse;
         }
+        [HttpGet]
+        [ActionName("IsAccountExpire")]
+        public ResponseInfo IsAccountExpire()
+        {
+            var objResponse = new ResponseInfo();
+            var loginId = Convert.ToDecimal(Request.LoginID());
 
+            var user = _service.Queryable().FirstOrDefault(e => e.ID == loginId);
+
+            if (user == null)
+            {
+                objResponse.IsSuccess = false;
+                objResponse.ErrorMessage = "User Name or Password is incorrect.";
+                objResponse.ResultSet = new
+                {
+                    IsAccountExpire = false
+                };
+
+                return objResponse;
+            }
+
+            bool isAccountExpire = user.ExpiryDate.HasValue &&user.ExpiryDate.Value.Date < DateTime.UtcNow.Date;
+
+            objResponse.IsSuccess = !isAccountExpire;
+
+            if (isAccountExpire)
+            {
+                objResponse.ErrorMessage =
+                    "Your account is expired. Please contact administrator.";
+            }
+            objResponse.ResultSet = new
+            {
+                IsAccountExpire = isAccountExpire
+            };
+
+            return objResponse;
+        }
         [HttpGet]
         [ActionName("GetRoles")]
         public ResponseInfo GetRoles()
